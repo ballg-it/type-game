@@ -840,6 +840,7 @@ const ARC = { airin: ['#ffffff', '#e9d5ff', '#a855f7'], oni: ['#ffffff', '#fecac
               ghost: ['#ffffff', '#a5f3fc', '#06b6d4'], queen: ['#ffffff', '#f5d0fe', '#d946ef'] };
 let gclock = 0, lastStageF = -1;
 function play(f, st) { f.st = st; f.t = 0; lastStageF = -1; }
+const hurtE = () => { if (FIG.E.st !== 'ko') play(FIG.E, 'hurt'); };   // ไม่ทับท่าล้ม (ตีปิดไฟต์)
 function stageTick(dt) {
   gclock += dt;
   for (const f of [FIG.P, FIG.E]) { f.t += dt; if (ONCE[f.st] && f.t >= ONCE[f.st]) { f.st = 'idle'; f.t = 0; } }
@@ -949,7 +950,7 @@ function attack(i) {
   const power = Math.min(1, w.len / 10);
   play(FIG.P, 'attack');
   setTimeout(() => {
-    play(FIG.E, 'hurt'); spark(E); SFX.hit(power);
+    hurtE(); spark(E); SFX.hit(power);
     fx(power > 0.6 ? 'big' : 'dmg', '-' + dmg, E, rand(-30, 30));
     hitstop(50 + power * 70); if (power > 0.5) shake();
   }, HIT_DELAY);
@@ -969,7 +970,7 @@ function block() {
     const dmg = Math.round(26 * comboMult() * (S.tired ? 0.5 : 1) * R.mod.counterMult);
     SFX.counter();
     setTimeout(() => { play(FIG.P, 'attack'); }, 160);
-    setTimeout(() => { play(FIG.E, 'hurt'); spark(E); spark(E, 'blue'); fx('gold', 'COUNTER! -' + dmg, E, 0, -10); shake(); hitstop(140); }, 160 + HIT_DELAY);
+    setTimeout(() => { hurtE(); spark(E); spark(E, 'blue'); fx('gold', 'COUNTER! -' + dmg, E, 0, -10); shake(); hitstop(140); }, 160 + HIT_DELAY);
     addUlt(14); dealDamage(dmg);
   } else {
     S.stats.blocks++;
@@ -1005,7 +1006,7 @@ function enemyHit() {
     play(FIG.P, 'hurt'); SFX.hurt(); flash('red'); shake(); hitstop(90);
     fx('hurtp', '-' + dmg, P);
     if (S.combo >= 3) fx('bad', 'คอมโบหลุด', P, 0, -40);
-    S.combo = 0;
+    S.combo = 0; renderWords();
     S.php = Math.max(0, S.php - dmg);
     if (S.php <= 0 && R.revive > 0) {   // ขนนกฟีนิกซ์
       R.revive--; R.revived = true;
@@ -1047,7 +1048,7 @@ function ultHit() {
   addCombo(); S.stats.words++;
   endUlt();
   play(FIG.P, 'attack'); flash('white'); SFX.ultHit();
-  setTimeout(() => { play(FIG.E, 'hurt'); spark(E, 'huge'); fx('big', 'ท่าไม้ตาย! -' + dmg, E, 0, -20); shake(); hitstop(220); }, HIT_DELAY);
+  setTimeout(() => { hurtE(); spark(E, 'huge'); fx('big', 'ท่าไม้ตาย! -' + dmg, E, 0, -20); shake(); hitstop(220); }, HIT_DELAY);
   dealDamage(dmg);
 }
 function ultFail() { endUlt(); play(FIG.P, 'idle'); fx('bad', 'ท่าไม้ตายพลาด!', P, 0, -40); SFX.err(); }
@@ -1195,7 +1196,7 @@ function renderHUD() {
 /* ================= Loop ================= */
 function update(dt) {
   S.stamina = Math.min(100, S.stamina + 14 * dt);
-  if (S.stamina <= 0) S.tired = true;
+  if (S.stamina <= 0 && !S.tired) { S.tired = true; renderWords(); }
   if (S.tired && S.stamina >= 40) { S.tired = false; renderWords(); }
   if (S.ultMode) {
     S.ultTime -= dt;
@@ -1344,13 +1345,13 @@ function endFight(win) {
   let coins = 0;
   if (win) { R.cleared++; coins = fightCoins(st, S.maxCombo); R.coins += coins; R.earned += coins; }
   const last = !!FOE.boss;
-  phase = win && !last ? 'pick' : 'result';
+  phase = 'busy';   // ล็อกการพิมพ์/Enter จนกว่าหน้าเลือกอัปเกรดหรือหน้าสรุปจะขึ้น
   setTimeout(() => {
     play(win ? FIG.E : FIG.P, 'ko'); play(win ? FIG.P : FIG.E, 'win');
     fx(win ? 'big' : 'hurtp', win ? 'K.O.!' : 'แพ้...', win ? E : P, 0, -30);
-    if (coins) setTimeout(() => fx('good', `+${coins} 🪙`, P, 0, -60), 350);
+    if (coins) setTimeout(() => fx('gold', `+${coins} 🪙`, P, 0, -60), 350);
     win ? SFX.win() : SFX.lose();
-  }, 250);
+  }, 380);   // หลังเฟรมโดนตีของทุกท่า (โจมตี 180ms, สวนกลับ 340ms)
   setTimeout(() => (win && !last) ? showPick() : showResult(win), 1400);
 }
 
@@ -1371,8 +1372,8 @@ function showPick(training) {
   const used = new Set();
   PK = { buf: '', cards: ups.map(up => {
     const lang = pickLang();
-    const word = shuffle(PICK_WORDS[lang]).find(t => !used.has(t[0]));
-    used.add(word[0]);
+    const word = shuffle(PICK_WORDS[lang]).find(t => !used.has(t[0])) || shuffle(PICK_WORDS[lang]).find(t => !used.has(t)) ;
+    used.add(word[0]); used.add(word);
     return { up, w: makeWord(word, lang, 'pick') };
   }) };
   $('#pickScr .title').textContent = training ? '🥋 ฝึกซ้อม: เลือกอัปเกรด' : 'ชนะ! เลือกอัปเกรด';
@@ -1523,6 +1524,7 @@ function shuffle(a) {
 
 /* ---------- result ---------- */
 function showResult(win) {
+  phase = 'result';
   const st = R.stats, min = Math.max(1 / 60, R.time / 60000);
   const wpm = Math.round(st.correct / 5 / min);
   const acc = st.correct + st.errors ? (st.correct / (st.correct + st.errors) * 100) : 100;
