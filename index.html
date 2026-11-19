@@ -255,6 +255,7 @@ body.cine #story{cursor:default}
 #kb{position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0}
 /* ---------- title screen ---------- */
 #startScr{position:fixed;display:block;padding:0;background:#0b0618;backdrop-filter:none;overflow:hidden}
+#startScr[hidden]{display:none}
 #titleBg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 100%;image-rendering:pixelated}
 .ts-fade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#0b0618f2 0%,#0b0618cc 30%,#0b061833 55%,transparent 70%),linear-gradient(0deg,#0b0618dd 0%,transparent 22%)}
 .ts-fx{position:absolute;inset:0;pointer-events:none;overflow:hidden}
@@ -535,6 +536,7 @@ body.cine #story{cursor:default}
 </div>
 
 <script src="sprites.js"></script>
+<script src="vendor/pixelfx.js"></script>
 <script>
 'use strict';
 /* ================= Data ================= */
@@ -1203,6 +1205,58 @@ function drawAirinArt(A, x2) {
   sctx.drawImage(im, Math.round(x2 + dx - w * AIRIN_FIT.cx), Math.round(foot + dy - h * AIRIN_FIT.foot), Math.round(w), Math.round(h));
   sctx.imageSmoothingEnabled = false;
 }
+/* Move effects from pixelfx (vendor/pixelfx.js, MIT, github.com/patch-gg/pixelfx). They paint a 214×120
+   layer = the stage at 1/3 scale, where Airin (~39 px) matches pixelfx's stock 38 px hero, then the layer is
+   blown up ×3 (nearest) over the stage. Triggered from fighter states, so game logic doesn't change.
+   No vendor file = no effects. */
+const FXK = 3, FXW = 214, FXH = 120;
+const FX_PURPLE = ['#1e0b3a', '#3b1670', '#6d28d9', '#a855f7', '#d8b4fe', '#f3e8ff', '#ffffff'];
+const FX_SPARK = ['#e9d5ff', '#c084fc', '#a855f7', '#7e22ce'];
+const fxLive = []; let fxFrame = null, fxCv = null, fxImg = null, fxClock = 0, fxCharge = null;
+const fxSeen = { at: -1, st: '', ult: -9 };
+function fxAt(name, x2, o = {}) {
+  const i = PFX.createFx(PFX.fx[name], { x: x2 / FXK, y: GROUND * 2 / FXK, seed: (Math.random() * 1e6) | 0, ...o });
+  fxLive.push(i); return i;
+}
+function stageFx(A, O, xA2, xO2) {
+  const dt = Math.min(.1, Math.max(0, gclock - fxClock)); fxClock = gclock;
+  // Airin's moves: fire each effect once when her timeline passes its moment
+  const u = gclock - airinUltAt, newMove = A.st !== fxSeen.st || A.t < fxSeen.at, was = newMove ? -1 : fxSeen.at;
+  const past = (k) => was < k && A.t >= k;
+  if (airinUltAt !== fxSeen.ult) fxSeen.ult = airinUltAt;
+  if (u < .9) {   // ultimate landing: leap, huge cut, anime impact frame, ground slam
+    const pu = u - dt;
+    if (pu < .2 && u >= .2) fxAt('swordSlash', xA2 + 40, { palette: FX_PURPLE, sparks: FX_SPARK, radius: 54 });
+    if (pu < .26 && u >= .26) {
+      fxAt('critHit', xO2, { palette: FX_PURPLE, height: 30 });
+      fxAt('impactFrame', xO2, { y: (GROUND * 2 - 60) / FXK, palette: ['#12051f', '#f3e8ff'] });
+    }
+    if (pu < .5 && u >= .5) fxAt('groundSlam', xA2 + 20, { palette: FX_PURPLE, stone: '#3b2a5c', reach: 70 }).maxT = 1.3;   // rocks would linger 3 s
+  } else if (A.st === 'attack') {
+    if (past(.1)) fxAt('swordSlash', xA2 + 10, { palette: FX_PURPLE, sparks: FX_SPARK });
+    if (past(.2) && O.st !== 'block') fxAt('hitSpark', xO2 - 8, { palette: FX_PURPLE, height: 24 });
+  } else if (A.st === 'block' && newMove) fxAt('shieldBlock', xA2 + 6, { palette: FX_PURPLE });
+  else if (A.st === 'hurt' && newMove) fxAt('hitSpark', xA2 + 6, { flip: true, height: 24 });
+  fxSeen.st = A.st; fxSeen.at = A.t;
+  // typing the ultimate: energy gathers in her hand for as long as it lasts
+  if (A.st === 'ult' && !fxCharge) fxCharge = fxAt('spellCharge', xA2 - 6, { palette: FX_PURPLE });
+  if (A.st !== 'ult' && fxCharge) { fxCharge.stop(); fxCharge = null; }
+  if (!fxLive.length) return;
+  if (!fxFrame) {
+    fxFrame = PFX.createFrame(FXW, FXH); fxCv = document.createElement('canvas'); fxCv.width = FXW; fxCv.height = FXH;
+    fxImg = fxCv.getContext('2d').createImageData(FXW, FXH);
+  }
+  PFX.clearFrame(fxFrame);
+  for (let i = fxLive.length - 1; i >= 0; i--) {
+    const f = fxLive[i]; f.update(dt); if (f.maxT && f.t > f.maxT) f.stop();
+    if (f.done()) { fxLive.splice(i, 1); continue; }
+    f.draw(fxFrame);
+  }
+  PFX.composite(fxFrame, fxImg.data, null);
+  fxCv.getContext('2d').putImageData(fxImg, 0, 0);
+  sctx.imageSmoothingEnabled = false;
+  sctx.drawImage(fxCv, 0, 0, FXW * FXK, FXH * FXK);
+}
 const hurtE = () => { if (FIG.E.st !== 'ko') play(FIG.E, 'hurt'); };   // ไม่ทับท่าล้ม (ตีปิดไฟต์)
 function stageTick(dt) {
   gclock += dt;
@@ -1286,6 +1340,7 @@ function drawStage() {
     const y = GROUND * 2 - 20 - ((gclock * 140 + i * 47) % 160);
     for (let k = 0; k < 10; k++) pset(xA * 2 - 30 + i * 30 + Math.sin(y * .1 + i) * 3, y + k, k < 3 ? '#ffffff' : '#e879f9');
   }
+  if (art && window.PFX) stageFx(A, O, xA * 2, xO * 2);
   placeFighter(P, xA * 2); placeFighter(E, xO * 2);
 }
 window.addEventListener('resize', () => { lastStageF = -1; });
