@@ -1068,12 +1068,12 @@ function play(f, st) { f.st = st; f.t = 0; lastStageF = -1; }
    AI Studio on green screen, keyed by tools/key_frames.py). All frames share one canvas size and
    baseline. When idle-1 has loaded, drawStage draws these instead of her pixel sprite, switching
    frames on a timeline like the sprite ANIMS. Missing files = pixel art as before. */
-const AIRIN_FRAMES = ['idle-1', 'idle-2', 'idle-3', 'idle-4', 'attack-1', 'attack-1b', 'attack-2', 'attack-2b', 'attack-3', 'attack-4',
+const AIRIN_FRAMES = ['idle-1', 'idle-2', 'idle-3', 'attack-1', 'attack-1b', 'attack-2', 'attack-2b', 'attack-3', 'attack-4',
   'block-0', 'block-1', 'block-2', 'block-3', 'hurt-0', 'hurt-1', 'hurt-2', 'hurt-3', 'hurt-4', 'charge-1', 'charge-2', 'charge-3', 'charge-4',
   'ult-0', 'ult-1', 'ult-1b', 'ult-2', 'ult-2b', 'ult-3', 'ult-4', 'win-0', 'win-1', 'win-2', 'win-2b', 'win-3', 'win-4'];
 // keys: [time s, frame]; loop: repeat from that time with period `len` (else hold the last frame)
 const AIRIN_ANIM = {
-  idle:   { keys: [[0, 'idle-1'], [.4, 'idle-2'], [.8, 'idle-3'], [1.2, 'idle-4']], loop: 0, len: 1.6 },
+  idle:   { keys: [[0, 'idle-1'], [.35, 'idle-2'], [.6, 'idle-3'], [.95, 'idle-2']], loop: 0, len: 1.2 },   // breathing: upper body sinks 0/1/2 px
   attack: { keys: [[0, 'attack-1'], [.07, 'attack-1b'], [.13, 'attack-2'], [.22, 'attack-2b'], [.3, 'attack-3'], [.42, 'attack-4'], [.5, 'idle-1']] },   // hit lands at .18
   block:  { keys: [[0, 'block-0'], [.06, 'block-1'], [.2, 'block-2'], [.48, 'block-3']] },
   hurt:   { keys: [[0, 'hurt-0'], [.06, 'hurt-1'], [.16, 'hurt-2'], [.3, 'hurt-3'], [.42, 'hurt-4']] },
@@ -1084,7 +1084,7 @@ const AIRIN_ANIM = {
 };
 const AIRIN_ART = {}; let airinArtOn = false, airinUltAt = -9;
 // idle-1 fractions inside the frames (printed by tools/key_frames.py); h = Airin's height on the 640×360 stage
-const AIRIN_FIT = { cx: .444, foot: .993, head: .206, h: 118 };
+const AIRIN_FIT = { cx: .444, foot: .98, head: .22, h: 115 };
 for (const n of AIRIN_FRAMES) {
   const im = new Image();
   im.onload = () => { if (n === 'idle-1') airinArtOn = true; lastStageF = -1; };

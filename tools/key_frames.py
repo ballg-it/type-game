@@ -1,28 +1,33 @@
 """Split AI Studio green-screen sprite sheets into transparent Airin frames.
 
-Usage: python tools/key_frames.py <out_dir> <sheet.png> [<sheet2.png> ...]
+Usage: python tools/key_frames.py <out_dir> <sheet1.png> <sheet2.png> <sheet3.png>
 
 Each sheet holds 18 poses, 6 per row in 3 rows, named by SHEETS below (sheet 1 = first
 list, sheet 2 = second list, ...). Poses don't have to sit inside equal cells (slashes may
 stick out): rows and poses are found from the gaps of green between them. Each pose is
 anchored at its grid-cell centre (x) and its row's baseline (lowest foot in the row, y).
-Every sheet is scaled so its first pose (an idle) is IDLE_H px tall (118 = Airin's height on
-the 640x360 stage, so the game draws frames 1:1), then all frames of all sheets go on one
-shared canvas so they keep their relative positions. Prints AIRIN_FIT for index.html.
+All sheets are drawn at the same scale, so one factor (sheet 1's standing pose -> STAND_H px,
+Airin's size on the 640x360 stage, so the game draws frames 1:1) scales them all, then every
+frame goes on one shared canvas so they keep their relative positions. Names of None are
+not written. Sheet 3 is one side-view ready stance repeated; its first cell becomes the
+idle, and idle-1..3 are made from it by lowering the upper body (and the sword, picked by
+colour) 0/1/2 px while the legs stay put - a breathing loop with no AI jitter.
+Prints AIRIN_FIT for index.html.
 """
 import sys, os
 from PIL import Image
 import numpy as np
 
 SHEETS = [
-    ['idle-1', 'idle-2', 'attack-1', 'attack-2', 'attack-3', 'block-1',
+    ['stand-1', None, 'attack-1', 'attack-2', 'attack-3', 'block-1',
      'block-2', 'hurt-1', 'hurt-2', 'hurt-3', 'charge-1', 'charge-2',
      'ult-1', 'ult-2', 'ult-3', 'win-1', 'win-2', 'win-3'],
-    ['idle-3', 'idle-4', 'attack-1b', 'attack-2b', 'attack-4', 'block-0',
+    [None, None, 'attack-1b', 'attack-2b', 'attack-4', 'block-0',
      'block-3', 'hurt-0', 'hurt-4', 'charge-3', 'charge-4', 'ult-0',
      'ult-1b', 'ult-2b', 'ult-4', 'win-0', 'win-2b', 'win-4'],
+    [None] * 8 + ['stance'] + [None] * 9,   # row 2 col 3 is the cleanest ready stance
 ]
-COLS, ROWS, IDLE_H = 6, 3, 118
+COLS, ROWS, STAND_H = 6, 3, 118
 
 
 def key(img):
@@ -102,7 +107,7 @@ def owners(band, cols, B=4):
 
 
 def poses(sheet_path):
-    """[(rgba crop, anchor x, baseline y)] for the 18 poses of one sheet, scaled to IDLE_H."""
+    """[(rgba crop, anchor x, baseline y)] for the 18 poses of one sheet, unscaled."""
     px = key(Image.open(sheet_path))
     H, W = px.shape[:2]
     solid = px[..., 3] > 60
@@ -122,31 +127,58 @@ def poses(sheet_path):
             f[..., 3] *= m[y0:y1, x0:x1]
             cell = int((cols[k][0] + cols[k][1]) / 2 // cw)
             out.append((f, (cell + .5) * cw - x0, base - r0 - y0))
-    s = IDLE_H / out[0][0].shape[0]
-    scaled = []
-    for f, ax, by in out:
-        im = Image.fromarray(f, 'RGBA')
-        im = im.resize((max(1, round(im.width * s)), max(1, round(im.height * s))), Image.LANCZOS)
-        scaled.append((im, ax * s, by * s))
-    return scaled
+    return out
+
+
+def scale(f, ax, by, s):
+    im = Image.fromarray(f, 'RGBA')
+    im = im.resize((max(1, round(im.width * s)), max(1, round(im.height * s))), Image.LANCZOS)
+    return im, ax * s, by * s
+
+
+def breathe(canvas, top, foot, d):
+    """Lower everything above the hips (hand and hilt included) plus the whole blade by d px;
+    the legs stay planted."""
+    a = np.asarray(canvas).copy()
+    r, g, b, al = (a[..., i].astype(int) for i in range(4))
+    hip = int(top + (foot - top) * .62)
+    blade = (b > 170) & (g > 140) & (b >= r) & (al > 0)          # glowing blade core
+    for _ in range(3):                                             # + its dark outline
+        blade = blade | np.roll(blade, 1, 0) | np.roll(blade, -1, 0) | np.roll(blade, 1, 1) | np.roll(blade, -1, 1)
+    move = blade.copy(); move[:hip] = True
+    move &= al > 0
+    out = a.copy(); out[move] = 0
+    src = a.copy(); src[~move] = 0
+    sh = np.zeros_like(src); sh[d:] = src[:src.shape[0] - d] if d else src
+    keep = sh[..., 3] > 0
+    out[keep] = sh[keep]
+    return Image.fromarray(out, 'RGBA')
 
 
 def main(out_dir, *sheets):
-    frames = []
+    raw = []
     for names, path in zip(SHEETS, sheets):
-        frames += zip(names, poses(path))
+        raw += [(n, p) for n, p in zip(names, poses(path))]
+    s = STAND_H / raw[0][1][0].shape[0]
+    frames = [(n, scale(*p, s)) for n, p in raw if n]
     L = max(ax for _, (_, ax, _) in frames); R = max(im.width - ax for _, (im, ax, _) in frames)
     U = max(by for _, (_, _, by) in frames); D = max(im.height - by for _, (im, _, by) in frames)
-    cw, ch = int(np.ceil(L + R)), int(np.ceil(U + D))
+    cw, ch = int(np.ceil(L + R)), int(np.ceil(U + D)) + 2
     os.makedirs(out_dir, exist_ok=True)
+    idle = None
     for n, (im, ax, by) in frames:
         canvas = Image.new('RGBA', (cw, ch))
         canvas.paste(im, (int(round(L - ax)), int(round(U - by))))
+        if n == 'stance':
+            idle = (U - by, im.height)
+            for i in range(3):
+                breathe(canvas, U - by, U, i).save(os.path.join(out_dir, 'airin-idle-%d.png' % (i + 1)), optimize=True)
+            continue
+        if n.startswith('stand'): continue
         canvas.save(os.path.join(out_dir, 'airin-%s.png' % n), optimize=True)
-    idle = frames[0][1]
-    print('%d frames, canvas %dx%d' % (len(frames), cw, ch))
+    print('%d frames, canvas %dx%d' % (len(frames) + 1, cw, ch))
     print('AIRIN_FIT = { cx: %.3f, foot: %.3f, head: %.3f, h: %d }' % (
-        L / cw, U / ch, (U - idle[2]) / ch, IDLE_H))
+        L / cw, U / ch, idle[0] / ch, round(U - idle[0])))
 
 
 if __name__ == '__main__':
