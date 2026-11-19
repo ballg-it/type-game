@@ -175,28 +175,43 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
 .upc.lock{border-color:var(--violet2);box-shadow:0 0 18px #8b5cf688}
 .upc.off{opacity:.35}
 @media (max-width:700px){ .upcs{flex-direction:column} #banner .bn{font-size:32px} }
-.shop{display:flex;gap:18px;align-items:flex-start}
-.shop .npc{flex:0 0 200px;text-align:center}
-.shop canvas{width:200px;height:185px;image-rendering:pixelated}
-.bubble{background:#fdf2f8;color:#3b0a2a;border-radius:12px;padding:8px 10px;font-size:14px;position:relative;margin-bottom:6px;min-height:40px}
-.bubble:after{content:'';position:absolute;left:50%;bottom:-8px;border:8px solid transparent;border-top-color:#fdf2f8;border-bottom:0;margin-left:-8px}
-.coins{font-size:22px;font-weight:700;color:var(--gold);margin-top:4px}
-.shop .upcs{flex-wrap:wrap;flex:1}
-.shop .upc{flex:1 1 40%;padding:8px 10px}
-.shop .upc .ic{font-size:24px}
-.shop .upc .ds{min-height:0;margin:2px 0 6px;font-size:12px}
-.shop .upc .w{font-size:22px}
-.shop .upc .pr{margin-bottom:4px}
-.shopact .upc{flex:1}
+/* ร้านเหมียวมิ: แผงกรอบบนฉากในร้าน, ภาพเหมียวมิซ้าย, รายการของขวา */
+#shopScr{background:#08041a url(art/shop-bg.png) center/cover no-repeat;image-rendering:pixelated}
+#shopScr:before{content:'';position:fixed;inset:0;background:#08041aa0;pointer-events:none}
+.shopwin{position:relative;width:min(960px,100%);margin:auto;background:linear-gradient(90deg,#150c3322 0%,#150c3355 30%,#150c33ee 46%,#150c33f6 100%),url(art/shop-bg.png) 20% 60%/cover;image-rendering:pixelated;border:3px solid #8b6bd8;border-radius:0;box-shadow:0 0 0 3px #0b0718,0 0 0 6px #c9a24a,0 0 0 9px #0b0718,9px 9px 0 9px #0008;padding:12px 16px 12px;overflow:hidden}
+.shophd{display:flex;align-items:center;gap:10px;margin:-2px 0 6px;font-size:26px}
+.shophd .sic{width:36px;height:36px;display:grid;place-items:center;font-size:20px;background:#3b2a77;border:3px solid #c9a24a;box-shadow:3px 3px 0 #0008}
+.shophd b{letter-spacing:1px;text-shadow:0 2px 0 #0008}
+.shophd .sub{margin:0 0 0 auto;font-size:13px}
+.shopbody{display:flex;gap:6px;align-items:stretch;min-height:330px}
+#shopScr .npc{flex:0 0 38%;position:relative;align-self:flex-end;margin:0 0 -14px -16px}
+#shopCat{display:block;width:100%;height:auto;max-height:420px;object-fit:contain;object-position:bottom;transform-origin:50% 100%;image-rendering:pixelated;filter:drop-shadow(4px 4px 0 #0009)}
+.bubble{background:#fdf2f8;color:#3b0a2a;border-radius:0;padding:8px 12px;font-size:15px;font-weight:600;position:absolute;top:-30px;left:70%;width:max-content;max-width:190px;z-index:2;box-shadow:4px 4px 0 #0007;border:3px solid #3b0a2a}
+.bubble:after{content:'';position:absolute;left:-10px;top:50%;margin-top:-7px;border:7px solid transparent;border-right:10px solid #3b0a2a;border-left:0}
+.shoplist{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;justify-content:flex-end;padding:74px 0 2px}
+.srows{display:flex;flex-direction:column;gap:8px}
+.srows .upc,.shopact .upc{display:flex;align-items:center;gap:10px;text-align:left;padding:7px 12px;border-radius:0;background:#241a4e;border:3px solid #4c3a92;box-shadow:inset 0 3px 0 #3a2c74,inset 0 -3px 0 #160f33,3px 3px 0 #0008}
+.srows .upc .ic{font-size:28px;width:44px;height:44px;display:grid;place-items:center;flex:none;background:#0006;border-radius:0;border:2px solid #6b55b8}
+.srows .upc .tx{flex:1;min-width:0}
+.srows .upc .nm{font-size:17px;line-height:1.2}
+.srows .upc .st{display:inline;margin-left:6px}
+.srows .upc .ds{min-height:0;margin:1px 0 0;font-size:12px}
+.srows .upc .w,.shopact .upc .w{font-size:21px;flex:none}
+.srows .upc .pr,.shopact .upc .pr{flex:none;margin:0;min-width:58px;text-align:right;font-size:17px}
+.shopft{display:flex;align-items:center;gap:10px;margin-top:4px}
+.coins{font-size:22px;font-weight:700;color:var(--gold);flex:none;background:#0008;border:3px solid #c9a24a;border-radius:0;padding:3px 12px;box-shadow:3px 3px 0 #0008}
+.shopact{display:flex;gap:8px;flex:1;min-width:0}
+.shopact .upc{flex:1;justify-content:center;background:#5a3fc0;border-color:#a78bfa;box-shadow:inset 0 3px 0 #7c62e0,inset 0 -3px 0 #3a2690,3px 3px 0 #0008}
+#shopScr .upc .w{border-radius:0}
+.shopact .upc .nm{font-size:15px}
+.shopact .upc .pr{min-width:0}
+.shophint{text-align:center;font-size:12px;color:var(--muted)}
+@media (max-width:700px){ .shopbody{flex-direction:column;min-height:0} #shopScr .npc{flex:none;width:58%;max-width:230px;align-self:flex-start;margin:0 0 -6px} #shopCat{max-height:220px}
+  .bubble{left:66%;top:14%;max-width:min(170px,44vw)} .shoplist{padding:0} .shopact .upc{padding:7px 6px;gap:6px} .srows .upc .ds{display:none} .shopact .upc .nm{display:none} .shophd{font-size:20px} .shophd .sub{display:none} }
 .upc .pr{font-size:15px;font-weight:700;color:var(--gold);margin-bottom:6px}
 .upc.poor .pr{color:var(--bad,#f87171)}
 .upc.sold{opacity:.3;pointer-events:none}
 .upc.sold .w{text-decoration:line-through}
-.shopact{display:flex;gap:12px;margin-top:12px}
-.shopact .upc{padding:8px 10px}
-.shopact .upc .w{font-size:22px}
-@media (max-width:700px){ .shop{flex-direction:column;align-items:stretch} .shop .npc{flex:none;display:grid;grid-template-columns:100px 1fr;align-items:center;gap:0 10px;text-align:left}
-  .shop canvas{width:100px;height:92px;grid-row:1/3;grid-column:1} .bubble{grid-column:2} .bubble:after{display:none} .coins{grid-column:2} .shop .upc{flex-basis:100%} }
 .shard{color:#67e8f9;font-weight:700}
 .metabar{display:flex;justify-content:center;gap:10px;align-items:center;margin:-4px 0 10px;font-size:14px;color:var(--muted)}
 .pvcode{display:flex;justify-content:center;gap:12px;margin:8px 0 14px;flex-wrap:wrap}
@@ -474,18 +489,17 @@ body.cine #story{cursor:default}
 
   <!-- shop -->
   <div class="overlay" id="shopScr" hidden>
-    <div class="card">
-      <div class="title" style="font-size:40px">🐱 ร้านเหมียวมิ</div>
-      <div class="sub" id="shopSub"></div>
+    <div class="shopwin">
+      <div class="shophd"><span class="sic">🐾</span><b>ร้านเหมียวมิ</b><span class="sub" id="shopSub"></span></div>
       <div class="path" id="shopPath"></div>
-      <div class="shop">
-        <div class="npc"><div class="bubble" id="shopSay"></div><canvas id="shopCat" width="160" height="148"></canvas><div class="coins" id="shopCoins"></div></div>
-        <div style="flex:1;min-width:0">
-          <div class="upcs" id="shopCards"></div>
-          <div class="shopact" id="shopAct"></div>
+      <div class="shopbody">
+        <div class="npc"><canvas id="shopCat" width="139" height="178" aria-label="เหมียวมิ"></canvas><div class="bubble" id="shopSay"></div></div>
+        <div class="shoplist">
+          <div class="srows" id="shopCards"></div>
+          <div class="shopft"><div class="coins" id="shopCoins"></div><div class="shopact" id="shopAct"></div></div>
+          <div class="shophint">พิมพ์คำในกรอบดำเพื่อซื้อ (หรือคลิก)</div>
         </div>
       </div>
-      <div class="sub" style="text-align:center;margin:14px 0 0">พิมพ์คำในกรอบดำเพื่อซื้อ (หรือคลิก)</div>
     </div>
   </div>
 
@@ -1913,11 +1927,11 @@ function renderShop(rebuild) {
   if (rebuild) {
     $('#shopCards').innerHTML = SHOP.items.map((it, i) => {
       const n = R.taken[it.up.id] || 0;
-      return `<button class="upc" data-i="${i}"><div class="ic">${it.up.icon}</div><div class="nm">${esc(it.up.name)}</div>` +
-        `<div class="st">${n ? 'มีแล้ว ×' + n : ''}</div><div class="ds">${esc(it.up.desc)}</div><div class="pr"></div><div class="w"></div></button>`;
+      return `<button class="upc" data-i="${i}"><div class="ic">${it.up.icon}</div><div class="tx"><div class="nm">${esc(it.up.name)}<span class="st">${n ? 'มีแล้ว ×' + n : ''}</span></div>` +
+        `<div class="ds">${esc(it.up.desc)}</div></div><div class="w"></div><div class="pr"></div></button>`;
     }).join('');
-    $('#shopAct').innerHTML = `<button class="upc" data-a="roll"><div class="nm">🎲 สุ่มของใหม่</div><div class="pr"></div><div class="w"></div></button>` +
-      `<button class="upc" data-a="leave"><div class="nm">⛩ ออกจากร้าน</div><div class="pr">&nbsp;</div><div class="w"></div></button>`;
+    $('#shopAct').innerHTML = `<button class="upc" data-a="roll"><div class="nm">🎲 สุ่มใหม่</div><div class="w"></div><div class="pr"></div></button>` +
+      `<button class="upc" data-a="leave"><div class="nm">⛩ ออก</div><div class="w"></div></button>`;
     $('#shopCards').querySelectorAll('.upc').forEach(b => b.onclick = () => shopDo(SHOP.items[+b.dataset.i]));
     $('#shopAct').querySelectorAll('.upc').forEach(b => b.onclick = () => shopDo(SHOP[b.dataset.a]));
   }
@@ -1956,7 +1970,7 @@ function shopDo(o) {
     return;
   }
   const price = o === SHOP.roll ? SHOP.rollCost : o.price;
-  if (R.coins < price) { catSay('poor'); SFX.err(); anim($('#shopCards'), 'err', 230); renderShop(); return; }
+  if (R.coins < price) { catSay('poor', 'poor'); SFX.err(); anim($('#shopCards'), 'err', 230); renderShop(); return; }
   R.coins -= price;
   if (o === SHOP.roll) {
     SHOP.items = shopStock(); SHOP.rollCost = SHOP.rollCost ? SHOP.rollCost + 5 : 10; catSay('roll', 'wave');
@@ -1970,13 +1984,73 @@ function shopDo(o) {
   [880, 1320].forEach((f, i) => setTimeout(() => tone(f, 0.12, 'triangle', 0.12), i * 70));
   renderShop();
 }
-const catCv = document.createElement('canvas');
+/* Miaomi (art/shop-miaomi.png, 139×178 native pixels) animated part by part on a native-size canvas, so every
+   move is a whole pixel: the upper body breathes 0/1 px, the tail sways row by row, the ear tips twitch, the
+   painted sparkles twinkle and new ones pop around her. 'wave' (hello / buy / roll / bye) = a cheer hop with a
+   fast tail wag and perked ears; 'poor' = ears droop and she shakes her head. Parts are found once from the
+   image: tail = dark pixels flood-filled from its tip, sparkles = small islands, ears = tips above row 13. */
+const MIAO = { im: new Image(), ready: false };
+MIAO.im.onload = () => {
+  const im = MIAO.im, W = im.naturalWidth, H = im.naturalHeight, c = document.createElement('canvas');
+  c.width = W; c.height = H; const g = c.getContext('2d'); g.drawImage(im, 0, 0);
+  const d = g.getImageData(0, 0, W, H).data, part = new Uint8Array(W * H);   // 0 none, 1 lower, 2 upper, 3 tail, 4 ear L, 5 ear R, 6+ sparkle
+  const op = i => d[i * 4 + 3] > 0, lum = i => d[i * 4] + d[i * 4 + 1] + d[i * 4 + 2];
+  const fill = (seed, ok) => { const out = [], st = [seed], seen = new Set([seed]);
+    while (st.length) { const i = st.pop(); out.push(i); const x = i % W, y = (i / W) | 0;
+      for (const [nx, ny] of [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1], [x - 1, y - 1], [x + 1, y + 1], [x - 1, y + 1], [x + 1, y - 1]]) {
+        const n = ny * W + nx; if (nx >= 0 && ny >= 0 && nx < W && ny < H && !seen.has(n) && ok(n, nx, ny)) { seen.add(n); st.push(n); } } }
+    return out; };
+  const seen = new Uint8Array(W * H); MIAO.spark = [];
+  for (let i = 0; i < W * H; i++) if (op(i) && !seen[i]) {
+    const comp = fill(i, n => op(n)); comp.forEach(n => seen[n] = 1);
+    if (comp.length <= 30) { MIAO.spark.push({ px: comp, ph: Math.random() * 6.28, sp: 1.5 + Math.random() * 2 }); comp.forEach(n => part[n] = 5 + MIAO.spark.length); }
+  }
+  let tip = -1;   // tail tip: the darkest opaque pixel near the top right
+  for (let y = 60; y < 80 && tip < 0; y++) for (let x = W - 1; x > 112; x--) { const i = y * W + x; if (op(i) && lum(i) < 200) { tip = i; break; } }
+  if (tip >= 0) fill(tip, (n, x, y) => x >= 112 && y < 140 && op(n) && !part[n] && lum(n) < 480).forEach(n => part[n] = 3);
+  for (let i = 0; i < W * H; i++) if (op(i) && !part[i]) { const x = i % W, y = (i / W) | 0;
+    part[i] = y < 13 && x >= 34 && x <= 60 ? 4 : y < 15 && x >= 80 && x <= 108 ? 5 : y < 118 ? 2 : 1; }
+  Object.assign(MIAO, { W, H, d, part, ready: true, out: new ImageData(W, H), fx: [] });
+};
+MIAO.im.src = 'art/shop-miaomi.png';
+function drawMiaomi(cv, st, t, dt) {
+  const { W, H, d, part, out } = MIAO, o = out.data, T = gclock;
+  o.fill(0);
+  const breath = Math.sin(T * 2.4) > .2 ? 1 : 0;
+  const cheer = st === 'wave' ? Math.round(2 * Math.abs(Math.sin(t * 14)) * Math.max(0, 1 - t)) : 0;
+  const up = breath - cheer;
+  const twitch = st === 'idle' && (T % 4.2) < .16;               // a quick ear flick every few seconds
+  const droop = st === 'poor' ? 2 : 0, perk = st === 'wave' && t < .6 ? -1 : 0;
+  const wag = st === 'wave' ? 9 : st === 'poor' ? 1.2 : 2.2, amp = st === 'wave' ? 4 : 2.5;
+  const put = (i, x, y) => { if (x < 0 || y < 0 || x >= W || y >= H) return; const j = (y * W + x) * 4; o[j] = d[i * 4]; o[j + 1] = d[i * 4 + 1]; o[j + 2] = d[i * 4 + 2]; o[j + 3] = d[i * 4 + 3]; };
+  // tail first (it's behind her): each row slides by a sine that grows toward the tip
+  for (let i = 0; i < W * H; i++) if (part[i] === 3) { const x = i % W, y = (i / W) | 0, k = Math.max(0, (146 - y) / 80);
+    put(i, x + Math.round(amp * k * k * Math.sin(T * wag - k * 2.2)), y); }
+  for (let i = 0; i < W * H; i++) { const p = part[i]; if (!p || p === 3 || p > 5) continue; const x = i % W, y = (i / W) | 0;
+    if (p === 1) put(i, x, y);
+    else if (p === 2) put(i, x, y + up);
+    else { const side = p === 4 ? -1 : 1, lift = y < 7 ? 1 : 0;     // ear tips: flick outward, droop when sad
+      put(i, x + (twitch && p === 5 ? side * lift : 0) + (droop ? -side * lift : 0), y + up + (droop ? droop * lift : perk * lift)); } }
+  // painted sparkles twinkle
+  for (const s of MIAO.spark) { const a = .5 + .5 * Math.sin(T * s.sp + s.ph); if (a < .35) continue;
+    for (const i of s.px) { const x = i % W, y = (i / W) | 0, j = (y * W + x) * 4; o[j] = d[i * 4]; o[j + 1] = d[i * 4 + 1]; o[j + 2] = d[i * 4 + 2]; o[j + 3] = Math.round(d[i * 4 + 3] * Math.min(1, a * 1.3)); } }
+  // new sparkles pop around her head (more when happy)
+  if (Math.random() < (st === 'wave' ? .5 : .06)) MIAO.fx.push({ x: 8 + Math.random() * (W - 16), y: 4 + Math.random() * 70, t: 0 });
+  MIAO.fx = MIAO.fx.filter(f => (f.t += dt) < .6);
+  for (const f of MIAO.fx) { const r = f.t < .3 ? (f.t < .12 ? 0 : 1) : f.t < .45 ? 1 : 0, x = Math.round(f.x), y = Math.round(f.y);
+    const dot = (px, py, c) => { if (px < 0 || py < 0 || px >= W || py >= H) return; const j = (py * W + px) * 4; if (o[j + 3]) return; o[j] = c[0]; o[j + 1] = c[1]; o[j + 2] = c[2]; o[j + 3] = 255; };
+    dot(x, y, [255, 246, 190]); for (let k = 1; k <= r; k++) for (const [ax, ay] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) dot(x + ax * k, y + ay * k, [251, 191, 36]); }
+  cv.getContext('2d').putImageData(out, 0, 0);
+}
 function drawShopCat(dt) {
   SHOP.t += dt;
-  if (SHOP.st === 'wave' && SHOP.t > 1.6) { SHOP.st = 'idle'; SHOP.t = 0; }
-  const cv = $('#shopCat'), c = cv.getContext('2d');
-  const { px } = renderChar('cat', SHOP.st, SHOP.t, gclock);
-  c.clearRect(0, 0, cv.width, cv.height); c.drawImage(px.toCanvas(catCv), 0, 0);
+  if (SHOP.st !== 'idle' && SHOP.t > (SHOP.st === 'poor' ? .6 : 1)) { SHOP.st = 'idle'; SHOP.t = 0; }
+  const cv = $('#shopCat'), t = SHOP.t;
+  if (MIAO.ready) drawMiaomi(cv, SHOP.st, t, dt);
+  let x = 0, y = 0;   // whole-figure hop / head shake, whole screen pixels only
+  if (SHOP.st === 'wave') y = -Math.round(10 * Math.max(0, Math.sin(Math.min(1, t / .45) * Math.PI)));
+  if (SHOP.st === 'poor') x = Math.round(5 * Math.sin(t * 40) * Math.max(0, 1 - t / .5));
+  cv.style.transform = `translate(${x}px,${y}px)`;
 }
 function shuffle(a) {
   a = [...a];
