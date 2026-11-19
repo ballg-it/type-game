@@ -4,7 +4,7 @@
 เกมฝึกพิมพ์ **ต่อสู้ 1:1 + Roguelike + เนื้อเรื่องเบาๆ** รองรับไทย (เกษมณี) / อังกฤษ / สองภาษา — ไอเดียทั้งหมดอยู่ใน `README.md`
 - ผู้ใช้สื่อสาร**ภาษาไทย** · ตอบเป็นภาษาไทย · ชอบให้ทำทีละระบบแล้วสรุปสั้นๆ พร้อมเสนอขั้นต่อไป
 - รีโป `ballg-it/type-game` · branch **`ccr-a67b83da-eggwh5`** (push แล้ว, ไม่มี PR — ห้ามสร้าง PR ถ้าไม่ได้ขอ) · `main` มีแค่ต้นแบบแรก (SVG) — **อย่าทำงานบน main**
-- เครื่องผู้ใช้ (Windows): โฟลเดอร์ `D:\1234` = local branch **`pixel-game`** (track `origin/ccr-a67b83da-eggwh5`) มี commit อาร์ตไอริน + handoff นำหน้า origin **ยังไม่ push**
+- เครื่องผู้ใช้ (Windows): โฟลเดอร์ `D:\1234` = local branch **`pixel-game`** (track `origin/ccr-a67b83da-eggwh5`) push ตรงกับ origin แล้ว (`git push origin pixel-game:ccr-a67b83da-eggwh5`; ข้อความ "Not enough memory resources" ตอน push มาจาก credential helper — push สำเร็จ) · มี session อื่นทำงานบน branch เดียวกันได้ (เช่น หน้า title `282bbcd`) → `git log` ก่อนแก้ และแก้ `index.html` ด้วยการแทนที่เฉพาะจุด
 - branch อื่นบน origin: `claude/funny-meitner-f5fese` (สไปรต์ไอริน/เรย์ตัดจาก character sheet ที่ `art/airin/`, `art/rei/` — แตกจาก main ไม่ได้รวม), `claude/practical-brown-ykaf3s` (ลิงก์ Pages, รวมใน ccr แล้ว)
 - ไม่มี build step: เปิด `index.html` ได้เลย (ต้องมี `sprites.js` ข้างกัน)
 - คอนเซ็ปต์อาร์ต (อยู่ในแชตเก่า ไม่อยู่ในรีโป): อนิเมะ โทนม่วงนีออน ไซเบอร์พังก์ผสมญี่ปุ่น (โทริอิ, โอนิ)
@@ -73,12 +73,12 @@
 - **เจน:** Google AI Studio ใน Chrome ของผู้ใช้ (ล็อกอินแล้ว) · Nano Banana 2.1 · 16:9 · 2K · ปิด Grounding · แชตพิกเซล `aistudio.google.com/prompts/1PAfI2gyKjXoEAYrflHYqnaLwqb8EbgIH` (แนบชีตพิกเซลอ้างอิงไว้แล้ว) · พรอมต์: ชีต 6×3, หันขวา, ฐานเท้าเดียวกัน, เว้นที่ว่างกว้างระหว่างท่า, พื้น #00FF00, ไม่มีกริด/ตัวหนังสือ/แมวโดรน + รายชื่อเฟรมทีละแถว · ส่งด้วย Enter หรือปุ่ม Run · ~40 วิ/ชีต
 - **`GEMINI_API_KEY` ในเครื่องใช้ไม่ได้** (401) · Canva generate-image ติดโควตาบ่อย
 - **เอาภาพออก:** รายการแชตเป็น virtual list (turn นอกจอไม่มี img/text) → เลื่อน `scrollIntoView` ทีละ turn แล้วคัด blob img ลง canvas ใน `window.__fr` · ดาวน์โหลดด้วย `<a download>` ได้ แต่ Chrome ตั้ง “ถามที่เก็บทุกครั้ง” → **ผู้ใช้ต้องกด Save เอง** (ค่าเริ่มต้นไป `D:\1234\art`) — รวมทุกเฟรมเป็นชีตเดียวให้กด Save ครั้งเดียว · fetch ไป localhost ถูกบล็อก
-- **ในเกม:** ดู `AIRIN_FRAMES`/`AIRIN_ANIM`/`AIRIN_FIT`/`drawAirinArt` (สรุปในหัวข้อฉากพิกเซลด้านบน) · ทดสอบ: `python -m http.server` แล้วเปิดผ่าน http (เปิด file:// ใน preview pane โหลด `sprites.js` ไม่ได้) · ใน console: `startRun(); enterNode(R.map[0][0])` เข้าไฟต์เร็ว
+- **ในเกม:** ดู `AIRIN_FRAMES`/`AIRIN_ANIM`/`AIRIN_FIT`/`drawAirinArt` (สรุปในหัวข้อฉากพิกเซลด้านบน) · ทดสอบ: `python -m http.server` แล้วเปิดผ่าน http (เปิด file:// ใน preview pane โหลด `sprites.js` ไม่ได้) · ใน console: `startRun()` เข้าไฟต์เร็ว (ตอนนี้มีหน้า title ซ้อนอยู่ — `startRun` ซ่อนให้) · pane ซ่อน/RAF ช้า: เดินเวลาเองด้วย `stageTick(1/30); drawStage()` วนลูป · บิลด์เอฟเฟกต์ใหม่: clone pixelfx ลง scratchpad, `npm i esbuild@0.25.10` ในโฟลเดอร์แยก, copy `tools/pixelfx-entry.js` ไปที่ราก checkout แล้วรันคำสั่งในหัวไฟล์ (เติม header ไลเซนส์กลับด้วย)
 - **ข้อจำกัด:** เฟรมแทรกบางคู่แทบเหมือนเดิม (attack-1/1b, attack-2/2b, ult-1/1b) · พิกเซลจาก AI ไม่ลงกริดจริง · ศัตรู/บอสยังเป็นสไปรต์โค้ด รายละเอียดน้อยกว่าไอริน
-- `art/pixel/` (untracked, ไม่ใช่งานจากเซสชันนี้ — มี `airin-chibi-400.png`, ไฟล์ `_diff_*`) ยังไม่ได้ตรวจ/commit · `.claude/launch.json` (server เทส) ไม่ commit
+- ชีตต้นฉบับ `art/airin-pixel-sheet{,-2,-3}.png` untracked ตั้งใจ (ใหญ่) · `art/pixel/` (untracked, ไม่ใช่งานจากเซสชันนี้ — มี `airin-chibi-400.png`, ไฟล์ `_diff_*`) ยังไม่ได้ตรวจ/commit · `.claude/launch.json` (server เทส) ไม่ commit
 
 ## ขั้นต่อไปที่เป็นไปได้ (รอผู้ใช้เลือก — แนะนำข้อ 1 ก่อน)
-0. **อาร์ต:** push `pixel-game` · เจนศัตรู/บอสด้วยแชตพิกเซลเดียวกันให้สไตล์ตรงกัน · ถ้าอยากลื่นกว่านี้: เจนชีตเฟรมแทรกเพิ่มที่ต่างจากเฟรมหลักชัดเจนขึ้น
+0. **อาร์ต/เอฟเฟกต์:** ศัตรูยังใช้ `slashArc` เดิม → ใส่ pixelfx ให้ศัตรูด้วยสีตาม `ARC[id]` (เพิ่มเอฟเฟกต์ใน `tools/pixelfx-entry.js` แล้วบิลด์ใหม่) · เจนศัตรู/บอสด้วยแชตพิกเซลเดียวกันให้สไตล์ตรงกับไอริน · ถ้าอยากลื่นกว่านี้: เจนชีตเฟรมแทรกที่ต่างจากเฟรมหลักชัดเจนขึ้น · idle อาจเพิ่มประกายที่ใบดาบ
 1. ผู้ใช้เล่นจริง → บาลานซ์ HP/ดาเมจ/ราคา/เหรียญ
 2. เนื้อหาเพิ่ม: บทก่อน elite, ฉากจบลับ, เหตุการณ์มินิเกมพิมพ์จับเวลา, ของพิเศษในร้าน, ปุ่มรีเซ็ตเซฟ
 3. หลายองก์ / บอสใหม่ (README: กระจก/ล่องหน/สลับแป้น/แฝด) — ฉากจบ “ครั้งแรก” ปูไว้แล้วว่ายังมีแป้นพิมพ์อื่นรออยู่
