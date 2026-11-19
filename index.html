@@ -175,6 +175,28 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
 .upc.lock{border-color:var(--violet2);box-shadow:0 0 18px #8b5cf688}
 .upc.off{opacity:.35}
 @media (max-width:700px){ .upcs{flex-direction:column} #banner .bn{font-size:32px} }
+.shop{display:flex;gap:18px;align-items:flex-start}
+.shop .npc{flex:0 0 200px;text-align:center}
+.shop canvas{width:200px;height:185px;image-rendering:pixelated}
+.bubble{background:#fdf2f8;color:#3b0a2a;border-radius:12px;padding:8px 10px;font-size:14px;position:relative;margin-bottom:6px;min-height:40px}
+.bubble:after{content:'';position:absolute;left:50%;bottom:-8px;border:8px solid transparent;border-top-color:#fdf2f8;border-bottom:0;margin-left:-8px}
+.coins{font-size:22px;font-weight:700;color:var(--gold);margin-top:4px}
+.shop .upcs{flex-wrap:wrap;flex:1}
+.shop .upc{flex:1 1 40%;padding:8px 10px}
+.shop .upc .ic{font-size:24px}
+.shop .upc .ds{min-height:0;margin:2px 0 6px;font-size:12px}
+.shop .upc .w{font-size:22px}
+.shop .upc .pr{margin-bottom:4px}
+.shopact .upc{flex:1}
+.upc .pr{font-size:15px;font-weight:700;color:var(--gold);margin-bottom:6px}
+.upc.poor .pr{color:var(--bad,#f87171)}
+.upc.sold{opacity:.3;pointer-events:none}
+.upc.sold .w{text-decoration:line-through}
+.shopact{display:flex;gap:12px;margin-top:12px}
+.shopact .upc{padding:8px 10px}
+.shopact .upc .w{font-size:22px}
+@media (max-width:700px){ .shop{flex-direction:column;align-items:stretch} .shop .npc{flex:none;display:grid;grid-template-columns:100px 1fr;align-items:center;gap:0 10px;text-align:left}
+  .shop canvas{width:100px;height:92px;grid-row:1/3;grid-column:1} .bubble{grid-column:2} .bubble:after{display:none} .coins{grid-column:2} .shop .upc{flex-basis:100%} }
 #kb{position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0}
 </style>
 </head>
@@ -263,6 +285,7 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
         <li><b>ท่าไม้ตาย:</b> เกจเต็มแล้วกด <kbd>Tab</kbd> แล้วพิมพ์ประโยคให้จบทันเวลา</li>
         <li><b>Stamina:</b> พิมพ์มั่วจะเหนื่อย ดาเมจเหลือครึ่งเดียว</li>
         <li><b>รัน:</b> ชนะแต่ละไฟต์แล้วเลือกอัปเกรด 1 ใน 3 โดย<b>พิมพ์คำบนการ์ด</b> เลือดไม่ฟื้นเต็มระหว่างไฟต์ ตายแล้วต้องเริ่มใหม่</li>
+        <li><b>เหรียญ 🪙:</b> ได้จากทุกไฟต์ (แม่น/คอมโบ/สวนกลับ = ได้เยอะ) เอาไปช้อปที่ร้านเหมียวมิก่อนสู้บอส</li>
         <li>ภาษาไทยพิมพ์วรรณยุกต์กับสระบน/ล่างสลับลำดับได้ เช่น น + ำ + ้ ก็นับว่า "น้ำ"</li>
       </ul>
       <button class="go" id="startBtn">เริ่มรัน <kbd>Enter</kbd></button>
@@ -278,6 +301,23 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
       <div class="upcs" id="pickCards"></div>
       <div class="sub" style="text-align:center;margin:14px 0 0">พิมพ์คำในกรอบดำเพื่อเลือก (หรือคลิกการ์ด)</div>
       <div class="topmiss" id="pickOwned" style="text-align:center"></div>
+    </div>
+  </div>
+
+  <!-- shop -->
+  <div class="overlay" id="shopScr" hidden>
+    <div class="card">
+      <div class="title" style="font-size:40px">🐱 ร้านเหมียวมิ</div>
+      <div class="sub" id="shopSub"></div>
+      <div class="path" id="shopPath"></div>
+      <div class="shop">
+        <div class="npc"><div class="bubble" id="shopSay"></div><canvas id="shopCat" width="160" height="148"></canvas><div class="coins" id="shopCoins"></div></div>
+        <div style="flex:1;min-width:0">
+          <div class="upcs" id="shopCards"></div>
+          <div class="shopact" id="shopAct"></div>
+        </div>
+      </div>
+      <div class="sub" style="text-align:center;margin:14px 0 0">พิมพ์คำในกรอบดำเพื่อซื้อ (หรือคลิก)</div>
     </div>
   </div>
 
@@ -412,6 +452,24 @@ function letterUpgrade() {
   return { id: 'letter', icon: '🔠', name: `อักษรเพลิง "${ch}"`, desc: `คำที่มีตัว "${ch}" ดาเมจ ×1.5`,
     apply: m => m.letters[ch] = (m.letters[ch] || 1) * 1.5 };
 }
+/* ---------- ร้านเหมียวมิ ---------- */
+const SHOP_WORDS = { th: ['ปลา','แมว','หมี','ไก่','ช้าง','เต่า','กบ'], en: ['fish','cat','bear','duck','owl','hawk','lynx'] };
+const SHOP_CMD = { th: { roll: 'สุ่ม', leave: 'ออก' }, en: { roll: 'roll', leave: 'go' } };
+const POTION = { id: 'potion', icon: '🧋', name: 'ชาไทยเหมียวมิ', desc: 'ฟื้น HP 40% ของเลือดสูงสุด', price: 20,
+  apply: (m, R) => { R.php = Math.min(R.pmax, R.php + Math.round(R.pmax * 0.4)); } };
+const SHOP_SAY = {
+  hi: ['เอาอะไรดีล่ะ~?', 'ยินดีต้อนรับเมี้ยว!', 'ก่อนเจอราชินี แวะช้อปก่อนสิ~'],
+  buy: ['ขอบคุณเมี้ยว~!', 'ของดีนะนั่น!', 'ตาถึงจริงๆ'],
+  poor: ['เหรียญไม่พอนะ~', 'แหม ขาดอีกนิดเดียว'],
+  roll: ['จัดของใหม่ให้แล้ว~'],
+  bye: ['โชคดีนะ! อย่าแพ้ล่ะ']
+};
+const upPrice = u => u.once ? 50 : 40;
+// เหรียญจากไฟต์: ฐาน + โบนัสความแม่น + คอมโบสูงสุด + สวนกลับ (เล่นเก่ง = ได้เยอะ)
+function fightCoins(st, maxCombo) {
+  const acc = st.correct + st.errors ? st.correct / (st.correct + st.errors) : 1;
+  return 12 + (acc >= .97 ? 12 : acc >= .9 ? 6 : 0) + Math.min(15, Math.floor(maxCombo / 2)) + st.counters * 3 + (FOE.boss ? 20 : 0);
+}
 const PICK_WORDS = { th: ['ไฟ','ลม','ดิน','น้ำ','ฟ้า','เมฆ'], en: ['fire','wind','rock','wave','sky','moon'] };
 
 /* ================= Thai-aware matching =================
@@ -469,11 +527,11 @@ function makeWord(text, lang, kind) {
 const $ = s => document.querySelector(s);
 const kb = $('#kb'), arena = $('#arena');
 const cfg = { mode: 'th', diff: 'normal' };
-let S, R, FOE = ENEMIES[0], phase = 'menu', PK = null;   // phase: menu | fight | pick | result
+let S, R, FOE = ENEMIES[0], phase = 'menu', PK = null, SHOP = null;   // phase: menu | fight | pick | shop | result
 const HEAL_BETWEEN = 0.15;   // ฟื้นเลือดหลังชนะแต่ละไฟต์ (สัดส่วนของ HP สูงสุด)
 function newRun() {
   return {
-    idx: 0, php: 100, pmax: 100, shields: 0, cleared: 0, ups: [], taken: {}, time: 0, maxCombo: 0,
+    idx: 0, php: 100, pmax: 100, shields: 0, coins: 0, earned: 0, bought: [], cleared: 0, ups: [], taken: {}, time: 0, maxCombo: 0,
     mod: { atk: 1, heavy: 1, forgive: false, shieldEvery: 0, counterWin: 0, counterMult: 1,
            ultGain: 1, stamCost: 1, leech: 0, comboCap: 20, letters: {} },
     stats: { correct: 0, errors: 0, words: 0, blocks: 0, counters: 0, miss: {} }
@@ -827,6 +885,8 @@ kb.addEventListener('input', () => { if (!composing) onInput(); });
 
 function onInput() {
   if (phase === 'pick') return pickInput();
+  if (phase === 'shop') return shopInput();
+  if (phase === 'shopExit') { kb.value = ''; return; }
   if (!S || !S.running || S.paused) { kb.value = ''; return; }
   let v = kb.value.replace(/[`~_]/g, '');
   v = S.ultMode ? v.replace(/^\s+/, '').replace(/\s{2,}/g, ' ') : v.replace(/\s+/g, '');
@@ -956,6 +1016,7 @@ function loop(ts) {
   if (frozen && !paused) S.freeze -= dt * 1000;
   else if (S && S.running && !paused) update(dt);
   if (!paused && !frozen) stageTick(dt);
+  if (SHOP && (phase === 'shop' || phase === 'shopExit')) drawShopCat(dt);
   if (S) renderHUD();
   drawStage();
   requestAnimationFrame(loop);
@@ -963,9 +1024,10 @@ function loop(ts) {
 
 /* ================= Run flow ================= */
 const trait = f => f.trait[cfg.mode === 'en' ? 'en' : 'th'];
-function pathHTML(cur, done) {
+function pathHTML(cur, done, inShop) {
   return ENEMIES.map((f, i) =>
-    `<span class="node ${i < done ? 'done' : i === cur ? 'cur' : ''}">${f.icon} ${f.name}</span>`).join('<i>›</i>');
+    (f.boss ? `<span class="node ${inShop ? 'cur' : done >= i ? 'done' : ''}">🐱 ร้าน</span><i>›</i>` : '') +
+    `<span class="node ${i < done ? 'done' : i === cur && !inShop ? 'cur' : ''}">${f.icon} ${f.name}</span>`).join('<i>›</i>');
 }
 function banner(title, sub) {
   const b = $('#banner');
@@ -975,7 +1037,7 @@ function banner(title, sub) {
 
 function startRun() {
   R = newRun();
-  $('#startScr').hidden = true; $('#resultScr').hidden = true;
+  $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#shopScr').hidden = true; SHOP = null;
   startFight();
 }
 
@@ -1007,12 +1069,14 @@ function endFight(win) {
   for (const [c, n] of Object.entries(st.miss)) T.miss[c] = (T.miss[c] || 0) + n;
   R.time += st.end - st.start; R.maxCombo = Math.max(R.maxCombo, S.maxCombo);
   R.php = S.php; R.shields = S.shields;
-  if (win) R.cleared++;
+  let coins = 0;
+  if (win) { R.cleared++; coins = fightCoins(st, S.maxCombo); R.coins += coins; R.earned += coins; }
   const last = R.idx === ENEMIES.length - 1;
   phase = win && !last ? 'pick' : 'result';
   setTimeout(() => {
     play(win ? FIG.E : FIG.P, 'ko'); play(win ? FIG.P : FIG.E, 'win');
     fx(win ? 'big' : 'hurtp', win ? 'K.O.!' : 'แพ้...', win ? E : P, 0, -30);
+    if (coins) setTimeout(() => fx('good', `+${coins} 🪙`, P, 0, -60), 350);
     win ? SFX.win() : SFX.lose();
   }, 250);
   setTimeout(() => (win && !last) ? showPick() : showResult(win), 1400);
@@ -1033,8 +1097,9 @@ function showPick() {
     return { up, w: makeWord(word, lang, 'pick') };
   }) };
   const next = ENEMIES[R.idx + 1];
-  $('#pickSub').textContent = (healed ? `พักหายใจ ฟื้น HP +${healed} · ` : '') + `HP ${Math.ceil(R.php)} / ${R.pmax} · ต่อไป: ${next.icon} ${next.name} — ${trait(next)}`;
+  $('#pickSub').textContent = (healed ? `พักหายใจ ฟื้น HP +${healed} · ` : '') + `HP ${Math.ceil(R.php)} / ${R.pmax} · 🪙 ${R.coins} · ต่อไป: ${next.icon} ${next.name} — ${trait(next)}`;
   $('#pickPath').innerHTML = pathHTML(R.idx + 1, R.idx + 1);
+  if (next.boss) $('#pickSub').textContent += ' (แวะร้านเหมียวมิก่อน)';
   $('#pickCards').innerHTML = PK.cards.map((c, i) => {
     const n = R.taken[c.up.id] || 0;
     return `<button class="upc" data-i="${i}"><div class="ic">${c.up.icon}</div><div class="nm">${esc(c.up.name)}</div>` +
@@ -1073,7 +1138,107 @@ function choose(c) {
   R.php = Math.min(R.php, R.pmax);
   SFX.block();
   R.idx++;
-  startFight();
+  if (ENEMIES[R.idx].boss) showShop(); else startFight();
+}
+
+/* ---------- ร้านค้า (พิมพ์เพื่อซื้อ) ---------- */
+const shopLang = () => cfg.mode === 'en' ? 'en' : 'th';
+function shopStock() {
+  const pool = UPGRADES.filter(u => u.id !== 'heal' && !(u.once && R.taken[u.id]) && (!u.cond || u.cond(R)));
+  pool.push(letterUpgrade());
+  const items = shuffle(pool).slice(0, 3).map(up => ({ up, price: upPrice(up) }));
+  items.push({ up: POTION, price: POTION.price });
+  const used = new Set(Object.values(SHOP_CMD[shopLang()]).map(w => w[0]));
+  for (const it of items) {
+    const lang = pickLang();
+    const word = shuffle(SHOP_WORDS[lang]).find(t => !used.has(t[0]));
+    used.add(word[0]);
+    it.w = makeWord(word, lang, 'buy');
+  }
+  return items;
+}
+function showShop() {
+  phase = 'shop';
+  const L = shopLang();
+  SHOP = { buf: '', items: shopStock(), rollCost: 10, t: 0, st: 'wave', say: pick(SHOP_SAY.hi),
+         roll: { w: makeWord(SHOP_CMD[L].roll, L, 'roll') }, leave: { w: makeWord(SHOP_CMD[L].leave, L, 'leave') } };
+  $('#shopPath').innerHTML = pathHTML(R.idx, R.idx, true);
+  $('#pickScr').hidden = true; $('#shopScr').hidden = false;
+  kb.value = ''; renderShop(true); kb.focus();
+}
+const shopOpts = () => [...SHOP.items.filter(i => !i.sold), SHOP.roll, SHOP.leave];
+function renderShop(rebuild) {
+  const next = ENEMIES[R.idx];
+  $('#shopSub').textContent = `HP ${Math.ceil(R.php)} / ${R.pmax} · ต่อไป: ${next.icon} ${next.name} — ${trait(next)}`;
+  $('#shopCoins').textContent = '🪙 ' + R.coins;
+  $('#shopSay').textContent = SHOP.say;
+  if (rebuild) {
+    $('#shopCards').innerHTML = SHOP.items.map((it, i) => {
+      const n = R.taken[it.up.id] || 0;
+      return `<button class="upc" data-i="${i}"><div class="ic">${it.up.icon}</div><div class="nm">${esc(it.up.name)}</div>` +
+        `<div class="st">${n ? 'มีแล้ว ×' + n : ''}</div><div class="ds">${esc(it.up.desc)}</div><div class="pr"></div><div class="w"></div></button>`;
+    }).join('');
+    $('#shopAct').innerHTML = `<button class="upc" data-a="roll"><div class="nm">🎲 สุ่มของใหม่</div><div class="pr"></div><div class="w"></div></button>` +
+      `<button class="upc" data-a="leave"><div class="nm">⛩ ไปสู้บอส</div><div class="pr">&nbsp;</div><div class="w"></div></button>`;
+    $('#shopCards').querySelectorAll('.upc').forEach(b => b.onclick = () => shopDo(SHOP.items[+b.dataset.i]));
+    $('#shopAct').querySelectorAll('.upc').forEach(b => b.onclick = () => shopDo(SHOP[b.dataset.a]));
+  }
+  const paint = (el, o, price) => {
+    const m = match(SHOP.buf, o.w);
+    el.querySelector('.w').innerHTML = wordHTML(o.w, o.sold ? '' : SHOP.buf);
+    if (price != null) { el.querySelector('.pr').textContent = o.sold ? 'ขายแล้ว' : `🪙 ${price}`; el.classList.toggle('poor', !o.sold && R.coins < price); }
+    el.classList.toggle('sold', !!o.sold);
+    el.classList.toggle('off', SHOP.buf !== '' && !m.ok);
+    el.classList.toggle('lock', SHOP.buf !== '' && m.ok);
+  };
+  $('#shopCards').querySelectorAll('.upc').forEach((el, i) => paint(el, SHOP.items[i], SHOP.items[i].price));
+  paint($('#shopAct [data-a="roll"]'), SHOP.roll, SHOP.rollCost);
+  paint($('#shopAct [data-a="leave"]'), SHOP.leave, null);
+}
+function shopInput() {
+  const v = kb.value.replace(/[`~_\s]/g, '');
+  const ok = shopOpts().filter(o => match(v, o.w).ok);
+  if (v === '' || ok.length) {
+    if ([...v].length > [...SHOP.buf].length) SFX.tick();
+    SHOP.buf = v; kb.value = v;
+    const done = ok.find(o => match(v, o.w).full);
+    if (done) shopDo(done); else renderShop();
+    return;
+  }
+  kb.value = SHOP.buf; SFX.err(); anim($('#shopCards'), 'err', 230);
+}
+function catSay(kind, st) { SHOP.say = pick(SHOP_SAY[kind]); if (st) { SHOP.st = st; SHOP.t = 0; } }
+function shopDo(o) {
+  if (phase !== 'shop' || o.sold) return;
+  SHOP.buf = ''; kb.value = '';
+  if (o === SHOP.leave) {
+    catSay('bye', 'wave'); renderShop(); SFX.block();
+    phase = 'shopExit';
+    setTimeout(() => { $('#shopScr').hidden = true; startFight(); }, 700);
+    return;
+  }
+  const price = o === SHOP.roll ? SHOP.rollCost : o.price;
+  if (R.coins < price) { catSay('poor'); SFX.err(); anim($('#shopCards'), 'err', 230); renderShop(); return; }
+  R.coins -= price;
+  if (o === SHOP.roll) {
+    SHOP.items = shopStock(); SHOP.rollCost += 5; catSay('roll', 'wave');
+    tone(700, 0.08, 'triangle', 0.1); renderShop(true); return;
+  }
+  o.up.apply(R.mod, R);
+  if (o.up !== POTION) { R.taken[o.up.id] = (R.taken[o.up.id] || 0) + 1; R.ups.push(o.up.icon + ' ' + o.up.name); }
+  R.bought.push(o.up.icon + ' ' + o.up.name);
+  R.php = Math.min(R.php, R.pmax);
+  o.sold = true; catSay('buy', 'wave');
+  [880, 1320].forEach((f, i) => setTimeout(() => tone(f, 0.12, 'triangle', 0.12), i * 70));
+  renderShop();
+}
+const catCv = document.createElement('canvas');
+function drawShopCat(dt) {
+  SHOP.t += dt;
+  if (SHOP.st === 'wave' && SHOP.t > 1.6) { SHOP.st = 'idle'; SHOP.t = 0; }
+  const cv = $('#shopCat'), c = cv.getContext('2d');
+  const { px } = renderChar('cat', SHOP.st, SHOP.t, gclock);
+  c.clearRect(0, 0, cv.width, cv.height); c.drawImage(px.toCanvas(catCv), 0, 0);
 }
 function shuffle(a) {
   a = [...a];
@@ -1096,8 +1261,10 @@ function showResult(win) {
     stat(`${R.cleared}/${ENEMIES.length}`, 'ไฟต์ที่ชนะ') +
     stat(wpm, 'WPM เฉลี่ย') + stat(acc.toFixed(1) + '%', 'ความแม่นยำ') + stat(R.maxCombo, 'คอมโบสูงสุด') +
     stat(st.words, 'คำที่โจมตี') + stat(`${st.blocks}/${st.counters}`, 'กัน / สวนกลับ') +
-    stat(`${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`, 'เวลาในไฟต์');
-  $('#resUps').innerHTML = R.ups.length ? R.ups.map(esc).join(' · ') : '—';
+    stat(`${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`, 'เวลาในไฟต์') +
+    stat(`${R.earned}`, 'เหรียญที่หาได้');
+  $('#resUps').innerHTML = (R.ups.length ? R.ups.map(esc).join(' · ') : '—') +
+    (R.bought.length ? `<br>ซื้อจากร้าน: ${R.bought.map(esc).join(' · ')}` : '');
   const langs = cfg.mode === 'bi' ? ['th', 'en'] : [cfg.mode];
   $('#resKb').innerHTML = langs.map(l => heatmap(l === 'th' ? KB_TH : KB_EN, st.miss)).join('<div style="height:10px"></div>');
   const top = Object.entries(st.miss).sort((a, b) => b[1] - a[1]).slice(0, 6);
