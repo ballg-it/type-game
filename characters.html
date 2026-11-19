@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Type Game — ตัวละคร</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0718;--panel:#160e30;--line:#3b2a77;--violet:#8b5cf6;--violet2:#c084fc;--text:#efe9ff;--muted:#a99cd0;--gold:#fbbf24}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 80% 0,#2a1660 0,transparent 50%),var(--bg);color:var(--text);font-family:Kanit,"Leelawadee UI",Tahoma,sans-serif;min-height:100vh}
+.wrap{max-width:1240px;margin:0 auto;padding:24px 16px 48px}
+h1{margin:0;font-size:40px;font-weight:800;font-style:italic;background:linear-gradient(90deg,#fff,#c084fc,#f472b6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--muted);margin:4px 0 0;line-height:1.6}
+.bar{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 0;margin:12px 0 4px;background:linear-gradient(var(--bg) 70%,transparent)}
+.bar span{color:var(--muted);font-size:14px;margin-right:4px}
+.pbtn{background:#1f1545;border:2px solid var(--line);color:var(--text);border-radius:10px;padding:6px 14px;cursor:pointer;font-family:inherit;font-size:15px}
+.pbtn.sel{border-color:var(--violet2);background:#2e1d66;box-shadow:0 0 14px #a855f766}
+h2{margin:26px 0 10px;font-size:22px;color:var(--violet2)}
+h2 small{color:var(--muted);font-weight:400;font-size:14px;margin-left:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.card.boss{border-color:#7f1d1d}
+.stage{position:relative;height:250px;background:radial-gradient(circle at 75% 20%,#f5f3ff 0 18px,#c4b5fd33 20px,transparent 60px),linear-gradient(#140c2e,#2a1660 70%,#1d1240 70%,#120a26)}
+.card.enemy .stage{background:radial-gradient(circle at 25% 20%,#fecaca 0 16px,#ef444433 18px,transparent 60px),linear-gradient(#1a0a1e,#3b0f2a 70%,#24101e 70%,#140a12)}
+.card.boss .stage{background:radial-gradient(circle at 50% 18%,#fde68a 0 18px,#fbbf2433 20px,transparent 70px),linear-gradient(#1a0a1e,#4a0f2f 70%,#2a0d1e 70%,#160812)}
+.stage svg{position:absolute;left:50%;bottom:0;transform:translateX(-50%);height:100%;overflow:visible}
+.stage svg.hurt{filter:drop-shadow(0 0 10px #ef4444) brightness(1.4) sepia(.4) hue-rotate(-30deg)}
+.info{padding:12px 14px 14px;flex:1;display:flex;flex-direction:column;gap:6px}
+.name{font-size:22px;font-weight:600;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.role{font-size:12px;border-radius:6px;padding:1px 8px;background:#2d1f5e;color:var(--violet2);font-weight:400}
+.card.enemy .role,.card.boss .role{background:#3f0f1f;color:#fca5a5}
+.desc{font-size:14px;color:#d8d0f5;line-height:1.6;margin:0}
+dl{margin:2px 0 0;display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:13px}
+dt{color:var(--muted)}
+dd{margin:0}
+code{font-family:inherit;background:#ffffff12;border-radius:4px;padding:0 5px}
+.stats{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:13px;align-items:center;margin-top:2px}
+.stats .m{display:flex;gap:3px}
+.stats .m i{width:16px;height:8px;border-radius:2px;background:#ffffff18}
+.stats .m i.on{background:linear-gradient(90deg,#a855f7,#f472b6)}
+.note{margin-top:30px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 18px;font-size:14px;line-height:1.7;color:#d8d0f5}
+.note b{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>ตัวละคร — แบบร่าง</h1>
+  <p class="sub">ทุกตัวประกอบจากโครงกระดูกชุดเดียวกัน (หัว ลำตัว แขน 2 ท่อน ขา 2 ท่อน) แล้วเปลี่ยนแค่ทรงผม ชุด สี และอาวุธ
+    ท่าทางทุกท่าคำนวณจากมุมข้อต่อ ไม่ต้องวาดทีละเฟรม</p>
+
+  <div class="bar" id="poseBar">
+    <span>ท่าทาง:</span>
+    <button class="pbtn sel" data-p="auto">▶ เล่นวนอัตโนมัติ</button>
+    <button class="pbtn" data-p="idle">ยืน</button>
+    <button class="pbtn" data-p="attack">ตี</button>
+    <button class="pbtn" data-p="block">กัน</button>
+    <button class="pbtn" data-p="hurt">โดนตี</button>
+    <button class="pbtn" data-p="ult">ท่าไม้ตาย</button>
+    <button class="pbtn" data-p="win">ชนะ</button>
+  </div>
+
+  <h2>ผู้เล่น <small>ตัวเริ่มต้น + 3 สายตาม README</small></h2>
+  <div class="grid" id="g-hero"></div>
+  <h2>ศัตรูธรรมดา <small>แต่ละตัวเน้นแป้นต่างกัน</small></h2>
+  <div class="grid" id="g-enemy"></div>
+  <h2>บอส <small>2 ตัวจากตารางบอสใน README</small></h2>
+  <div class="grid" id="g-boss"></div>
+
+  <div class="note">
+    <b>ทำไมใช้โครงแบบนี้:</b> ตัวละครหนึ่งตัวใช้ภาพแยกชิ้นประมาณ 10 ชิ้น พอได้อาร์ตจริงก็แค่เปลี่ยนรูปแต่ละชิ้น ท่าทางทั้งหมดใช้ต่อได้เลย
+    เพิ่มตัวละครใหม่ไม่ต้องวาดท่าใหม่ วิธีนี้ทำใน Godot (Skeleton2D) หรือใช้ Spine/DragonBones บนเว็บได้เหมือนกัน<br>
+    <b>ชื่อและนิสัยเป็นแค่ข้อเสนอ</b> เปลี่ยนได้ทั้งหมด
+  </div>
+</div>
+
+<script>
+'use strict';
+/* ============ Character specs ============ */
+const CHARS = [
+  { id:'airin', group:'hero', name:'ไอริน', role:'นักพิมพ์ · ตัวเริ่มต้น',
+    hair:'long', outfit:'jacket', weapon:'none',
+    c:{skin:'#f3d2bf',hair:'#3b2a8a',top:'#e5e1f5',top2:'#2b2250',pants:'#1c1838',shoe:'#7c3aed',accent:'#c084fc',eye:'#38bdf8',glow:'#a855f7'},
+    desc:'นางเอกจากคอนเซ็ปต์อาร์ต เด็กสาวที่พบว่าคำพูดในโลกนี้มีพลัง พกบอทแมวคู่หูติดตัว',
+    stats:{'ความเร็ว':3,'พลัง':3,'คอมโบ':3},
+    info:[['สไตล์','สมดุล ใช้ได้ทุกคำ'],['ท่าไม้ตาย','“คีย์บอร์ดแสง” ประโยคกลาง']] },
+  { id:'guy', group:'hero', name:'กาย', role:'นักมวย',
+    hair:'spiky', outfit:'tank', weapon:'gloves',
+    c:{skin:'#e8b48f',hair:'#1f1b2e',top:'#dc2626',top2:'#1f1b2e',pants:'#e8b48f',shorts:'#1e3a8a',shoe:'#f5f5f4',accent:'#ef4444',eye:'#1f1b2e',glow:'#f97316'},
+    arms:['#e8b48f','#e8b48f'],
+    desc:'นักมวยไทยใจร้อน ชอบต่อยเร็วๆ หลายหมัดมากกว่าหมัดเดียวแรงๆ',
+    stats:{'ความเร็ว':5,'พลัง':2,'คอมโบ':3},
+    info:[['สไตล์','คำสั้น 2–4 ตัวอักษร ตีถี่'],['ท่าไม้ตาย','“หมัดพายุ” พิมพ์คำสั้น 8 คำรวด']] },
+  { id:'mint', group:'hero', name:'มิ้นท์', role:'นักเวท',
+    hair:'witch', outfit:'robe', weapon:'staff',
+    c:{skin:'#f6dcc8',hair:'#14b8a6',top:'#312e81',top2:'#4338ca',pants:'#1e1b4b',shoe:'#312e81',accent:'#fbbf24',eye:'#14b8a6',glow:'#22d3ee',robe:'#3730a3'},
+    desc:'นักเวทฝึกหัดที่ร่ายคาถาเป็นประโยคยาว ช้าแต่ตีทีเดียวหนัก',
+    stats:{'ความเร็ว':1,'พลัง':5,'คอมโบ':2},
+    info:[['สไตล์','คำยาว/ประโยค ดาเมจคูณตามความยาว'],['ท่าไม้ตาย','“มหาคาถา” ย่อหน้าสั้นๆ']] },
+  { id:'kage', group:'hero', name:'เงา', role:'นินจา',
+    hair:'ninja', outfit:'ninja', weapon:'dagger',
+    c:{skin:'#e9c3a8',hair:'#0f172a',top:'#1e293b',top2:'#334155',pants:'#0f172a',shoe:'#0f172a',accent:'#a855f7',eye:'#e879f9',glow:'#e879f9'},
+    desc:'นินจาเงียบขรึม เน้นพิมพ์ไม่ผิดต่อเนื่อง คอมโบยิ่งยาวยิ่งน่ากลัว',
+    stats:{'ความเร็ว':4,'พลัง':2,'คอมโบ':5},
+    info:[['สไตล์','คอมโบคูณเร็วกว่าคนอื่น แต่หลุดง่าย'],['ท่าไม้ตาย','“เงาพันร่าง” ห้ามพิมพ์ผิดเลย']] },
+
+  { id:'bandit', group:'enemy', name:'โจรค้อนคีย์', role:'ศัตรู · แถวบน',
+    hair:'bandit', outfit:'vest', weapon:'hammer', bulk:1.15,
+    c:{skin:'#c98b63',hair:'#3f2a1c',top:'#78350f',top2:'#451a03',pants:'#44403c',shoe:'#292524',accent:'#dc2626',eye:'#1c1917',glow:'#f59e0b'},
+    desc:'โจรตัวโตถือค้อนหัวปุ่ม Q คำที่มันใช้มีแต่ตัวอักษรแป้นแถวบน',
+    info:[['ฝึกแป้น','แถวบน q–p / ๆ–ล'],['ตัวอย่างคำ','<code>tower</code> <code>ไพร</code> <code>pretty</code>']] },
+  { id:'ghost', group:'enemy', name:'ภูตตัวเลข', role:'ศัตรู · ตัวเลข/สัญลักษณ์',
+    hair:'ghost', outfit:'ghost', weapon:'none', float:true,
+    c:{skin:'#a5f3fc',hair:'#0e7490',top:'#155e75',top2:'#0e7490',pants:'#155e75',shoe:'#155e75',accent:'#67e8f9',eye:'#ecfeff',glow:'#22d3ee'},
+    arms:['#0e7490','#0e7490'],
+    desc:'วิญญาณดิจิทัลลอยไปมา ปล่อยรหัสตัวเลขและสัญลักษณ์ให้พิมพ์',
+    info:[['ฝึกแป้น','ตัวเลข @ # $ % & * ( )'],['ตัวอย่างคำ','<code>#42</code> <code>(7*3)</code> <code>๑๒๓</code>']] },
+  { id:'oni', group:'enemy', name:'โอนิดาบแดง', role:'ศัตรู · ตัว Shift',
+    hair:'oni', outfit:'armor', weapon:'katana', bulk:1.1,
+    c:{skin:'#dc2626',hair:'#111111',top:'#4a0f1f',top2:'#b91c1c',pants:'#1a0d14',shoe:'#1a0d14',accent:'#b91c1c',eye:'#fde047',glow:'#ef4444',pad:'#7f1d1d'},
+    desc:'ซามูไรสวมหน้ากากโอนิ ตัวเดียวกับในต้นแบบไฟต์ คำของมันต้องกด Shift เยอะ',
+    info:[['ฝึกแป้น','Shift: ฎ ฏ ฐ ฑ ฒ ณ ฌ ฆ / ตัวพิมพ์ใหญ่'],['ตัวอย่างคำ','<code>ฆาตกร</code> <code>ณเณร</code> <code>OniBlade</code>']] },
+
+  { id:'queen', group:'boss', name:'ราชินีวรรณยุกต์', role:'บอส · วรรณยุกต์',
+    hair:'silver', outfit:'kimono', weapon:'fan', float:false,
+    c:{skin:'#f8e1d4',hair:'#e5e7eb',top:'#4c1d95',top2:'#7c3aed',pants:'#2e1065',shoe:'#2e1065',accent:'#f0abfc',eye:'#c084fc',glow:'#c084fc',robe:'#3b0764'},
+    desc:'ราชินีผมเงินจากคอนเซ็ปต์อาร์ต มีวรรณยุกต์ลอยรอบตัว คำของเธอเต็มไปด้วยไม้เอก โท ตรี จัตวา',
+    info:[['ฝึก','วรรณยุกต์ สระบน/ล่าง'],['ตัวอย่างคำ','<code>ก๋วยเตี๋ยว</code> <code>น้ำ</code> <code>ผู้ใหญ่</code>'],['กลไก','เฟส 2 วรรณยุกต์ในคำสลับตำแหน่ง']] },
+  { id:'knight', group:'boss', name:'อัศวินกระจก', role:'บอส · คำกลับด้าน',
+    hair:'knight', outfit:'armor', weapon:'mirror', bulk:1.15,
+    c:{skin:'#cbd5e1',hair:'#94a3b8',top:'#64748b',top2:'#cbd5e1',pants:'#334155',shoe:'#1e293b',accent:'#67e8f9',eye:'#67e8f9',glow:'#67e8f9',pad:'#94a3b8'},
+    desc:'อัศวินชุดเกราะเงา ถือโล่กระจก โชว์คำกลับด้าน ผู้เล่นต้องพิมพ์คำจริง',
+    info:[['ฝึก','การอ่านและประมวลผล'],['ตัวอย่างคำ','เห็น <code>kcatta</code> พิมพ์ <code>attack</code>'],['กลไก','เลือดต่ำกว่าครึ่ง คำกลับทั้งแนวตั้ง']] }
+];
+
+/* ============ Poses (degrees) ============
+   แขน/ขา 0 = ห้อยลง, ค่าลบ = หมุนไปข้างหน้า  [ต้นแขน, ศอก] / [ต้นขา, เข่า] */
+const POSES = {
+  idle:   {dx:0,  dy:0,  lean:4,   head:0,   fa:[-40,-100], ba:[-20,-110], fl:[-18,20], bl:[18,12], aura:0, fx:0},
+  attack: {dx:18, dy:2,  lean:14,  head:-4,  fa:[-92,-4],   ba:[25,-95],   fl:[-38,26], bl:[32,4],  aura:0, fx:1},
+  block:  {dx:-6, dy:7,  lean:-4,  head:6,   fa:[-62,-128], ba:[-48,-122], fl:[-12,32], bl:[26,30], aura:0, fx:0},
+  hurt:   {dx:-14,dy:2,  lean:-18, head:-16, fa:[30,-25],   ba:[42,-12],   fl:[-6,12],  bl:[16,10], aura:0, fx:0},
+  ult:    {dx:0,  dy:-6, lean:-4,  head:-10, fa:[-150,-12], ba:[140,8],    fl:[-26,2],  bl:[26,2],  aura:1, fx:0},
+  win:    {dx:0,  dy:0,  lean:0,   head:-8,  fa:[-168,-22], ba:[22,-100],  fl:[-8,0],   bl:[8,0],   aura:.5,fx:0}
+};
+const SEQ = [['idle',1.2],['attack',.35],['idle',.7],['attack',.3],['idle',.8],['block',.9],['idle',.6],['hurt',.45],['idle',.9],['ult',1.4],['idle',.6],['win',1.4]];
+
+/* ============ SVG builders ============ */
+const HIP = {x:100, y:150}, NECK = {x:100, y:100};
+const J = {ba:[91,106], fa:[109,106], bl:[93,150], fl:[107,150]};
+const LEN = {arm:[26,26], leg:[32,34]};
+
+function hairSVG(sp) {
+  const c = sp.c, h = c.hair;
+  const cap = `<path d="M-21 -16 Q-24 -46 2 -44 Q26 -42 22 -18 L18 -14 Q16 -26 8 -30 L6 -22 L0 -30 Q-8 -24 -14 -26 Q-16 -18 -20 -8Z" fill="${h}"/>`;
+  switch (sp.hair) {
+    case 'long': return {
+      back: `<path d="M-10 -40 Q-40 -22 -42 36 Q-26 30 -16 6 Q-8 -10 -4 -16Z" fill="${h}"/>`,
+      front: cap + `<path d="M-6 -46 L-2 -56 L4 -45Z" fill="${h}"/>` };
+    case 'spiky': return {
+      back: `<path d="M-20 -30 Q-34 -26 -44 -16 Q-32 -20 -22 -22 Q-36 -10 -42 -2 Q-28 -14 -18 -22Z" fill="${c.accent}"/>`,
+      front: `<path d="M-22 -18 L-32 -32 L-17 -35 L-20 -50 L-5 -42 L1 -56 L10 -43 L24 -48 L19 -33 L25 -24 Q12 -32 0 -28 Q-10 -26 -22 -18Z" fill="${h}"/>
+              <rect x="-21" y="-31" width="43" height="6" rx="2" fill="${c.accent}"/>` };
+    case 'witch': return {
+      back: `<path d="M-12 -36 Q-30 -16 -30 14 Q-18 8 -10 -14Z" fill="${h}"/>`,
+      front: cap + `<ellipse cx="0" cy="-36" rx="32" ry="7" fill="${c.top}"/>
+              <path d="M-17 -38 L17 -38 L-8 -80 Q-14 -60 -17 -38Z" fill="${c.top}"/>
+              <rect x="-17" y="-44" width="33" height="5" fill="${c.accent}"/>
+              <path d="M-8 -80 L-20 -76 L-10 -74Z" fill="${c.top}"/>` };
+    case 'ninja': return {
+      back: `<path d="M-16 -36 Q-40 -38 -50 -20 Q-38 -26 -28 -24 Q-44 -14 -46 -2 Q-30 -18 -16 -26Z" fill="${h}"/>`,
+      front: cap + `<path d="M-4 -15 Q10 -9 22 -15 L22 -3 Q8 6 -8 -2Z" fill="${c.top2}"/>
+              <rect x="-21" y="-30" width="43" height="5" rx="2" fill="${c.accent}"/>` };
+    case 'oni': return {
+      back: `<path d="M-16 -36 Q-40 -10 -36 30 L-24 10 L-28 28 Q-12 4 -6 -16Z" fill="${h}"/>`,
+      front: `<path d="M-18 -40 L-26 -66 L-8 -44Z" fill="#f5f5f4"/><path d="M12 -42 L22 -68 L20 -40Z" fill="#f5f5f4"/>
+              <path d="M-21 -20 Q-20 -46 2 -44 Q24 -42 22 -16 Q20 2 0 4 Q-18 2 -21 -20Z" fill="${c.skin}"/>
+              <path d="M2 -28 L14 -24 L4 -21Z" fill="${c.eye}"/><path d="M14 -27 L22 -28 L21 -22Z" fill="${c.eye}"/>
+              <path d="M2 -10 L22 -12 L19 -5 L5 -4Z" fill="#fff"/>
+              <path d="M-22 -24 Q-30 -40 -10 -46 Q-20 -38 -18 -26Z" fill="${h}"/>` };
+    case 'silver': return {
+      back: `<path d="M-8 -42 Q-50 -30 -52 40 Q-44 56 -30 60 Q-34 30 -20 4 Q-10 -12 -2 -18Z" fill="${h}"/>`,
+      front: cap + `<circle cx="-12" cy="-40" r="5" fill="${c.accent}"/><path d="M-12 -40 L-24 -54" stroke="${c.accent}" stroke-width="2"/>
+              <path d="M-4 -44 L0 -52 L4 -44Z" fill="${c.accent}"/>` };
+    case 'knight': return {
+      back: `<path d="M-6 -44 Q-30 -60 -46 -46 Q-30 -48 -18 -38Z" fill="${c.accent}"/>`,
+      front: `<path d="M-22 -14 Q-24 -46 0 -46 Q24 -46 23 -14 L23 2 L-22 2Z" fill="${c.top2}"/>
+              <rect x="0" y="-26" width="23" height="5" rx="2" fill="${c.eye}"/>
+              <path d="M-22 -14 L23 -14" stroke="${c.hair}" stroke-width="2"/>` };
+    case 'bandit': return {
+      back: `<path d="M-20 -26 L-36 -22 L-30 -16Z M-20 -24 L-34 -12 L-26 -10Z" fill="${c.accent}"/>`,
+      front: `<path d="M-21 -16 Q-22 -42 0 -42 Q22 -42 22 -20 Q10 -28 -10 -24 Z" fill="${h}"/>
+              <path d="M-22 -24 Q0 -50 22 -24 L22 -28 Q0 -44 -22 -30Z" fill="${c.accent}"/>
+              <path d="M-21 -26 Q0 -38 22 -28 L22 -22 Q0 -32 -21 -20Z" fill="${c.accent}"/>
+              <rect x="6" y="-27" width="11" height="8" rx="3" fill="#111"/><path d="M-20 -26 L17 -24" stroke="#111" stroke-width="1.5"/>
+              <path d="M2 -9 Q12 -5 20 -10" stroke="${h}" stroke-width="3" fill="none"/>` };
+    case 'ghost': return {
+      back: '',
+      front: `<path d="M-24 -18 Q-26 -50 0 -50 Q26 -50 24 -18 Q24 4 0 4 Q-24 4 -24 -18Z" fill="${c.top}"/>
+              <rect x="-14" y="-34" width="34" height="22" rx="6" fill="#082f49"/>
+              <text x="3" y="-18" font-size="13" font-family="monospace" fill="${c.eye}" text-anchor="middle">0 1</text>
+              <path d="M-4 -50 L-8 -60 M8 -50 L12 -60" stroke="${c.accent}" stroke-width="2"/>
+              <circle cx="-8" cy="-61" r="2.5" fill="${c.accent}"/><circle cx="12" cy="-61" r="2.5" fill="${c.accent}"/>` };
+  }
+  return {back:'', front:cap};
+}
+function faceSVG(sp) {
+  if (['oni','knight','ghost'].includes(sp.hair)) return '';
+  const c = sp.c;
+  return `<circle cx="0" cy="-20" r="20" fill="${c.skin}"/>
+          <rect x="9" y="-25" width="4.5" height="7" rx="1.5" fill="${c.eye}"/>
+          <path d="M13 -10 L18 -10" stroke="#00000055" stroke-width="1.5"/>`;
+}
+function handSVG(sp, front) {
+  const c = sp.c, w = sp.weapon;
+  let hand = `<circle r="6" fill="${(sp.arms || [])[1] && sp.outfit === 'ghost' ? c.accent : c.skin}"/>`;
+  if (w === 'gloves') hand = `<circle r="10" fill="${c.accent}"/><circle cx="3" cy="-3" r="3" fill="#ffffff55"/>`;
+  if (sp.outfit === 'armor') hand = `<circle r="6.5" fill="${c.top2}"/>`;
+  if (!front) {
+    if (w === 'mirror') return hand + `<ellipse cx="2" cy="-4" rx="16" ry="26" fill="#a5f3fc66" stroke="${c.top2}" stroke-width="4"/><path d="M-6 -20 L4 -8" stroke="#fff" stroke-width="2" opacity=".7"/>`;
+    return hand;
+  }
+  switch (w) {
+    case 'staff': return `<line x1="-40" y1="0" x2="48" y2="0" stroke="#78350f" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="54" cy="0" r="9" fill="${c.glow}"/><circle cx="54" cy="0" r="16" fill="${c.glow}" opacity=".25"/>` + hand;
+    case 'dagger': return hand + `<path d="M4 -3 L30 0 L4 3Z" fill="#e5e7eb"/><rect x="-2" y="-4" width="6" height="8" fill="${c.accent}"/>`;
+    case 'katana': return `<path d="M6 -2 Q40 -6 78 0 Q40 2 6 3Z" fill="#e5e7eb"/><rect x="-14" y="-3" width="20" height="6" rx="2" fill="#111"/><rect x="4" y="-6" width="4" height="12" fill="#b45309"/>` + hand;
+    case 'hammer': return `<rect x="-8" y="-3" width="52" height="6" rx="2" fill="#78350f"/>
+        <rect x="40" y="-16" width="30" height="32" rx="6" fill="#e7e5e4" stroke="#78716c" stroke-width="3"/>
+        <g transform="translate(55,0) rotate(90) scale(${sp.group === 'hero' ? 1 : -1},1)"><text x="0" y="6" font-size="18" font-weight="800" text-anchor="middle" fill="#44403c">Q</text></g>` + hand;
+    case 'fan': return hand + `<path d="M0 0 L40 -26 A48 48 0 0 1 40 26Z" fill="${c.accent}" opacity=".9"/><path d="M0 0 L40 -26 M0 0 L46 -9 M0 0 L46 9 M0 0 L40 26" stroke="${c.top}" stroke-width="1.5"/>`;
+  }
+  return hand;
+}
+function limb(id, x, y, l1, l2, w, col1, col2, end) {
+  return `<g data-j="${id}" transform="translate(${x},${y})">
+    <rect x="${-w/2}" y="-3" width="${w}" height="${l1+6}" rx="${w/2}" fill="${col1}"/>
+    <g data-j="${id}2" transform="translate(0,${l1})">
+      <rect x="${-w/2+.5}" y="-3" width="${w-1}" height="${l2+6}" rx="${(w-1)/2}" fill="${col2}"/>
+      <g transform="translate(0,${l2})">${end}</g>
+    </g></g>`;
+}
+function torsoSVG(sp) {
+  const c = sp.c, b = sp.bulk || 1, sw = 30 * b, hw = 24 * b;
+  let s = '';
+  if (sp.outfit === 'robe' || sp.outfit === 'kimono')
+    s += `<path d="M${100-hw/2} 138 L${100+hw/2} 138 L${100+hw/2+20} 214 Q100 222 ${100-hw/2-24} 214Z" fill="${c.robe}"/>
+          <path d="M${100-hw/2-4} 196 L${100+hw/2+18} 196" stroke="${c.accent}" stroke-width="3"/>`;
+  if (sp.outfit === 'ghost')
+    s += `<path d="M86 140 Q78 180 92 214 Q100 200 104 216 Q112 196 118 210 Q122 176 114 140Z" fill="${c.top2}" opacity=".85"/>`;
+  s += `<path d="M${100-sw/2} 102 Q100 96 ${100+sw/2} 102 L${100+hw/2} 152 L${100-hw/2} 152Z" fill="${c.top2}"/>`;
+  switch (sp.outfit) {
+    case 'jacket': s += `<path d="M${100-sw/2-2} 102 L92 100 L90 154 L${100-hw/2-3} 152Z" fill="${c.top}"/><path d="M${100+sw/2+2} 102 L108 100 L110 154 L${100+hw/2+3} 152Z" fill="${c.top}"/>
+                         <rect x="${100-hw/2}" y="140" width="${hw}" height="5" fill="${c.accent}"/>
+                         <path d="M86 98 Q100 108 114 98 L116 104 Q100 116 84 104Z" fill="${c.accent}"/>`; break;
+    case 'tank': s += `<path d="M90 102 L110 102 L${100+hw/2} 142 L${100-hw/2} 142Z" fill="${c.top}"/>
+                       <path d="M${100-hw/2-2} 140 L${100+hw/2+2} 140 L${100+hw/2+6} 168 L101 168 L100 158 L99 168 L${100-hw/2-6} 168Z" fill="${c.shorts}"/>
+                       <rect x="${100-hw/2-2}" y="140" width="${hw+4}" height="5" fill="#f5f5f4"/>`; break;
+    case 'robe': s += `<path d="M${100-sw/2} 102 L100 130 L${100+sw/2} 102" fill="none" stroke="${c.accent}" stroke-width="3"/>
+                       <rect x="${100-hw/2}" y="136" width="${hw}" height="6" fill="${c.accent}"/>`; break;
+    case 'kimono': s += `<path d="M${100-sw/2} 102 L106 140 M${100+sw/2} 102 L96 128" stroke="${c.accent}" stroke-width="3"/>
+                         <rect x="${100-hw/2-1}" y="128" width="${hw+2}" height="12" fill="${c.top}"/>`; break;
+    case 'ninja': s += `<rect x="${100-hw/2-1}" y="136" width="${hw+2}" height="6" fill="${c.accent}"/>
+                        <path d="M84 100 Q100 110 116 100 L116 108 Q100 118 84 108Z" fill="${c.accent}"/>`; break;
+    case 'armor': s += `<path d="M${100-sw/2+2} 116 L${100+sw/2-2} 116 L${100+sw/2-3} 123 L${100-sw/2+3} 123Z" fill="${c.top2}"/>
+                        <path d="M${100-hw/2} 136 L${100+hw/2} 136 L${100+hw/2} 141 L${100-hw/2} 141Z" fill="${c.top2}"/>`; break;
+    case 'vest': s += `<path d="M${100-sw/2} 102 L96 104 L94 152 L${100-hw/2} 152Z" fill="${c.top}"/><path d="M${100+sw/2} 102 L104 104 L106 152 L${100+hw/2} 152Z" fill="${c.top}"/>
+                       <rect x="${100-hw/2}" y="138" width="${hw}" height="6" fill="#1c1917"/><rect x="97" y="137" width="7" height="8" fill="#fbbf24"/>`; break;
+  }
+  return s;
+}
+function padSVG(sp) { return sp.c.pad ? `<path d="M-12 -6 Q0 -16 12 -6 L12 6 L-12 6Z" fill="${sp.c.pad}"/>` : ''; }
+
+function buildSVG(sp) {
+  const c = sp.c, hair = hairSVG(sp), b = sp.bulk || 1;
+  const armW = sp.outfit === 'kimono' ? 13 : 9 * b, legW = 11 * b;
+  const ac = sp.arms || [c.top, sp.outfit === 'tank' ? c.skin : c.top];
+  const foot = `<rect x="-5" y="-2" width="17" height="8" rx="3" fill="${c.shoe}"/>`;
+  const legs = sp.outfit === 'ghost' ? '' :
+    limb('bl', J.bl[0], J.bl[1], LEN.leg[0], LEN.leg[1], legW, c.pants, c.pants, foot) +
+    limb('fl', J.fl[0], J.fl[1], LEN.leg[0], LEN.leg[1], legW, c.pants, c.pants, foot);
+  const backArm = limb('ba', J.ba[0], J.ba[1], LEN.arm[0], LEN.arm[1], armW, shade(ac[0]), shade(ac[1]), handSVG(sp, false)).replace('<rect', padSVG(sp) + '<rect');
+  const frontArm = limb('fa', J.fa[0], J.fa[1], LEN.arm[0], LEN.arm[1], armW, ac[0], ac[1], handSVG(sp, true)).replace('<rect', padSVG(sp) + '<rect');
+  let extra = '';
+  if (sp.id === 'queen') extra = ['่','้','๊','๋'].map((m, i) =>
+    `<text data-orbit="${i}" font-size="30" font-weight="800" fill="${c.accent}" text-anchor="middle" style="filter:drop-shadow(0 0 6px ${c.glow})">ก${m}</text>`).join('');
+  if (sp.id === 'ghost') extra = ['7','#','@','3','%'].map((m, i) =>
+    `<text data-orbit="${i}" font-size="18" font-family="monospace" fill="${c.accent}" text-anchor="middle" opacity=".8">${m}</text>`).join('');
+  if (sp.id === 'airin') extra = `<g data-pet transform="translate(40,70)">
+      <ellipse cx="0" cy="0" rx="15" ry="13" fill="#f1f5f9"/><path d="M-12 -6 L-10 -20 L-2 -11Z M12 -6 L10 -20 L2 -11Z" fill="#f1f5f9"/>
+      <rect x="-10" y="-5" width="20" height="10" rx="4" fill="#1e1b4b"/><rect x="-6" y="-2" width="3" height="4" fill="#67e8f9"/><rect x="3" y="-2" width="3" height="4" fill="#67e8f9"/></g>`;
+  const flip = sp.group === 'hero' ? '' : 'transform="translate(200,0) scale(-1,1)"';
+  return `<svg viewBox="-10 20 220 210" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="100" cy="222" rx="${44*b}" ry="6" fill="#000" opacity=".45"/>
+    <g ${flip}>
+      <ellipse data-aura cx="100" cy="140" rx="70" ry="92" fill="${c.glow}" opacity="0" style="filter:blur(14px)"/>
+      <g data-j="root">
+        ${backArm}${legs}
+        ${torsoSVG(sp)}
+        <g data-j="head" transform="translate(${NECK.x},${NECK.y})">${hair.back}${faceSVG(sp)}${hair.front}</g>
+        ${frontArm}
+      </g>
+      <path data-fx d="M168 112 L176 96 L180 112 L196 106 L184 118 L198 128 L180 126 L176 142 L170 126 L154 130 L166 120 L152 108Z" fill="#fde68a" opacity="0"/>
+    </g>
+    ${extra}
+  </svg>`;
+}
+function shade(hex) { // ทำสีแขน/ขาหลังให้มืดลงนิดหน่อย
+  const n = parseInt(hex.slice(1), 16), f = .78;
+  const r = Math.round((n >> 16) * f), g = Math.round(((n >> 8) & 255) * f), b = Math.round((n & 255) * f);
+  return '#' + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1);
+}
+
+/* ============ Cards ============ */
+const actors = [];
+const esc = s => s.replace(/[&<>]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[ch]));
+CHARS.forEach((sp, idx) => {
+  const card = document.createElement('div');
+  card.className = 'card ' + sp.group;
+  const stats = sp.stats ? `<div class="stats">${Object.entries(sp.stats).map(([k, v]) =>
+      `<span>${k}</span><span class="m">${[1,2,3,4,5].map(i => `<i class="${i <= v ? 'on' : ''}"></i>`).join('')}</span>`).join('')}</div>` : '';
+  card.innerHTML = `<div class="stage">${buildSVG(sp)}</div>
+    <div class="info">
+      <div class="name">${esc(sp.name)} <span class="role">${esc(sp.role)}</span></div>
+      <p class="desc">${esc(sp.desc)}</p>
+      ${stats}
+      <dl>${sp.info.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${v}</dd>`).join('')}</dl>
+    </div>`;
+  document.getElementById('g-' + sp.group).appendChild(card);
+  const svg = card.querySelector('svg');
+  const els = {};
+  svg.querySelectorAll('[data-j]').forEach(e => els[e.dataset.j] = e);
+  actors.push({ sp, svg, els, idx, aura: svg.querySelector('[data-aura]'), fxEl: svg.querySelector('[data-fx]'),
+    orbit: [...svg.querySelectorAll('[data-orbit]')], pet: svg.querySelector('[data-pet]'),
+    cur: JSON.parse(JSON.stringify(POSES.idle)), state: 'idle' });
+});
+
+/* ============ Animation ============ */
+let mode = 'auto';
+document.getElementById('poseBar').addEventListener('click', e => {
+  const b = e.target.closest('.pbtn'); if (!b) return;
+  mode = b.dataset.p;
+  document.querySelectorAll('.pbtn').forEach(x => x.classList.toggle('sel', x === b));
+});
+const seqTotal = SEQ.reduce((a, s) => a + s[1], 0);
+function seqState(t) {
+  t = ((t % seqTotal) + seqTotal) % seqTotal;
+  for (const [p, d] of SEQ) { if (t < d) return p; t -= d; }
+  return 'idle';
+}
+const lerp = (a, b, k) => a + (b - a) * k;
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  const t = now / 1000;
+  for (const a of actors) {
+    const st = mode === 'auto' ? seqState(t - a.idx * .12) : mode;
+    a.state = st;
+    const tg = POSES[st], cur = a.cur;
+    const k = 1 - Math.exp(-dt * (st === 'attack' || st === 'hurt' ? 26 : 12));
+    for (const key of ['dx','dy','lean','head','aura','fx']) cur[key] = lerp(cur[key], tg[key], k);
+    for (const key of ['fa','ba','fl','bl']) { cur[key][0] = lerp(cur[key][0], tg[key][0], k); cur[key][1] = lerp(cur[key][1], tg[key][1], k); }
+    const breathe = Math.sin(t * 3 + a.idx) * (st === 'idle' ? 1.6 : .5);
+    const floatY = a.sp.float ? Math.sin(t * 2 + a.idx) * 6 - 8 : 0;
+    const E = a.els;
+    E.root.setAttribute('transform', `translate(${cur.dx},${cur.dy + breathe + floatY}) rotate(${cur.lean},${HIP.x},${HIP.y})`);
+    E.head.setAttribute('transform', `translate(${NECK.x},${NECK.y + breathe * .3}) rotate(${cur.head})`);
+    for (const id of ['fa','ba','fl','bl']) {
+      if (!E[id]) continue;
+      const wob = id[1] === 'a' ? breathe * 1.5 : 0;
+      E[id].setAttribute('transform', `translate(${J[id][0]},${J[id][1]}) rotate(${cur[id][0] + wob})`);
+      E[id + '2'].setAttribute('transform', `translate(0,${id[1] === 'a' ? LEN.arm[0] : LEN.leg[0]}) rotate(${cur[id][1]})`);
+    }
+    a.aura.setAttribute('opacity', (cur.aura * (.45 + Math.sin(t * 8) * .1)).toFixed(3));
+    a.fxEl.setAttribute('opacity', (cur.fx > .6 ? cur.fx : 0).toFixed(2));
+    a.svg.classList.toggle('hurt', st === 'hurt');
+    a.orbit.forEach((o, i) => {
+      const ang = t * 1.1 + i / a.orbit.length * Math.PI * 2;
+      o.setAttribute('x', (100 + Math.cos(ang) * 72).toFixed(1));
+      o.setAttribute('y', (120 + Math.sin(ang) * 30 + Math.sin(t * 2 + i) * 6).toFixed(1));
+    });
+    if (a.pet) a.pet.setAttribute('transform', `translate(${30 + Math.sin(t * 1.3) * 6},${66 + Math.sin(t * 2.6) * 5})`);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

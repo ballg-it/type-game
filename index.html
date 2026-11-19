@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Type Game — ต้นแบบไฟต์</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg0:#0b0718; --panel:#1b1236ee; --line:#3b2a77; --violet:#8b5cf6; --violet2:#c084fc;
+  --text:#efe9ff; --muted:#a99cd0; --good:#4ade80; --bad:#f87171; --gold:#fbbf24; --cyan:#67e8f9;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg0);color:var(--text);font-family:Kanit,"Leelawadee UI",Tahoma,sans-serif;overflow:hidden}
+button{font-family:inherit}
+#game{position:relative;width:100%;height:100%;max-width:1280px;margin:0 auto;display:flex;flex-direction:column}
+
+/* ---------- HUD ---------- */
+#hud{display:flex;align-items:flex-start;gap:16px;padding:12px 16px 6px}
+.hpbox{flex:1;min-width:0}
+.hpbox .name{font-weight:600;font-size:15px;display:flex;justify-content:space-between}
+.hpbox .name span{color:var(--muted);font-weight:400}
+.hpbox.e .name{flex-direction:row-reverse}
+.bar{height:16px;background:#0006;border:2px solid #ffffff22;border-radius:8px;overflow:hidden;position:relative}
+.bar i{display:block;height:100%;width:100%;transition:width .18s}
+#phpBar{background:linear-gradient(90deg,#16a34a,#4ade80)}
+#ehpBar{background:linear-gradient(90deg,#f87171,#dc2626);margin-left:auto}
+.hpbox .num{font-size:13px;color:var(--muted);margin-top:2px}
+.hpbox.e .num{text-align:right}
+.center{width:220px;text-align:center}
+.wave{display:inline-block;border:2px solid var(--violet);border-radius:10px;padding:2px 16px;font-weight:600;background:#140c2ecc}
+#combo{margin-top:6px;font-weight:800;font-size:22px;color:var(--gold);text-shadow:0 0 12px #f59e0b88;min-height:30px}
+#combo small{display:block;font-size:12px;color:var(--muted);font-weight:400;text-shadow:none}
+#mute{position:absolute;top:10px;right:12px;background:#0005;border:1px solid #ffffff22;color:var(--text);border-radius:8px;padding:2px 8px;cursor:pointer;z-index:30}
+
+/* ---------- Arena ---------- */
+#arena{position:relative;flex:1;min-height:300px;overflow:hidden;border-top:1px solid #ffffff10;border-bottom:1px solid #ffffff10;
+  background:radial-gradient(circle at 78% 22%,#f5f3ff 0 44px,#c4b5fd44 46px,transparent 130px),linear-gradient(#120a2a,#2a1660 62%,#1a0f38)}
+#arena.shake{animation:shake .28s}
+#arena.frozen *,#arena.frozen{animation-play-state:paused!important}
+@keyframes shake{0%,100%{transform:none}20%{transform:translate(-8px,3px)}40%{transform:translate(7px,-4px)}60%{transform:translate(-5px,2px)}80%{transform:translate(4px,-1px)}}
+.city{position:absolute;left:0;right:0;bottom:22%;width:100%;height:46%;opacity:.9}
+.ground{position:absolute;left:0;right:0;bottom:0;height:22%;background:linear-gradient(#2b1d55,#120a26);border-top:2px solid #6d4bd6aa}
+.fighter{position:absolute;bottom:13%;z-index:5}
+.fighter .body{animation:bob 1.6s ease-in-out infinite;transform-origin:bottom center}
+#player{left:14%}
+#enemy{right:12%}
+@keyframes bob{50%{transform:translateY(-4px) scaleY(1.01)}}
+#player.lunge{animation:lungeR .26s ease-out}
+#enemy.lunge{animation:lungeL .3s ease-out}
+@keyframes lungeR{40%{transform:translateX(190px)}100%{transform:none}}
+@keyframes lungeL{40%{transform:translateX(-190px)}100%{transform:none}}
+.fighter.hurt svg{animation:hurt .35s}
+@keyframes hurt{0%{filter:brightness(3) sepia(1) hue-rotate(-50deg) saturate(6)}30%{transform:translateX(0)}50%{transform:translateX(var(--kb,-10px))}100%{filter:none;transform:none}}
+#player.hurt{--kb:-14px} #enemy.hurt{--kb:14px}
+.fighter.wobble svg{animation:wobble .25s}
+@keyframes wobble{30%{transform:rotate(-6deg)}70%{transform:rotate(3deg)}}
+#enemy.charging svg{filter:drop-shadow(0 0 14px #ef4444) drop-shadow(0 0 4px #fca5a5);animation:pulse .5s infinite alternate}
+@keyframes pulse{to{filter:drop-shadow(0 0 24px #ef4444) drop-shadow(0 0 8px #fecaca)}}
+#player.shield::after{content:"";position:absolute;inset:10px -20px 0 40px;border-radius:50%;border:4px solid var(--cyan);box-shadow:0 0 20px var(--cyan),inset 0 0 20px #67e8f966;animation:shieldFade .45s forwards}
+@keyframes shieldFade{from{opacity:1;transform:scale(.8)}to{opacity:0;transform:scale(1.15)}}
+.fighter.ko{transition:transform .6s,opacity .6s;transform:rotate(-80deg) translateY(30px);opacity:.4}
+#enemy.ko{transform:rotate(80deg) translateY(30px)}
+
+#legend{position:absolute;top:10px;right:12px;background:#140c2ecc;border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-size:13px;line-height:1.7;z-index:4}
+#legend b{color:var(--good)}
+
+/* enemy defense prompt */
+#defBox{position:absolute;right:8%;top:8%;z-index:8;background:#2a0a14ee;border:2px solid #ef4444;border-radius:12px;padding:8px 16px;min-width:230px;text-align:center;box-shadow:0 0 24px #ef444466}
+#defBox .lbl{font-size:13px;color:#fecaca}
+#defBox .w{font-size:34px;font-weight:600}
+#defBox .cbar{height:10px;border-radius:5px;background:#0007;overflow:hidden;position:relative;margin-top:4px}
+#defBox .cbar i{position:absolute;left:0;top:0;bottom:0;background:#ef4444}
+#defBox .cbar .win{position:absolute;top:0;bottom:0;right:0;background:#fbbf2466;border-left:2px solid var(--gold)}
+#defBox.counter{border-color:var(--gold);box-shadow:0 0 30px #fbbf24aa}
+#defBox.counter .lbl{color:var(--gold)}
+
+/* ult */
+#ultBox{position:absolute;left:50%;top:50%;transform:translate(-50%,-55%);z-index:12;width:min(92%,900px);text-align:center;background:#12082bf2;border:2px solid var(--violet2);border-radius:16px;padding:16px 20px;box-shadow:0 0 50px #a855f7aa}
+#ultBox .lbl{color:var(--violet2);font-weight:600;letter-spacing:2px}
+#ultBox .w{font-size:32px;font-weight:600;margin:8px 0;line-height:1.5;word-break:break-word}
+#ultBox .tbar{height:10px;border-radius:5px;background:#0007;overflow:hidden}
+#ultBox .tbar i{display:block;height:100%;background:linear-gradient(90deg,#a855f7,#f472b6)}
+
+/* words & highlight */
+.w .done{color:var(--good)}
+.w .part{color:#bbf7d0}
+.w .next{background:#8b5cf655;border-radius:4px;box-shadow:0 2px 0 var(--violet2)}
+#words{display:flex;gap:12px;padding:12px 16px 4px}
+#words.err{animation:errShake .22s}
+@keyframes errShake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.slot{flex:1;min-width:0;background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:8px 12px;text-align:center;position:relative;transition:opacity .1s,border-color .1s}
+.slot .tier{font-size:12px;color:var(--muted)}
+.slot .w{font-size:32px;font-weight:600;min-height:50px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slot .dmg{font-size:12px;color:var(--gold)}
+.slot .tag{position:absolute;top:6px;right:8px;font-size:11px;padding:0 6px;border-radius:6px;background:#2d1f5e;color:var(--muted)}
+.slot.off{opacity:.3}
+.slot.lock{border-color:var(--violet2);box-shadow:0 0 18px #8b5cf688}
+.slot.pop{animation:pop .25s}
+@keyframes pop{from{transform:scale(.85);opacity:.2}}
+#buf{text-align:center;font-size:13px;color:var(--muted);min-height:20px}
+#buf b{color:var(--text);font-size:16px}
+
+/* bottom */
+#bottom{display:flex;align-items:center;gap:16px;padding:6px 16px 14px}
+.stam{flex:1;max-width:340px;font-size:13px}
+#stBar{background:linear-gradient(90deg,#7c3aed,#a78bfa)}
+.stam.tired #stBar{background:#f87171}
+#tired{color:var(--bad);font-weight:600;margin-left:6px}
+.hint{flex:1;text-align:center;font-size:13px;color:var(--muted)}
+.ult{display:flex;align-items:center;gap:10px;border:2px solid var(--line);border-radius:12px;padding:6px 12px;background:var(--panel);min-width:260px}
+.ult .bar{flex:1;height:12px}
+#ultBar{background:linear-gradient(90deg,#a855f7,#f472b6)}
+.ult.ready{border-color:var(--violet2);box-shadow:0 0 20px #c084fcaa;animation:pulse2 .8s infinite alternate}
+@keyframes pulse2{to{box-shadow:0 0 34px #f0abfcdd}}
+kbd{font-family:inherit;border:1px solid #ffffff44;border-bottom-width:3px;border-radius:6px;padding:0 6px;font-size:12px;background:#ffffff10}
+
+/* fx */
+#fx{position:absolute;inset:0;pointer-events:none;z-index:10}
+.fx{position:absolute;transform:translate(-50%,-50%);font-weight:800;white-space:nowrap;animation:floatUp .9s ease-out forwards;text-shadow:0 2px 0 #000,0 0 12px #000}
+.fx.dmg{font-size:30px;color:#fff}
+.fx.big{font-size:44px;color:var(--gold)}
+.fx.hurtp{font-size:30px;color:var(--bad)}
+.fx.msg{font-size:26px;color:var(--cyan)}
+.fx.gold{font-size:32px;color:var(--gold)}
+.fx.bad{font-size:22px;color:var(--bad)}
+@keyframes floatUp{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}15%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-160%) scale(1)}}
+.spark{position:absolute;width:120px;height:120px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,#fff 0 12%,#fde68a 25%,#f472b688 45%,transparent 70%);animation:spark .3s ease-out forwards}
+.spark.blue{background:radial-gradient(circle,#fff 0 12%,#a5f3fc 25%,#67e8f988 45%,transparent 70%)}
+.spark.huge{width:320px;height:320px}
+@keyframes spark{from{transform:translate(-50%,-50%) scale(.3);opacity:1}to{transform:translate(-50%,-50%) scale(1.3);opacity:0}}
+#flash{position:fixed;inset:0;pointer-events:none;z-index:40;opacity:0}
+#flash.red{animation:flashRed .35s}
+#flash.white{animation:flashWhite .4s}
+@keyframes flashRed{from{opacity:1;box-shadow:inset 0 0 160px #ef4444}to{opacity:0}}
+@keyframes flashWhite{from{opacity:.8;background:#fff}to{opacity:0;background:#fff}}
+#toast{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);background:#7f1d1dee;border:1px solid var(--bad);border-radius:10px;padding:6px 14px;font-size:15px;z-index:15;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1}
+
+/* overlays */
+.overlay{position:absolute;inset:0;z-index:50;background:#08041acc;backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.overlay[hidden]{display:none}
+.card{background:#150d30f5;border:2px solid var(--line);border-radius:18px;padding:22px 26px;max-width:860px;width:100%;box-shadow:0 0 60px #6d28d955;margin:auto}
+.title{font-size:54px;font-weight:800;line-height:1;background:linear-gradient(90deg,#fff,#c084fc,#f472b6);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic}
+.sub{color:var(--muted);margin:6px 0 16px}
+h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
+.opts{display:flex;gap:10px;flex-wrap:wrap}
+.opt{flex:1;min-width:150px;background:#1f1545;border:2px solid var(--line);color:var(--text);border-radius:12px;padding:10px;cursor:pointer;font-size:16px}
+.opt small{display:block;color:var(--muted);font-size:12px}
+.opt.sel{border-color:var(--violet2);background:#2e1d66;box-shadow:0 0 16px #a855f766}
+.rules{font-size:14px;color:#d8d0f5;line-height:1.75;margin:0;padding-left:20px}
+.go{margin-top:18px;width:100%;font-size:20px;font-weight:600;padding:12px;border-radius:12px;border:0;color:#fff;cursor:pointer;background:linear-gradient(90deg,#7c3aed,#c026d3);box-shadow:0 0 24px #a855f788}
+.row2{display:flex;gap:10px}
+.row2 .go.alt{background:#2a1d5c;box-shadow:none}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:14px 0}
+.stat{background:#1f1545;border-radius:12px;padding:10px;text-align:center}
+.stat b{display:block;font-size:28px;color:var(--gold)}
+.stat span{font-size:13px;color:var(--muted)}
+.kb{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+.kbrow{display:flex;gap:4px}
+.key{width:46px;height:46px;border-radius:7px;background:#241a4d;border:1px solid #ffffff18;position:relative;display:flex;align-items:center;justify-content:center;font-size:18px}
+.key small{position:absolute;top:1px;left:4px;font-size:11px;color:var(--muted)}
+.key i{position:absolute;bottom:1px;right:4px;font-size:11px;font-style:normal;color:#fff;font-weight:600}
+.topmiss{font-size:14px;color:#d8d0f5;margin-top:8px}
+@media (max-width:700px){
+  #legend{display:none}
+  .slot .w{font-size:22px;min-height:36px}
+  .key{width:26px;height:34px;font-size:13px}
+  .title{font-size:40px}
+  .center{width:120px}
+  .hint{display:none}
+}
+#kb{position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0}
+</style>
+</head>
+<body>
+<div id="game">
+  <button id="mute" title="เปิด/ปิดเสียง">🔊</button>
+  <div id="hud">
+    <div class="hpbox p">
+      <div class="name">นักพิมพ์ <span>Lv.1</span></div>
+      <div class="bar"><i id="phpBar"></i></div>
+      <div class="num" id="phpNum">100 / 100</div>
+    </div>
+    <div class="center">
+      <div class="wave">ไฟต์ 1 / 1</div>
+      <div id="combo"></div>
+    </div>
+    <div class="hpbox e">
+      <div class="name">โอนิดาบแดง <span>Lv.1</span></div>
+      <div class="bar"><i id="ehpBar"></i></div>
+      <div class="num" id="ehpNum">160 / 160</div>
+    </div>
+  </div>
+
+  <div id="arena">
+    <svg class="city" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true">
+      <g fill="#1d1242">
+        <rect x="0" y="120" width="70" height="180"/><rect x="80" y="70" width="55" height="230"/><rect x="145" y="150" width="80" height="150"/>
+        <rect x="640" y="90" width="60" height="210"/><rect x="710" y="140" width="90" height="160"/><rect x="880" y="60" width="50" height="240"/><rect x="935" y="130" width="65" height="170"/>
+      </g>
+      <g fill="#2a1a5e">
+        <rect x="380" y="150" width="16" height="150"/><rect x="580" y="150" width="16" height="150"/>
+        <path d="M350 140 Q488 120 626 140 L626 156 Q488 136 350 156 Z"/><rect x="370" y="176" width="236" height="12"/>
+      </g>
+      <g fill="#a78bfa" opacity=".5">
+        <rect x="92" y="90" width="6" height="8"/><rect x="110" y="120" width="6" height="8"/><rect x="655" y="110" width="6" height="8"/><rect x="890" y="80" width="6" height="8"/><rect x="905" y="140" width="6" height="8"/><rect x="730" y="170" width="6" height="8"/>
+      </g>
+    </svg>
+    <div class="ground"></div>
+
+    <div id="player" class="fighter"><div class="body">
+      <svg viewBox="0 0 140 200" width="140" height="200" aria-label="ผู้เล่น">
+        <ellipse cx="70" cy="192" rx="42" ry="7" fill="#000" opacity=".45"/>
+        <path d="M54 50 Q40 95 28 124 Q56 114 64 80 Z" fill="#3b2a8a"/>
+        <path d="M56 132 L44 186 L58 188 L68 136 Z" fill="#1c1838"/>
+        <path d="M74 132 L90 184 L103 182 L84 132 Z" fill="#1c1838"/>
+        <rect x="40" y="182" width="20" height="8" rx="3" fill="#7c3aed"/><rect x="88" y="178" width="20" height="8" rx="3" fill="#7c3aed"/>
+        <path d="M50 82 Q70 72 92 82 L90 136 L52 136 Z" fill="#2b2250"/>
+        <path d="M48 82 Q58 76 64 80 L60 138 L46 134 Z" fill="#e5e1f5"/>
+        <path d="M92 82 L96 132 L84 136 L82 80 Z" fill="#e5e1f5"/>
+        <rect x="52" y="120" width="38" height="6" fill="#7c3aed"/>
+        <path d="M52 88 L38 116 L46 120 L60 94 Z" fill="#e5e1f5"/>
+        <path d="M84 86 L118 96 L116 106 L82 98 Z" fill="#e5e1f5"/>
+        <circle cx="121" cy="101" r="7" fill="#7c3aed"/>
+        <circle cx="72" cy="60" r="19" fill="#f3d2bf"/>
+        <path d="M52 62 Q48 34 74 36 Q98 38 92 62 Q88 50 78 48 Q70 54 58 52 Q56 60 52 70 Z" fill="#3b2a8a"/>
+        <rect x="80" y="58" width="5" height="6" rx="1.5" fill="#38bdf8"/>
+        <path d="M58 78 Q72 84 88 76 L90 82 Q72 92 56 84 Z" fill="#c084fc"/>
+      </svg>
+    </div></div>
+
+    <div id="enemy" class="fighter"><div class="body">
+      <svg viewBox="0 0 170 220" width="170" height="220" aria-label="ศัตรู">
+        <ellipse cx="85" cy="212" rx="55" ry="8" fill="#000" opacity=".45"/>
+        <path d="M60 80 Q40 150 52 205 L120 205 Q130 140 112 80 Z" fill="#2a0a14"/>
+        <path d="M68 150 L58 206 L74 206 L80 152 Z" fill="#1a0d14"/><path d="M92 150 L104 206 L118 204 L102 150 Z" fill="#1a0d14"/>
+        <path d="M58 84 Q85 72 114 84 L110 152 L62 152 Z" fill="#4a0f1f"/>
+        <path d="M62 100 L110 100 L108 108 L64 108 Z" fill="#b91c1c"/><path d="M64 126 L108 126 L107 132 L65 132 Z" fill="#b91c1c"/>
+        <path d="M48 82 L70 78 L66 100 L46 98 Z" fill="#7f1d1d"/><path d="M104 78 L126 84 L126 100 L106 100 Z" fill="#7f1d1d"/>
+        <path d="M60 92 L36 112 L42 120 L66 100 Z" fill="#4a0f1f"/>
+        <line x1="40" y1="116" x2="2" y2="68" stroke="#e5e7eb" stroke-width="4" stroke-linecap="round"/>
+        <line x1="40" y1="116" x2="50" y2="128" stroke="#7f1d1d" stroke-width="6"/>
+        <path d="M64 42 Q60 70 52 86 L70 72 Z" fill="#111"/><path d="M106 42 Q112 70 120 86 L102 72 Z" fill="#111"/>
+        <path d="M66 40 Q85 26 104 40 L106 66 Q85 80 64 66 Z" fill="#dc2626"/>
+        <path d="M68 40 L58 12 L77 34 Z" fill="#f5f5f4"/><path d="M102 40 L112 12 L93 34 Z" fill="#f5f5f4"/>
+        <path d="M70 50 L81 54 L70 57 Z" fill="#fde047"/><path d="M88 54 L99 50 L99 57 Z" fill="#fde047"/>
+        <path d="M72 64 L98 64 L94 71 L76 71 Z" fill="#fff"/>
+      </svg>
+    </div></div>
+
+    <div id="legend">
+      <b>✓</b> พิมพ์ถูก = ตี<br><b>✓</b> พิมพ์แม่น = คอมโบ<br><b>✓</b> พิมพ์ผิด = เสียจังหวะ
+    </div>
+
+    <div id="defBox" hidden>
+      <div class="lbl">ศัตรูกำลังชาร์จ! พิมพ์เพื่อป้องกัน</div>
+      <div class="w" id="defWord"></div>
+      <div class="cbar"><div class="win" id="defWin"></div><i id="defBar"></i></div>
+    </div>
+
+    <div id="ultBox" hidden>
+      <div class="lbl">✦ ท่าไม้ตาย ✦</div>
+      <div class="w" id="ultWord"></div>
+      <div class="tbar"><i id="ultTimeBar"></i></div>
+    </div>
+
+    <div id="fx"></div>
+    <div id="toast"></div>
+  </div>
+
+  <div id="words">
+    <div class="slot" id="s0"><span class="tag"></span><div class="tier">⚡ เร็ว</div><div class="w"></div><div class="dmg"></div></div>
+    <div class="slot" id="s1"><span class="tag"></span><div class="tier">⚔ กลาง</div><div class="w"></div><div class="dmg"></div></div>
+    <div class="slot" id="s2"><span class="tag"></span><div class="tier">🔥 แรง</div><div class="w"></div><div class="dmg"></div></div>
+  </div>
+  <div id="buf"></div>
+
+  <div id="bottom">
+    <div class="stam" id="stamBox">Stamina <span id="tired"></span><div class="bar"><i id="stBar"></i></div></div>
+    <div class="hint"><kbd>Tab</kbd> ท่าไม้ตาย · <kbd>Esc</kbd> หยุดเกม · พิมพ์คำไหนก็ได้ใน 3 ช่อง</div>
+    <div class="ult" id="ultBtn"><span>ท่าไม้ตาย</span><div class="bar"><i id="ultBar"></i></div><kbd>Tab</kbd></div>
+  </div>
+
+  <!-- start -->
+  <div class="overlay" id="startScr">
+    <div class="card">
+      <div class="title">Type Game</div>
+      <div class="sub">Type · Fight · Adventure — ต้นแบบไฟต์แรก</div>
+      <h3>ภาษาของคำที่พิมพ์</h3>
+      <div class="opts" data-group="mode">
+        <button class="opt sel" data-v="th">🇹🇭 ไทยล้วน<small>แป้นเกษมณี</small></button>
+        <button class="opt" data-v="en">🇬🇧 อังกฤษล้วน<small>QWERTY</small></button>
+        <button class="opt" data-v="bi">🔀 สองภาษา<small>ต้องสลับแป้นกลางไฟต์</small></button>
+      </div>
+      <h3>ความยาก</h3>
+      <div class="opts" data-group="diff">
+        <button class="opt" data-v="easy">ง่าย<small>ศัตรูชาร์จช้า</small></button>
+        <button class="opt sel" data-v="normal">ปกติ</button>
+        <button class="opt" data-v="hard">ยาก<small>ศัตรูโจมตีถี่</small></button>
+      </div>
+      <h3>วิธีเล่น</h3>
+      <ul class="rules">
+        <li><b>โจมตี:</b> พิมพ์คำไหนก็ได้จาก 3 ช่อง คำสั้นออกเร็ว คำยาวตีแรง</li>
+        <li><b>ป้องกัน:</b> เมื่อศัตรูชาร์จ ให้พิมพ์คำในกล่องสีแดงให้ทัน กันในช่วงสีทองสุดท้ายจะ <b>สวนกลับ ×2</b></li>
+        <li><b>คอมโบ:</b> พิมพ์ถูกต่อเนื่องดาเมจคูณขึ้น พิมพ์ผิดตัวเดียวคอมโบหลุด</li>
+        <li><b>ท่าไม้ตาย:</b> เกจเต็มแล้วกด <kbd>Tab</kbd> แล้วพิมพ์ประโยคให้จบทันเวลา</li>
+        <li><b>Stamina:</b> พิมพ์มั่วจะเหนื่อย ดาเมจเหลือครึ่งเดียว</li>
+        <li>ภาษาไทยพิมพ์วรรณยุกต์กับสระบน/ล่างสลับลำดับได้ เช่น น + ำ + ้ ก็นับว่า "น้ำ"</li>
+      </ul>
+      <button class="go" id="startBtn">เริ่มไฟต์ <kbd>Enter</kbd></button>
+    </div>
+  </div>
+
+  <!-- pause -->
+  <div class="overlay" id="pauseScr" hidden>
+    <div class="card" style="max-width:420px;text-align:center">
+      <div class="title" style="font-size:40px">หยุดชั่วคราว</div>
+      <p class="sub">กด <kbd>Esc</kbd> หรือคลิกเพื่อเล่นต่อ</p>
+      <button class="go" id="resumeBtn">เล่นต่อ</button>
+    </div>
+  </div>
+
+  <!-- result -->
+  <div class="overlay" id="resultScr" hidden>
+    <div class="card">
+      <div class="title" id="resTitle">ชนะ!</div>
+      <div class="sub" id="resSub"></div>
+      <div class="stats" id="resStats"></div>
+      <h3>แป้นที่พลาดบ่อย</h3>
+      <div id="resKb"></div>
+      <div class="topmiss" id="resTop"></div>
+      <div class="row2">
+        <button class="go" id="againBtn">เล่นอีกครั้ง <kbd>Enter</kbd></button>
+        <button class="go alt" id="menuBtn">เปลี่ยนโหมด</button>
+      </div>
+    </div>
+  </div>
+  <div id="flash"></div>
+  <input id="kb" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="ช่องพิมพ์">
+</div>
+
+<script>
+'use strict';
+/* ================= Data ================= */
+const WORDS = {
+  th: {
+    s: ['ตี','ต่อย','เตะ','ฟัน','ศอก','เข่า','หมัด','ฟาด','ทุบ','ชก','แทง','ผลัก','ถีบ','ปัก'],
+    m: ['นักรบ','ดาบไฟ','ฟ้าผ่า','พายุ','มังกร','เสือดาว','ฟ้าร้อง','หมัดเหล็ก','น้ำแข็ง','ฉลาม','ฆ้องทอง','ภูผา','ใบมีด','เพลิงแค้น'],
+    l: ['ต้มยำกุ้ง','ผัดกะเพรา','ก๋วยเตี๋ยว','สายฟ้าฟาด','หมัดมังกรไฟ','ภูเขาไฟระเบิด','ผู้ใหญ่บ้าน','ปฏิกิริยา','ระฆังทองคำ','ส้มตำปูปลาร้า','พายุหมุนทลาย','เชียงใหม่','ฐานทัพมืด','พฤหัสบดี']
+  },
+  en: {
+    s: ['hit','jab','kick','punch','slam','bash','cut','claw','smash','stab'],
+    m: ['strike','thunder','dragon','falcon','hammer','cyclone','Blade','venom','Tiger','frost'],
+    l: ['lightning','uppercut','hurricane','earthquake','Thunderbolt','firestorm','avalanche','meteorite','Shadowstep','whirlwind']
+  }
+};
+const DEF = { th: ['กัน','ปัด','หลบ','รับ'], en: ['block','dodge','parry','guard'] };
+const ULT = {
+  th: ['พายุสายฟ้าฟาดลงกลางสนามรบ','หมัดมังกรเพลิงพุ่งทะยานสู่ท้องฟ้า','ดาบแห่งแสงจันทร์ตัดผ่านความมืด'],
+  en: ['Thunder breaks the silent night','The dragon rises from the burning sky','A blade of moonlight cuts the dark']
+};
+const DIFF = {
+  easy:   { idle: [5, 8],   charge: 3.4, dmg: 8,  ult: 1.3, label: 'ง่าย' },
+  normal: { idle: [3.5, 6], charge: 2.5, dmg: 12, ult: 1.0, label: 'ปกติ' },
+  hard:   { idle: [2.2, 4], charge: 1.9, dmg: 16, ult: 0.85, label: 'ยาก' }
+};
+const COUNTER_WINDOW = 0.35;   // วินาทีสุดท้ายของการชาร์จที่นับเป็นสวนกลับ
+const KB_TH = {
+  u: ['ๅ/-ภถุึคตจขช', 'ๆไำพะัีรนยบลฃ', 'ฟหกดเ้่าสวง', 'ผปแอิืทมใฝ'],
+  s: ['+๑๒๓๔ู฿๕๖๗๘๙', '๐"ฎฑธํ๊ณฯญฐ,ฅ', 'ฤฆฏโฌ็๋ษศซ.', '()ฉฮฺ์?ฒฬฦ']
+};
+const KB_EN = {
+  u: ['1234567890-=', 'qwertyuiop[]\\', "asdfghjkl;'", 'zxcvbnm,./'],
+  s: ['!@#$%^&*()_+', 'QWERTYUIOP{}|', 'ASDFGHJKL:"', 'ZXCVBNM<>?']
+};
+
+/* ================= Thai-aware matching =================
+   แบ่งคำเป็น "กลุ่มตัวอักษร" (พยัญชนะ + สระบน/ล่าง/วรรณยุกต์ที่ซ้อนอยู่)
+   ภายในกลุ่มเดียวกัน ยอมให้พิมพ์เครื่องหมายสลับลำดับได้ */
+const MARK_RE = /[ัำ-ฺ็-๎]/;
+const isThai = c => /[฀-๿]/.test(c);
+function markRank(c) {
+  if (c === 'ำ') return 3;
+  const k = c.charCodeAt(0);
+  if (k >= 0xE48 && k <= 0xE4B) return 1;
+  if (k >= 0xE4C && k <= 0xE4E) return 2;
+  return 0;
+}
+function clusters(s, raw) {
+  const out = [];
+  for (const ch of s) {
+    if (MARK_RE.test(ch) && out.length) out[out.length - 1].m.push(ch);
+    else out.push({ b: ch, m: [] });
+  }
+  if (!raw) for (const c of out) c.m.sort((a, b) => markRank(a) - markRank(b));
+  return out;
+}
+const sameMarks = (a, b) => a.length === b.length && a.every((x, i) => x === b[i]);
+function missingMarks(have, need) {
+  const r = [...need];
+  for (const x of have) { const i = r.indexOf(x); if (i < 0) return null; r.splice(i, 1); }
+  return r;
+}
+function match(typed, w) {
+  const tc = clusters(typed), gc = w.c;
+  if (!tc.length) return { ok: true, n: 0, partial: false, full: false };
+  if (tc.length > gc.length) return { ok: false };
+  for (let i = 0; i < tc.length - 1; i++)
+    if (tc[i].b !== gc[i].b || !sameMarks(tc[i].m, gc[i].m)) return { ok: false };
+  const l = tc.length - 1, a = tc[l], g = gc[l];
+  if (a.b !== g.b) return { ok: false };
+  const miss = missingMarks(a.m, g.m);
+  if (!miss) return { ok: false };
+  return { ok: true, n: tc.length, partial: miss.length > 0, full: !miss.length && tc.length === gc.length };
+}
+function expectedNext(typed, w) {
+  const tc = clusters(typed), gc = w.c;
+  if (!tc.length) return gc[0].b;
+  const l = tc.length - 1;
+  const miss = missingMarks(tc[l].m, gc[l].m);
+  if (miss && miss.length) return miss[0];
+  return gc[l + 1] ? gc[l + 1].b : null;
+}
+function makeWord(text, lang, kind) {
+  return { text, lang, kind, c: clusters(text), raw: clusters(text, true), len: [...text].length };
+}
+
+/* ================= State ================= */
+const $ = s => document.querySelector(s);
+const kb = $('#kb'), arena = $('#arena');
+const cfg = { mode: 'th', diff: 'normal' };
+let S;
+function freshState() {
+  return {
+    running: false, paused: false, over: false,
+    php: 100, pmax: 100, ehp: 160, emax: 160,
+    stamina: 100, tired: false, ult: 0,
+    ultMode: false, ultWord: null, ultTime: 0, ultMax: 0,
+    combo: 0, maxCombo: 0, buf: '',
+    slots: [null, null, null], def: null,
+    enemy: { state: 'idle', t: 2.5, charge: 0, chargeMax: 1 },
+    freeze: 0,
+    stats: { correct: 0, errors: 0, words: 0, blocks: 0, counters: 0, start: 0, end: 0, miss: {} }
+  };
+}
+const rand = (a, b) => a + Math.random() * (b - a);
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const pickLang = () => cfg.mode === 'bi' ? (Math.random() < 0.5 ? 'th' : 'en') : cfg.mode;
+const comboMult = () => 1 + Math.min(S.combo, 20) * 0.1;
+const TIERS = ['s', 'm', 'l'];
+
+function newSlotWord(i) {
+  const others = S.slots.filter((w, j) => w && j !== i);
+  if (S.def) others.push(S.def);
+  let w;
+  for (let k = 0; k < 40; k++) {
+    const lang = pickLang();
+    w = makeWord(pick(WORDS[lang][TIERS[i]]), lang, 'atk');
+    if (!others.some(o => o.text === w.text || o.c[0].b === w.c[0].b)) break;
+  }
+  S.slots[i] = w;
+}
+
+/* ================= Audio ================= */
+let AC = null, muted = false;
+function ac() { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); return AC; }
+function tone(f, dur, type = 'sine', vol = 0.15, f2) {
+  if (muted) return; const c = ac(), t = c.currentTime;
+  const o = c.createOscillator(), g = c.createGain();
+  o.type = type; o.frequency.setValueAtTime(f, t);
+  if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+  g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(c.destination); o.start(t); o.stop(t + dur + 0.02);
+}
+function noise(dur, vol, freq) {
+  if (muted) return; const c = ac(), t = c.currentTime;
+  const buf = c.createBuffer(1, Math.floor(c.sampleRate * dur), c.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+  const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+  s.buffer = buf; f.type = 'lowpass'; f.frequency.value = freq; g.gain.value = vol;
+  s.connect(f).connect(g).connect(c.destination); s.start(t);
+}
+const SFX = {
+  tick() { tone(1100 + Math.random() * 300, 0.035, 'square', 0.03); },
+  err() { tone(150, 0.14, 'sawtooth', 0.1, 90); },
+  hit(p) { noise(0.1 + p * 0.1, 0.35 + p * 0.25, 900 + p * 900); tone(130, 0.18, 'sine', 0.4, 45); },
+  block() { tone(1500, 0.18, 'triangle', 0.14, 1200); tone(2300, 0.1, 'square', 0.04); },
+  counter() { tone(900, 0.08, 'square', 0.1); setTimeout(() => { noise(0.25, 0.6, 2200); tone(160, 0.3, 'sine', 0.5, 40); }, 60); },
+  warn() { tone(560, 0.08, 'square', 0.07); setTimeout(() => tone(560, 0.08, 'square', 0.07), 120); },
+  hurt() { noise(0.22, 0.4, 500); tone(90, 0.3, 'sine', 0.45, 35); },
+  ultStart() { tone(200, 0.6, 'sawtooth', 0.08, 800); },
+  ultHit() { noise(0.6, 0.7, 2500); tone(70, 0.7, 'sine', 0.6, 25); },
+  win() { [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => tone(f, 0.25, 'triangle', 0.15), i * 120)); },
+  lose() { [392, 330, 262].forEach((f, i) => setTimeout(() => tone(f, 0.35, 'triangle', 0.15), i * 180)); }
+};
+$('#mute').onclick = () => { muted = !muted; $('#mute').textContent = muted ? '🔇' : '🔊'; kb.focus(); };
+
+/* ================= FX helpers ================= */
+function centerOf(el) {
+  const a = arena.getBoundingClientRect(), r = el.getBoundingClientRect();
+  return { x: r.left - a.left + r.width / 2, y: r.top - a.top + r.height * 0.35 };
+}
+function fx(cls, text, el, dx = 0, dy = 0) {
+  const d = document.createElement('div'), c = centerOf(el);
+  d.className = 'fx ' + cls; d.textContent = text;
+  d.style.left = (c.x + dx) + 'px'; d.style.top = (c.y + dy) + 'px';
+  $('#fx').appendChild(d); setTimeout(() => d.remove(), 950);
+}
+function spark(el, extra = '') {
+  const d = document.createElement('div'), c = centerOf(el);
+  d.className = 'spark ' + extra; d.style.left = c.x + 'px'; d.style.top = (c.y + 20) + 'px';
+  $('#fx').appendChild(d); setTimeout(() => d.remove(), 350);
+}
+function anim(el, cls, ms) {
+  el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls);
+  clearTimeout(el['_t' + cls]); el['_t' + cls] = setTimeout(() => el.classList.remove(cls), ms);
+}
+function hitstop(ms) { S.freeze = Math.max(S.freeze, ms); }
+function shake() { anim(arena, 'shake', 300); }
+function flash(kind) { anim($('#flash'), kind, 420); }
+let toastT;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 1800); }
+
+/* ================= Combat ================= */
+const P = $('#player'), E = $('#enemy');
+function dealDamage(dmg) {
+  S.ehp = Math.max(0, S.ehp - dmg);
+  if (S.ehp <= 0) endGame(true);
+}
+function addUlt(n) {
+  const was = S.ult >= 100;
+  S.ult = Math.min(100, S.ult + n);
+  if (!was && S.ult >= 100) toast('ท่าไม้ตายพร้อม! กด Tab');
+}
+function addCombo() { S.combo++; S.maxCombo = Math.max(S.maxCombo, S.combo); }
+
+function attack(i) {
+  const w = S.slots[i];
+  const mult = comboMult();
+  const dmg = Math.round((3 + w.len * 2.2) * mult * (S.tired ? 0.5 : 1));
+  addCombo(); S.stats.words++;
+  const power = Math.min(1, w.len / 10);
+  anim(P, 'lunge', 280);
+  setTimeout(() => {
+    anim(E, 'hurt', 360); spark(E); SFX.hit(power);
+    fx(power > 0.6 ? 'big' : 'dmg', '-' + dmg, E, rand(-30, 30));
+    hitstop(50 + power * 70); if (power > 0.5) shake();
+  }, 90);
+  addUlt(dmg * 0.8);
+  dealDamage(dmg);
+  newSlotWord(i);
+  const el = $('#s' + i); anim(el, 'pop', 260);
+}
+
+function block() {
+  const rem = S.enemy.chargeMax - S.enemy.charge;
+  S.def = null; S.enemy.state = 'idle'; S.enemy.t = rand(...DIFF[cfg.diff].idle);
+  addCombo();
+  anim(P, 'shield', 460);
+  if (rem <= COUNTER_WINDOW) {
+    S.stats.counters++;
+    const dmg = Math.round(26 * comboMult() * (S.tired ? 0.5 : 1));
+    SFX.counter(); anim(P, 'lunge', 280);
+    setTimeout(() => { anim(E, 'hurt', 360); spark(E); spark(E, 'blue'); fx('gold', 'COUNTER! -' + dmg, E, 0, -10); shake(); hitstop(140); }, 90);
+    addUlt(14); dealDamage(dmg);
+  } else {
+    S.stats.blocks++;
+    SFX.block(); spark(P, 'blue'); fx('msg', 'BLOCK', P, 40, -20); hitstop(60);
+    addUlt(6);
+  }
+}
+
+function enemyStartCharge() {
+  const e = S.enemy;
+  e.state = 'charge'; e.charge = 0; e.chargeMax = DIFF[cfg.diff].charge;
+  const lang = pickLang();
+  let t; do { t = pick(DEF[lang]); } while (S.slots.some(w => w && w.c[0].b === t[0]) && Math.random() < 0.9);
+  S.def = makeWord(t, lang, 'def');
+  S.buf = ''; kb.value = '';
+  E.classList.add('charging');
+  SFX.warn();
+  renderWords();
+}
+
+function enemyHit() {
+  const dmg = DIFF[cfg.diff].dmg;
+  S.def = null; S.enemy.state = 'idle'; S.enemy.t = rand(...DIFF[cfg.diff].idle);
+  E.classList.remove('charging');
+  anim(E, 'lunge', 320);
+  setTimeout(() => {
+    anim(P, 'hurt', 360); SFX.hurt(); flash('red'); shake(); hitstop(90);
+    fx('hurtp', '-' + dmg, P);
+    if (S.combo >= 3) fx('bad', 'คอมโบหลุด', P, 0, -40);
+    S.combo = 0;
+    S.php = Math.max(0, S.php - dmg);
+    if (S.php <= 0) endGame(false);
+  }, 110);
+  revalidate();
+}
+
+function mistake() {
+  S.stats.errors++;
+  if (S.combo >= 3) fx('bad', 'คอมโบหลุด', P, 0, -40);
+  S.combo = 0;
+  S.stamina = Math.max(0, S.stamina - 10);
+  SFX.err();
+  anim($('#words'), 'err', 230); anim(P, 'wobble', 260);
+  if (S.ultMode) anim($('#ultBox'), 'err', 230);
+}
+
+function tryUlt() {
+  if (!S.running || S.paused || S.ultMode || S.ult < 100) return;
+  S.ultMode = true; S.ult = 0;
+  S.def = null; S.enemy.state = 'idle'; S.enemy.t = rand(...DIFF[cfg.diff].idle); E.classList.remove('charging');
+  const lang = pickLang();
+  S.ultWord = makeWord(pick(ULT[lang]), lang, 'ult');
+  S.ultMax = (S.ultWord.len * 0.32 + 3) * DIFF[cfg.diff].ult; S.ultTime = S.ultMax;
+  S.buf = ''; kb.value = '';
+  $('#ultBox').hidden = false; flash('white'); SFX.ultStart();
+  renderWords();
+}
+function endUlt() { S.ultMode = false; S.ultWord = null; S.buf = ''; kb.value = ''; $('#ultBox').hidden = true; renderWords(); }
+function ultHit() {
+  const dmg = Math.round((30 + S.ultWord.len * 1.6) * comboMult());
+  addCombo(); S.stats.words++;
+  endUlt();
+  anim(P, 'lunge', 280); flash('white'); SFX.ultHit();
+  setTimeout(() => { anim(E, 'hurt', 360); spark(E, 'huge'); fx('big', 'ท่าไม้ตาย! -' + dmg, E, 0, -20); shake(); hitstop(220); }, 90);
+  dealDamage(dmg);
+}
+function ultFail() { endUlt(); fx('bad', 'ท่าไม้ตายพลาด!', P, 0, -40); SFX.err(); }
+
+/* ================= Input ================= */
+function candidates() {
+  if (S.ultMode) return [S.ultWord];
+  const c = S.slots.filter(Boolean);
+  if (S.def) c.unshift(S.def);
+  return c;
+}
+const validFor = v => candidates().filter(w => match(v, w).ok);
+function revalidate() { if (S.buf && !validFor(S.buf).length) { S.buf = ''; kb.value = ''; } renderWords(); }
+
+function fire(w) {
+  S.buf = ''; kb.value = '';
+  if (w.kind === 'def') block();
+  else if (w.kind === 'ult') ultHit();
+  else attack(S.slots.indexOf(w));
+  E.classList.toggle('charging', !!S.def);
+  renderWords();
+}
+
+let composing = false;
+kb.addEventListener('compositionstart', () => composing = true);
+kb.addEventListener('compositionend', () => { composing = false; onInput(); });
+kb.addEventListener('input', () => { if (!composing) onInput(); });
+
+function onInput() {
+  if (!S || !S.running || S.paused) { kb.value = ''; return; }
+  let v = kb.value.replace(/[`~_]/g, '');
+  v = S.ultMode ? v.replace(/^\s+/, '').replace(/\s{2,}/g, ' ') : v.replace(/\s+/g, '');
+  if (v === S.buf) { kb.value = v; return; }
+  const ok = validFor(v);
+  if (v === '' || ok.length) {
+    const added = [...v].length - [...S.buf].length;
+    S.buf = v; kb.value = v;
+    if (added > 0) { S.stats.correct += added; S.stamina = Math.max(0, S.stamina - 1.1 * added); SFX.tick(); }
+    const done = ok.find(w => match(v, w).full);
+    if (done) fire(done); else renderWords();
+    return;
+  }
+  // ผิด: ปฏิเสธตัวที่พิมพ์ผิด
+  const prevOk = validFor(S.buf);
+  const added = v.startsWith(S.buf) ? [...v.slice(S.buf.length)] : [];
+  kb.value = S.buf;
+  const ch = added[added.length - 1];
+  if (ch) {
+    const exp = prevOk.map(w => expectedNext(S.buf, w)).filter(Boolean);
+    const expThai = exp.length && exp.every(isThai), expLatin = exp.length && exp.every(e => !isThai(e));
+    if ((/[a-zA-Z]/.test(ch) && expThai) || (isThai(ch) && expLatin)) {
+      toast(expThai ? 'แป้นยังเป็นภาษาอังกฤษ — สลับเป็นไทย (~ หรือ Alt+Shift)' : 'แป้นยังเป็นภาษาไทย — สลับเป็นอังกฤษ (~ หรือ Alt+Shift)');
+      tone(300, 0.06, 'square', 0.05);
+      return;   // ไม่นับเป็นพิมพ์ผิด
+    }
+    if (exp.length === 1 || (S.buf !== '' && exp.length)) S.stats.miss[exp[0]] = (S.stats.miss[exp[0]] || 0) + 1;
+  }
+  mistake();
+  renderWords();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Tab') { e.preventDefault(); tryUlt(); return; }
+  if (e.key === 'Escape') { if (S && S.running) setPause(!S.paused); return; }
+  if (e.key === 'Enter') {
+    if (!$('#startScr').hidden || !$('#resultScr').hidden) { e.preventDefault(); startGame(); return; }
+    if (S && S.paused) { setPause(false); return; }
+  }
+});
+document.addEventListener('mousedown', e => { if (!e.target.closest('button')) setTimeout(() => kb.focus(), 0); });
+window.addEventListener('blur', () => { if (S && S.running && !S.paused) setPause(true); });
+
+function setPause(p) {
+  S.paused = p; $('#pauseScr').hidden = !p;
+  if (!p) kb.focus();
+}
+$('#resumeBtn').onclick = () => setPause(false);
+$('#pauseScr').onclick = e => { if (e.target.id === 'pauseScr') setPause(false); };
+
+/* ================= Rendering ================= */
+function wordHTML(w) {
+  const m = match(S.buf, w);
+  const n = m.ok ? m.n : 0;
+  return w.raw.map((c, i) => {
+    const txt = (c.b === ' ' ? ' ' : c.b) + c.m.join('');
+    let cls = 'rest';
+    if (i < n - 1 || (i === n - 1 && !m.partial)) cls = 'done';
+    else if (i === n - 1 && m.partial) cls = 'part';
+    else if (i === n && m.ok) cls = 'next';
+    return `<span class="${cls}">${esc(txt)}</span>`;
+  }).join('');
+}
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function renderWords() {
+  const mult = comboMult();
+  S.slots.forEach((w, i) => {
+    const el = $('#s' + i);
+    if (!w) return;
+    el.querySelector('.w').innerHTML = wordHTML(w);
+    el.querySelector('.tag').textContent = cfg.mode === 'bi' ? (w.lang === 'th' ? 'TH' : 'EN') : '';
+    el.querySelector('.dmg').textContent = '⚔ ' + Math.round((3 + w.len * 2.2) * mult * (S.tired ? 0.5 : 1));
+    const m = match(S.buf, w);
+    el.classList.toggle('off', S.ultMode || (S.buf !== '' && !m.ok));
+    el.classList.toggle('lock', !S.ultMode && S.buf !== '' && m.ok);
+  });
+  $('#defBox').hidden = !S.def;
+  if (S.def) $('#defWord').innerHTML = wordHTML(S.def);
+  if (S.ultMode) $('#ultWord').innerHTML = wordHTML(S.ultWord);
+  $('#buf').innerHTML = S.buf ? 'กำลังพิมพ์: <b>' + esc(S.buf) + '</b>' : '';
+}
+
+function renderHUD() {
+  $('#phpBar').style.width = (S.php / S.pmax * 100) + '%';
+  $('#ehpBar').style.width = (S.ehp / S.emax * 100) + '%';
+  $('#phpNum').textContent = Math.ceil(S.php) + ' / ' + S.pmax;
+  $('#ehpNum').textContent = Math.ceil(S.ehp) + ' / ' + S.emax;
+  $('#stBar').style.width = S.stamina + '%';
+  $('#stamBox').classList.toggle('tired', S.tired);
+  $('#tired').textContent = S.tired ? 'เหนื่อย! ดาเมจ ×0.5' : '';
+  $('#ultBar').style.width = S.ult + '%';
+  $('#ultBtn').classList.toggle('ready', S.ult >= 100 && !S.ultMode);
+  $('#combo').innerHTML = S.combo >= 2 ? `COMBO ${S.combo}<small>ดาเมจ ×${comboMult().toFixed(1)}</small>` : '';
+  if (S.def) {
+    const e = S.enemy, rem = e.chargeMax - e.charge;
+    $('#defBar').style.width = Math.min(100, e.charge / e.chargeMax * 100) + '%';
+    $('#defWin').style.width = (COUNTER_WINDOW / e.chargeMax * 100) + '%';
+    $('#defBox').classList.toggle('counter', rem <= COUNTER_WINDOW);
+    $('#defBox .lbl').textContent = rem <= COUNTER_WINDOW ? '⚡ ตอนนี้! สวนกลับได้ ×2' : 'ศัตรูกำลังชาร์จ! พิมพ์เพื่อป้องกัน';
+  }
+  if (S.ultMode) $('#ultTimeBar').style.width = (S.ultTime / S.ultMax * 100) + '%';
+  arena.classList.toggle('frozen', S.freeze > 0);
+}
+
+/* ================= Loop ================= */
+function update(dt) {
+  S.stamina = Math.min(100, S.stamina + 14 * dt);
+  if (S.stamina <= 0) S.tired = true;
+  if (S.tired && S.stamina >= 40) { S.tired = false; renderWords(); }
+  if (S.ultMode) {
+    S.ultTime -= dt;
+    if (S.ultTime <= 0) ultFail();
+    return;
+  }
+  const e = S.enemy;
+  if (e.state === 'idle') { e.t -= dt; if (e.t <= 0) enemyStartCharge(); }
+  else if (e.state === 'charge') { e.charge += dt; if (e.charge >= e.chargeMax) enemyHit(); }
+}
+let last = 0;
+function loop(ts) {
+  const dt = Math.min(0.05, (ts - last) / 1000 || 0); last = ts;
+  if (S && S.running && !S.paused) {
+    if (S.freeze > 0) S.freeze -= dt * 1000;
+    else update(dt);
+  }
+  if (S) renderHUD();
+  requestAnimationFrame(loop);
+}
+
+/* ================= Game flow ================= */
+function startGame() {
+  S = freshState();
+  [0, 1, 2].forEach(newSlotWord);
+  S.running = true; S.stats.start = performance.now();
+  P.className = 'fighter'; E.className = 'fighter';
+  $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#ultBox').hidden = true; $('#pauseScr').hidden = true;
+  kb.value = ''; kb.focus(); ac();
+  renderWords();
+  toast(cfg.mode === 'en' ? 'พร้อม! ตั้งแป้นเป็นภาษาอังกฤษ' : cfg.mode === 'th' ? 'พร้อม! ตั้งแป้นเป็นภาษาไทย' : 'พร้อม! สลับแป้นด้วย ~ หรือ Alt+Shift');
+}
+
+function endGame(win) {
+  if (!S.running) return;
+  S.running = false; S.stats.end = performance.now();
+  S.def = null; E.classList.remove('charging'); $('#defBox').hidden = true; $('#ultBox').hidden = true;
+  setTimeout(() => {
+    (win ? E : P).classList.add('ko');
+    fx(win ? 'big' : 'hurtp', win ? 'K.O.!' : 'แพ้...', win ? E : P, 0, -30);
+    win ? SFX.win() : SFX.lose();
+  }, 250);
+  setTimeout(() => showResult(win), 1400);
+}
+
+function showResult(win) {
+  const st = S.stats, min = Math.max(1 / 60, (st.end - st.start) / 60000);
+  const wpm = Math.round(st.correct / 5 / min);
+  const acc = st.correct + st.errors ? (st.correct / (st.correct + st.errors) * 100) : 100;
+  const secs = Math.round((st.end - st.start) / 1000);
+  $('#resTitle').textContent = win ? 'ชนะ!' : 'แพ้...';
+  $('#resSub').textContent = (win ? 'โค่นโอนิดาบแดงได้แล้ว' : 'ลองใหม่อีกครั้ง') + ` · ความยาก${DIFF[cfg.diff].label} · ${{ th: 'ไทยล้วน', en: 'อังกฤษล้วน', bi: 'สองภาษา' }[cfg.mode]}`;
+  const stat = (v, l) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`;
+  $('#resStats').innerHTML =
+    stat(wpm, 'WPM เฉลี่ย') + stat(acc.toFixed(1) + '%', 'ความแม่นยำ') + stat(S.maxCombo, 'คอมโบสูงสุด') +
+    stat(st.words, 'คำที่โจมตี') + stat(`${st.blocks}/${st.counters}`, 'กัน / สวนกลับ') +
+    stat(`${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`, 'เวลา');
+  const langs = cfg.mode === 'bi' ? ['th', 'en'] : [cfg.mode];
+  $('#resKb').innerHTML = langs.map(l => heatmap(l === 'th' ? KB_TH : KB_EN)).join('<div style="height:10px"></div>');
+  const top = Object.entries(st.miss).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  $('#resTop').innerHTML = top.length
+    ? 'พลาดบ่อยที่สุด: ' + top.map(([c, n]) => `<b>${esc(dispChar(c))}</b> (${n})`).join(' · ')
+    : 'ไม่พลาดเลย เยี่ยมมาก! 🎉';
+  $('#resultScr').hidden = false;
+}
+const dispChar = c => c === ' ' ? 'Space' : (MARK_RE.test(c) ? '◌' + c : c);
+function heatmap(L) {
+  const miss = S.stats.miss;
+  const rows = L.u.map((r, i) => {
+    const u = [...r], s = [...L.s[i]];
+    return u.map((c, j) => ({ u: c, s: s[j], n: (miss[c] || 0) + (s[j] && s[j] !== c ? (miss[s[j]] || 0) : 0) }));
+  });
+  const max = Math.max(1, ...rows.flat().map(k => k.n));
+  return '<div class="kb">' + rows.map((r, i) =>
+    `<div class="kbrow" style="padding-left:${i * 14}px">` + r.map(k => {
+      const a = k.n ? 0.25 + 0.7 * k.n / max : 0;
+      return `<div class="key" style="${a ? `background:rgba(248,113,113,${a.toFixed(2)})` : ''}">` +
+        `<small>${esc(dispChar(k.s || ''))}</small>${esc(dispChar(k.u))}${k.n ? `<i>${k.n}</i>` : ''}</div>`;
+    }).join('') + '</div>').join('') + '</div>';
+}
+
+/* ================= Menu ================= */
+document.querySelectorAll('.opts').forEach(g => g.addEventListener('click', e => {
+  const b = e.target.closest('.opt'); if (!b) return;
+  g.querySelectorAll('.opt').forEach(o => o.classList.toggle('sel', o === b));
+  cfg[g.dataset.group] = b.dataset.v;
+}));
+$('#startBtn').onclick = startGame;
+$('#againBtn').onclick = startGame;
+$('#menuBtn').onclick = () => { $('#resultScr').hidden = true; $('#startScr').hidden = false; };
+
+S = freshState(); [0, 1, 2].forEach(newSlotWord); renderWords();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
