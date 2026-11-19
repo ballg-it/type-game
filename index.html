@@ -210,6 +210,21 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
 .lv i.on{background:#67e8f9;box-shadow:0 0 6px #67e8f9}
 .upc.max .pr{color:var(--good)}
 .gain{font-size:16px;text-align:center;margin:4px 0 10px;color:#cffafe}
+.mapsvg{width:100%;height:auto;display:block;margin:0 auto 12px;max-width:760px}
+.mapsvg .ed{stroke:#3b2d6e;stroke-width:2;stroke-dasharray:4 4}
+.mapsvg .ed.go{stroke:#a78bfa;stroke-dasharray:none;stroke-width:2.5}
+.mapsvg .ed.past{stroke:#4ade80;stroke-dasharray:none;stroke-width:3}
+.mapsvg circle{fill:#1f1545;stroke:#3b2d6e;stroke-width:2}
+.mapsvg .past circle{fill:#14532d;stroke:#4ade80}
+.mapsvg .cur circle{stroke:#fbbf24;stroke-width:3}
+.mapsvg .can circle{stroke:#c084fc;stroke-width:3;filter:drop-shadow(0 0 5px #a855f7)}
+.mapsvg .can.lock circle{stroke:#fbbf24;fill:#3b2d6e}
+.mapsvg .dim{opacity:.45}
+.mapsvg text{font-size:17px;text-anchor:middle;dominant-baseline:central}
+.mapsvg .lbl{font-size:12px;fill:#e9d5ff;font-weight:600}
+.legend{font-size:12px;color:var(--muted);text-align:center;margin:-4px 0 10px}
+@media (max-width:700px){ #chCards .upc{padding:8px 10px} #chCards .upc .ic{font-size:22px} #chCards .upc .ds{min-height:0;margin:2px 0 6px} #chCards .upc .w{font-size:22px} }
+.chsub2{text-align:center;font-size:14px;margin:0 0 10px;color:#e9d5ff}
 #kb{position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0}
 </style>
 </head>
@@ -276,7 +291,7 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
   <div class="overlay" id="startScr">
     <div class="card">
       <div class="title">Type Game</div>
-      <div class="sub">Type · Fight · Adventure — ต้นแบบรัน: ศัตรู 3 ตัว + บอส</div>
+      <div class="sub">Type · Fight · Adventure — แผนที่สุ่ม 7 ชั้น · บอสรออยู่ปลายทาง</div>
       <div class="path" id="startPath"></div>
       <div class="metabar"><span id="startMeta"></span><button id="metaBtn1">🏯 ศาลเจ้า</button></div>
       <h3>ภาษาของคำที่พิมพ์</h3>
@@ -298,9 +313,10 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
         <li><b>คอมโบ:</b> พิมพ์ถูกต่อเนื่องดาเมจคูณขึ้น พิมพ์ผิดตัวเดียวคอมโบหลุด</li>
         <li><b>ท่าไม้ตาย:</b> เกจเต็มแล้วกด <kbd>Tab</kbd> แล้วพิมพ์ประโยคให้จบทันเวลา</li>
         <li><b>Stamina:</b> พิมพ์มั่วจะเหนื่อย ดาเมจเหลือครึ่งเดียว</li>
+        <li><b>แผนที่:</b> รันมี 7 ชั้น แต่ละชั้นเลือกทางเองโดยพิมพ์คำใต้จุดบนแผนที่ ชั้นสุดท้ายคือบอส</li>
         <li><b>รัน:</b> ชนะแต่ละไฟต์แล้วเลือกอัปเกรด 1 ใน 3 โดย<b>พิมพ์คำบนการ์ด</b> เลือดไม่ฟื้นเต็มระหว่างไฟต์ ตายแล้วต้องเริ่มใหม่</li>
         <li><b>ศาลเจ้า 🏯:</b> จบรันได้เศษคริสตัล 💎 (ชนะ/แพ้ก็ได้) เอาไปอัปเกรดถาวรติดตัวทุกรัน</li>
-        <li><b>เหรียญ 🪙:</b> ได้จากทุกไฟต์ (แม่น/คอมโบ/สวนกลับ = ได้เยอะ) เอาไปช้อปที่ร้านเหมียวมิก่อนสู้บอส</li>
+        <li><b>เหรียญ 🪙:</b> ได้จากทุกไฟต์ (แม่น/คอมโบ/สวนกลับ = ได้เยอะ) เอาไปช้อปที่ร้านเหมียวมิบนแผนที่</li>
         <li>ภาษาไทยพิมพ์วรรณยุกต์กับสระบน/ล่างสลับลำดับได้ เช่น น + ำ + ้ ก็นับว่า "น้ำ"</li>
       </ul>
       <button class="go" id="startBtn">เริ่มรัน <kbd>Enter</kbd></button>
@@ -316,6 +332,17 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
       <div class="upcs" id="pickCards"></div>
       <div class="sub" style="text-align:center;margin:14px 0 0">พิมพ์คำในกรอบดำเพื่อเลือก (หรือคลิกการ์ด)</div>
       <div class="topmiss" id="pickOwned" style="text-align:center"></div>
+    </div>
+  </div>
+
+  <!-- choice: แผนที่ / จุดพัก / เหตุการณ์ (พิมพ์เพื่อเลือก) -->
+  <div class="overlay" id="chScr" hidden>
+    <div class="card">
+      <div class="title" style="font-size:40px" id="chTitle"></div>
+      <div class="sub" id="chSub"></div>
+      <div id="chTop"></div>
+      <div class="upcs" id="chCards"></div>
+      <div class="sub" style="text-align:center;margin:14px 0 0">พิมพ์คำในกรอบดำเพื่อเลือก (หรือคลิก)</div>
     </div>
   </div>
 
@@ -487,7 +514,7 @@ const SHOP_CMD = { th: { roll: 'สุ่ม', leave: 'ออก' }, en: { roll:
 const POTION = { id: 'potion', icon: '🧋', name: 'ชาไทยเหมียวมิ', desc: 'ฟื้น HP 40% ของเลือดสูงสุด', price: 20,
   apply: (m, R) => { R.php = Math.min(R.pmax, R.php + Math.round(R.pmax * 0.4)); } };
 const SHOP_SAY = {
-  hi: ['เอาอะไรดีล่ะ~?', 'ยินดีต้อนรับเมี้ยว!', 'ก่อนเจอราชินี แวะช้อปก่อนสิ~'],
+  hi: ['เอาอะไรดีล่ะ~?', 'ยินดีต้อนรับเมี้ยว!', 'เดินทางเหนื่อยไหม แวะช้อปก่อนสิ~'],
   buy: ['ขอบคุณเมี้ยว~!', 'ของดีนะนั่น!', 'ตาถึงจริงๆ'],
   poor: ['เหรียญไม่พอนะ~', 'แหม ขาดอีกนิดเดียว'],
   roll: ['จัดของใหม่ให้แล้ว~'],
@@ -497,8 +524,110 @@ const upPrice = u => u.once ? 50 : 40;
 // เหรียญจากไฟต์: ฐาน + โบนัสความแม่น + คอมโบสูงสุด + สวนกลับ (เล่นเก่ง = ได้เยอะ)
 function fightCoins(st, maxCombo) {
   const acc = st.correct + st.errors ? st.correct / (st.correct + st.errors) : 1;
-  return 12 + (acc >= .97 ? 12 : acc >= .9 ? 6 : 0) + Math.min(15, Math.floor(maxCombo / 2)) + st.counters * 3 + (FOE.boss ? 20 : 0);
+  return 12 + (acc >= .97 ? 12 : acc >= .9 ? 6 : 0) + Math.min(15, Math.floor(maxCombo / 2)) + st.counters * 3 + (FOE.boss ? 20 : 0) + (FOE.elite ? 15 : 0);
 }
+/* ---------- แผนที่แตกทาง ---------- */
+const NODE = {
+  fight: { icon: '⚔', name: 'ศัตรู',        desc: 'ไฟต์ปกติ' },
+  elite: { icon: '💀', name: 'ศัตรูเก่ง',    desc: 'HP/ดาเมจสูงขึ้น · เหรียญ ×2 · การ์ดอัปเกรด +1 ใบ' },
+  event: { icon: '❓', name: 'เหตุการณ์',    desc: 'สุ่มเรื่องแปลกๆ ระหว่างทาง' },
+  rest:  { icon: '🔥', name: 'จุดพัก',       desc: 'ฟื้นเลือด หรือฝึกเพื่อรับอัปเกรด' },
+  shop:  { icon: '🐱', name: 'ร้านเหมียวมิ', desc: 'ใช้เหรียญซื้ออัปเกรด/ยา' },
+  boss:  { icon: '👑', name: 'บอส',          desc: 'ราชินีวรรณยุกต์' }
+};
+const MAP_LAYERS = 7;
+const MAP_WORDS = { th: ['ดาว','ทะเล','ภูเขา','ป่า','เมือง','หาด','ถ้ำ'], en: ['star','hill','forest','city','lake','cave','road'] };
+// โครง: ชั้น 1 = ไฟต์ · ชั้น 2–5 = 2–3 ทางสุ่ม · ชั้น 6 = จุดพัก/ร้าน · ชั้น 7 = บอส
+function genMap() {
+  const L = [[{ t: 'fight' }]];
+  for (let i = 1; i <= 4; i++) {
+    const n = Math.random() < .5 ? 2 : 3, row = [];
+    for (let j = 0; j < n; j++) {
+      const r = Math.random();
+      row.push({ t: r < .46 ? 'fight' : r < .64 ? 'event' : i < 2 ? 'fight' : r < .8 ? 'elite' : r < .91 ? 'rest' : 'shop' });
+    }
+    if (!row.some(x => x.t === 'fight')) row[Math.floor(Math.random() * n)].t = 'fight';
+    L.push(row);
+  }
+  L.push(shuffle([{ t: 'rest' }, { t: 'shop' }]));
+  L.push([{ t: 'boss' }]);
+  L.forEach((row, i) => row.forEach((nd, j) => {
+    Object.assign(nd, { layer: i, col: j, y: (j + .5) / row.length, next: [] });
+    if (nd.t === 'fight' || nd.t === 'elite') nd.foe = pick(i <= 1 ? ['bandit', 'ghost'] : i === 2 ? ['bandit', 'ghost', 'oni'] : ['ghost', 'oni']);
+    if (nd.t === 'boss') nd.foe = 'queen';
+  }));
+  // เส้นทาง: ต่อไปยังจุดที่ใกล้ที่สุดในชั้นถัดไป (+ทางแยกบางที) และทุกจุดต้องมีทางเข้า
+  const near = (arr, y) => arr.reduce((m, b) => Math.abs(b.y - y) < Math.abs(m.y - y) ? b : m);
+  for (let i = 0; i < L.length - 1; i++) {
+    const A = L[i], B = L[i + 1];
+    const crosses = (a, k) => A.some(o => o !== a && o.next.some(c => (o.col < a.col && c > k) || (o.col > a.col && c < k)));
+    if (i === 0) A[0].next = B.map(b => b.col);   // จุดเริ่ม: เลือกได้ทุกทาง
+    else for (const a of A) a.next.push(near(B, a.y).col);
+    for (const b of B) if (!A.some(a => a.next.includes(b.col))) {
+      const a = A.filter(a => !crosses(a, b.col)).sort((x, y) => Math.abs(x.y - b.y) - Math.abs(y.y - b.y))[0] || near(A, b.y);
+      a.next.push(b.col);
+    }
+    // ทางแยกเพิ่ม ถ้าไม่ตัดกับเส้นที่มีอยู่
+    for (const a of shuffle(A)) {
+      const c0 = a.next[0], d = a.y > B[c0].y ? 1 : -1;
+      const k = [c0 + d, c0 - d].find(k => B[k] && !a.next.includes(k) && !crosses(a, k));
+      if (k !== undefined) a.next.push(k);
+    }
+    A.forEach(a => a.next.sort((x, y) => x - y));
+  }
+  return L;
+}
+function makeFoe(nd) {
+  const base = ENEMIES.find(e => e.id === nd.foe);
+  if (nd.t === 'boss') return base;
+  const el = nd.t === 'elite', sc = 1 + 0.07 * nd.layer;
+  return { ...base, hp: Math.round(base.hp * sc * (el ? 1.25 : 1)), dmg: base.dmg * (1 + 0.03 * nd.layer) * (el ? 1.2 : 1),
+    idle: base.idle * (el ? 0.9 : 1), elite: el, name: (el ? 'ยอด' : '') + base.name };
+}
+const nodeName = nd => nd.foe ? (nd.t === 'elite' ? 'ยอด' : '') + ENEMIES.find(e => e.id === nd.foe).name : NODE[nd.t].name;
+const nodeIcon = nd => nd.t === 'fight' ? ENEMIES.find(e => e.id === nd.foe).icon : NODE[nd.t].icon;
+function trailHTML() {
+  const t = R.trail.map((nd, i) => `<span class="node ${i === R.trail.length - 1 ? 'cur' : 'done'}">${nodeIcon(nd)} ${esc(nodeName(nd))}</span>`);
+  if (!R.trail.length || R.trail[R.trail.length - 1].t !== 'boss') t.push(`<span class="node">👑 ชั้น ${MAP_LAYERS}</span>`);
+  return t.join('<i>›</i>');
+}
+function mapSVG(opts) {
+  const W = 720, H = 210, X = i => 40 + i * (W - 80) / (MAP_LAYERS - 1), Y = nd => 22 + nd.y * (H - 60);
+  const past = new Set(R.trail), at = R.at, can = new Map(opts.map(o => [o.nd, o]));
+  let ed = '', nodes = '';
+  R.map.forEach((row, i) => row.forEach(a => a.next.forEach(c => {
+    const b = R.map[i + 1][c];
+    const cls = past.has(a) && past.has(b) ? 'past' : a === at && can.has(b) ? 'go' : '';
+    ed += `<line class="ed ${cls}" x1="${X(i)}" y1="${Y(a)}" x2="${X(i + 1)}" y2="${Y(b)}"/>`;
+  })));
+  R.map.forEach((row, i) => row.forEach(nd => {
+    const o = can.get(nd), cls = nd === at ? 'cur' : past.has(nd) ? 'past' : o ? 'can' : (nd.layer <= at.layer ? 'dim' : '');
+    nodes += `<g class="${cls}" data-id="${nd.layer}-${nd.col}"><circle cx="${X(i)}" cy="${Y(nd)}" r="${nd.t === 'boss' ? 22 : 17}"/>` +
+      `<text x="${X(i)}" y="${Y(nd)}">${nodeIcon(nd)}</text>` +
+      (o ? `<text class="lbl" x="${X(i)}" y="${Y(nd) + 31}">${esc(o.w.text)}</text>` : '') + '</g>';
+  }));
+  return `<svg class="mapsvg" viewBox="0 0 ${W} ${H}">${ed}${nodes}</svg>` +
+    `<div class="legend">🔨👻👹 ศัตรู · 💀 ศัตรูเก่ง · ❓ เหตุการณ์ · 🔥 จุดพัก · 🐱 ร้าน · 👑 บอส</div>`;
+}
+
+/* ---------- เหตุการณ์ระหว่างทาง ---------- */
+const PASS = { icon: '🚶', name: 'เดินผ่าน', desc: 'ไม่เป็นไร ไปต่อ', word: { th: 'ผ่าน', en: 'pass' }, fn: () => {} };
+const EVENTS = [
+  () => ({ title: '📦 หีบสมบัติ', sub: 'หีบเก่าวางอยู่กลางทาง ข้างในมีเสียงเหรียญกระทบกัน', opts: [
+    { icon: '🪙', name: 'เปิดหีบ', desc: 'ได้เหรียญ 20–40', word: { th: 'เปิด', en: 'open' },
+      fn: () => { const c = Math.round(rand(20, 40)); R.coins += c; R.earned += c; return `ได้ ${c} 🪙`; } }, PASS] }),
+  () => ({ title: '⛩ ศาลพระภูมิร้าง', sub: 'ศาลเล็กๆ มีแสงม่วงเรืองรอง ดูเหมือนจะต้องการเครื่องเซ่น', opts: [
+    { icon: '🩸', name: 'ไหว้ด้วยเลือด', desc: `เสีย HP 15% · ได้อัปเกรดสุ่ม 1 อย่าง`, word: { th: 'ไหว้', en: 'pray' },
+      cond: () => R.php > R.pmax * 0.2, fn: () => { R.php -= Math.round(R.pmax * 0.15); const u = randomUp(); applyUp(u); return `ได้ ${u.icon} ${u.name}`; } }, PASS] }),
+  () => ({ title: '🐈 แมวจรจัด', sub: 'แมวผอมๆ ร้องเหมียวๆ เดินตามไม่ยอมไป', opts: [
+    { icon: '🐟', name: 'ให้อาหาร', desc: 'จ่าย 15 🪙 · ได้โล่ 1 ครั้ง + ฟื้น HP 10', word: { th: 'ให้อาหาร', en: 'feed' },
+      cond: () => R.coins >= 15, fn: () => { R.coins -= 15; R.shields++; R.php = Math.min(R.pmax, R.php + 10); return 'แมวมอบโล่ให้ 🛡 +1'; } }, PASS] }),
+  () => ({ title: '♨ บ่อน้ำพุร้อน', sub: 'ไอน้ำอุ่นๆ ลอยขึ้นมาจากซอกหิน', opts: [
+    { icon: '🛁', name: 'แช่น้ำ', desc: 'ฟื้น HP 25%', word: { th: 'แช่', en: 'soak' },
+      fn: () => { const h = Math.min(R.pmax - R.php, Math.round(R.pmax * .25)); R.php += h; return `ฟื้น HP +${h}`; } },
+    { icon: '💪', name: 'ฝึกใต้น้ำตก', desc: 'HP สูงสุด +8 (ไม่ฟื้นเลือด)', word: { th: 'ฝึก', en: 'train' },
+      fn: () => { R.pmax += 8; return 'HP สูงสุด +8'; } }, PASS] })
+];
 const PICK_WORDS = { th: ['ไฟ','ลม','ดิน','น้ำ','ฟ้า','เมฆ'], en: ['fire','wind','rock','wave','sky','moon'] };
 
 /* ================= Thai-aware matching =================
@@ -588,8 +717,8 @@ function runShards(win) {
 }
 function newRun() {
   return {
-    idx: 0, php: 100 + lv('hp') * 10, pmax: 100 + lv('hp') * 10, shields: 0, coins: lv('coin') * 15, earned: 0, bought: [],
-    revive: lv('revive'), revived: false, cleared: 0, ups: [], taken: {}, time: 0, maxCombo: 0,
+    php: 100 + lv('hp') * 10, pmax: 100 + lv('hp') * 10, shields: 0, coins: lv('coin') * 15, earned: 0, bought: [],
+    revive: lv('revive'), revived: false, map: null, at: null, trail: [], cleared: 0, ups: [], taken: {}, time: 0, maxCombo: 0,
     mod: { atk: 1, heavy: 1, forgive: false, shieldEvery: 0, counterWin: 0, counterMult: 1,
            ultGain: 1, stamCost: 1, leech: 0, comboCap: 20, letters: {} },
     stats: { correct: 0, errors: 0, words: 0, blocks: 0, counters: 0, miss: {} }
@@ -951,6 +1080,8 @@ function onInput() {
   if (phase === 'pick') return pickInput();
   if (phase === 'shop') return shopInput();
   if (phase === 'meta') return metaInput();
+  if (phase === 'choice') return chInput();
+  if (phase === 'busy') { kb.value = ''; return; }
   if (phase === 'menu' || phase === 'result') return menuInput();
   if (phase === 'shopExit') { kb.value = ''; return; }
   if (!S || !S.running || S.paused) { kb.value = ''; return; }
@@ -1090,11 +1221,7 @@ function loop(ts) {
 
 /* ================= Run flow ================= */
 const trait = f => f.trait[cfg.mode === 'en' ? 'en' : 'th'];
-function pathHTML(cur, done, inShop) {
-  return ENEMIES.map((f, i) =>
-    (f.boss ? `<span class="node ${inShop ? 'cur' : done >= i ? 'done' : ''}">🐱 ร้าน</span><i>›</i>` : '') +
-    `<span class="node ${i < done ? 'done' : i === cur && !inShop ? 'cur' : ''}">${f.icon} ${f.name}</span>`).join('<i>›</i>');
-}
+
 function banner(title, sub) {
   const b = $('#banner');
   b.querySelector('.bn').textContent = title; b.querySelector('.bt').textContent = sub;
@@ -1103,17 +1230,96 @@ function banner(title, sub) {
 
 function startRun() {
   R = newRun();
-  $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#shopScr').hidden = true; SHOP = null;
-  startFight();
+  $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#shopScr').hidden = true; $('#chScr').hidden = true; SHOP = null;
+  R.map = genMap();
+  enterNode(R.map[0][0]);
+}
+
+/* ---------- เดินบนแผนที่ ---------- */
+function enterNode(nd) {
+  R.at = nd; R.trail.push(nd);
+  $('#chScr').hidden = true; $('#pickScr').hidden = true; $('#shopScr').hidden = true;
+  if (nd.foe) { FOE = makeFoe(nd); return startFight(); }
+  if (nd.t === 'shop') return showShop();
+  if (nd.t === 'rest') return showRest();
+  if (nd.t === 'event') return showEvent();
+}
+function showMap() {
+  const used = new Set();
+  const opts = R.at.next.map(c => R.map[R.at.layer + 1][c]).map(nd => {
+    const lang = pickLang(), word = shuffle(MAP_WORDS[lang]).find(t => !used.has(t[0])); used.add(word[0]);
+    const f = nd.foe && makeFoe(nd);
+    return { nd, icon: nodeIcon(nd), name: nodeName(nd), word, lang,
+      desc: f ? `${NODE[nd.t].desc} · HP ${Math.round(f.hp * DIFF[cfg.diff].hp)} · ${trait(f)}` : NODE[nd.t].desc, fn: () => enterNode(nd) };
+  });
+  showChoice({ title: '🗺 เลือกเส้นทาง', sub: `ชั้น ${R.at.layer + 2} / ${MAP_LAYERS} · HP ${Math.ceil(R.php)} / ${R.pmax} · 🪙 ${R.coins}` + (R.shields ? ` · 🛡×${R.shields}` : ''),
+    map: true, opts, keepOpen: true });
+}
+function showRest() {
+  const h = Math.min(R.pmax - R.php, Math.round(R.pmax * 0.35));
+  showChoice({ title: '🔥 จุดพัก', sub: `กองไฟอุ่นๆ ใต้ประตูโทริอิ · HP ${Math.ceil(R.php)} / ${R.pmax}`, opts: [
+    { icon: '😴', name: 'พักผ่อน', desc: `ฟื้น HP 35% (+${h})`, word: { th: 'พัก', en: 'rest' }, fn: () => { R.php += h; toast(`ฟื้น HP +${h}`); } },
+    { icon: '🥋', name: 'ฝึกซ้อม', desc: 'เลือกอัปเกรด 1 ใน 3 (ไม่ฟื้นเลือด)', word: { th: 'ฝึก', en: 'train' }, fn: () => 'pick' }] });
+}
+function showEvent() {
+  const ev = pick(EVENTS)();
+  ev.opts = ev.opts.map(o => ({ ...o, fn: () => { const msg = o.fn(); if (msg) toast(msg); } }));
+  showChoice(ev);
+}
+// หน้าตัวเลือกกลาง: พิมพ์คำบนการ์ดเพื่อเลือก
+let CH = null;
+function showChoice({ title, sub, opts, map }) {
+  phase = 'choice';
+  const used = new Set();
+  CH = { buf: '', map, opts: opts.map(o => {
+    let { word, lang } = o;
+    if (typeof word === 'object') { lang = cfg.mode === 'en' ? 'en' : cfg.mode === 'bi' && Math.random() < .5 ? 'en' : 'th'; word = word[lang]; }
+    used.add(word[0]);
+    return { ...o, off: o.cond && !o.cond(), w: makeWord(word, lang, 'choice') };
+  }) };
+  $('#chTitle').textContent = title; $('#chSub').textContent = sub;
+  $('#chCards').innerHTML = CH.opts.map((o, i) => `<button class="upc${o.off ? ' sold' : ''}" data-i="${i}"><div class="ic">${o.icon}</div><div class="nm">${esc(o.name)}</div>` +
+    `<div class="ds">${esc(o.desc)}</div><div class="w"></div></button>`).join('');
+  $('#chCards').querySelectorAll('.upc').forEach(b => b.onclick = () => chDo(CH.opts[+b.dataset.i]));
+  $('#pickScr').hidden = true; $('#shopScr').hidden = true; $('#chScr').hidden = false;
+  kb.value = ''; renderChoice(); kb.focus();
+}
+function renderChoice() {
+  $('#chTop').innerHTML = CH.map ? mapSVG(CH.opts) : '';
+  if (CH.map) CH.opts.forEach(o => { const g = $(`#chTop g[data-id="${o.nd.layer}-${o.nd.col}"]`); g && g.classList.toggle('lock', CH.buf !== '' && match(CH.buf, o.w).ok); });
+  $('#chCards').querySelectorAll('.upc').forEach((el, i) => {
+    const o = CH.opts[i], m = match(CH.buf, o.w);
+    el.querySelector('.w').innerHTML = wordHTML(o.w, o.off ? '' : CH.buf);
+    el.classList.toggle('off', CH.buf !== '' && !m.ok);
+    el.classList.toggle('lock', CH.buf !== '' && m.ok && !o.off);
+  });
+}
+function chInput() {
+  const v = kb.value.replace(/[`~_\s]/g, '');
+  const ok = CH.opts.filter(o => !o.off && match(v, o.w).ok);
+  if (v === '' || ok.length) {
+    if ([...v].length > [...CH.buf].length) SFX.tick();
+    CH.buf = v; kb.value = v;
+    const done = ok.find(o => match(v, o.w).full);
+    if (done) chDo(done); else renderChoice();
+    return;
+  }
+  kb.value = CH.buf; SFX.err(); anim($('#chCards'), 'err', 230);
+}
+function chDo(o) {
+  if (phase !== 'choice' || o.off) return;
+  phase = 'busy'; kb.value = ''; SFX.block();
+  $('#chScr').hidden = true;
+  if (o.fn() === 'pick') return showPick(true);
+  if (!o.nd) showMap();
 }
 
 function startFight() {
-  FOE = ENEMIES[R.idx];
   S = freshState();
   FIG.E.id = FOE.sprite; play(FIG.P, 'idle'); play(FIG.E, 'idle');
   $('#eName').textContent = FOE.name;
-  $('#eTag').textContent = FOE.boss ? 'BOSS' : 'Lv.' + (R.idx + 1);
-  $('#wave').textContent = (FOE.boss ? 'บอส · ' : '') + `ไฟต์ ${R.idx + 1} / ${ENEMIES.length}`;
+  $('#eTag').textContent = FOE.boss ? 'BOSS' : FOE.elite ? 'ELITE' : 'Lv.' + (R.at.layer + 1);
+  $('#wave').textContent = (FOE.boss ? 'บอส · ' : FOE.elite ? 'ศัตรูเก่ง · ' : '') + `ชั้น ${R.at.layer + 1} / ${MAP_LAYERS}`;
   [0, 1, 2].forEach(newSlotWord);
   phase = 'fight';
   S.running = true; S.stats.start = performance.now();
@@ -1122,7 +1328,7 @@ function startFight() {
   kb.value = ''; kb.focus(); ac();
   renderWords();
   banner(FOE.icon + ' ' + FOE.name, trait(FOE));
-  if (R.idx === 0) toast(cfg.mode === 'en' ? 'พร้อม! ตั้งแป้นเป็นภาษาอังกฤษ' : cfg.mode === 'th' ? 'พร้อม! ตั้งแป้นเป็นภาษาไทย' : 'พร้อม! สลับแป้นด้วย ~ หรือ Alt+Shift');
+  if (R.trail.length === 1) toast(cfg.mode === 'en' ? 'พร้อม! ตั้งแป้นเป็นภาษาอังกฤษ' : cfg.mode === 'th' ? 'พร้อม! ตั้งแป้นเป็นภาษาไทย' : 'พร้อม! สลับแป้นด้วย ~ หรือ Alt+Shift');
 }
 
 function endFight(win) {
@@ -1137,7 +1343,7 @@ function endFight(win) {
   R.php = S.php; R.shields = S.shields;
   let coins = 0;
   if (win) { R.cleared++; coins = fightCoins(st, S.maxCombo); R.coins += coins; R.earned += coins; }
-  const last = R.idx === ENEMIES.length - 1;
+  const last = !!FOE.boss;
   phase = win && !last ? 'pick' : 'result';
   setTimeout(() => {
     play(win ? FIG.E : FIG.P, 'ko'); play(win ? FIG.P : FIG.E, 'win');
@@ -1149,12 +1355,19 @@ function endFight(win) {
 }
 
 /* ---------- upgrade pick (พิมพ์เพื่อเลือก) ---------- */
-function showPick() {
-  const healed = Math.min(R.pmax - R.php, Math.round(R.pmax * (HEAL_BETWEEN + lv('heal') * 0.05)));
+const upPool = () => UPGRADES.filter(u => !(u.once && R.taken[u.id]) && (!u.cond || u.cond(R))).concat(letterUpgrade());
+const randomUp = () => pick(upPool().filter(u => u.id !== 'heal'));
+function applyUp(up) {
+  up.apply(R.mod, R);
+  R.taken[up.id] = (R.taken[up.id] || 0) + 1;
+  R.ups.push(up.icon + ' ' + up.name);
+  R.php = Math.min(R.php, R.pmax);
+}
+function showPick(training) {
+  phase = 'pick';
+  const healed = training ? 0 : Math.min(R.pmax - R.php, Math.round(R.pmax * (HEAL_BETWEEN + lv('heal') * 0.05)));
   R.php += healed;
-  const pool = UPGRADES.filter(u => !(u.once && R.taken[u.id]) && (!u.cond || u.cond(R)));
-  pool.push(letterUpgrade());
-  const ups = shuffle(pool).slice(0, 3 + lv('card'));
+  const ups = shuffle(upPool()).slice(0, 3 + lv('card') + (!training && FOE.elite ? 1 : 0));
   const used = new Set();
   PK = { buf: '', cards: ups.map(up => {
     const lang = pickLang();
@@ -1162,10 +1375,10 @@ function showPick() {
     used.add(word[0]);
     return { up, w: makeWord(word, lang, 'pick') };
   }) };
-  const next = ENEMIES[R.idx + 1];
-  $('#pickSub').textContent = (healed ? `พักหายใจ ฟื้น HP +${healed} · ` : '') + `HP ${Math.ceil(R.php)} / ${R.pmax} · 🪙 ${R.coins} · ต่อไป: ${next.icon} ${next.name} — ${trait(next)}`;
-  $('#pickPath').innerHTML = pathHTML(R.idx + 1, R.idx + 1);
-  if (next.boss) $('#pickSub').textContent += ' (แวะร้านเหมียวมิก่อน)';
+  $('#pickScr .title').textContent = training ? '🥋 ฝึกซ้อม: เลือกอัปเกรด' : 'ชนะ! เลือกอัปเกรด';
+  $('#pickSub').textContent = (healed ? `พักหายใจ ฟื้น HP +${healed} · ` : '') + `HP ${Math.ceil(R.php)} / ${R.pmax} · 🪙 ${R.coins}` +
+    (!training && FOE.elite ? ' · ชนะศัตรูเก่ง: การ์ด +1 ใบ' : '');
+  $('#pickPath').innerHTML = trailHTML();
   $('#pickCards').innerHTML = PK.cards.map((c, i) => {
     const n = R.taken[c.up.id] || 0;
     return `<button class="upc" data-i="${i}"><div class="ic">${c.up.icon}</div><div class="nm">${esc(c.up.name)}</div>` +
@@ -1198,13 +1411,10 @@ function pickInput() {
 }
 function choose(c) {
   if (phase !== 'pick') return;
-  c.up.apply(R.mod, R);
-  R.taken[c.up.id] = (R.taken[c.up.id] || 0) + 1;
-  R.ups.push(c.up.icon + ' ' + c.up.name);
-  R.php = Math.min(R.php, R.pmax);
+  applyUp(c.up);
   SFX.block();
-  R.idx++;
-  if (ENEMIES[R.idx].boss) showShop(); else startFight();
+  $('#pickScr').hidden = true;
+  showMap();
 }
 
 /* ---------- ร้านค้า (พิมพ์เพื่อซื้อ) ---------- */
@@ -1228,14 +1438,13 @@ function showShop() {
   const L = shopLang();
   SHOP = { buf: '', items: shopStock(), rollCost: lv('dice') ? 0 : 10, t: 0, st: 'wave', say: pick(SHOP_SAY.hi),
          roll: { w: makeWord(SHOP_CMD[L].roll, L, 'roll') }, leave: { w: makeWord(SHOP_CMD[L].leave, L, 'leave') } };
-  $('#shopPath').innerHTML = pathHTML(R.idx, R.idx, true);
+  $('#shopPath').innerHTML = trailHTML();
   $('#pickScr').hidden = true; $('#shopScr').hidden = false;
   kb.value = ''; renderShop(true); kb.focus();
 }
 const shopOpts = () => [...SHOP.items.filter(i => !i.sold), SHOP.roll, SHOP.leave];
 function renderShop(rebuild) {
-  const next = ENEMIES[R.idx];
-  $('#shopSub').textContent = `HP ${Math.ceil(R.php)} / ${R.pmax} · ต่อไป: ${next.icon} ${next.name} — ${trait(next)}`;
+  $('#shopSub').textContent = `HP ${Math.ceil(R.php)} / ${R.pmax} · ชั้น ${R.at.layer + 1} / ${MAP_LAYERS}` + (R.at.layer === MAP_LAYERS - 2 ? ' · บอสอยู่ชั้นถัดไป!' : '');
   $('#shopCoins').textContent = '🪙 ' + R.coins;
   $('#shopSay').textContent = SHOP.say;
   if (rebuild) {
@@ -1245,7 +1454,7 @@ function renderShop(rebuild) {
         `<div class="st">${n ? 'มีแล้ว ×' + n : ''}</div><div class="ds">${esc(it.up.desc)}</div><div class="pr"></div><div class="w"></div></button>`;
     }).join('');
     $('#shopAct').innerHTML = `<button class="upc" data-a="roll"><div class="nm">🎲 สุ่มของใหม่</div><div class="pr"></div><div class="w"></div></button>` +
-      `<button class="upc" data-a="leave"><div class="nm">⛩ ไปสู้บอส</div><div class="pr">&nbsp;</div><div class="w"></div></button>`;
+      `<button class="upc" data-a="leave"><div class="nm">⛩ ออกจากร้าน</div><div class="pr">&nbsp;</div><div class="w"></div></button>`;
     $('#shopCards').querySelectorAll('.upc').forEach(b => b.onclick = () => shopDo(SHOP.items[+b.dataset.i]));
     $('#shopAct').querySelectorAll('.upc').forEach(b => b.onclick = () => shopDo(SHOP[b.dataset.a]));
   }
@@ -1280,7 +1489,7 @@ function shopDo(o) {
   if (o === SHOP.leave) {
     catSay('bye', 'wave'); renderShop(); SFX.block();
     phase = 'shopExit';
-    setTimeout(() => { $('#shopScr').hidden = true; startFight(); }, 700);
+    setTimeout(() => { $('#shopScr').hidden = true; showMap(); }, 700);
     return;
   }
   const price = o === SHOP.roll ? SHOP.rollCost : o.price;
@@ -1319,12 +1528,12 @@ function showResult(win) {
   const acc = st.correct + st.errors ? (st.correct / (st.correct + st.errors) * 100) : 100;
   const secs = Math.round(R.time / 1000);
   $('#resTitle').textContent = win ? 'พิชิตรัน!' : 'แพ้...';
-  $('#resSub').textContent = (win ? `โค่น${FOE.name}ได้แล้ว` : `พ่ายให้${FOE.name} ที่ไฟต์ ${R.idx + 1} / ${ENEMIES.length}`) +
+  $('#resSub').textContent = (win ? `โค่น${FOE.name}ได้แล้ว` : `พ่ายให้${FOE.name} ที่ชั้น ${R.at.layer + 1} / ${MAP_LAYERS}`) +
     ` · ความยาก${DIFF[cfg.diff].label} · ${{ th: 'ไทยล้วน', en: 'อังกฤษล้วน', bi: 'สองภาษา' }[cfg.mode]}`;
-  $('#resPath').innerHTML = pathHTML(win ? -1 : R.idx, R.cleared);
+  $('#resPath').innerHTML = trailHTML();
   const stat = (v, l) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`;
   $('#resStats').innerHTML =
-    stat(`${R.cleared}/${ENEMIES.length}`, 'ไฟต์ที่ชนะ') +
+    stat(`${R.at.layer + 1}/${MAP_LAYERS}`, 'ชั้นที่ไปถึง') + stat(R.cleared, 'ไฟต์ที่ชนะ') +
     stat(wpm, 'WPM เฉลี่ย') + stat(acc.toFixed(1) + '%', 'ความแม่นยำ') + stat(R.maxCombo, 'คอมโบสูงสุด') +
     stat(st.words, 'คำที่โจมตี') + stat(`${st.blocks}/${st.counters}`, 'กัน / สวนกลับ') +
     stat(`${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`, 'เวลาในไฟต์') +
@@ -1448,7 +1657,7 @@ renderMetaBar(); kb.focus();
 
 R = newRun(); FOE = ENEMIES[0];
 FIG.E.id = FOE.sprite;
-$('#startPath').innerHTML = pathHTML(0, 0);
+$('#startPath').innerHTML = '<div class="legend" style="margin:0">🔨👻👹 ศัตรู · 💀 ศัตรูเก่ง · ❓ เหตุการณ์ · 🔥 จุดพัก · 🐱 ร้าน · 👑 บอส — เลือกเส้นทางเองทุกชั้น</div>';
 S = freshState(); [0, 1, 2].forEach(newSlotWord); renderWords();
 requestAnimationFrame(loop);
 </script>
