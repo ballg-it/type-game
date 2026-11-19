@@ -225,6 +225,26 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
 .legend{font-size:12px;color:var(--muted);text-align:center;margin:-4px 0 10px}
 @media (max-width:700px){ #chCards .upc{padding:8px 10px} #chCards .upc .ic{font-size:22px} #chCards .upc .ds{min-height:0;margin:2px 0 6px} #chCards .upc .w{font-size:22px} }
 .chsub2{text-align:center;font-size:14px;margin:0 0 10px;color:#e9d5ff}
+/* ---------- เนื้อเรื่องก่อนบอส ---------- */
+#story{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);width:min(760px,calc(100% - 24px));z-index:12;background:#120a28f2;border:2px solid var(--line);border-radius:14px;padding:12px 18px 10px;box-shadow:0 0 40px #6d28d966;cursor:pointer}
+#story[hidden]{display:none}
+#story.err .reply{animation:errShake .22s}
+#story .who{font-weight:700;font-size:15px;margin-bottom:4px}
+#story .txt{font-size:20px;line-height:1.5;min-height:60px}
+#story .reply .w{display:inline-block;font-size:26px;font-weight:600;background:#0006;border-radius:10px;padding:2px 14px;margin-top:4px}
+#story .reply .upcs{margin-top:6px}
+#story .reply .upc{padding:8px 10px}
+#story .reply .upc .ic{display:none}
+#story.choice .txt{min-height:0;font-size:16px}
+#story .reply .upc .nm{font-size:16px}
+#story .reply .upc .ds{min-height:0;margin:0 0 4px;font-size:12px}
+#story .reply .upc .w{font-size:22px;display:block;padding:2px 8px;margin:0}
+#story .hint{font-size:12px;color:var(--muted);text-align:right;margin-top:4px}
+#story .hint kbd{font-size:11px}
+body.cine #words,body.cine #buf,body.cine #bottom,body.cine #legend,body.cine #combo{visibility:hidden}
+body.cine #story{cursor:default}
+#arena.cine::before{content:'';position:absolute;left:0;right:0;top:0;height:9%;background:#000;z-index:11}
+@media (max-width:700px){ #story .txt{font-size:17px;min-height:48px} #story .reply .upcs{flex-direction:row} }
 #kb{position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0}
 </style>
 </head>
@@ -270,6 +290,7 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
     </div>
 
     <div id="banner"><div class="bn"></div><div class="bt"></div></div>
+    <div id="story" hidden><div class="who"></div><div class="txt"></div><div class="reply"></div><div class="hint"></div></div>
     <div id="fx"></div>
     <div id="toast"></div>
   </div>
@@ -608,6 +629,129 @@ function mapSVG(opts) {
   }));
   return `<svg class="mapsvg" viewBox="0 0 ${W} ${H}">${ed}${nodes}</svg>` +
     `<div class="legend">🔨👻👹 ศัตรู · 💀 ศัตรูเก่ง · ❓ เหตุการณ์ · 🔥 จุดพัก · 🐱 ร้าน · 👑 บอส</div>`;
+}
+
+/* ---------- เนื้อเรื่องสั้นก่อนบอส ----------
+   บทของศัตรู/คีย์บอท: กด Enter (หรือคลิก) เพื่อไปต่อ · บทของไอริน: ต้องพิมพ์ประโยคเอง
+   ท้ายฉากเลือกท่าที (พิมพ์) ได้โบนัสต่างกัน · Esc = ข้ามไปที่ตัวเลือก */
+const SPEAKER = { queen: ['👑 ราชินีวรรณยุกต์', '#f0abfc'], robo: ['🤖 คีย์บอท', '#67e8f9'], me: ['⌨ ไอริน (คุณ)', '#fbbf24'] };
+function storyScript() {
+  const again = META.wins > 0, low = R.php < R.pmax * 0.5, strong = R.ups.length >= 5;
+  return [
+    { who: 'robo', t: 'บี๊บ! ตรวจพบคลื่นวรรณยุกต์ความเข้มสูง... ประตูข้างหน้าคือวังของราชินี!' },
+    { who: 'queen', e: 'charge', t: again ? 'เจ้าอีกแล้วหรือ นักพิมพ์... ครั้งก่อนข้าแค่ประมาท คราวนี้ไม่มีทางหรอก!'
+                                         : 'หึๆ... นักพิมพ์ตัวน้อย ฝ่าลูกน้องข้ามาจนถึงวังได้ด้วยหรือ' },
+    { who: 'queen', t: 'ไม้เอก ไม้โท ไม้ตรี ไม้จัตวา... วรรณยุกต์ทุกตัวในนครนีออนเป็นของข้าแล้ว! คำทุกคำจะต้องไร้เสียงสูงต่ำตลอดไป' },
+    { who: 'me', say: { th: 'คืนวรรณยุกต์มา', en: 'give them back' }, p: 'block' },
+    { who: 'queen', t: low ? 'เลือดเหลือแค่นั้น ยังกล้าสั่งข้าอีกหรือ? น่าขันจริงๆ!'
+                     : strong ? 'อืม... เจ้าแข็งแกร่งขึ้นมากระหว่างทาง แต่ก็แค่นั้นแหละ'
+                     : 'สั่งข้าหรือ? นิ้วแค่นั้นจะทำอะไรข้าได้' },
+    { who: 'robo', t: 'ไอริน! ระวังนะ ถ้าเลือดนางเหลือครึ่ง นางจะโกรธแล้วโจมตีถี่ขึ้น!' },
+    { who: 'me', choice: [
+      { icon: '🔥', name: 'ใจกล้า', desc: 'เริ่มไฟต์ด้วยเกจท่าไม้ตาย +50%', say: { th: 'ลุยเลย', en: 'bring it' }, bonus: 'ult', p: 'attack',
+        reply: 'ฮะ! ใจกล้าดีนี่ มาดูกันว่าใครจะเหลือรอด!' },
+      { icon: '🧊', name: 'ใจเย็น', desc: 'เริ่มไฟต์พร้อมโล่ 1 ครั้ง', say: { th: 'ตั้งการ์ด', en: 'stay calm' }, bonus: 'shield', p: 'block',
+        reply: 'สุขุมดีนี่... แต่การ์ดนั่นจะทนได้สักกี่ที?' }] },
+    { who: 'queen', e: 'charge', t: '' }   // บทตอบ (เติมจากตัวเลือก)
+  ];
+}
+let ST = null;
+const storyLang = () => cfg.mode === 'en' ? 'en' : cfg.mode === 'bi' && Math.random() < .5 ? 'en' : 'th';
+function showStory(nd) {
+  phase = 'story';
+  FOE = makeFoe(nd); S = freshState(); [0, 1, 2].forEach(newSlotWord); renderWords();
+  FIG.E.id = FOE.sprite; FIG.E.x = 360; play(FIG.P, 'idle'); play(FIG.E, 'idle');
+  $('#eName').textContent = FOE.name; $('#eTag').textContent = 'BOSS';
+  $('#wave').textContent = `ชั้น ${nd.layer + 1} / ${MAP_LAYERS}`;
+  document.body.classList.add('cine'); arena.classList.add('cine');
+  ST = { nd, lines: storyScript(), i: -1, buf: '', bonus: null };
+  $('#story').hidden = false; kb.value = ''; kb.focus();
+  nextLine();
+}
+function nextLine() {
+  ST.i++; ST.buf = ''; kb.value = '';
+  const L = ST.lines[ST.i];
+  if (!L) return endStory();
+  ST.shown = 0; ST.full = !L.t;
+  const [name, col] = SPEAKER[L.who];
+  const who = $('#story .who'); who.textContent = name; who.style.color = col;
+  if (L.e) { play(FIG.E, L.e); setTimeout(() => phase === 'story' && FIG.E.st === L.e && play(FIG.E, 'idle'), 900); }
+  if (L.p) play(FIG.P, L.p);
+  if (L.say) { const lang = storyLang(); L.w = makeWord(L.say[lang], lang, 'story'); }
+  if (L.choice) L.choice.forEach(c => { const lang = storyLang(); c.w = makeWord(c.say[lang], lang, 'story'); });
+  if (L.who === 'queen' || L.who === 'robo') tone(L.who === 'queen' ? 520 : 880, 0.05, 'square', 0.04);
+  renderStory();
+}
+function renderStory() {
+  const L = ST.lines[ST.i], txt = $('#story .txt'), rep = $('#story .reply'), hint = $('#story .hint');
+  $('#story').classList.toggle('choice', !!L.choice);
+  if (L.t !== undefined) {
+    txt.textContent = [...L.t].slice(0, Math.floor(ST.shown)).join('');
+    rep.innerHTML = '';
+    hint.innerHTML = (ST.full ? '<kbd>Enter</kbd> ต่อไป' : '<kbd>Enter</kbd> แสดงทั้งหมด') + ' · <kbd>Esc</kbd> ข้าม';
+  } else if (L.say) {
+    txt.textContent = 'พิมพ์คำพูดของคุณ:';
+    rep.innerHTML = `<span class="w">${wordHTML(L.w, ST.buf)}</span>`;
+    hint.innerHTML = '<kbd>Esc</kbd> ข้าม';
+  } else {
+    txt.textContent = 'คุณจะตอบว่า...';
+    rep.innerHTML = '<div class="upcs">' + L.choice.map((c, i) => {
+      const m = match(ST.buf, c.w);
+      return `<button class="upc ${ST.buf && !m.ok ? 'off' : ST.buf ? 'lock' : ''}" data-i="${i}"><div class="nm">${c.icon} ${esc(c.name)}</div>` +
+        `<div class="ds">${esc(c.desc)}</div><div class="w">${wordHTML(c.w, ST.buf)}</div></button>`;
+    }).join('') + '</div>';
+    rep.querySelectorAll('.upc').forEach(b => b.onclick = e => { e.stopPropagation(); pickStory(L.choice[+b.dataset.i]); });
+    hint.innerHTML = 'พิมพ์คำในกรอบเพื่อเลือก (หรือคลิก)';
+  }
+}
+function storyTick(dt) {
+  if (FIG.E.x > 228) FIG.E.x = Math.max(228, FIG.E.x - 160 * dt);   // ราชินีเดินเข้าฉาก
+  const L = ST.lines[ST.i];
+  if (L && L.t && !ST.full) {
+    const was = Math.floor(ST.shown);
+    ST.shown += dt * 38;
+    if (ST.shown >= [...L.t].length) ST.full = true;
+    if (Math.floor(ST.shown) !== was) renderStory();
+  }
+}
+function storyAdvance() {
+  const L = ST.lines[ST.i];
+  if (L.t === undefined) return;   // บทของเราต้องพิมพ์
+  if (!ST.full) { ST.shown = [...L.t].length; ST.full = true; renderStory(); return; }
+  nextLine();
+}
+function storySkip() {
+  const ci = ST.lines.findIndex(l => l.choice);
+  if (ST.i < ci) { ST.i = ci - 1; nextLine(); }
+  else storyAdvance();
+}
+function storyInput() {
+  const L = ST.lines[ST.i];
+  if (!L || L.t !== undefined) { kb.value = ''; return; }
+  const v = kb.value.replace(/^\s+/, '').replace(/\s{2,}/g, ' ');
+  const opts = L.say ? [L.w] : L.choice.map(c => c.w);
+  const ok = opts.filter(w => match(v, w).ok);
+  if (v === '' || ok.length) {
+    if ([...v].length > [...ST.buf].length) SFX.tick();
+    ST.buf = v; kb.value = v;
+    const done = ok.find(w => match(v, w).full);
+    if (done) { if (L.say) { SFX.block(); return nextLine(); } return pickStory(L.choice.find(c => c.w === done)); }
+    return renderStory();
+  }
+  kb.value = ST.buf; SFX.err(); anim($('#story'), 'err', 230);
+}
+function pickStory(c) {
+  if (phase !== 'story') return;
+  ST.bonus = c.bonus; SFX.block();
+  if (c.p) play(FIG.P, c.p);
+  ST.lines[ST.i + 1].t = c.reply;
+  nextLine();
+}
+function endStory() {
+  $('#story').hidden = true; document.body.classList.remove('cine'); arena.classList.remove('cine');
+  META.story = (META.story || 0) + 1; saveMeta();
+  R.storyBonus = ST.bonus; ST = null;
+  startFight();
 }
 
 /* ---------- เหตุการณ์ระหว่างทาง ---------- */
@@ -1082,6 +1226,7 @@ function onInput() {
   if (phase === 'shop') return shopInput();
   if (phase === 'meta') return metaInput();
   if (phase === 'choice') return chInput();
+  if (phase === 'story') return storyInput();
   if (phase === 'busy') { kb.value = ''; return; }
   if (phase === 'menu' || phase === 'result') return menuInput();
   if (phase === 'shopExit') { kb.value = ''; return; }
@@ -1119,6 +1264,11 @@ function onInput() {
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Tab') { e.preventDefault(); tryUlt(); return; }
+  if (phase === 'story') {
+    if (e.key === 'Escape') { e.preventDefault(); storySkip(); }
+    else if (e.key === 'Enter') { e.preventDefault(); storyAdvance(); }
+    return;
+  }
   if (e.key === 'Escape') { if (S && S.running) setPause(!S.paused); return; }
   if (e.key === 'Enter') {
     if (phase === 'menu' || phase === 'result') { e.preventDefault(); startRun(); return; }
@@ -1215,6 +1365,7 @@ function loop(ts) {
   else if (S && S.running && !paused) update(dt);
   if (!paused && !frozen) stageTick(dt);
   if (SHOP && (phase === 'shop' || phase === 'shopExit')) drawShopCat(dt);
+  if (ST && phase === 'story') storyTick(dt);
   if (S) renderHUD();
   drawStage();
   requestAnimationFrame(loop);
@@ -1233,6 +1384,7 @@ function startRun() {
   R = newRun();
   $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#shopScr').hidden = true; $('#chScr').hidden = true; SHOP = null;
   R.map = genMap();
+  ST = null; $('#story').hidden = true; document.body.classList.remove('cine'); arena.classList.remove('cine');
   enterNode(R.map[0][0]);
 }
 
@@ -1240,6 +1392,7 @@ function startRun() {
 function enterNode(nd) {
   R.at = nd; R.trail.push(nd);
   $('#chScr').hidden = true; $('#pickScr').hidden = true; $('#shopScr').hidden = true;
+  if (nd.t === 'boss') return showStory(nd);
   if (nd.foe) { FOE = makeFoe(nd); return startFight(); }
   if (nd.t === 'shop') return showShop();
   if (nd.t === 'rest') return showRest();
@@ -1317,7 +1470,10 @@ function chDo(o) {
 
 function startFight() {
   S = freshState();
-  FIG.E.id = FOE.sprite; play(FIG.P, 'idle'); play(FIG.E, 'idle');
+  FIG.E.id = FOE.sprite; FIG.E.x = 228; play(FIG.P, 'idle'); play(FIG.E, 'idle');
+  if (R.storyBonus === 'ult') S.ult = Math.min(100, S.ult + 50);
+  if (R.storyBonus === 'shield') S.shields++;
+  R.storyBonus = null;
   $('#eName').textContent = FOE.name;
   $('#eTag').textContent = FOE.boss ? 'BOSS' : FOE.elite ? 'ELITE' : 'Lv.' + (R.at.layer + 1);
   $('#wave').textContent = (FOE.boss ? 'บอส · ' : FOE.elite ? 'ศัตรูเก่ง · ' : '') + `ชั้น ${R.at.layer + 1} / ${MAP_LAYERS}`;
@@ -1653,6 +1809,7 @@ document.querySelectorAll('.opts').forEach(g => g.addEventListener('click', e =>
 $('#startBtn').onclick = startRun;
 $('#againBtn').onclick = startRun;
 $('#menuBtn').onclick = () => { phase = 'menu'; $('#resultScr').hidden = true; $('#startScr').hidden = false; renderMetaBar(); kb.focus(); };
+$('#story').onclick = () => phase === 'story' && storyAdvance();
 $('#metaBtn1').onclick = showMeta; $('#metaBtn2').onclick = showMeta;
 document.querySelector('[data-group=mode]').addEventListener('click', renderMetaBar);
 renderMetaBar(); kb.focus();
