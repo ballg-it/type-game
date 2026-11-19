@@ -253,6 +253,82 @@ body.cine #story{cursor:default}
 #arena.cine::before{content:'';position:absolute;left:0;right:0;top:0;height:9%;background:#000;z-index:11}
 @media (max-width:700px){ #story .txt{font-size:17px;min-height:48px} #story .reply .upcs{flex-direction:row} }
 #kb{position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0}
+/* ---------- title screen ---------- */
+#startScr{position:fixed;display:block;padding:0;background:#0b0618;backdrop-filter:none;overflow:hidden}
+#titleBg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 100%;image-rendering:pixelated}
+.ts-fade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#0b0618f2 0%,#0b0618cc 30%,#0b061833 55%,transparent 70%),linear-gradient(0deg,#0b0618dd 0%,transparent 22%)}
+.ts-fx{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.ts-fx span{position:absolute;bottom:-40px;font-weight:800;color:#c084fc;opacity:0;text-shadow:0 0 10px #a855f7;animation:tsRise linear infinite}
+@keyframes tsRise{0%{transform:translateY(0) rotate(0);opacity:0}15%{opacity:.55}85%{opacity:.35}100%{transform:translateY(-105vh) rotate(25deg);opacity:0}}
+.ts-hero{position:absolute;right:2vw;bottom:2vh;height:min(88vh,62vw);aspect-ratio:176/150;pointer-events:none;
+  background:radial-gradient(ellipse 34% 5% at 44% 97%,#c084fc88,transparent 70%),radial-gradient(circle at 45% 58%,#7c3aed40,transparent 55%)}
+#heroCv{width:100%;height:100%;image-rendering:pixelated;display:block;filter:drop-shadow(0 0 18px #a855f766)}
+.ts-main{position:absolute;left:max(24px,5vw);top:max(18px,6vh);width:min(460px,calc(100% - 48px));z-index:2}
+.logo{position:relative;line-height:.86;font-style:italic;font-weight:800;margin-bottom:max(18px,5vh);user-select:none}
+.logo .l1,.logo .l2{font-size:clamp(56px,9vw,104px);letter-spacing:-2px}
+.logo .l1{color:#fff;text-shadow:0 4px 0 #4c1d95,0 8px 0 #2e1065,0 0 30px #a855f7aa;display:flex;align-items:center;gap:.18em}
+.logo .l2{display:inline-block;padding:0 .12em 0 .9em;background:linear-gradient(180deg,#f0abfc,#c026d3 55%,#7c3aed);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 4px 0 #4c1d95) drop-shadow(0 4px 0 #2e1065) drop-shadow(0 0 18px #d946ef99)}
+.kcap{display:inline-grid;place-items:center;width:.82em;height:.74em;font-size:.62em;font-style:normal;border-radius:.14em;transform:rotate(12deg) translateY(-.2em);
+  background:linear-gradient(180deg,#fafaff,#d8d2f0);box-shadow:0 .1em 0 #8b7fc0,0 .16em 0 #4c3d8a,0 0 24px #c084fc88;animation:kcapPress 2.4s ease-in-out infinite}
+.kcap i{font-style:normal;font-size:.6em;color:#3b2a77;text-shadow:none;font-weight:800}
+@keyframes kcapPress{0%,70%,100%{transform:rotate(12deg) translateY(-.2em)}78%{transform:rotate(12deg) translateY(-.08em);box-shadow:0 .03em 0 #8b7fc0,0 .05em 0 #4c3d8a,0 0 34px #e879f9}}
+.tagline{display:block;width:max-content;margin:14px 0 0 .4em;padding:6px 18px;font-size:clamp(14px,1.6vw,19px);font-style:italic;font-weight:600;color:#fff;letter-spacing:.5px;line-height:1.3;
+  background:#0b0618d9;border:2px solid #c084fc;border-radius:999px;box-shadow:0 0 18px #a855f788;transform:skewX(-8deg)}
+.tagline b{color:#e879f9;font-weight:400}
+.mlist{display:flex;flex-direction:column;gap:6px}
+.mi{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:transparent;border:0;border-left:3px solid transparent;border-radius:4px;
+  padding:9px 16px;color:#d8d0f5;cursor:pointer;font-size:clamp(18px,2vw,23px);font-weight:600;transition:background .12s,color .12s,opacity .1s,transform .12s}
+.mi .ar{width:18px;font-size:.75em;color:#fff;opacity:0;transition:opacity .12s,transform .12s;transform:translateX(-6px)}
+.mi .nm{flex:1;min-width:0}
+.mi .w{font-size:.82em;font-weight:600;color:var(--violet2);white-space:nowrap;opacity:.75}
+.mi .w .rest{color:var(--violet2)}
+.mi.sel{color:#fff;background:linear-gradient(90deg,#7c3aedee,#a855f799 55%,transparent);border-left-color:#f0abfc;box-shadow:-6px 0 24px -6px #c084fc;transform:translateX(4px)}
+.mi.sel .ar{opacity:1;transform:none}
+.mi.sel .w,.mi.sel .w .rest{color:#fff;opacity:1}
+.mi.lock{color:#fff;background:linear-gradient(90deg,#c026d3cc,transparent);border-left-color:#fff;transform:translateX(8px)}
+.mi.lock .ar{opacity:1;transform:none}
+.mi.off{opacity:.3}
+.mlist.err{animation:errShake .22s}
+.ts-hint{margin:14px 0 0 16px;font-size:13px;color:var(--muted)}
+.ts-hint kbd{margin-right:3px}
+.ts-stats{position:absolute;top:14px;right:16px;display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;max-width:60%;z-index:2}
+.ts-stats span{background:#0b0618cc;border:1px solid #c084fc66;border-radius:999px;padding:3px 12px;font-size:13px;color:var(--muted)}
+.ts-stats span b{color:var(--text);font-weight:600}
+.ts-stats span.shard b{color:var(--cyan)}
+.ts-bar{position:absolute;left:max(24px,5vw);bottom:max(14px,4vh);display:flex;flex-wrap:wrap;gap:10px;z-index:2}
+.seg{display:flex;align-items:center;background:#0b0618d9;border:2px solid #c084fc66;border-radius:12px;padding:3px}
+.seg .sl{padding:0 8px 0 6px;font-size:16px}
+.seg .opt{flex:none;min-width:0;background:transparent;border:0;border-radius:9px;padding:6px 12px;font-size:15px;color:var(--muted);box-shadow:none}
+.seg .opt.sel{background:#7c3aed;color:#fff;box-shadow:0 0 14px #a855f799}
+.hcard{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(860px,calc(100% - 32px));max-height:calc(100% - 32px);overflow:auto;z-index:5;margin:0}
+#startScr.helpOn .ts-main,#startScr.helpOn .ts-bar,#startScr.helpOn .ts-stats{visibility:hidden}
+#startScr.helpOn .ts-fade{background:#0b0618cc}
+@media (max-width:760px){
+  .ts-hero{right:-14vw;bottom:12vh;height:min(62vh,120vw);opacity:.5}
+  .ts-fade{background:linear-gradient(90deg,#0b0618e6,#0b061899 70%,#0b061866),linear-gradient(0deg,#0b0618ee 0%,transparent 30%)}
+  .ts-stats{top:auto;bottom:calc(max(14px,4vh) + 96px);left:16px;right:16px;justify-content:flex-start;max-width:none}
+  .ts-main{left:16px;width:calc(100% - 32px)}
+  .ts-bar{left:16px;right:16px}
+  .seg .opt{padding:6px 8px;font-size:14px}
+  .hgrid{grid-template-columns:1fr}
+}
+.hcard[hidden]{display:none}
+.hc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.hc-head .mi{width:auto}
+.hgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hi{background:#1f1545;border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:14px;color:#d8d0f5;line-height:1.5}
+.hi>b:first-child{display:block;color:var(--violet2);font-size:15px}
+.hi b.g{color:var(--gold)}
+.hcard .path{margin:14px 0 0}
+@media (max-width:760px){
+  .tcard{grid-template-columns:1fr;gap:10px;padding:18px 16px}
+  .tc-hero .title{font-size:42px}
+  .tc-stage{max-width:220px}
+  .tc-tag{margin-bottom:8px}
+  .hgrid{grid-template-columns:1fr}
+  .mi .nm small{display:none}
+}
 </style>
 </head>
 <body>
@@ -315,42 +391,50 @@ body.cine #story{cursor:default}
     <div class="ult" id="ultBtn"><span>ท่าไม้ตาย</span><div class="bar"><i id="ultBar"></i></div><kbd>Tab</kbd></div>
   </div>
 
-  <!-- start -->
+  <!-- start / title screen -->
   <div class="overlay" id="startScr">
-    <div class="card">
-      <div class="title">Type Game</div>
-      <div class="sub">Type · Fight · Adventure — แผนที่สุ่ม 7 ชั้น · บอสรออยู่ปลายทาง</div>
+    <canvas id="titleBg" width="320" height="180"></canvas>
+    <div class="ts-fx" id="tsFx"></div>
+    <div class="ts-fade"></div>
+    <div class="ts-hero"><canvas id="heroCv" width="176" height="150"></canvas></div>
+    <div class="ts-stats" id="startMeta"></div>
+    <div class="ts-main">
+      <div class="logo">
+        <div class="l1">Type<span class="kcap"><i>ก</i></span></div>
+        <div class="l2">Game</div>
+        <div class="tagline">Type <b>✦</b> Fight <b>✦</b> Adventure</div>
+      </div>
+      <div class="mlist" id="menuList">
+        <button class="mi sel" id="startBtn" data-m="start"><span class="ar">▶</span><span class="nm">เริ่มเกม</span><span class="w"></span></button>
+        <button class="mi" id="metaBtn1" data-m="shrine"><span class="ar">▶</span><span class="nm">ศาลเจ้า</span><span class="w"></span></button>
+        <button class="mi" id="pvpBtn" data-m="duel"><span class="ar">▶</span><span class="nm">ดวล PvP</span><span class="w"></span></button>
+        <button class="mi" id="helpBtn" data-m="help"><span class="ar">▶</span><span class="nm">วิธีเล่น</span><span class="w"></span></button>
+      </div>
+      <div class="ts-hint"><kbd>↑</kbd><kbd>↓</kbd> + <kbd>Enter</kbd> หรือพิมพ์คำสีม่วง</div>
+    </div>
+    <div class="ts-bar">
+      <div class="seg opts" data-group="mode"><span class="sl">🌐</span>
+        <button class="opt sel" data-v="th">ไทย 🇹🇭</button><button class="opt" data-v="en">English 🇬🇧</button><button class="opt" data-v="bi">สองภาษา 🔀</button>
+      </div>
+      <div class="seg opts" data-group="diff"><span class="sl">⚔</span>
+        <button class="opt" data-v="easy">ง่าย</button><button class="opt sel" data-v="normal">ปกติ</button><button class="opt" data-v="hard">ยาก</button>
+      </div>
+    </div>
+    <div class="card hcard" id="helpBox" hidden>
+      <div class="hc-head"><div class="title" style="font-size:34px">วิธีเล่น</div><button class="mi" id="helpClose" data-m="back"><span class="nm">←</span><span class="w"></span><kbd>Esc</kbd></button></div>
+      <div class="hgrid">
+        <div class="hi"><b>⚔ โจมตี</b>พิมพ์คำไหนก็ได้จาก 3 ช่อง คำสั้นออกเร็ว คำยาวตีแรง</div>
+        <div class="hi"><b>🛡 ป้องกัน</b>ศัตรูชาร์จ → พิมพ์คำในกล่องแดงให้ทัน กันในช่วงทองสุดท้าย = <b class="g">สวนกลับ ×2</b></div>
+        <div class="hi"><b>🔥 คอมโบ</b>พิมพ์ถูกต่อเนื่องดาเมจคูณขึ้น ผิดตัวเดียวคอมโบหลุด</div>
+        <div class="hi"><b>✨ ท่าไม้ตาย</b>เกจเต็มกด <kbd>Tab</kbd> แล้วพิมพ์ประโยคให้จบทันเวลา</div>
+        <div class="hi"><b>💨 Stamina</b>พิมพ์มั่วจะเหนื่อย ดาเมจเหลือครึ่งเดียว</div>
+        <div class="hi"><b>🗺 แผนที่</b>7 ชั้น เลือกทางเองโดยพิมพ์คำใต้จุด ชั้นสุดท้ายคือบอส</div>
+        <div class="hi"><b>🎴 รัน</b>ชนะแล้วเลือกอัปเกรด 1 ใน 3 โดยพิมพ์คำบนการ์ด เลือดไม่ฟื้นเต็ม ตายแล้วเริ่มใหม่</div>
+        <div class="hi"><b>🪙 เหรียญ</b>แม่น/คอมโบ/สวนกลับ = ได้เยอะ เอาไปช้อปที่ร้านเหมียวมิ</div>
+        <div class="hi"><b>💎 ศาลเจ้า</b>จบรัน (ชนะหรือแพ้) ได้เศษคริสตัล เอาไปอัปเกรดถาวร</div>
+        <div class="hi"><b>ก่ ภาษาไทย</b>วรรณยุกต์กับสระบน/ล่างสลับลำดับได้ เช่น น + ำ + ้ ก็นับว่า "น้ำ"</div>
+      </div>
       <div class="path" id="startPath"></div>
-      <div class="metabar"><span id="startMeta"></span><button id="metaBtn1">🏯 ศาลเจ้า</button></div>
-      <h3>ภาษาของคำที่พิมพ์</h3>
-      <div class="opts" data-group="mode">
-        <button class="opt sel" data-v="th">🇹🇭 ไทยล้วน<small>แป้นเกษมณี</small></button>
-        <button class="opt" data-v="en">🇬🇧 อังกฤษล้วน<small>QWERTY</small></button>
-        <button class="opt" data-v="bi">🔀 สองภาษา<small>ต้องสลับแป้นกลางไฟต์</small></button>
-      </div>
-      <h3>ความยาก</h3>
-      <div class="opts" data-group="diff">
-        <button class="opt" data-v="easy">ง่าย<small>ศัตรูชาร์จช้า</small></button>
-        <button class="opt sel" data-v="normal">ปกติ</button>
-        <button class="opt" data-v="hard">ยาก<small>ศัตรูโจมตีถี่</small></button>
-      </div>
-      <h3>วิธีเล่น</h3>
-      <ul class="rules">
-        <li><b>โจมตี:</b> พิมพ์คำไหนก็ได้จาก 3 ช่อง คำสั้นออกเร็ว คำยาวตีแรง</li>
-        <li><b>ป้องกัน:</b> เมื่อศัตรูชาร์จ ให้พิมพ์คำในกล่องสีแดงให้ทัน กันในช่วงสีทองสุดท้ายจะ <b>สวนกลับ ×2</b></li>
-        <li><b>คอมโบ:</b> พิมพ์ถูกต่อเนื่องดาเมจคูณขึ้น พิมพ์ผิดตัวเดียวคอมโบหลุด</li>
-        <li><b>ท่าไม้ตาย:</b> เกจเต็มแล้วกด <kbd>Tab</kbd> แล้วพิมพ์ประโยคให้จบทันเวลา</li>
-        <li><b>Stamina:</b> พิมพ์มั่วจะเหนื่อย ดาเมจเหลือครึ่งเดียว</li>
-        <li><b>แผนที่:</b> รันมี 7 ชั้น แต่ละชั้นเลือกทางเองโดยพิมพ์คำใต้จุดบนแผนที่ ชั้นสุดท้ายคือบอส</li>
-        <li><b>รัน:</b> ชนะแต่ละไฟต์แล้วเลือกอัปเกรด 1 ใน 3 โดย<b>พิมพ์คำบนการ์ด</b> เลือดไม่ฟื้นเต็มระหว่างไฟต์ ตายแล้วต้องเริ่มใหม่</li>
-        <li><b>ศาลเจ้า 🏯:</b> จบรันได้เศษคริสตัล 💎 (ชนะ/แพ้ก็ได้) เอาไปอัปเกรดถาวรติดตัวทุกรัน</li>
-        <li><b>เหรียญ 🪙:</b> ได้จากทุกไฟต์ (แม่น/คอมโบ/สวนกลับ = ได้เยอะ) เอาไปช้อปที่ร้านเหมียวมิบนแผนที่</li>
-        <li>ภาษาไทยพิมพ์วรรณยุกต์กับสระบน/ล่างสลับลำดับได้ เช่น น + ำ + ้ ก็นับว่า "น้ำ"</li>
-      </ul>
-      <div class="row2">
-        <button class="go" id="startBtn">เริ่มรัน <kbd>Enter</kbd></button>
-        <button class="go alt" id="pvpBtn">⚔ ดวล PvP <small>(พิมพ์ ดวล / duel)</small></button>
-      </div>
     </div>
   </div>
 
@@ -1417,9 +1501,12 @@ document.addEventListener('keydown', e => {
     return;
   }
   if (phase === 'pvp') { if (e.key === 'Backspace' && !kb.value) pvBack(); return; }
+  if (phase === 'menu' && HELP && (e.key === 'Escape' || e.key === 'Enter')) { e.preventDefault(); showHelp(false); return; }
+  if (phase === 'menu' && !HELP && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) { e.preventDefault(); menuSel(MSEL + (e.key === 'ArrowUp' ? -1 : 1)); SFX.tick(); return; }
   if (e.key === 'Escape') { if (S && S.running && !R.pvp) setPause(!S.paused); return; }
   if (e.key === 'Enter') {
-    if (phase === 'menu' || phase === 'result') { e.preventDefault(); startRun(); return; }
+    if (phase === 'menu') { e.preventDefault(); menuGo(); return; }
+    if (phase === 'result') { e.preventDefault(); startRun(); return; }
     if (S && S.paused) { setPause(false); return; }
   }
 });
@@ -1533,6 +1620,7 @@ function banner(title, sub) {
 
 function startRun() {
   R = newRun();
+  if (HELP) showHelp(false);
   $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#shopScr').hidden = true; $('#chScr').hidden = true; SHOP = null;
   R.map = genMap();
   ST = null; R.ending = null; $('#story').hidden = true; document.body.classList.remove('cine'); arena.classList.remove('cine');
@@ -1870,9 +1958,12 @@ function showResult(win) {
 let MT = null, MENU_BUF = '';
 const metaLang = () => cfg.mode === 'en' ? 'en' : 'th';
 function renderMetaBar() {
-  $('#startMeta').innerHTML = `<span class="shard">💎 ${META.shards}</span>` + (META.runs ? ` · เล่น ${META.runs} รัน · พิชิต ${META.wins}` : '') +
-    (META.endings ? ` · ฉากจบ ${Object.keys(META.endings).length}/${Object.keys(ENDINGS).length}` : '') +
-    ` · พิมพ์ <b>${META_OPEN[metaLang()]}</b> เพื่อเข้า · <b>${PVP_OPEN[metaLang()]}</b> = ดวลออนไลน์`;
+  const n = Object.keys(META.endings || {}).length;
+  $('#startMeta').innerHTML = `<span class="shard">💎 <b>${META.shards}</b></span>` + (META.runs
+    ? `<span>เล่น <b>${META.runs}</b> รัน</span><span>พิชิต <b>${META.wins}</b></span><span>ไกลสุด <b>${META.best}</b> ชั้น</span>` +
+      (n ? `<span>ฉากจบ <b>${n}/${Object.keys(ENDINGS).length}</b></span>` : '')
+    : '<span>ยังไม่เคยเล่น — ลุยรันแรกเลย!</span>');
+  renderMenu();
 }
 function showMeta() {
   const back = phase;
@@ -1933,15 +2024,78 @@ function metaDo(o) {
   [660, 990, 1320].forEach((f, i) => setTimeout(() => tone(f, 0.14, 'triangle', 0.12), i * 70));
   renderMeta();
 }
-// เมนู/หน้าสรุป: พิมพ์ "ศาล"/"shrine" เพื่อเข้าศาลเจ้า
-function menuInput() {
-  const v = kb.value.replace(/[`~_\s]/g, '');
-  const ws = Object.entries(META_OPEN).map(([l, t]) => makeWord(t, l, 'open'));
-  if (v && ws.some(w => match(v, w).full)) { kb.value = ''; MENU_BUF = ''; return showMeta(); }
-  const dw = Object.entries(PVP_OPEN).map(([l, t]) => makeWord(t, l, 'open'));
-  if (v && dw.some(w => match(v, w).full)) { kb.value = ''; return showPvp(); }
-  if (![...ws, ...dw].some(w => match(v, w).ok)) kb.value = '';
+// เมนู/หน้าสรุป: พิมพ์คำของเมนูเพื่อเลือก (ทั้งไทยและอังกฤษ แสดงตามภาษาที่เลือก)
+let HELP = false;
+const MENU = () => [
+  { id: 'start', w: { th: 'เริ่ม', en: 'go' }, fn: startRun, in: ['menu'] },
+  { id: 'shrine', w: META_OPEN, fn: showMeta, in: ['menu', 'result'] },
+  { id: 'duel', w: PVP_OPEN, fn: () => showPvp(), in: ['menu', 'result'] },
+  { id: 'help', w: { th: 'วิธีเล่น', en: 'help' }, fn: () => showHelp(true), in: ['menu'] },
+];
+const MENU_BACK = { id: 'back', w: { th: 'กลับ', en: 'back' }, fn: () => showHelp(false) };
+function menuItems(all) {
+  const L = metaLang();
+  return (all ? MENU().concat(MENU_BACK) : HELP ? [MENU_BACK] : MENU().filter(m => m.in.includes(phase))).map(m => ({ m,
+    ws: Object.entries(m.w).map(([l, t]) => makeWord(t, l, 'open')), disp: makeWord(m.w[L], L, 'open') }));
 }
+function renderMenu() {
+  if (phase !== 'menu') return;
+  const live = menuItems().map(i => i.m.id);
+  menuItems(true).forEach(it => {   // every button gets its word in the current language; only live ones react to typing
+    const el = $(`#startScr .mi[data-m=${it.m.id}]`); if (!el) return;
+    const ok = live.includes(it.m.id) && it.ws.some(w => match(MENU_BUF, w).ok);
+    const h = wordHTML(it.disp, match(MENU_BUF, it.disp).ok ? MENU_BUF : '');
+    el.querySelector('.w').innerHTML = MENU_BUF ? h : h.replace('class="next"', 'class="rest"');   // no cursor until typing starts
+    el.classList.toggle('off', MENU_BUF !== '' && live.includes(it.m.id) && !ok); el.classList.toggle('lock', MENU_BUF !== '' && ok);
+  });
+}
+function menuInput() {
+  const v = kb.value.replace(/[`~_\s]/g, ''), its = menuItems();
+  const done = v && its.find(i => i.ws.some(w => match(v, w).full));
+  if (done) { kb.value = ''; MENU_BUF = ''; renderMenu(); return done.m.fn(); }
+  if (its.some(i => i.ws.some(w => match(v, w).ok))) {
+    if ([...v].length > [...MENU_BUF].length) SFX.tick();
+    MENU_BUF = v;
+  } else { kb.value = ''; MENU_BUF = ''; if (v && phase === 'menu') { SFX.err(); anim($('#menuList'), 'err', 230); } }
+  renderMenu();
+}
+let MSEL = 0;   // เมนูที่เลือกด้วยลูกศร
+function menuSel(i) {
+  const els = [...document.querySelectorAll('#menuList .mi')];
+  MSEL = (i + els.length) % els.length;
+  els.forEach((el, k) => el.classList.toggle('sel', k === MSEL));
+}
+function menuGo() {
+  const it = MENU().find(m => m.id === document.querySelectorAll('#menuList .mi')[MSEL].dataset.m);
+  SFX.tick(); it.fn();
+}
+function showHelp(on) {
+  HELP = on; MENU_BUF = ''; kb.value = '';
+  $('#startScr').classList.toggle('helpOn', on); $('#helpBox').hidden = !on;
+  renderMenu(); kb.focus();
+}
+// ไอรินบนหน้าเมนู: ยืนหายใจ ฟันเป็นระยะ ทุกรอบที่ 3 โพสท่าชนะ
+const HERO = { st: 'idle', t: 0, n: 0, last: 0, cv: $('#heroCv') };
+function heroLoop(now) {
+  requestAnimationFrame(heroLoop);
+  if ($('#startScr').hidden || HELP || !airinArtOn || now - HERO.last < 33) return;
+  const dt = Math.min(.1, (now - (HERO.last || now)) / 1000); HERO.last = now;
+  HERO.t += dt;
+  if (HERO.st === 'idle' && HERO.t > 3.4) { HERO.n++; HERO.st = HERO.n % 3 ? 'attack' : 'win'; HERO.t = 0; }
+  else if (HERO.st === 'attack' && HERO.t > .6) { HERO.st = 'idle'; HERO.t = 0; }
+  else if (HERO.st === 'win' && HERO.t > 2.4) { HERO.st = 'idle'; HERO.t = 0; }
+  const im = AIRIN_ART[airinFrame(HERO)], c = HERO.cv, x = c.getContext('2d');
+  if (c.width !== im.naturalWidth) { c.width = im.naturalWidth; c.height = im.naturalHeight; }
+  x.imageSmoothingEnabled = false; x.clearRect(0, 0, c.width, c.height); x.drawImage(im, 0, 0);
+}
+requestAnimationFrame(heroLoop);
+document.querySelectorAll('#menuList .mi').forEach((el, i) => el.addEventListener('mouseenter', () => menuSel(i)));
+(() => {   // ฉากหลังเมือง + ตัวอักษรนีออนลอยขึ้น
+  const x = $('#titleBg').getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(BG, 0, 0);
+  const G = 'กขคงจดตนบมยรลวศสหอฮAQWERTYZ'.match(/./gu);
+  $('#tsFx').innerHTML = Array.from({ length: 14 }, (_, i) =>
+    `<span style="left:${(i * 37 + 7) % 100}%;font-size:${14 + (i * 7) % 18}px;animation-duration:${9 + (i * 5) % 9}s;animation-delay:-${(i * 3.1) % 14}s">${G[(i * 5) % G.length]}</span>`).join('');
+})();
 const dispChar = c => c === ' ' ? 'Space' : (MARK_RE.test(c) ? '◌' + c : c);
 function heatmap(L, miss) {
   const rows = L.u.map((r, i) => {
@@ -2289,8 +2443,9 @@ $('#againBtn').onclick = startRun;
 $('#menuBtn').onclick = () => { phase = 'menu'; $('#resultScr').hidden = true; $('#startScr').hidden = false; renderMetaBar(); kb.focus(); };
 $('#story').onclick = () => phase === 'story' && storyAdvance();
 $('#pvpBtn').onclick = () => showPvp();
+$('#helpBtn').onclick = () => showHelp(true); $('#helpClose').onclick = () => showHelp(false);
 $('#metaBtn1').onclick = showMeta; $('#metaBtn2').onclick = showMeta;
-document.querySelector('[data-group=mode]').addEventListener('click', renderMetaBar);
+document.querySelector('[data-group=mode]').addEventListener('click', () => { MENU_BUF = ''; kb.value = ''; renderMetaBar(); });
 renderMetaBar(); kb.focus();
 
 R = newRun(); FOE = ENEMIES[0];
