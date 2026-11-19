@@ -3,7 +3,9 @@
 ## ภาพรวม
 เกมฝึกพิมพ์ **ต่อสู้ 1:1 + Roguelike + เนื้อเรื่องเบาๆ** รองรับไทย (เกษมณี) / อังกฤษ / สองภาษา — ไอเดียทั้งหมดอยู่ใน `README.md`
 - ผู้ใช้สื่อสาร**ภาษาไทย** · ตอบเป็นภาษาไทย · ชอบให้ทำทีละระบบแล้วสรุปสั้นๆ พร้อมเสนอขั้นต่อไป
-- รีโป `ballg-it/type-game` · branch **`ccr-a67b83da-eggwh5`** (push แล้ว, ไม่มี PR — ห้ามสร้าง PR ถ้าไม่ได้ขอ) · `main` มีแค่ต้นแบบแรก
+- รีโป `ballg-it/type-game` · branch **`ccr-a67b83da-eggwh5`** (push แล้ว, ไม่มี PR — ห้ามสร้าง PR ถ้าไม่ได้ขอ) · `main` มีแค่ต้นแบบแรก (SVG) — **อย่าทำงานบน main**
+- เครื่องผู้ใช้ (Windows): โฟลเดอร์ `D:\1234` = local branch **`pixel-game`** (track `origin/ccr-a67b83da-eggwh5`) มี commit อาร์ตไอริน + handoff นำหน้า origin **ยังไม่ push**
+- branch อื่นบน origin: `claude/funny-meitner-f5fese` (สไปรต์ไอริน/เรย์ตัดจาก character sheet ที่ `art/airin/`, `art/rei/` — แตกจาก main ไม่ได้รวม), `claude/practical-brown-ykaf3s` (ลิงก์ Pages, รวมใน ccr แล้ว)
 - ไม่มี build step: เปิด `index.html` ได้เลย (ต้องมี `sprites.js` ข้างกัน)
 - คอนเซ็ปต์อาร์ต (อยู่ในแชตเก่า ไม่อยู่ในรีโป): อนิเมะ โทนม่วงนีออน ไซเบอร์พังก์ผสมญี่ปุ่น (โทริอิ, โอนิ)
 
@@ -14,6 +16,8 @@
 | `sprites.js` | เอนจินสไปรต์พิกเซล (ใช้ร่วมกับ `pixel.html`) |
 | `pixel.html` | แกลเลอรีสไปรต์ + ฉากเดโม |
 | `tests/*.js` | สคริปต์ Playwright จำลองการพิมพ์ (ดู “การทดสอบ”) |
+| `art/poses/airin-*.png` | 18 คีย์เฟรมไอรินแบบวาด พื้นโปร่งใส (ดู “อาร์ตไอริน”) |
+| `tools/key_frames.py` | ตัดพื้นเขียว+แยกเฟรมจากชีต AI Studio (`python tools/key_frames.py <sheet> art/poses`, ต้องมี Pillow+numpy) |
 | `characters.html` | แบบร่าง SVG เก่า **ไม่ได้ใช้แล้ว** |
 | `README.md` | เอกสารไอเดียเกม |
 
@@ -62,7 +66,16 @@
 `cd tests && node run.js th` (หรือ `en`/`bi`) — Playwright จำลองการพิมพ์เล่นจบรันบนแผนที่สุ่ม (ร้าน/เหตุการณ์/ฉาก/บอส); ไฟล์อื่น: `bugs.js` (บั๊กที่แก้แล้ว 3 ข้อ), `story.js`, `ending.js`, `ev.js` (เหตุการณ์+จุดพัก), `meta.js` (ศาลเจ้า+localStorage+ขนนก), `pvp.js [modeA] [modeB]` (2 หน้าต่อกันผ่าน Peer ปลอมบน BroadcastChannel + http server ในตัว: สร้าง/ผิดรหัส/Backspace/ไฟต์/รีแมตช์/หลุดกลางไฟต์) — ทุกตัวต้องได้ `errors []` (ภาพ .png ลงในโฟลเดอร์ที่รัน อย่า commit)
 **ยังไม่ได้ทดสอบ:** PvP ผ่านเน็ตจริง (container นี้ต่อ unpkg/peerjs ไม่ได้ — ต้องเปิดผ่าน http(s) หรือไฟล์ก็ได้แต่ต้องมีเน็ต; เครือข่ายบางที่ที่ NAT เข้มอาจต่อไม่ติดเพราะไม่มี TURN), คีย์บอร์ดไทยจริง (ห่วงเลขไทยที่ต้อง Shift), **บาลานซ์ตัวเลข** (รันยาว 4–6 ไฟต์+บอส, บอทพิมพ์แม่นได้ ~70–80🪙 ต่อร้าน, ซื้อศาลครบ ~840💎 ≈ 10–15 รัน)
 
+## อาร์ตไอริน (AI Studio) — วิธีทำ + กับดัก
+- **เจน:** Google AI Studio ใน Chrome ของผู้ใช้ (ล็อกอินแล้ว) · โมเดล Nano Banana 2.1 · 16:9 · ปิด Grounding · แชตเดิม `aistudio.google.com/prompts/1A_VOLVSyGBlkxzjFzWXqlbbPBoqDodDN` (มี character sheet + ภาพสไตล์แนบไว้แล้ว — เจนต่อในแชตนี้ตัวละครจะคงที่) · พรอมต์เฟรม: `Frame <ANIM>-<n> (same rules: green #00FF00 background only, facing right, same scale and baseline): <ท่า>` · ส่งด้วย Enter (Ctrl+Enter ไม่ทำงาน) · ~40 วิ/ภาพ · browser_batch ห้ามยาวเกิน ~2 ภาพ (timeout)
+- **`GEMINI_API_KEY` ในเครื่องใช้ไม่ได้** (401) · Canva generate-image ติดโควตาบ่อย
+- **เอาภาพออก:** รายการแชตเป็น virtual list (turn นอกจอไม่มี img/text) → เลื่อน `scrollIntoView` ทีละ turn แล้วคัด blob img ลง canvas ใน `window.__fr` · ดาวน์โหลดด้วย `<a download>` ได้ แต่ Chrome ตั้ง “ถามที่เก็บทุกครั้ง” → **ผู้ใช้ต้องกด Save เอง** (ค่าเริ่มต้นไป `D:\1234\art`) — รวมทุกเฟรมเป็นชีตเดียวให้กด Save ครั้งเดียว · fetch ไป localhost ถูกบล็อก
+- **ในเกม:** ดู `AIRIN_FRAMES`/`AIRIN_ANIM`/`AIRIN_FIT`/`drawAirinArt` (สรุปในหัวข้อฉากพิกเซลด้านบน) · ทดสอบ: `python -m http.server` แล้วเปิดผ่าน http (เปิด file:// ใน preview pane โหลด `sprites.js` ไม่ได้) · ใน console: `startRun(); enterNode(R.map[0][0])` เข้าไฟต์เร็ว
+- **ข้อจำกัด:** สไตล์วาดไม่เข้ากับศัตรูพิกเซล, รายละเอียดผม/ทิศดาบเพี้ยนบางเฟรม (attack-1/3 ดาบชี้ซ้าย), ศัตรู/บอสยังไม่มีภาพวาด
+- `art/pixel/` (untracked, ไม่ใช่งานจากเซสชันนี้ — มี `airin-chibi-400.png`, ไฟล์ `_diff_*`) ยังไม่ได้ตรวจ/commit · `.claude/launch.json` (server เทส) ไม่ commit
+
 ## ขั้นต่อไปที่เป็นไปได้ (รอผู้ใช้เลือก — แนะนำข้อ 1 ก่อน)
+0. **อาร์ต:** push `pixel-game` · ตัดสินใจทิศทาง (วาดทั้งหมด vs พิกเซล) · ถ้าวาด: เจนเฟรมศัตรู/บอสแบบเดียวกัน, เจน attack-1/3 ใหม่ให้ดาบชี้ขวา
 1. ผู้ใช้เล่นจริง → บาลานซ์ HP/ดาเมจ/ราคา/เหรียญ
 2. เนื้อหาเพิ่ม: บทก่อน elite, ฉากจบลับ, เหตุการณ์มินิเกมพิมพ์จับเวลา, ของพิเศษในร้าน, ปุ่มรีเซ็ตเซฟ
 3. หลายองก์ / บอสใหม่ (README: กระจก/ล่องหน/สลับแป้น/แฝด) — ฉากจบ “ครั้งแรก” ปูไว้แล้วว่ายังมีแป้นพิมพ์อื่นรออยู่
