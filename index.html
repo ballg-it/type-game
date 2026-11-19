@@ -171,6 +171,31 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
   .center{width:120px}
   .hint{display:none}
 }
+/* run */
+#enemy.enraged svg{filter:drop-shadow(0 0 12px #e879f9) saturate(1.5)}
+#enemy svg .float{animation:floaty 2.2s ease-in-out infinite}
+@keyframes floaty{50%{transform:translateY(-8px)}}
+#banner{position:absolute;left:50%;top:32%;transform:translate(-50%,-50%);z-index:11;text-align:center;pointer-events:none;opacity:0;white-space:nowrap}
+#banner.show{animation:banner 2.4s ease-out forwards}
+#banner .bn{font-size:46px;font-weight:800;color:#fff;text-shadow:0 0 18px #a855f7,0 3px 0 #000}
+#banner .bt{font-size:16px;color:#e9d5ff;text-shadow:0 2px 0 #000}
+@keyframes banner{0%{opacity:0;transform:translate(-50%,-40%) scale(.9)}12%{opacity:1;transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0}}
+.path{display:flex;gap:6px;align-items:center;justify-content:center;margin:6px 0 16px;flex-wrap:wrap}
+.node{padding:3px 12px;border-radius:999px;border:2px solid var(--line);font-size:13px;color:var(--muted)}
+.node.done{border-color:var(--good);color:var(--good)}
+.node.cur{border-color:var(--gold);color:var(--gold);box-shadow:0 0 12px #fbbf2466}
+.path i{color:var(--line);font-style:normal}
+.upcs{display:flex;gap:12px}
+.upcs.err{animation:errShake .22s}
+.upc{flex:1;min-width:0;background:#1f1545;border:2px solid var(--line);border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;color:var(--text);font-size:15px;transition:opacity .1s,border-color .1s}
+.upc .ic{font-size:34px;line-height:1.2}
+.upc .nm{font-weight:600;font-size:18px}
+.upc .ds{font-size:13px;color:#d8d0f5;min-height:40px;margin:4px 0 10px}
+.upc .w{font-size:28px;font-weight:600;background:#0006;border-radius:10px;padding:2px 8px}
+.upc .st{font-size:11px;color:var(--gold);min-height:15px}
+.upc.lock{border-color:var(--violet2);box-shadow:0 0 18px #8b5cf688}
+.upc.off{opacity:.35}
+@media (max-width:700px){ .upcs{flex-direction:column} #banner .bn{font-size:32px} }
 #kb{position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0}
 </style>
 </head>
@@ -179,16 +204,16 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
   <button id="mute" title="เปิด/ปิดเสียง">🔊</button>
   <div id="hud">
     <div class="hpbox p">
-      <div class="name">นักพิมพ์ <span>Lv.1</span></div>
+      <div class="name">นักพิมพ์ <span id="pTag"></span></div>
       <div class="bar"><i id="phpBar"></i></div>
       <div class="num" id="phpNum">100 / 100</div>
     </div>
     <div class="center">
-      <div class="wave">ไฟต์ 1 / 1</div>
+      <div class="wave" id="wave">ไฟต์ 1 / 4</div>
       <div id="combo"></div>
     </div>
     <div class="hpbox e">
-      <div class="name">โอนิดาบแดง <span>Lv.1</span></div>
+      <div class="name"><b id="eName" style="font-weight:600">โอนิดาบแดง</b> <span id="eTag">Lv.1</span></div>
       <div class="bar"><i id="ehpBar"></i></div>
       <div class="num" id="ehpNum">160 / 160</div>
     </div>
@@ -231,24 +256,7 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
       </svg>
     </div></div>
 
-    <div id="enemy" class="fighter"><div class="body">
-      <svg viewBox="0 0 170 220" width="170" height="220" aria-label="ศัตรู">
-        <ellipse cx="85" cy="212" rx="55" ry="8" fill="#000" opacity=".45"/>
-        <path d="M60 80 Q40 150 52 205 L120 205 Q130 140 112 80 Z" fill="#2a0a14"/>
-        <path d="M68 150 L58 206 L74 206 L80 152 Z" fill="#1a0d14"/><path d="M92 150 L104 206 L118 204 L102 150 Z" fill="#1a0d14"/>
-        <path d="M58 84 Q85 72 114 84 L110 152 L62 152 Z" fill="#4a0f1f"/>
-        <path d="M62 100 L110 100 L108 108 L64 108 Z" fill="#b91c1c"/><path d="M64 126 L108 126 L107 132 L65 132 Z" fill="#b91c1c"/>
-        <path d="M48 82 L70 78 L66 100 L46 98 Z" fill="#7f1d1d"/><path d="M104 78 L126 84 L126 100 L106 100 Z" fill="#7f1d1d"/>
-        <path d="M60 92 L36 112 L42 120 L66 100 Z" fill="#4a0f1f"/>
-        <line x1="40" y1="116" x2="2" y2="68" stroke="#e5e7eb" stroke-width="4" stroke-linecap="round"/>
-        <line x1="40" y1="116" x2="50" y2="128" stroke="#7f1d1d" stroke-width="6"/>
-        <path d="M64 42 Q60 70 52 86 L70 72 Z" fill="#111"/><path d="M106 42 Q112 70 120 86 L102 72 Z" fill="#111"/>
-        <path d="M66 40 Q85 26 104 40 L106 66 Q85 80 64 66 Z" fill="#dc2626"/>
-        <path d="M68 40 L58 12 L77 34 Z" fill="#f5f5f4"/><path d="M102 40 L112 12 L93 34 Z" fill="#f5f5f4"/>
-        <path d="M70 50 L81 54 L70 57 Z" fill="#fde047"/><path d="M88 54 L99 50 L99 57 Z" fill="#fde047"/>
-        <path d="M72 64 L98 64 L94 71 L76 71 Z" fill="#fff"/>
-      </svg>
-    </div></div>
+    <div id="enemy" class="fighter"><div class="body"></div></div>
 
     <div id="legend">
       <b>✓</b> พิมพ์ถูก = ตี<br><b>✓</b> พิมพ์แม่น = คอมโบ<br><b>✓</b> พิมพ์ผิด = เสียจังหวะ
@@ -266,6 +274,7 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
       <div class="tbar"><i id="ultTimeBar"></i></div>
     </div>
 
+    <div id="banner"><div class="bn"></div><div class="bt"></div></div>
     <div id="fx"></div>
     <div id="toast"></div>
   </div>
@@ -287,7 +296,8 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
   <div class="overlay" id="startScr">
     <div class="card">
       <div class="title">Type Game</div>
-      <div class="sub">Type · Fight · Adventure — ต้นแบบไฟต์แรก</div>
+      <div class="sub">Type · Fight · Adventure — ต้นแบบรัน: ศัตรู 3 ตัว + บอส</div>
+      <div class="path" id="startPath"></div>
       <h3>ภาษาของคำที่พิมพ์</h3>
       <div class="opts" data-group="mode">
         <button class="opt sel" data-v="th">🇹🇭 ไทยล้วน<small>แป้นเกษมณี</small></button>
@@ -307,9 +317,22 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
         <li><b>คอมโบ:</b> พิมพ์ถูกต่อเนื่องดาเมจคูณขึ้น พิมพ์ผิดตัวเดียวคอมโบหลุด</li>
         <li><b>ท่าไม้ตาย:</b> เกจเต็มแล้วกด <kbd>Tab</kbd> แล้วพิมพ์ประโยคให้จบทันเวลา</li>
         <li><b>Stamina:</b> พิมพ์มั่วจะเหนื่อย ดาเมจเหลือครึ่งเดียว</li>
+        <li><b>รัน:</b> ชนะแต่ละไฟต์แล้วเลือกอัปเกรด 1 ใน 3 โดย<b>พิมพ์คำบนการ์ด</b> เลือดไม่ฟื้นเต็มระหว่างไฟต์ ตายแล้วต้องเริ่มใหม่</li>
         <li>ภาษาไทยพิมพ์วรรณยุกต์กับสระบน/ล่างสลับลำดับได้ เช่น น + ำ + ้ ก็นับว่า "น้ำ"</li>
       </ul>
-      <button class="go" id="startBtn">เริ่มไฟต์ <kbd>Enter</kbd></button>
+      <button class="go" id="startBtn">เริ่มรัน <kbd>Enter</kbd></button>
+    </div>
+  </div>
+
+  <!-- upgrade pick -->
+  <div class="overlay" id="pickScr" hidden>
+    <div class="card">
+      <div class="title" style="font-size:40px">ชนะ! เลือกอัปเกรด</div>
+      <div class="sub" id="pickSub"></div>
+      <div class="path" id="pickPath"></div>
+      <div class="upcs" id="pickCards"></div>
+      <div class="sub" style="text-align:center;margin:14px 0 0">พิมพ์คำในกรอบดำเพื่อเลือก (หรือคลิกการ์ด)</div>
+      <div class="topmiss" id="pickOwned" style="text-align:center"></div>
     </div>
   </div>
 
@@ -327,12 +350,15 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
     <div class="card">
       <div class="title" id="resTitle">ชนะ!</div>
       <div class="sub" id="resSub"></div>
+      <div class="path" id="resPath"></div>
       <div class="stats" id="resStats"></div>
+      <h3>อัปเกรดที่เก็บได้</h3>
+      <div class="topmiss" id="resUps"></div>
       <h3>แป้นที่พลาดบ่อย</h3>
       <div id="resKb"></div>
       <div class="topmiss" id="resTop"></div>
       <div class="row2">
-        <button class="go" id="againBtn">เล่นอีกครั้ง <kbd>Enter</kbd></button>
+        <button class="go" id="againBtn">เริ่มรันใหม่ <kbd>Enter</kbd></button>
         <button class="go alt" id="menuBtn">เปลี่ยนโหมด</button>
       </div>
     </div>
@@ -362,9 +388,9 @@ const ULT = {
   en: ['Thunder breaks the silent night','The dragon rises from the burning sky','A blade of moonlight cuts the dark']
 };
 const DIFF = {
-  easy:   { idle: [5, 8],   charge: 3.4, dmg: 8,  ult: 1.3, label: 'ง่าย' },
-  normal: { idle: [3.5, 6], charge: 2.5, dmg: 12, ult: 1.0, label: 'ปกติ' },
-  hard:   { idle: [2.2, 4], charge: 1.9, dmg: 16, ult: 0.85, label: 'ยาก' }
+  easy:   { idle: [5, 8],   charge: 3.4, dmg: 8,  ult: 1.3,  hp: 0.85, label: 'ง่าย' },
+  normal: { idle: [3.5, 6], charge: 2.5, dmg: 12, ult: 1.0,  hp: 1,    label: 'ปกติ' },
+  hard:   { idle: [2.2, 4], charge: 1.9, dmg: 16, ult: 0.85, hp: 1.15, label: 'ยาก' }
 };
 const COUNTER_WINDOW = 0.35;   // วินาทีสุดท้ายของการชาร์จที่นับเป็นสวนกลับ
 const KB_TH = {
@@ -375,6 +401,139 @@ const KB_EN = {
   u: ['1234567890-=', 'qwertyuiop[]\\', "asdfghjkl;'", 'zxcvbnm,./'],
   s: ['!@#$%^&*()_+', 'QWERTYUIOP{}|', 'ASDFGHJKL:"', 'ZXCVBNM<>?']
 };
+
+/* ================= Run: enemies ================= */
+const SVG_BANDIT = `<svg viewBox="0 0 170 220" width="170" height="220" aria-label="โจรค้อนคีย์">
+  <ellipse cx="85" cy="212" rx="55" ry="8" fill="#000" opacity=".45"/>
+  <path d="M62 150 L54 206 L74 206 L80 152 Z" fill="#3f2a14"/><path d="M92 150 L100 206 L120 206 L106 150 Z" fill="#3f2a14"/>
+  <rect x="50" y="200" width="26" height="9" rx="3" fill="#1c1917"/><rect x="96" y="200" width="26" height="9" rx="3" fill="#1c1917"/>
+  <path d="M50 90 Q85 70 120 90 L116 156 L54 156 Z" fill="#92400e"/>
+  <path d="M70 84 L86 120 L100 84 Z" fill="#78350f"/>
+  <rect x="54" y="138" width="62" height="8" fill="#451a03"/><rect x="80" y="136" width="11" height="12" rx="2" fill="#fbbf24"/>
+  <line x1="56" y1="124" x2="22" y2="44" stroke="#78350f" stroke-width="7" stroke-linecap="round"/>
+  <g transform="rotate(-24 22 40)"><rect x="-6" y="18" width="56" height="40" rx="7" fill="#9ca3af"/><rect x="0" y="20" width="44" height="30" rx="5" fill="#f3f4f6"/>
+    <text x="22" y="43" font-size="22" font-weight="800" text-anchor="middle" fill="#7c3aed" font-family="Kanit,sans-serif">Q</text></g>
+  <path d="M58 94 L40 118 L52 128 L68 104 Z" fill="#b45309"/><circle cx="54" cy="124" r="9" fill="#f3c9a0"/>
+  <path d="M112 94 L128 126 L118 132 L104 104 Z" fill="#b45309"/><circle cx="123" cy="132" r="8" fill="#f3c9a0"/>
+  <circle cx="86" cy="62" r="22" fill="#f3c9a0"/>
+  <path d="M63 58 Q64 36 86 36 Q108 36 109 58 Z" fill="#dc2626"/><path d="M106 48 L128 40 L124 58 Z" fill="#b91c1c"/>
+  <rect x="65" y="57" width="42" height="10" rx="4" fill="#111"/><circle cx="76" cy="62" r="2.6" fill="#fde047"/><circle cx="95" cy="62" r="2.6" fill="#fde047"/>
+  <path d="M70 74 Q86 92 102 74 Q86 84 70 74 Z" fill="#57534e"/>
+</svg>`;
+const SVG_GHOST = `<svg viewBox="0 0 170 220" width="170" height="220" aria-label="ภูตตัวเลข">
+  <ellipse cx="85" cy="212" rx="40" ry="6" fill="#000" opacity=".35"/>
+  <g class="float">
+    <path d="M40 110 Q40 40 85 40 Q130 40 130 110 L130 180 Q120 168 110 180 Q100 192 90 180 Q80 168 70 180 Q60 192 50 180 Q44 172 40 180 Z" fill="#67e8f9" opacity=".85"/>
+    <path d="M52 100 Q52 56 85 54 Q72 70 70 110 Z" fill="#fff" opacity=".35"/>
+    <path d="M42 118 Q22 126 14 110 Q30 114 42 106 Z" fill="#67e8f9" opacity=".85"/>
+    <ellipse cx="70" cy="96" rx="9" ry="12" fill="#0c4a6e"/><ellipse cx="102" cy="96" rx="9" ry="12" fill="#0c4a6e"/>
+    <circle cx="67" cy="92" r="3" fill="#fff"/><circle cx="99" cy="92" r="3" fill="#fff"/>
+    <path d="M74 124 Q86 136 98 124 Q86 130 74 124 Z" fill="#0c4a6e"/>
+    <g font-family="Kanit,sans-serif" font-weight="800" fill="#fde047">
+      <text x="14" y="60" font-size="22">7</text><text x="136" y="68" font-size="20">#</text><text x="142" y="140" font-size="22">3</text>
+      <text x="6" y="160" font-size="18">%</text><text x="78" y="28" font-size="18">9</text></g>
+  </g>
+</svg>`;
+const SVG_QUEEN = `<svg viewBox="0 0 180 230" width="180" height="230" aria-label="ราชินีวรรณยุกต์">
+  <ellipse cx="90" cy="222" rx="60" ry="8" fill="#000" opacity=".45"/>
+  <path d="M70 100 Q52 170 36 216 L144 216 Q128 170 110 100 Z" fill="#581c87"/>
+  <path d="M80 110 Q72 170 66 216 L82 216 Q86 160 90 110 Z" fill="#7e22ce"/>
+  <path d="M40 208 L140 208 L144 216 L36 216 Z" fill="#c084fc"/>
+  <path d="M70 76 Q90 68 110 76 L110 108 L70 108 Z" fill="#6b21a8"/>
+  <path d="M80 76 L90 96 L100 76 Z" fill="#f0abfc"/>
+  <path d="M72 82 L52 104 L60 112 L78 92 Z" fill="#6b21a8"/>
+  <g transform="translate(50 108)"><path d="M0 0 L-38 -30 A48 48 0 0 1 4 -48 Z" fill="#f472b6"/>
+    <path d="M0 0 L-24 -42 L-12 -46 Z" fill="#fde68a" opacity=".85"/><path d="M0 0 L-36 -22 L-38 -30 Z" fill="#fde68a" opacity=".85"/><circle r="4" fill="#fbbf24"/></g>
+  <path d="M108 82 L124 110 L116 114 L102 92 Z" fill="#6b21a8"/><circle cx="121" cy="114" r="5" fill="#f5d0c5"/>
+  <circle cx="90" cy="56" r="18" fill="#f5d0c5"/>
+  <path d="M70 58 Q66 30 90 30 Q114 30 110 58 Q112 80 120 96 Q104 90 104 62 Q90 48 76 62 Q76 90 60 96 Q68 80 70 58 Z" fill="#1e1b4b"/>
+  <path d="M74 36 L78 18 L84 30 L90 12 L96 30 L102 18 L106 36 Z" fill="#fbbf24"/><circle cx="90" cy="25" r="3" fill="#f472b6"/>
+  <path d="M80 59 L86 58" stroke="#1e1b4b" stroke-width="2.5" stroke-linecap="round"/><path d="M94 58 L100 59" stroke="#1e1b4b" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="90" cy="66" r="2" fill="#db2777"/>
+  <g class="float" font-family="Kanit,sans-serif" font-weight="800" fill="#f0abfc" font-size="26">
+    <text x="10" y="40">ก่</text><text x="138" y="44">ก้</text><text x="148" y="122">ก๊</text><text x="4" y="176">ก๋</text></g>
+</svg>`;
+const SVG_ONI = `<svg viewBox="0 0 170 220" width="170" height="220" aria-label="โอนิดาบแดง">
+        <ellipse cx="85" cy="212" rx="55" ry="8" fill="#000" opacity=".45"/>
+        <path d="M60 80 Q40 150 52 205 L120 205 Q130 140 112 80 Z" fill="#2a0a14"/>
+        <path d="M68 150 L58 206 L74 206 L80 152 Z" fill="#1a0d14"/><path d="M92 150 L104 206 L118 204 L102 150 Z" fill="#1a0d14"/>
+        <path d="M58 84 Q85 72 114 84 L110 152 L62 152 Z" fill="#4a0f1f"/>
+        <path d="M62 100 L110 100 L108 108 L64 108 Z" fill="#b91c1c"/><path d="M64 126 L108 126 L107 132 L65 132 Z" fill="#b91c1c"/>
+        <path d="M48 82 L70 78 L66 100 L46 98 Z" fill="#7f1d1d"/><path d="M104 78 L126 84 L126 100 L106 100 Z" fill="#7f1d1d"/>
+        <path d="M60 92 L36 112 L42 120 L66 100 Z" fill="#4a0f1f"/>
+        <line x1="40" y1="116" x2="2" y2="68" stroke="#e5e7eb" stroke-width="4" stroke-linecap="round"/>
+        <line x1="40" y1="116" x2="50" y2="128" stroke="#7f1d1d" stroke-width="6"/>
+        <path d="M64 42 Q60 70 52 86 L70 72 Z" fill="#111"/><path d="M106 42 Q112 70 120 86 L102 72 Z" fill="#111"/>
+        <path d="M66 40 Q85 26 104 40 L106 66 Q85 80 64 66 Z" fill="#dc2626"/>
+        <path d="M68 40 L58 12 L77 34 Z" fill="#f5f5f4"/><path d="M102 40 L112 12 L93 34 Z" fill="#f5f5f4"/>
+        <path d="M70 50 L81 54 L70 57 Z" fill="#fde047"/><path d="M88 54 L99 50 L99 57 Z" fill="#fde047"/>
+        <path d="M72 64 L98 64 L94 71 L76 71 Z" fill="#fff"/>
+      </svg>`;
+
+// hp/dmg/idle/charge เป็นตัวคูณจากค่าความยาก (DIFF)
+const ENEMIES = [
+  { id: 'bandit', name: 'โจรค้อนคีย์', icon: '🔨', svg: SVG_BANDIT, hp: 110, dmg: 0.75, idle: 0.7, charge: 1.1,
+    trait: { th: 'เน้นแป้นแถวบน · ตีถี่แต่เบา', en: 'เน้นแป้นแถวบน (Q–P) · ตีถี่แต่เบา' },
+    words: {
+      th: { s: ['ไร','นับ','รีบ','จับ','ขับ','ลุย','คุย','ถีบ','ตบ','บิน'],
+            m: ['ระบำ','ตะลุย','ตะลึง','จำนำ','ระบบ','ขับรถ','นักรบ','คนขับ','ไพรี'],
+            l: ['คนขับรถ','ตะลุยไพร','ขบวนรถไฟ','นักรบไพรี','จับขโมย','รถตุ๊กตุ๊ก'] },
+      en: { s: ['type','rope','pity','tour','wipe','pure','riot','quit'],
+            m: ['power','write','tower','route','equity','pewter','report'],
+            l: ['typewriter','repertoire','proprietor','perpetuity','territory','prototype'] } } },
+  { id: 'ghost', name: 'ภูตตัวเลข', icon: '👻', svg: SVG_GHOST, hp: 120, dmg: 0.9, idle: 1, charge: 1.05,
+    trait: { th: 'เน้นเลขไทย ๑–๙ (กด Shift)', en: 'เน้นตัวเลขและสัญลักษณ์' },
+    words: {
+      th: { s: ['๑','๒','๕๕','ปี๑','ข้อ๓','เลข๙','๗'],
+            m: ['๑๒๓','๓๐บาท','ห้อง๘','฿๕๐','๒๕๖๙','ชั้น๗'],
+            l: ['วันที่๑๙','๑๒๓๔๕','ราคา๙๙บาท','บ้านเลขที่๗','พ.ศ.๒๕๖๙'] },
+      en: { s: ['7up','#1','42','99%','x2','$5'],
+            m: ['$100','24/7','@home','x2y3','3.14','#tag'],
+            l: ['2026-11-19','(3+4)*5','win@100%','#level99!','A1&B2','50%off!'] } } },
+  { id: 'oni', name: 'โอนิดาบแดง', icon: '👹', svg: SVG_ONI, hp: 150, dmg: 1, idle: 1, charge: 1,
+    trait: { th: 'เน้นตัว Shift (ฆ ธ ศ ฐ ฎ ฏ)', en: 'เน้นตัวพิมพ์ใหญ่ (Shift)' },
+    words: {
+      th: { s: ['ฆ่า','ธง','ศร','ธนู','ฮึด','ซัด'],
+            m: ['ฆ้อง','ศัตรู','ซามูไร','ฤทธิ์','ธนูไฟ','กฎเหล็ก'],
+            l: ['ปฏิกิริยา','พฤหัสบดี','ฐานทัพมืด','ศัตรูคู่แค้น','ธรรมชาติ','บัณฑิต','ภาษาศาสตร์'] },
+      en: { s: ['Oni','Cut','Red','Axe','Ow!'],
+            m: ['Blade','Katana','Shogun','Tiger','Ronin'],
+            l: ['RedBlade','ShadowStep','KatanaSlash','ThunderBolt','IronMask'] } } },
+  { id: 'queen', boss: true, name: 'ราชินีวรรณยุกต์', icon: '👑', svg: SVG_QUEEN, hp: 230, dmg: 1.25, idle: 1, charge: 1,
+    trait: { th: 'บอส · วรรณยุกต์และสระบน/ล่าง · เลือดต่ำกว่าครึ่งจะโกรธ', en: "บอส · เครื่องหมาย ' ! ? · เลือดต่ำกว่าครึ่งจะโกรธ" },
+    def: { th: ['ป้อง','ห้าม','ต้าน','เบี่ยง'], en: ["don't", 'stop!', 'nope!', 'halt!'] },
+    words: {
+      th: { s: ['น้ำ','ไม้','ผู้','ป้า','เสื้อ','ปู่','จ๋า'],
+            m: ['ผู้ใหญ่','ก๋วย','เปี๊ยก','ตุ๊กตา','ปิ้งย่าง','เดี๋ยว'],
+            l: ['ก๋วยเตี๋ยว','ผู้ใหญ่บ้าน','น้ำพริกเผ็ด','ลูกชิ้นปิ้ง','เสื้อแขนยาว','ตุ๊กตาหมี'] },
+      en: { s: ["I'm","it's",'no!','why?','oh!'],
+            m: ["can't","won't","you're","don't!",'what?'],
+            l: ["they'll","wouldn't","o'clock!","shouldn't","y'all!"] } } }
+];
+
+/* ================= Run: upgrades ================= */
+const UPGRADES = [
+  { id: 'atk',     icon: '👊', name: 'หมัดหนัก',     desc: 'ดาเมจโจมตีทุกคำ +20%', apply: m => m.atk += 0.2 },
+  { id: 'heavy',   icon: '🔥', name: 'คำยาวเดือด',   desc: 'คำในช่อง "แรง" ดาเมจ +40%', apply: m => m.heavy += 0.4 },
+  { id: 'forgive', icon: '🧘', name: 'ใจนิ่ง',       desc: 'พิมพ์ผิดครั้งแรกในแต่ละคำ คอมโบไม่หลุด', once: true, apply: m => m.forgive = true },
+  { id: 'shield',  icon: '🛡', name: 'โล่คอมโบ',     desc: 'ทุกคอมโบ 10 ได้โล่ กันการโจมตีได้ 1 ครั้ง', once: true, apply: m => m.shieldEvery = 10 },
+  { id: 'hpmax',   icon: '❤', name: 'เลือดเหล็ก',    desc: 'HP สูงสุด +25 และฟื้น 25', apply: (m, R) => { R.pmax += 25; R.php += 25; } },
+  { id: 'heal',    icon: '🍵', name: 'ชาสมุนไพร',    desc: 'ฟื้น HP 50% ของเลือดสูงสุด', cond: R => R.php < R.pmax * 0.8, apply: (m, R) => { R.php = Math.min(R.pmax, R.php + R.pmax * 0.5); } },
+  { id: 'counter', icon: '⚡', name: 'สวนกลับทอง',   desc: 'ช่วงสวนกลับยาวขึ้น 0.2 วิ · ดาเมจสวนกลับ +50%', apply: m => { m.counterWin += 0.2; m.counterMult += 0.5; } },
+  { id: 'ult',     icon: '✦', name: 'จิตรวมพลัง',    desc: 'เกจท่าไม้ตายขึ้นเร็วขึ้น 40%', apply: m => m.ultGain += 0.4 },
+  { id: 'stam',    icon: '💨', name: 'ลมหายใจยาว',   desc: 'พิมพ์แล้ว Stamina ลดลงแค่ครึ่งเดียว', once: true, apply: m => m.stamCost *= 0.5 },
+  { id: 'leech',   icon: '🩸', name: 'ดูดพลัง',      desc: 'ทุกคำที่โจมตีโดน ฟื้น HP 1', apply: m => m.leech += 1 },
+  { id: 'combo',   icon: '🔗', name: 'โซ่คอมโบ',     desc: 'คอมโบคูณได้สูงสุด ×4 (เดิม ×3)', once: true, apply: m => m.comboCap = 30 }
+];
+const LETTERS = { th: ['น','ร','ก','ม','ย','ต','บ','ด','ส','ว','อ','ง'], en: ['e','a','r','t','o','n','i','s','l'] };
+function letterUpgrade() {
+  const lang = pickLang();
+  const pool = LETTERS[lang].filter(c => !R.mod.letters[c]);
+  const ch = pick(pool.length ? pool : LETTERS[lang]);
+  return { id: 'letter', icon: '🔠', name: `อักษรเพลิง "${ch}"`, desc: `คำที่มีตัว "${ch}" ดาเมจ ×1.5`,
+    apply: m => m.letters[ch] = (m.letters[ch] || 1) * 1.5 };
+}
+const PICK_WORDS = { th: ['ไฟ','ลม','ดิน','น้ำ','ฟ้า','เมฆ'], en: ['fire','wind','rock','wave','sky','moon'] };
 
 /* ================= Thai-aware matching =================
    แบ่งคำเป็น "กลุ่มตัวอักษร" (พยัญชนะ + สระบน/ล่าง/วรรณยุกต์ที่ซ้อนอยู่)
@@ -431,16 +590,26 @@ function makeWord(text, lang, kind) {
 const $ = s => document.querySelector(s);
 const kb = $('#kb'), arena = $('#arena');
 const cfg = { mode: 'th', diff: 'normal' };
-let S;
+let S, R, FOE = ENEMIES[0], phase = 'menu', PK = null;   // phase: menu | fight | pick | result
+const HEAL_BETWEEN = 0.15;   // ฟื้นเลือดหลังชนะแต่ละไฟต์ (สัดส่วนของ HP สูงสุด)
+function newRun() {
+  return {
+    idx: 0, php: 100, pmax: 100, shields: 0, cleared: 0, ups: [], taken: {}, time: 0, maxCombo: 0,
+    mod: { atk: 1, heavy: 1, forgive: false, shieldEvery: 0, counterWin: 0, counterMult: 1,
+           ultGain: 1, stamCost: 1, leech: 0, comboCap: 20, letters: {} },
+    stats: { correct: 0, errors: 0, words: 0, blocks: 0, counters: 0, miss: {} }
+  };
+}
 function freshState() {
+  const ehp = Math.round(FOE.hp * DIFF[cfg.diff].hp);
   return {
     running: false, paused: false, over: false,
-    php: 100, pmax: 100, ehp: 160, emax: 160,
+    php: R.php, pmax: R.pmax, ehp, emax: ehp, shields: R.shields, forgiven: false, enraged: false,
     stamina: 100, tired: false, ult: 0,
     ultMode: false, ultWord: null, ultTime: 0, ultMax: 0,
     combo: 0, maxCombo: 0, buf: '',
     slots: [null, null, null], def: null,
-    enemy: { state: 'idle', t: 2.5, charge: 0, chargeMax: 1 },
+    enemy: { state: 'idle', t: 3, charge: 0, chargeMax: 1 },
     freeze: 0,
     stats: { correct: 0, errors: 0, words: 0, blocks: 0, counters: 0, start: 0, end: 0, miss: {} }
   };
@@ -448,7 +617,17 @@ function freshState() {
 const rand = (a, b) => a + Math.random() * (b - a);
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 const pickLang = () => cfg.mode === 'bi' ? (Math.random() < 0.5 ? 'th' : 'en') : cfg.mode;
-const comboMult = () => 1 + Math.min(S.combo, 20) * 0.1;
+const comboMult = () => 1 + Math.min(S.combo, R.mod.comboCap) * 0.1;
+const counterWin = () => COUNTER_WINDOW + R.mod.counterWin;
+const idleTime = () => rand(...DIFF[cfg.diff].idle) * FOE.idle * (S.enraged ? 0.6 : 1);
+function letterMult(w) {
+  let m = 1;
+  for (const [ch, k] of Object.entries(R.mod.letters)) if (w.text.includes(ch)) m *= k;
+  return m;
+}
+function atkDmg(w, i) {
+  return Math.round((3 + w.len * 2.2) * comboMult() * (S.tired ? 0.5 : 1) * R.mod.atk * (i === 2 ? R.mod.heavy : 1) * letterMult(w));
+}
 const TIERS = ['s', 'm', 'l'];
 
 function newSlotWord(i) {
@@ -457,7 +636,8 @@ function newSlotWord(i) {
   let w;
   for (let k = 0; k < 40; k++) {
     const lang = pickLang();
-    w = makeWord(pick(WORDS[lang][TIERS[i]]), lang, 'atk');
+    const pool = Math.random() < (FOE.boss ? 0.85 : 0.7) ? FOE.words[lang] : WORDS[lang];
+    w = makeWord(pick(pool[TIERS[i]]), lang, 'atk');
     if (!others.some(o => o.text === w.text || o.c[0].b === w.c[0].b)) break;
   }
   S.slots[i] = w;
@@ -527,20 +707,27 @@ function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.ad
 const P = $('#player'), E = $('#enemy');
 function dealDamage(dmg) {
   S.ehp = Math.max(0, S.ehp - dmg);
-  if (S.ehp <= 0) endGame(true);
+  if (S.ehp <= 0) return endFight(true);
+  if (FOE.boss && !S.enraged && S.ehp <= S.emax / 2) {
+    S.enraged = true; E.classList.add('enraged'); SFX.warn();
+    banner(FOE.name + ' โกรธแล้ว!', 'โจมตีถี่ขึ้น — ตั้งสติไว้');
+  }
 }
 function addUlt(n) {
   const was = S.ult >= 100;
-  S.ult = Math.min(100, S.ult + n);
+  S.ult = Math.min(100, S.ult + n * R.mod.ultGain);
   if (!was && S.ult >= 100) toast('ท่าไม้ตายพร้อม! กด Tab');
 }
-function addCombo() { S.combo++; S.maxCombo = Math.max(S.maxCombo, S.combo); }
+function addCombo() {
+  S.combo++; S.maxCombo = Math.max(S.maxCombo, S.combo);
+  if (R.mod.shieldEvery && S.combo % R.mod.shieldEvery === 0) { S.shields++; fx('msg', '+🛡 โล่', P, 40, -50); }
+}
 
 function attack(i) {
   const w = S.slots[i];
-  const mult = comboMult();
-  const dmg = Math.round((3 + w.len * 2.2) * mult * (S.tired ? 0.5 : 1));
+  const dmg = atkDmg(w, i);
   addCombo(); S.stats.words++;
+  if (R.mod.leech) S.php = Math.min(S.pmax, S.php + R.mod.leech);
   const power = Math.min(1, w.len / 10);
   anim(P, 'lunge', 280);
   setTimeout(() => {
@@ -556,12 +743,12 @@ function attack(i) {
 
 function block() {
   const rem = S.enemy.chargeMax - S.enemy.charge;
-  S.def = null; S.enemy.state = 'idle'; S.enemy.t = rand(...DIFF[cfg.diff].idle);
+  S.def = null; S.enemy.state = 'idle'; S.enemy.t = idleTime();
   addCombo();
   anim(P, 'shield', 460);
-  if (rem <= COUNTER_WINDOW) {
+  if (rem <= counterWin()) {
     S.stats.counters++;
-    const dmg = Math.round(26 * comboMult() * (S.tired ? 0.5 : 1));
+    const dmg = Math.round(26 * comboMult() * (S.tired ? 0.5 : 1) * R.mod.counterMult);
     SFX.counter(); anim(P, 'lunge', 280);
     setTimeout(() => { anim(E, 'hurt', 360); spark(E); spark(E, 'blue'); fx('gold', 'COUNTER! -' + dmg, E, 0, -10); shake(); hitstop(140); }, 90);
     addUlt(14); dealDamage(dmg);
@@ -574,9 +761,10 @@ function block() {
 
 function enemyStartCharge() {
   const e = S.enemy;
-  e.state = 'charge'; e.charge = 0; e.chargeMax = DIFF[cfg.diff].charge;
+  e.state = 'charge'; e.charge = 0; e.chargeMax = DIFF[cfg.diff].charge * FOE.charge;
   const lang = pickLang();
-  let t; do { t = pick(DEF[lang]); } while (S.slots.some(w => w && w.c[0].b === t[0]) && Math.random() < 0.9);
+  const defs = (FOE.def || DEF)[lang];
+  let t; do { t = pick(defs); } while (S.slots.some(w => w && w.c[0].b === t[0]) && Math.random() < 0.9);
   S.def = makeWord(t, lang, 'def');
   S.buf = ''; kb.value = '';
   E.classList.add('charging');
@@ -585,35 +773,41 @@ function enemyStartCharge() {
 }
 
 function enemyHit() {
-  const dmg = DIFF[cfg.diff].dmg;
-  S.def = null; S.enemy.state = 'idle'; S.enemy.t = rand(...DIFF[cfg.diff].idle);
+  const dmg = Math.round(DIFF[cfg.diff].dmg * FOE.dmg);
+  S.def = null; S.enemy.state = 'idle'; S.enemy.t = idleTime();
   E.classList.remove('charging');
   anim(E, 'lunge', 320);
   setTimeout(() => {
+    if (!S.running) return;
+    if (S.shields > 0) {
+      S.shields--; anim(P, 'shield', 460); SFX.block(); spark(P, 'blue'); fx('msg', 'โล่กันไว้!', P, 40, -20); hitstop(60);
+      return;
+    }
     anim(P, 'hurt', 360); SFX.hurt(); flash('red'); shake(); hitstop(90);
     fx('hurtp', '-' + dmg, P);
     if (S.combo >= 3) fx('bad', 'คอมโบหลุด', P, 0, -40);
     S.combo = 0;
     S.php = Math.max(0, S.php - dmg);
-    if (S.php <= 0) endGame(false);
+    if (S.php <= 0) endFight(false);
   }, 110);
   revalidate();
 }
 
 function mistake() {
   S.stats.errors++;
-  if (S.combo >= 3) fx('bad', 'คอมโบหลุด', P, 0, -40);
-  S.combo = 0;
-  S.stamina = Math.max(0, S.stamina - 10);
+  S.stamina = Math.max(0, S.stamina - 10 * R.mod.stamCost);
   SFX.err();
   anim($('#words'), 'err', 230); anim(P, 'wobble', 260);
   if (S.ultMode) anim($('#ultBox'), 'err', 230);
+  if (R.mod.forgive && !S.forgiven && S.combo > 0) { S.forgiven = true; fx('msg', '🧘 ใจนิ่ง', P, 0, -40); return; }
+  if (S.combo >= 3) fx('bad', 'คอมโบหลุด', P, 0, -40);
+  S.combo = 0;
 }
 
 function tryUlt() {
   if (!S.running || S.paused || S.ultMode || S.ult < 100) return;
   S.ultMode = true; S.ult = 0;
-  S.def = null; S.enemy.state = 'idle'; S.enemy.t = rand(...DIFF[cfg.diff].idle); E.classList.remove('charging');
+  S.def = null; S.enemy.state = 'idle'; S.enemy.t = idleTime(); E.classList.remove('charging');
   const lang = pickLang();
   S.ultWord = makeWord(pick(ULT[lang]), lang, 'ult');
   S.ultMax = (S.ultWord.len * 0.32 + 3) * DIFF[cfg.diff].ult; S.ultTime = S.ultMax;
@@ -643,7 +837,7 @@ const validFor = v => candidates().filter(w => match(v, w).ok);
 function revalidate() { if (S.buf && !validFor(S.buf).length) { S.buf = ''; kb.value = ''; } renderWords(); }
 
 function fire(w) {
-  S.buf = ''; kb.value = '';
+  S.buf = ''; kb.value = ''; S.forgiven = false;
   if (w.kind === 'def') block();
   else if (w.kind === 'ult') ultHit();
   else attack(S.slots.indexOf(w));
@@ -657,6 +851,7 @@ kb.addEventListener('compositionend', () => { composing = false; onInput(); });
 kb.addEventListener('input', () => { if (!composing) onInput(); });
 
 function onInput() {
+  if (phase === 'pick') return pickInput();
   if (!S || !S.running || S.paused) { kb.value = ''; return; }
   let v = kb.value.replace(/[`~_]/g, '');
   v = S.ultMode ? v.replace(/^\s+/, '').replace(/\s{2,}/g, ' ') : v.replace(/\s+/g, '');
@@ -665,7 +860,7 @@ function onInput() {
   if (v === '' || ok.length) {
     const added = [...v].length - [...S.buf].length;
     S.buf = v; kb.value = v;
-    if (added > 0) { S.stats.correct += added; S.stamina = Math.max(0, S.stamina - 1.1 * added); SFX.tick(); }
+    if (added > 0) { S.stats.correct += added; S.stamina = Math.max(0, S.stamina - 1.1 * added * R.mod.stamCost); SFX.tick(); }
     const done = ok.find(w => match(v, w).full);
     if (done) fire(done); else renderWords();
     return;
@@ -693,12 +888,12 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Tab') { e.preventDefault(); tryUlt(); return; }
   if (e.key === 'Escape') { if (S && S.running) setPause(!S.paused); return; }
   if (e.key === 'Enter') {
-    if (!$('#startScr').hidden || !$('#resultScr').hidden) { e.preventDefault(); startGame(); return; }
+    if (phase === 'menu' || phase === 'result') { e.preventDefault(); startRun(); return; }
     if (S && S.paused) { setPause(false); return; }
   }
 });
 document.addEventListener('mousedown', e => { if (!e.target.closest('button')) setTimeout(() => kb.focus(), 0); });
-window.addEventListener('blur', () => { if (S && S.running && !S.paused) setPause(true); });
+window.addEventListener('blur', () => { if (phase === 'fight' && S && S.running && !S.paused) setPause(true); });
 
 function setPause(p) {
   S.paused = p; $('#pauseScr').hidden = !p;
@@ -708,8 +903,8 @@ $('#resumeBtn').onclick = () => setPause(false);
 $('#pauseScr').onclick = e => { if (e.target.id === 'pauseScr') setPause(false); };
 
 /* ================= Rendering ================= */
-function wordHTML(w) {
-  const m = match(S.buf, w);
+function wordHTML(w, buf = S.buf) {
+  const m = match(buf, w);
   const n = m.ok ? m.n : 0;
   return w.raw.map((c, i) => {
     const txt = (c.b === ' ' ? ' ' : c.b) + c.m.join('');
@@ -723,13 +918,15 @@ function wordHTML(w) {
 const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 function renderWords() {
-  const mult = comboMult();
   S.slots.forEach((w, i) => {
     const el = $('#s' + i);
     if (!w) return;
     el.querySelector('.w').innerHTML = wordHTML(w);
-    el.querySelector('.tag').textContent = cfg.mode === 'bi' ? (w.lang === 'th' ? 'TH' : 'EN') : '';
-    el.querySelector('.dmg').textContent = '⚔ ' + Math.round((3 + w.len * 2.2) * mult * (S.tired ? 0.5 : 1));
+    const tags = [];
+    if (cfg.mode === 'bi') tags.push(w.lang === 'th' ? 'TH' : 'EN');
+    if (letterMult(w) > 1) tags.push('🔠×' + letterMult(w).toFixed(1).replace(/\.0$/, ''));
+    el.querySelector('.tag').textContent = tags.join(' ');
+    el.querySelector('.dmg').textContent = '⚔ ' + atkDmg(w, i);
     const m = match(S.buf, w);
     el.classList.toggle('off', S.ultMode || (S.buf !== '' && !m.ok));
     el.classList.toggle('lock', !S.ultMode && S.buf !== '' && m.ok);
@@ -749,14 +946,15 @@ function renderHUD() {
   $('#stamBox').classList.toggle('tired', S.tired);
   $('#tired').textContent = S.tired ? 'เหนื่อย! ดาเมจ ×0.5' : '';
   $('#ultBar').style.width = S.ult + '%';
+  $('#pTag').textContent = S.shields ? '🛡×' + S.shields : '';
   $('#ultBtn').classList.toggle('ready', S.ult >= 100 && !S.ultMode);
   $('#combo').innerHTML = S.combo >= 2 ? `COMBO ${S.combo}<small>ดาเมจ ×${comboMult().toFixed(1)}</small>` : '';
   if (S.def) {
     const e = S.enemy, rem = e.chargeMax - e.charge;
     $('#defBar').style.width = Math.min(100, e.charge / e.chargeMax * 100) + '%';
-    $('#defWin').style.width = (COUNTER_WINDOW / e.chargeMax * 100) + '%';
-    $('#defBox').classList.toggle('counter', rem <= COUNTER_WINDOW);
-    $('#defBox .lbl').textContent = rem <= COUNTER_WINDOW ? '⚡ ตอนนี้! สวนกลับได้ ×2' : 'ศัตรูกำลังชาร์จ! พิมพ์เพื่อป้องกัน';
+    $('#defWin').style.width = Math.min(100, counterWin() / e.chargeMax * 100) + '%';
+    $('#defBox').classList.toggle('counter', rem <= counterWin());
+    $('#defBox .lbl').textContent = rem <= counterWin() ? '⚡ ตอนนี้! สวนกลับได้ ×2' : 'ศัตรูกำลังชาร์จ! พิมพ์เพื่อป้องกัน';
   }
   if (S.ultMode) $('#ultTimeBar').style.width = (S.ultTime / S.ultMax * 100) + '%';
   arena.classList.toggle('frozen', S.freeze > 0);
@@ -787,44 +985,145 @@ function loop(ts) {
   requestAnimationFrame(loop);
 }
 
-/* ================= Game flow ================= */
-function startGame() {
-  S = freshState();
-  [0, 1, 2].forEach(newSlotWord);
-  S.running = true; S.stats.start = performance.now();
-  P.className = 'fighter'; E.className = 'fighter';
-  $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#ultBox').hidden = true; $('#pauseScr').hidden = true;
-  kb.value = ''; kb.focus(); ac();
-  renderWords();
-  toast(cfg.mode === 'en' ? 'พร้อม! ตั้งแป้นเป็นภาษาอังกฤษ' : cfg.mode === 'th' ? 'พร้อม! ตั้งแป้นเป็นภาษาไทย' : 'พร้อม! สลับแป้นด้วย ~ หรือ Alt+Shift');
+/* ================= Run flow ================= */
+const trait = f => f.trait[cfg.mode === 'en' ? 'en' : 'th'];
+function pathHTML(cur, done) {
+  return ENEMIES.map((f, i) =>
+    `<span class="node ${i < done ? 'done' : i === cur ? 'cur' : ''}">${f.icon} ${f.name}</span>`).join('<i>›</i>');
+}
+function banner(title, sub) {
+  const b = $('#banner');
+  b.querySelector('.bn').textContent = title; b.querySelector('.bt').textContent = sub;
+  anim(b, 'show', 2500);
 }
 
-function endGame(win) {
+function startRun() {
+  R = newRun();
+  $('#startScr').hidden = true; $('#resultScr').hidden = true;
+  startFight();
+}
+
+function startFight() {
+  FOE = ENEMIES[R.idx];
+  S = freshState();
+  E.querySelector('.body').innerHTML = FOE.svg;
+  $('#eName').textContent = FOE.name;
+  $('#eTag').textContent = FOE.boss ? 'BOSS' : 'Lv.' + (R.idx + 1);
+  $('#wave').textContent = (FOE.boss ? 'บอส · ' : '') + `ไฟต์ ${R.idx + 1} / ${ENEMIES.length}`;
+  [0, 1, 2].forEach(newSlotWord);
+  phase = 'fight';
+  S.running = true; S.stats.start = performance.now();
+  P.className = 'fighter'; E.className = 'fighter';
+  $('#pickScr').hidden = true; $('#ultBox').hidden = true; $('#pauseScr').hidden = true;
+  kb.value = ''; kb.focus(); ac();
+  renderWords();
+  banner(FOE.icon + ' ' + FOE.name, trait(FOE));
+  if (R.idx === 0) toast(cfg.mode === 'en' ? 'พร้อม! ตั้งแป้นเป็นภาษาอังกฤษ' : cfg.mode === 'th' ? 'พร้อม! ตั้งแป้นเป็นภาษาไทย' : 'พร้อม! สลับแป้นด้วย ~ หรือ Alt+Shift');
+}
+
+function endFight(win) {
   if (!S.running) return;
   S.running = false; S.stats.end = performance.now();
   S.def = null; E.classList.remove('charging'); $('#defBox').hidden = true; $('#ultBox').hidden = true;
+  // รวมสถิติเข้ารัน
+  const st = S.stats, T = R.stats;
+  for (const k of ['correct', 'errors', 'words', 'blocks', 'counters']) T[k] += st[k];
+  for (const [c, n] of Object.entries(st.miss)) T.miss[c] = (T.miss[c] || 0) + n;
+  R.time += st.end - st.start; R.maxCombo = Math.max(R.maxCombo, S.maxCombo);
+  R.php = S.php; R.shields = S.shields;
+  if (win) R.cleared++;
+  const last = R.idx === ENEMIES.length - 1;
+  phase = win && !last ? 'pick' : 'result';
   setTimeout(() => {
     (win ? E : P).classList.add('ko');
     fx(win ? 'big' : 'hurtp', win ? 'K.O.!' : 'แพ้...', win ? E : P, 0, -30);
     win ? SFX.win() : SFX.lose();
   }, 250);
-  setTimeout(() => showResult(win), 1400);
+  setTimeout(() => (win && !last) ? showPick() : showResult(win), 1400);
 }
 
+/* ---------- upgrade pick (พิมพ์เพื่อเลือก) ---------- */
+function showPick() {
+  const healed = Math.min(R.pmax - R.php, Math.round(R.pmax * HEAL_BETWEEN));
+  R.php += healed;
+  const pool = UPGRADES.filter(u => !(u.once && R.taken[u.id]) && (!u.cond || u.cond(R)));
+  pool.push(letterUpgrade());
+  const ups = shuffle(pool).slice(0, 3);
+  const used = new Set();
+  PK = { buf: '', cards: ups.map(up => {
+    const lang = pickLang();
+    const word = shuffle(PICK_WORDS[lang]).find(t => !used.has(t[0]));
+    used.add(word[0]);
+    return { up, w: makeWord(word, lang, 'pick') };
+  }) };
+  const next = ENEMIES[R.idx + 1];
+  $('#pickSub').textContent = (healed ? `พักหายใจ ฟื้น HP +${healed} · ` : '') + `HP ${Math.ceil(R.php)} / ${R.pmax} · ต่อไป: ${next.icon} ${next.name} — ${trait(next)}`;
+  $('#pickPath').innerHTML = pathHTML(R.idx + 1, R.idx + 1);
+  $('#pickCards').innerHTML = PK.cards.map((c, i) => {
+    const n = R.taken[c.up.id] || 0;
+    return `<button class="upc" data-i="${i}"><div class="ic">${c.up.icon}</div><div class="nm">${esc(c.up.name)}</div>` +
+      `<div class="st">${n ? 'มีแล้ว ×' + n : ''}</div><div class="ds">${esc(c.up.desc)}</div><div class="w"></div></button>`;
+  }).join('');
+  $('#pickCards').querySelectorAll('.upc').forEach(b => b.onclick = () => choose(PK.cards[+b.dataset.i]));
+  $('#pickOwned').innerHTML = R.ups.length ? 'มีอยู่แล้ว: ' + R.ups.map(esc).join(' · ') : '';
+  kb.value = ''; renderPick();
+  $('#pickScr').hidden = false; kb.focus();
+}
+function renderPick() {
+  $('#pickCards').querySelectorAll('.upc').forEach((el, i) => {
+    const c = PK.cards[i], m = match(PK.buf, c.w);
+    el.querySelector('.w').innerHTML = wordHTML(c.w, PK.buf);
+    el.classList.toggle('off', PK.buf !== '' && !m.ok);
+    el.classList.toggle('lock', PK.buf !== '' && m.ok);
+  });
+}
+function pickInput() {
+  const v = kb.value.replace(/[`~_\s]/g, '');
+  const ok = PK.cards.filter(c => match(v, c.w).ok);
+  if (v === '' || ok.length) {
+    if ([...v].length > [...PK.buf].length) SFX.tick();
+    PK.buf = v; kb.value = v;
+    const done = ok.find(c => match(v, c.w).full);
+    if (done) choose(done); else renderPick();
+    return;
+  }
+  kb.value = PK.buf; SFX.err(); anim($('#pickCards'), 'err', 230);
+}
+function choose(c) {
+  if (phase !== 'pick') return;
+  c.up.apply(R.mod, R);
+  R.taken[c.up.id] = (R.taken[c.up.id] || 0) + 1;
+  R.ups.push(c.up.icon + ' ' + c.up.name);
+  R.php = Math.min(R.php, R.pmax);
+  SFX.block();
+  R.idx++;
+  startFight();
+}
+function shuffle(a) {
+  a = [...a];
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+/* ---------- result ---------- */
 function showResult(win) {
-  const st = S.stats, min = Math.max(1 / 60, (st.end - st.start) / 60000);
+  const st = R.stats, min = Math.max(1 / 60, R.time / 60000);
   const wpm = Math.round(st.correct / 5 / min);
   const acc = st.correct + st.errors ? (st.correct / (st.correct + st.errors) * 100) : 100;
-  const secs = Math.round((st.end - st.start) / 1000);
-  $('#resTitle').textContent = win ? 'ชนะ!' : 'แพ้...';
-  $('#resSub').textContent = (win ? 'โค่นโอนิดาบแดงได้แล้ว' : 'ลองใหม่อีกครั้ง') + ` · ความยาก${DIFF[cfg.diff].label} · ${{ th: 'ไทยล้วน', en: 'อังกฤษล้วน', bi: 'สองภาษา' }[cfg.mode]}`;
+  const secs = Math.round(R.time / 1000);
+  $('#resTitle').textContent = win ? 'พิชิตรัน!' : 'แพ้...';
+  $('#resSub').textContent = (win ? `โค่น${FOE.name}ได้แล้ว` : `พ่ายให้${FOE.name} ที่ไฟต์ ${R.idx + 1} / ${ENEMIES.length}`) +
+    ` · ความยาก${DIFF[cfg.diff].label} · ${{ th: 'ไทยล้วน', en: 'อังกฤษล้วน', bi: 'สองภาษา' }[cfg.mode]}`;
+  $('#resPath').innerHTML = pathHTML(win ? -1 : R.idx, R.cleared);
   const stat = (v, l) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`;
   $('#resStats').innerHTML =
-    stat(wpm, 'WPM เฉลี่ย') + stat(acc.toFixed(1) + '%', 'ความแม่นยำ') + stat(S.maxCombo, 'คอมโบสูงสุด') +
+    stat(`${R.cleared}/${ENEMIES.length}`, 'ไฟต์ที่ชนะ') +
+    stat(wpm, 'WPM เฉลี่ย') + stat(acc.toFixed(1) + '%', 'ความแม่นยำ') + stat(R.maxCombo, 'คอมโบสูงสุด') +
     stat(st.words, 'คำที่โจมตี') + stat(`${st.blocks}/${st.counters}`, 'กัน / สวนกลับ') +
-    stat(`${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`, 'เวลา');
+    stat(`${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`, 'เวลาในไฟต์');
+  $('#resUps').innerHTML = R.ups.length ? R.ups.map(esc).join(' · ') : '—';
   const langs = cfg.mode === 'bi' ? ['th', 'en'] : [cfg.mode];
-  $('#resKb').innerHTML = langs.map(l => heatmap(l === 'th' ? KB_TH : KB_EN)).join('<div style="height:10px"></div>');
+  $('#resKb').innerHTML = langs.map(l => heatmap(l === 'th' ? KB_TH : KB_EN, st.miss)).join('<div style="height:10px"></div>');
   const top = Object.entries(st.miss).sort((a, b) => b[1] - a[1]).slice(0, 6);
   $('#resTop').innerHTML = top.length
     ? 'พลาดบ่อยที่สุด: ' + top.map(([c, n]) => `<b>${esc(dispChar(c))}</b> (${n})`).join(' · ')
@@ -832,8 +1131,7 @@ function showResult(win) {
   $('#resultScr').hidden = false;
 }
 const dispChar = c => c === ' ' ? 'Space' : (MARK_RE.test(c) ? '◌' + c : c);
-function heatmap(L) {
-  const miss = S.stats.miss;
+function heatmap(L, miss) {
   const rows = L.u.map((r, i) => {
     const u = [...r], s = [...L.s[i]];
     return u.map((c, j) => ({ u: c, s: s[j], n: (miss[c] || 0) + (s[j] && s[j] !== c ? (miss[s[j]] || 0) : 0) }));
@@ -853,10 +1151,13 @@ document.querySelectorAll('.opts').forEach(g => g.addEventListener('click', e =>
   g.querySelectorAll('.opt').forEach(o => o.classList.toggle('sel', o === b));
   cfg[g.dataset.group] = b.dataset.v;
 }));
-$('#startBtn').onclick = startGame;
-$('#againBtn').onclick = startGame;
-$('#menuBtn').onclick = () => { $('#resultScr').hidden = true; $('#startScr').hidden = false; };
+$('#startBtn').onclick = startRun;
+$('#againBtn').onclick = startRun;
+$('#menuBtn').onclick = () => { phase = 'menu'; $('#resultScr').hidden = true; $('#startScr').hidden = false; };
 
+R = newRun(); FOE = ENEMIES[0];
+E.querySelector('.body').innerHTML = FOE.svg;
+$('#startPath').innerHTML = pathHTML(0, 0);
 S = freshState(); [0, 1, 2].forEach(newSlotWord); renderWords();
 requestAnimationFrame(loop);
 </script>
