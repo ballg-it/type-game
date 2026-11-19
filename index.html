@@ -1189,7 +1189,9 @@ const AIRIN_FRAMES = [
 ];
 // keys: [time s, frame]; loop: repeat from that time with period `len` (else hold the last frame)
 const AIRIN_ANIM = {
-  idle:   { keys: [[0, 'idle-1'], [.15, 'idle-2'], [.3, 'idle-3'], [.45, 'idle-4'], [.6, 'idle-5'], [.75, 'idle-6'], [.9, 'idle-7'], [1.05, 'idle-8'], [1.2, 'idle-9'], [1.35, 'idle-10']], loop: 0, len: 1.5 },
+  // idle = one drawing breathing (idle-1..3 = upper body 0/1/2 px lower). The AI idle-4..10 frames
+  // differ in sword angle/sheath/hair, so cycling them made her shimmer; they stay unused.
+  idle:   { keys: [[0, 'idle-1'], [.35, 'idle-2'], [.6, 'idle-3'], [1.0, 'idle-2']], loop: 0, len: 1.3 },
   attack: { keys: [[0, 'attack-0'], [.04, 'attack-1'], [.09, 'attack-1b'], [.13, 'attack-1c'], [.17, 'attack-2'], [.22, 'attack-2b'], [.27, 'attack-2c'], [.33, 'attack-3'], [.39, 'attack-3b'], [.45, 'attack-4'], [.5, 'idle-1']] },   // hit lands at .18
   block:  { keys: [[0, 'block-0'], [.04, 'block-0b'], [.08, 'block-1'], [.13, 'block-1b'], [.18, 'block-2'], [.24, 'block-2b'], [.31, 'block-2c'], [.38, 'block-3b'], [.45, 'block-3'], [.51, 'block-4']] },
   hurt:   { keys: [[0, 'hurt-0'], [.05, 'hurt-1'], [.1, 'hurt-1b'], [.15, 'hurt-2'], [.21, 'hurt-2b'], [.27, 'hurt-2c'], [.33, 'hurt-3'], [.39, 'hurt-3b'], [.44, 'hurt-4'], [.49, 'hurt-5']] },
