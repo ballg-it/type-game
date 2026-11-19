@@ -38,9 +38,11 @@ h2{margin:26px 0 8px;font-size:22px;color:var(--violet2)}
 .note{margin-top:24px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:14px;line-height:1.75;color:#d8d0f5}
 .note b{color:var(--gold)}
 .show{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;background:var(--panel);border:2px solid var(--line);border-radius:12px;padding:12px}
-#show{width:480px;max-width:100%;height:auto;border-radius:6px}
+#show{width:600px;max-width:100%;height:auto;border-radius:6px}
 .showtxt{flex:1 1 240px;font-size:14px;line-height:1.7;color:#d8d0f5}
 .showtxt p{margin:0 0 8px}
+.faces{display:flex;gap:6px;margin:4px 0 8px}.faces img{width:90px;border:2px solid var(--line);border-radius:6px;image-rendering:pixelated}
+.sword{width:100%;max-width:426px;image-rendering:pixelated;margin-bottom:6px}
 .showtxt .spec{color:var(--muted);font-size:13px}
 h2 .rl{font-size:14px;color:var(--muted);font-weight:400}
 .pal{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}
@@ -59,13 +61,14 @@ h2 .rl{font-size:14px;color:var(--muted);font-weight:400}
     <div class="typed" id="typed"></div>
   </div>
 
-  <h2>ตัวละครใหม่: เรย์ <span class="rl">นักดาบ</span></h2>
+  <h2>ตัวละครใหม่: เรย์ <span class="rl">นักดาบ · จากภาพที่เจน</span></h2>
   <div class="show">
-    <canvas id="show" width="160" height="148"></canvas>
+    <canvas id="show" width="200" height="148"></canvas>
     <div class="showtxt">
-      <p>นักดาบผมม่วงยาว ตาสีฟ้า ใส่แจ็กเก็ตฮู้ดขาวยาวถึงต้นขา เสื้อครอปดำ ถุงมือครึ่งนิ้ว และบูทม่วง ถือคาตานะไว้ต่ำ มีละอองพลังม่วงลอยขึ้นรอบตัว</p>
-      <p>ท่ายืนย่อขา แขนชี้ไปข้างหน้า ถือดาบต่ำ ตามภาพอ้างอิง</p>
-      <p class="spec">ภาพนิ่ง ยังไม่ทำแอนิเมชัน · สไปรต์ 160×148 · แสดงขยาย 3 เท่า</p>
+      <p>ตัดจาก character sheet ลบพื้นหลัง ย่อลงตารางพิกเซล (ตัวสูง 113px ใกล้เคียงตัวละครอื่น) และลดเหลือ 40 สี ไฟล์อยู่ใน <code>art/rei/</code></p>
+      <div class="faces"><img src="art/rei/face0.png" alt="ปกติ"><img src="art/rei/face1.png" alt="โกรธ"><img src="art/rei/face2.png" alt="หลับตา"></div>
+      <img class="sword" src="art/rei/sword.png" alt="ดาบ">
+      <p class="spec">ภาพนิ่ง ยังไม่ทำแอนิเมชัน · ซ้าย: ด้านหน้า · ขวา: ด้านหลัง · หน้าแสดงอารมณ์สำหรับบทสนทนา · ดาบสำหรับไอคอน</p>
     </div>
   </div>
 
@@ -263,12 +266,6 @@ const PO = {
   qWind:   { dx: -2, lean: -6, head: -1, fa: [-155, -40], ba: [-30, -60], fl: [-6, 4], bl: [6, 4], travel: -.04 },
   qSweep:  { dx: 4, lean: 8, fa: [-92, -10], ba: [20, -50], fl: [-10, 6], bl: [10, 6], travel: .35, smear: 1 },
   qSweepF: { dx: 5, lean: 10, fa: [-48, -12], ba: [24, -50], fl: [-10, 6], bl: [10, 6], travel: .35 },
-  // เรย์: ยืนย่อขาแบบภาพอ้างอิง แขนหลังชี้ไปข้างหน้า มือหน้าถือดาบต่ำชี้ไปข้างหน้า
-  reiIdleA:  { dy: 2, lean: 6, head: 0, ba: [-96, -2], fa: [-18, -52], fl: [-38, 36], bl: [34, 2] },
-  reiIdleB:  { dy: 2.6, lean: 7, by: 1, ba: [-93, -5], fa: [-15, -55], fl: [-38, 38], bl: [34, 3] },
-  reiRaise:  { dx: -3, dy: 2, lean: -8, head: -1, ba: [-40, -60], fa: [-165, -35], fl: [-30, 30], bl: [30, 6], travel: -.06 },
-  reiSlash:  { dx: 9, dy: 3, lean: 16, ba: [30, -70], fa: [-95, -6], fl: [-44, 34], bl: [36, 2], travel: 1, smear: 1 },
-  reiFollow: { dx: 10, dy: 3, lean: 18, ba: [36, -62], fa: [-35, -10], fl: [-44, 34], bl: [36, 2], travel: 1 },
   npcA:    { lean: 2, fa: [-30, -80], ba: [-25, -85], fl: [-4, 0], bl: [4, 0] },
   npcB:    { lean: 3, by: 1, fa: [-28, -84], ba: [-24, -88], fl: [-4, 0], bl: [4, 0] },
   waveA:   { lean: 0, head: 1, fa: [-168, -8], ba: [-25, -85], fl: [-4, 0], bl: [4, 0] },
@@ -291,8 +288,6 @@ const ANIMS = {
   airin: FIGHTER,
   oni: { ...swapIdle(FIGHTER, 'oniIdleA', 'oniIdleB'),
     attack: { keys: [[0, 'oniIdleA'], [.133, 'oniRaise', 'out'], [.2, 'oniSlash', 'in'], [.333, 'oniFollow', 'out'], [.533, 'oniIdleA', 'io']] } },
-  rei: { ...swapIdle(FIGHTER, 'reiIdleA', 'reiIdleB'),
-    attack: { keys: [[0, 'reiIdleA'], [.133, 'reiRaise', 'out'], [.2, 'reiSlash', 'in'], [.333, 'reiFollow', 'out'], [.533, 'reiIdleA', 'io']] } },
   queen: { ...swapIdle(FIGHTER, 'qIdleA', 'qIdleB'),
     attack: { keys: [[0, 'qIdleA'], [.133, 'qWind', 'out'], [.2, 'qSweep', 'in'], [.4, 'qSweepF', 'out'], [.6, 'qIdleA', 'io']] } },
   cat: {
@@ -402,51 +397,6 @@ function oniHead(px, r) {
   px.line(P(-1, 12), P(9, 12.5), .5, M.rr);
 }
 
-// หัวเรย์: ตาโตแบบอนิเมะ (ไล่สี 3 ชั้น + ไฮไลต์) คิ้วเฉียงมุ่งมั่น หน้าม้าตรงมีปอยกลางระหว่างตา
-function reiHead(px, r, C) {
-  const c = r.hc, P = (x, y) => ({ x: c.x + x, y: c.y + y }), E = C.eye;
-  px.poly([P(-16, -4), P(-7, -14), P(4, -9), P(2, 10), P(-8, 16), P(-16, 10)], C.hair);
-  // ใบหน้า + หู
-  px.poly([P(-4, -9), P(8, -8), P(10.5, -1), P(10, 4), P(7, 9.5), P(3, 12.5), P(-1, 11.5), P(-5, 6)], C.skin);
-  px.poly([P(-5, 6), P(-1, 11.5), P(3, 12.5), P(1.5, 9.5), P(-2.5, 5)], C.skinD);
-  px.disc(c.x - 3, c.y + 3, 2.2, C.skin); px.set(c.x - 3, c.y + 3, C.skinD);
-  // ตาใกล้ 5×7: ไล่สีเข้มบน → สว่างล่าง ไม่มีกรอบรอบตา
-  rect(px, c.x + 1, c.y - 2, 5, 2, E[0]);
-  rect(px, c.x + 1, c.y, 5, 3, E[1]);
-  rect(px, c.x + 1, c.y + 3, 5, 2, E[2]);
-  rect(px, c.x + 3, c.y - 1, 2, 3, E[0]);
-  rect(px, c.x + 1, c.y - 1, 2, 2, '#ffffff'); px.set(c.x + 5, c.y + 3, '#ffffff');
-  px.line(P(-.4, -2.6), P(6.8, -3.2), .9, C.lash); px.line(P(6.4, -3), P(7.6, -2), .5, C.lash);
-  px.set(c.x + 6, c.y + 4, C.lash);
-  // ตาไกล 2×7
-  rect(px, c.x + 8, c.y - 2, 2, 2, E[0]);
-  rect(px, c.x + 8, c.y, 2, 3, E[1]);
-  rect(px, c.x + 8, c.y + 3, 2, 2, E[2]);
-  px.set(c.x + 8, c.y - 1, '#ffffff');
-  px.line(P(7.6, -2.8), P(10.8, -3.3), .7, C.lash);
-  // คิ้วเฉียงลงด้านใน (หน้ามุ่งมั่น)
-  px.line(P(.5, -6.5), P(5.5, -5), .55, C.hairD); px.line(P(8.2, -5), P(10.8, -6.2), .5, C.hairD);
-  px.set(c.x + 10, c.y + 5, C.skinD);
-  // ปากอ้าเล็กน้อย
-  rect(px, c.x + 6, c.y + 8, 2, 2, C.mouth); px.set(c.x + 6, c.y + 9, '#f9a8b8');
-  rect(px, c.x + 1, c.y + 7, 2, 1, C.blush); px.set(c.x + 9, c.y + 7, C.blush);
-  // ปอยข้างแก้มยาว
-  px.poly([P(-5, -7), P(0, -6), P(.5, 10), P(-1.5, 20), P(-5, 9)], C.hair);
-  px.line(P(-2, -3), P(-1.5, 16), .45, C.hairD); px.line(P(-3.6, 0), P(-3.4, 10), .4, C.hairL);
-  // กะบังผมด้านบน
-  px.poly([P(-16, 3), P(-16, -6), P(-12, -14), P(-4, -17.5), P(3, -17), P(9, -13.5), P(12.5, -6), P(12, -4), P(-3, -6)], C.hair);
-  // หน้าม้า: ปลายถึงระดับคิ้ว + ปอยยาวระหว่างตา
-  [[-3, 2, 0, -1.5], [1, 6, 3.5, -4.5], [5, 8.6, 7, .8], [8, 12.5, 11.2, -4.5]].forEach(([x0, x1, tx, ty]) => {
-    px.poly([P(x0, -8), P(x1, -8), P(tx, ty)], C.hair);
-    px.line(P(x0 + .6, -7.5), P(tx - .2, ty - .8), .4, C.hairD);
-  });
-  px.line(P(-10, -9.5), P(-4, -13), .6, C.hairL); px.line(P(-2, -14), P(4, -13.5), .6, C.hairL);
-  px.set(c.x - 6, c.y - 12, C.hairLL); px.set(c.x + 1, c.y - 14, C.hairLL);
-  px.line(P(-13, -2), P(-14, 7), .45, C.hairD);
-  // กิ๊บม่วง
-  px.line(P(-8, -9), P(-5, -12), .6, C.p); px.line(P(-8, -12), P(-5, -9), .6, C.p);
-}
-
 const ROBO = { pal: { W: '#f1f5f9', g: '#94a3b8', d: '#1e1b4b', C: '#67e8f9', c: '#c084fc' },
   rows: [
     '.WW.........WW..',
@@ -515,86 +465,6 @@ const CHARS = {
       strap(px, r.fa, .3, 4.4, .5, C.wD);
       const cuff = lerp(r.fa.e, r.fa.h, .78); px.disc(cuff.x, cuff.y, 3, C.p); px.disc(cuff.x + .6, cuff.y - .6, 1.5, C.pG);
       const kn = add(r.fa.h, r.fa.dir.x * 4, r.fa.dir.y * 4); px.set(kn.x, kn.y, C.pG); px.set(kn.x + 1, kn.y, C.p);
-    }
-  },
-  rei: {
-    name: 'เรย์', role: 'ตัวละครใหม่ · นักดาบ', theme: '', rim: '#c4b5fd', phase: .3,
-    desc: 'นักดาบผมม่วงยาว ตาสีฟ้า แจ็กเก็ตฮู้ดขาวยาวถึงต้นขา เสื้อครอปดำ ถุงมือครึ่งนิ้ว บูทม่วง ถือคาตานะ มีละอองพลังม่วงลอยรอบตัว',
-    draw(px, r, p, gt) {
-      const C = { hair: '#3f2aa8', hairD: '#241462', hairL: '#7b5cf0', hairLL: '#c4b5fd', w: '#f5f3fc', wD: '#c3bce3', wDD: '#8e85bf', b: '#15111f', bL: '#342c52', skin: '#f6d3bf', skinD: '#e0a58e', belt: '#2a2440', p: '#b07cff', pG: '#f3e8ff', pants: '#2b2650', pantsD: '#1a1636', boot: '#6c4fd8', bootD: '#3a2a8c', bootL: '#a78bfa', glove: '#1d1830', gloveD: '#0c0a16', metal: '#cbd5e1',
-        eye: ['#1e3a8a', '#3b82f6', '#93e5ff'], lash: '#160f33', mouth: '#9f1239', blush: '#f7a8b8',
-        blade: '#eef0fb', bladeD: '#9aa0c8', bladeG: '#c4b5fd', hilt: '#14101f', wrap: '#7c3aed', guard: '#4c3d7a' };
-      const n = r.neck, T = r.T, s = r.sway, hp = (x, y) => add(n, x + s * Math.max(0, y + 8) / 20, y);
-      // ผมยาวสลวยถึงเอว ปลายแตกแฉก
-      px.poly([hp(-6, -28), hp(-20, -22), hp(-29, -6), hp(-32, 14), hp(-31, 34), hp(-27, 48), hp(-24, 38), hp(-21, 52), hp(-17, 40), hp(-13, 48), hp(-10, 30), hp(-6, 14), hp(-1, -2), hp(3, -18)], C.hair);
-      [[-24, -8, -28, 40], [-17, -6, -19, 46], [-11, -2, -12, 34]].forEach(([a, b, c2, d]) => px.line(hp(a, b), hp(c2, d), .7, C.hairD));
-      [[-21, -12, -25, 14], [-14, -10, -16, 22]].forEach(([a, b, c2, d]) => px.line(hp(a, b), hp(c2, d), .6, C.hairL));
-      px.line(hp(-27, 8), hp(-29, 24), .5, C.hairLL);
-      // ชายแจ็กเก็ตยาวปลิวด้านหลัง
-      const tl = (x, y) => add(T(x, y, false), s * Math.max(0, y) / 3.5, 0);
-      px.poly([T(-9, -8), T(-2, -4), tl(-3, 12), tl(-7, 10), tl(-10, 14), tl(-15, 7)], C.wDD);
-      px.line(tl(-7, 10), T(-6.5, -4), .5, C.wD);
-      // ขา + บูทยาว
-      const lg = { th: 6.4, kn: 5, an: 4.2, foot: 8.5, bootAt: .28 };
-      leg(px, r.bl, { ...lg, c: C.pantsD, d: '#110e24', boot: C.bootD, bootD: '#221858' });
-      leg(px, r.fl, { ...lg, c: C.pants, d: C.pantsD, boot: C.boot, bootD: C.bootD });
-      strap(px, r.bl, .3, 5.4, .7, C.boot); strap(px, r.fl, .3, 5.6, .8, C.bootL);
-      [.6, .82].forEach(t => strap(px, r.fl, t, 5, .45, C.bootD));
-      const ko = lerp(r.fl.e, r.fl.h, .45); px.line(add(ko, -1, 0), add(ko, 3, -1), .6, C.bootL);
-      // สะโพก
-      px.poly([T(-6.5, -6, false), T(6.5, -6, false), T(7.5, 3, false), T(0, 2, false), T(-6.5, 3, false)], C.pants);
-      px.line(T(0, -2, false), T(0, 2, false), .45, C.pantsD);
-      // แจ็กเก็ตตัวหลวม
-      px.poly([T(-9, -18), T(7, -19), T(9, -10), T(9.5, -3), T(4.5, -2), T(-4, -2), T(-9.5, -4)], C.w);
-      px.poly([T(-8.5, -17), T(-5, -17), T(-5, -3), T(-9.5, -4)], C.wD);
-      px.line(T(-6.6, -14), T(-7.2, -5), .5, C.wDD); px.line(T(7.5, -13), T(8, -4), .5, C.wD);
-      // ชายแจ็กเก็ตด้านหน้า (เปิดหน้า ยาวถึงต้นขา)
-      px.poly([T(4.5, -4), T(9.5, -4), tl(10.5, 4), tl(9, 9), tl(5.5, 7)], C.w);
-      px.line(tl(5.5, 7), tl(9, 9), .6, C.wD); px.line(T(8, -2), tl(9, 6), .45, C.wD);
-      px.line(T(4.6, -4), tl(5.5, 7), .55, C.wDD);
-      // เสื้อครอป + หน้าท้อง
-      px.poly([T(-2.5, -18), T(4.8, -18), T(4.8, -11.5), T(-2.5, -11.5)], C.b);
-      px.line(T(-2, -17), T(4.3, -17), .6, C.bL); px.line(T(-1.5, -13.2), T(4, -12.4), .4, C.bL);
-      px.poly([T(-2.5, -11.5), T(4.8, -11.5), T(4.8, -6), T(-2.5, -6)], C.skin);
-      px.line(T(-2.5, -11.1), T(4.8, -11.1), .5, C.skinD); px.line(T(1.4, -10), T(1.4, -7.2), .4, C.skinD);
-      // เข็มขัด + โซ่
-      px.poly([T(-3.5, -6), T(5.5, -6), T(5.5, -4.3), T(-3.5, -4.3)], C.belt);
-      const bk = T(1, -5.2); rect(px, bk.x - 1, bk.y - 1, 3, 3, C.metal); px.set(bk.x, bk.y, C.belt);
-      for (let i = 0; i <= 6; i++) { const q = lerp(T(2.5, -4.3), T(6.5, -3.4), i / 6); px.set(q.x, q.y + Math.sin(i / 6 * Math.PI) * 3, C.metal); }
-      // ขอบซิปม่วง + ตรา
-      px.line(T(-2.5, -18), T(-2.8, -2), .7, C.p); px.line(T(4.9, -18), T(5.2, -2), .6, C.wD);
-      const em = T(6.6, -14.5); rect(px, em.x - 1, em.y - 1, 3, 3, C.p); px.set(em.x, em.y, C.pG);
-      // ฮู้ด/ปกเสื้อรอบคอ
-      const hd = T(-4, -18.5); px.disc(hd.x, hd.y, 7, C.wD); px.disc(hd.x + 1, hd.y + 1, 4, C.wDD);
-      px.poly([T(-3, -20), T(6, -20.5), T(5, -17.5), T(-2.5, -17)], C.w);
-      px.line(n, add(n, 2, 4), 2.8, C.skin); px.line(add(n, -2, 1), add(n, 3.5, .5), .8, C.b);
-      // แขนหลัง: ยื่นชี้ไปข้างหน้าพาดหน้าอก (ตามภาพอ้างอิง)
-      px.taper(r.ba.s, r.ba.e, 6.4, 5.6, C.wDD); px.taper(r.ba.e, r.ba.h, 5.6, 4.6, C.wDD);
-      arm(px, r.ba, 5.2, C.w, C.wD, C.glove, C.gloveD);
-      const bc = lerp(r.ba.e, r.ba.h, .8); px.disc(bc.x, bc.y, 3.2, C.p); px.disc(bc.x + .6, bc.y - .6, 1.6, C.pG);
-      reiHead(px, r, C);
-      // คาตานะในมือหน้า (วาดก่อนแขน ให้มือบังด้าม)
-      const d = r.fa.dir, h = r.fa.h, A = (k, o = 0) => add(h, d.x * k - d.y * o, d.y * k + d.x * o);
-      px.line(A(-9), A(1), 1.9, C.hilt);
-      for (let k = -8; k < 1; k += 2) px.set(A(k).x, A(k).y, C.wrap);
-      px.line(A(2, -3.2), A(2, 3.2), 1.2, C.guard); px.set(A(2).x, A(2).y, C.p);
-      px.line(A(3), A(46), 1.5, C.blade);
-      px.line(A(4, 1.1), A(44, 1.1), .6, C.bladeD);
-      px.line(A(6, -1), A(40, -1), .45, C.bladeG);
-      spike(px, A(45), A(51, -1.2), 3, C.blade);
-      arm(px, r.fa, 5.5, C.w, C.wD, C.glove, C.gloveD);
-      strap(px, r.fa, .3, 5, .5, C.wD);
-      const cf = lerp(r.fa.e, r.fa.h, .8); px.disc(cf.x, cf.y, 3.2, C.wD); px.disc(cf.x + .6, cf.y - .6, 2, C.w);
-    },
-    // ละอองพลังม่วงลอยขึ้นรอบตัว (วาดหลังเส้นขอบ จะได้ไม่มีขอบดำ)
-    post(px, r, p, gt) {
-      const cols = ['#c084fc', '#a855f7', '#e9d5ff', '#7c3aed'];
-      for (let i = 0; i < 16; i++) {
-        const life = (gt * (.35 + (i % 4) * .08) + i * .173) % 1;
-        const x = HX - 46 + ((i * 41) % 92) + Math.sin(gt * 2 + i) * 2, y = 142 - life * 70;
-        const sz = life < .7 ? (i % 3 === 0 ? 3 : 2) : 1;
-        rect(px, Math.round(x), Math.round(y), sz, sz, cols[i % 4]);
-      }
     }
   },
   oni: {
@@ -757,7 +627,7 @@ const CHARS = {
 
 /* =================== Render one frame =================== */
 const FPS = 15;
-const SMEAR = { airin: ['#e9d5ff', 0], rei: ['#e9d5ff', 46], oni: ['#fecaca', 50], queen: ['#f5d0fe', 20] };   // [สี, ระยะปลายอาวุธจากมือ]
+const SMEAR = { airin: ['#e9d5ff', 0], oni: ['#fecaca', 50], queen: ['#f5d0fe', 20] };   // [สี, ระยะปลายอาวุธจากมือ]
 function animFor(id, state) {
   const set = ANIMS[id];
   return set[state] || set.idle;
@@ -783,7 +653,6 @@ function renderChar(id, state, tIn, gt) {
   CHARS[id].draw(px, r, pose, gt);
   if (CHARS[id].rim) rimLight(px, CHARS[id].rim);
   px.outline(OUT);
-  if (CHARS[id].post) CHARS[id].post(px, r, pose, gt);
   if (state === 'charge' && tIn > .1) { const g = Math.floor(gt * 10) % 2 ? '#ef4444' : '#fb7185'; px.outline(g); px.outline(g + 'aa'); px.outline(g + '55'); }
   if (state === 'ult' && tIn > .3) { const g = Math.floor(gt * 12) % 2 ? '#e879f9' : '#a855f7'; px.outline(g); px.outline(g + 'aa'); px.outline(g + '55'); }
   if (state === 'hurt' && tIn < .1) px.fillAll('#ffffff');
@@ -1044,13 +913,13 @@ function drawShowBG() {
   return px.toCanvas(document.createElement('canvas'));
 }
 const showCv = document.getElementById('show'), showCtx = showCv.getContext('2d'), SHOWBG = drawShowBG();
-// ตอนนี้เป็นภาพนิ่ง (ยังไม่ทำแอนิเมชัน) วาดครั้งเดียวในท่ายืน
-function showStill() {
-  showCtx.drawImage(SHOWBG, 0, 0);
-  const { px } = renderChar('rei', 'idle', 0, 0);
-  showCtx.drawImage(px.toCanvas(document.createElement('canvas')), 0, -3);
-}
-showStill();
+// สไปรต์จากภาพที่เจน (PNG พื้นใส) วางบนพื้นที่ y=138
+const loadImg = src => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
+Promise.all(['art/rei/front.png', 'art/rei/back.png'].map(loadImg)).then(([front, back]) => {
+  showCtx.drawImage(SHOWBG, 0, 0); showCtx.drawImage(SHOWBG, 40, 0);
+  showCtx.drawImage(front, 52 - (front.width >> 1), 140 - front.height);
+  showCtx.drawImage(back, 148 - (back.width >> 1), 140 - back.height);
+});
 
 /* palette swatches */
 ['#120a24', '#2d1b69', '#4c35b5', '#8b6cf0', '#eeeaf8', '#b9b2da', '#1c1730', '#f6d1bc', '#38bdf8', '#c084fc', '#dc2626', '#991b1b', '#5b1220', '#f59e0b', '#fde047', '#e4e4e7', '#4c1d95', '#f0abfc', '#67e8f9', '#6d4bd6', '#2b1d55']
