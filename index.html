@@ -1201,7 +1201,7 @@ const AIRIN_ANIM = {
 const AIRIN_ART = {}; let airinArtOn = false, airinUltAt = -9;
 const AIRIN_POP = { filter: 'saturate(1.35) contrast(1.12) brightness(1.06)', glow: '#a855f7', blur: 9 };
 // idle-1 fractions inside the frames (printed by tools/key_frames.py); h = Airin's height on the 640×360 stage
-const AIRIN_FIT = { cx: .444, foot: .981, head: .107, h: 118 };
+const AIRIN_FIT = { cx: .526, foot: .982, head: .120, h: 118 };
 for (const n of AIRIN_FRAMES) {
   const im = new Image();
   im.onload = () => { if (n === 'idle-1') airinArtOn = true; lastStageF = -1; };
