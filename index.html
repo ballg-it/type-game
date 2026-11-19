@@ -1901,7 +1901,7 @@ function heatmap(L, miss) {
 
 /* ================= PvP: ดวลออนไลน์ (PeerJS, เครื่องต่อเครื่อง) ================= */
 // แต่ละฝั่งเป็นเจ้าของเลือดตัวเอง: ตีเบา/กลาง = ดาเมจทันที · คำแรง = "ท่าหนัก" ส่งไปให้อีกฝั่งพิมพ์กัน (กันท้าย = สวนกลับ)
-const PVP = { hp: 500, charge: 2.4, heavy: 1.4, comboCap: 10, ultGain: 0.6, prefix: 'typegame-duel-v1-', lib: 'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js' };
+const PVP = { hp: 500, charge: 2.4, heavy: 1.4, comboCap: 10, ultGain: 0.6, prefix: 'typegame-duel-v1-', lib: ['https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js'] };
 const PVP_OPEN = { th: 'ดวล', en: 'duel' };
 const PV_CODE = [['🐘','ช้าง','elephant'],['🐴','ม้า','horse'],['🐟','ปลา','fish'],['🐦','กา','raven'],['🐻','หมี','bear'],['🦉','นกฮูก','owl'],
   ['🦁','สิงโต','lion'],['🦒','ยีราฟ','giraffe'],['🐒','ลิง','monkey'],['🐍','งู','snake'],['🐄','วัว','cow'],['🦘','จิงโจ้','kangaroo'],
@@ -1916,9 +1916,10 @@ const pvSend = m => { try { PV.conn && PV.conn.open !== false && PV.conn.send(m)
 
 function pvLoad() {
   if (window.Peer) return Promise.resolve();
-  return new Promise((ok, no) => {
-    const s = document.createElement('script'); s.src = PVP.lib; s.onload = ok; s.onerror = no; document.head.appendChild(s);
+  const one = src => new Promise((ok, no) => {
+    const s = document.createElement('script'); s.src = src; s.onload = () => window.Peer ? ok() : no(); s.onerror = no; document.head.appendChild(s);
   });
+  return PVP.lib.reduce((p, src) => p.catch(() => one(src)), Promise.reject());   // unpkg ไม่ได้ → ลอง jsDelivr
 }
 function showPvp(step = 'home') {
   phase = 'pvp';

@@ -54,6 +54,9 @@
 `Px` บัฟเฟอร์พิกเซล · `U=2` · สไปรต์ 160×148 สะโพก (80,96) · 15 fps · `makeRig` + ท่า `PO` + `FIGHTER`/`ANIMS` · `renderChar(id, state, t, gt)` → `{px, pose}` · `CHARS`: `airin`, `oni`, `queen`, `cat`, `robo`, `bandit`, `ghost` · `drawBG()`, `drawGlyphs()`
 ข้อจำกัด: เท้าไถล, bandit ใช้ท่าชุดโอนิ, แขนภูตแทบมองไม่เห็น
 
+## เล่นผ่านเว็บ (GitHub Pages)
+ไม่มี build: Settings → Pages → Source "Deploy from a branch" → branch `ccr-a67b83da-eggwh5` โฟลเดอร์ `/ (root)` (มี `.nojekyll` แล้ว) — รีโปเป็น private ต้องเปลี่ยนเป็น public หรือมี GitHub Pro ก่อน · ลิงก์จะเป็น `https://ballg-it.github.io/type-game/` · หน้า Artifact ของ claude.ai ใช้ PvP ไม่ได้ (บล็อก WebRTC/WebSocket) · PeerJS โหลด unpkg ก่อน ไม่ได้ค่อยลอง jsDelivr
+
 ## การทดสอบ
 `cd tests && node run.js th` (หรือ `en`/`bi`) — Playwright จำลองการพิมพ์เล่นจบรันบนแผนที่สุ่ม (ร้าน/เหตุการณ์/ฉาก/บอส); ไฟล์อื่น: `bugs.js` (บั๊กที่แก้แล้ว 3 ข้อ), `story.js`, `ending.js`, `ev.js` (เหตุการณ์+จุดพัก), `meta.js` (ศาลเจ้า+localStorage+ขนนก), `pvp.js [modeA] [modeB]` (2 หน้าต่อกันผ่าน Peer ปลอมบน BroadcastChannel + http server ในตัว: สร้าง/ผิดรหัส/Backspace/ไฟต์/รีแมตช์/หลุดกลางไฟต์) — ทุกตัวต้องได้ `errors []` (ภาพ .png ลงในโฟลเดอร์ที่รัน อย่า commit)
 **ยังไม่ได้ทดสอบ:** PvP ผ่านเน็ตจริง (container นี้ต่อ unpkg/peerjs ไม่ได้ — ต้องเปิดผ่าน http(s) หรือไฟล์ก็ได้แต่ต้องมีเน็ต; เครือข่ายบางที่ที่ NAT เข้มอาจต่อไม่ติดเพราะไม่มี TURN), คีย์บอร์ดไทยจริง (ห่วงเลขไทยที่ต้อง Shift), **บาลานซ์ตัวเลข** (รันยาว 4–6 ไฟต์+บอส, บอทพิมพ์แม่นได้ ~70–80🪙 ต่อร้าน, ซื้อศาลครบ ~840💎 ≈ 10–15 รัน)
