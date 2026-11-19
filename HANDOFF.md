@@ -1,7 +1,7 @@
 # HANDOFF — Type Game (สถานะ ณ 2026-11-19 ดึก)
 
 ## ภาพรวม
-เกมฝึกพิมพ์ **ต่อสู้ 1:1 + Roguelike + เนื้อเรื่องเบาๆ** รองรับไทย (เกษมณี) / อังกฤษ / สองภาษา — ไอเดียทั้งหมดอยู่ใน `README.md`
+เกมฝึกพิมพ์ **ต่อสู้ 1:1 + Roguelike + เนื้อเรื่องเบาๆ** รองรับไทย (เกษมณี) / อังกฤษ / สองภาษา — ไอเดียทั้งหมดอยู่ใน `docs/IDEAS.md` (README = หน้ารีโป)
 - ผู้ใช้สื่อสาร**ภาษาไทย** · ตอบเป็นภาษาไทย · ชอบให้ทำทีละระบบแล้วสรุปสั้นๆ พร้อมเสนอขั้นต่อไป
 - รีโป `ballg-it/type-game` · branch **`ccr-a67b83da-eggwh5`** (push แล้ว, ไม่มี PR — ห้ามสร้าง PR ถ้าไม่ได้ขอ) · `main` มีแค่ต้นแบบแรก (SVG) — **อย่าทำงานบน main**
 - เครื่องผู้ใช้ (Windows): โฟลเดอร์ `D:\1234` = local branch **`pixel-game`** (track `origin/ccr-a67b83da-eggwh5`) push ตรงกับ origin แล้ว (`git push origin pixel-game:ccr-a67b83da-eggwh5`; ข้อความ "Not enough memory resources" ตอน push มาจาก credential helper — push สำเร็จ) · มี session อื่นทำงานบน branch เดียวกันได้ (เช่น หน้า title `282bbcd`) → `git log` ก่อนแก้ และแก้ `index.html` ด้วยการแทนที่เฉพาะจุด
@@ -26,7 +26,7 @@
 | `vendor/pixelfx.js` (+ `-LICENSE.txt`, `-NOTICE.md`) | เอฟเฟกต์ท่าจาก [pixelfx](https://github.com/patch-gg/pixelfx) (MIT, @5294518) bundle เฉพาะ 7 ตัวที่ใช้ เป็น IIFE `window.PFX` โหลดด้วย `<script>` ธรรมดา |
 | `tools/pixelfx-entry.js` | entry ของ bundle ข้างบน (วิธี build อยู่ในหัวไฟล์; ต้องมี checkout ของ pixelfx + esbuild) |
 | `characters.html` | แบบร่าง SVG เก่า **ไม่ได้ใช้แล้ว** |
-| `README.md` | เอกสารไอเดียเกม |
+| `README.md` | หน้ารีโป (ภาพจาก `docs/screenshots/`, ถ่ายใหม่ด้วย headless Chrome) · ไอเดียเกมทั้งหมดอยู่ `docs/IDEAS.md` |
 
 ## วงจรของหนึ่งรัน (ทำเสร็จแล้วทั้งหมด)
 เมนู → **แผนที่ 7 ชั้น** (เลือกทางโดยพิมพ์) → ไฟต์ / 💀 ศัตรูเก่ง / ❓ เหตุการณ์ / 🔥 จุดพัก / 🐱 ร้าน → ชนะไฟต์ = ได้เหรียญ + เลือกอัปเกรด → **ฉากเนื้อเรื่องก่อนบอส** → บอสราชินีวรรณยุกต์ → **ฉากจบ** (2 แบบ) → หน้าสรุป (+เศษคริสตัล 💎) → **ศาลเจ้า** อัปเกรดถาวร → รันใหม่
