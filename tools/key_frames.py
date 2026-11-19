@@ -19,13 +19,18 @@ from PIL import Image
 import numpy as np
 
 SHEETS = [
-    ['stand-1', None, 'attack-1', 'attack-2', 'attack-3', 'block-1',
+    ['stance', None, 'attack-1', 'attack-2', 'attack-3', 'block-1',
      'block-2', 'hurt-1', 'hurt-2', 'hurt-3', 'charge-1', 'charge-2',
      'ult-1', 'ult-2', 'ult-3', 'win-1', 'win-2', 'win-3'],
-    [None, None, 'attack-1b', 'attack-2b', 'attack-4', 'block-0',
+    [None, 'idle-4', 'attack-1b', 'attack-2b', 'attack-4', 'block-0',
      'block-3', 'hurt-0', 'hurt-4', 'charge-3', 'charge-4', 'ult-0',
      'ult-1b', 'ult-2b', 'ult-4', 'win-0', 'win-2b', 'win-4'],
-    [None] * 8 + ['stance'] + [None] * 9,   # row 2 col 3 is the cleanest ready stance
+    [None, 'attack-0', 'attack-1c', 'attack-2c', 'attack-3b', 'ult-0b',
+     'block-0b', 'block-1b', 'block-2b', 'block-2c', 'block-3b', 'block-4',
+     'hurt-1b', 'hurt-2b', 'hurt-2c', 'hurt-3b', 'hurt-5', 'ult-2c'],
+    [None, 'charge-0', 'charge-1b', 'charge-2b', 'charge-3b', 'charge-5',
+     'charge-6', 'ult-3b', 'win-0b', 'win-1b', 'win-3b', 'win-5',
+     'idle-5', 'idle-6', 'idle-7', 'idle-8', 'idle-9', 'idle-10'],
 ]
 COLS, ROWS, STAND_H = 6, 3, 118
 
@@ -93,12 +98,13 @@ def owners(band, cols, B=4):
     h, w = band.shape
     small = band[:h // B * B, :w // B * B].reshape(h // B, B, w // B, B).any((1, 3))
     lab, n = label(small)
-    run_of_x = np.zeros(small.shape[1], int)
+    run_of_x = np.full(small.shape[1], -1, int)
     for k, (c0, c1) in enumerate(cols): run_of_x[c0 // B:(c1 + B - 1) // B] = k
     count = np.zeros((n + 1, len(cols)), int)
     ys, xs = np.nonzero(lab)
-    np.add.at(count, (lab[ys, xs], run_of_x[xs]), 1)
-    own = count.argmax(1)
+    valid = run_of_x[xs] >= 0
+    np.add.at(count, (lab[ys[valid], xs[valid]], run_of_x[xs[valid]]), 1)
+    own = np.where(count.max(1) > 0, count.argmax(1), -1)
     for k in range(len(cols)): own[count[:, k].argmax()] = k   # the run's body
     full = np.full((h, w), -1)
     big = np.repeat(np.repeat(np.where(lab > 0, own[lab], -1), B, 0), B, 1)
@@ -119,6 +125,9 @@ def poses(sheet_path):
         own = owners(band, cols)
         anyone = px[r0:r1, ..., 3] > 0
         masks = [(own == k) & anyone for k in range(COLS)]
+        if any(not m.any() for m in masks):
+            xs_grid = np.arange(W)[None, :]
+            masks = [anyone & (xs_grid >= c0) & (xs_grid < c1) for c0, c1 in cols]
         base = r0 + max(np.nonzero(m.any(1))[0].max() for m in masks) + 1
         for k, m in enumerate(masks):
             ys, xs = np.nonzero(m)
