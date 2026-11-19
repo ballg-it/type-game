@@ -257,6 +257,13 @@ body.cine #story{cursor:default}
 #startScr{position:fixed;display:block;padding:0;background:#0b0618;backdrop-filter:none;overflow:hidden}
 #startScr[hidden]{display:none}
 #titleBg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 100%;image-rendering:pixelated}
+#titleArt{position:absolute;inset:0;background:center 70%/cover no-repeat;display:none}
+#titleArt.on{display:block}
+#heroArt{position:absolute;right:max(0px,4vw);bottom:0;height:min(96vh,72vw);max-width:62vw;object-fit:contain;object-position:bottom right;pointer-events:none;display:none;
+  filter:drop-shadow(0 0 26px #a855f777);animation:heroFloat 4s ease-in-out infinite}
+@keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+#startScr.art .ts-hero{display:none}
+#startScr.art #heroArt{display:block}
 .ts-fade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#0b0618f2 0%,#0b0618cc 30%,#0b061833 55%,transparent 70%),linear-gradient(0deg,#0b0618dd 0%,transparent 22%)}
 .ts-fx{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 .ts-fx span{position:absolute;bottom:-40px;font-weight:800;color:#c084fc;opacity:0;text-shadow:0 0 10px #a855f7;animation:tsRise linear infinite}
@@ -307,6 +314,7 @@ body.cine #story{cursor:default}
 #startScr.helpOn .ts-fade{background:#0b0618cc}
 @media (max-width:760px){
   .ts-hero{right:-14vw;bottom:12vh;height:min(62vh,120vw);opacity:.5}
+  #heroArt{right:-18vw;height:min(78vh,150vw);max-width:none;opacity:.45}
   .ts-fade{background:linear-gradient(90deg,#0b0618e6,#0b061899 70%,#0b061866),linear-gradient(0deg,#0b0618ee 0%,transparent 30%)}
   .ts-stats{top:auto;bottom:calc(max(14px,4vh) + 96px);left:16px;right:16px;justify-content:flex-start;max-width:none}
   .ts-main{left:16px;width:calc(100% - 32px)}
@@ -395,9 +403,11 @@ body.cine #story{cursor:default}
   <!-- start / title screen -->
   <div class="overlay" id="startScr">
     <canvas id="titleBg" width="320" height="180"></canvas>
+    <div id="titleArt"></div>
     <div class="ts-fx" id="tsFx"></div>
     <div class="ts-fade"></div>
     <div class="ts-hero"><canvas id="heroCv" width="176" height="150"></canvas></div>
+    <img id="heroArt" alt="">
     <div class="ts-stats" id="startMeta"></div>
     <div class="ts-main">
       <div class="logo">
@@ -2133,7 +2143,7 @@ function showHelp(on) {
 const HERO = { st: 'idle', t: 0, n: 0, last: 0, cv: $('#heroCv') };
 function heroLoop(now) {
   requestAnimationFrame(heroLoop);
-  if ($('#startScr').hidden || HELP || !airinArtOn || now - HERO.last < 33) return;
+  if ($('#startScr').hidden || $('#startScr').classList.contains('art') || HELP || !airinArtOn || now - HERO.last < 33) return;
   const dt = Math.min(.1, (now - (HERO.last || now)) / 1000); HERO.last = now;
   HERO.t += dt;
   if (HERO.st === 'idle' && HERO.t > 3.4) { HERO.n++; HERO.st = HERO.n % 3 ? 'attack' : 'win'; HERO.t = 0; }
@@ -2147,6 +2157,14 @@ requestAnimationFrame(heroLoop);
 document.querySelectorAll('#menuList .mi').forEach((el, i) => el.addEventListener('mouseenter', () => menuSel(i)));
 (() => {   // ฉากหลังเมือง + ตัวอักษรนีออนลอยขึ้น
   const x = $('#titleBg').getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(BG, 0, 0);
+  // AI-painted backdrop (art/title-bg.jpg, Nano Banana); the code-drawn city stays as the fallback
+  const art = new Image();
+  art.onload = () => { $('#titleArt').style.backgroundImage = `url(${art.src})`; $('#titleArt').classList.add('on'); };
+  art.src = 'art/title-bg.jpg';
+  // AI-painted Airin key art (art/title-airin.png, keyed by tools/key_art.py); pixel frames stay as the fallback
+  const hero = $('#heroArt');
+  hero.onload = () => $('#startScr').classList.add('art');
+  hero.src = 'art/title-airin.png';
   const G = 'กขคงจดตนบมยรลวศสหอฮAQWERTYZ'.match(/./gu);
   $('#tsFx').innerHTML = Array.from({ length: 14 }, (_, i) =>
     `<span style="left:${(i * 37 + 7) % 100}%;font-size:${14 + (i * 7) % 18}px;animation-duration:${9 + (i * 5) % 9}s;animation-delay:-${(i * 3.1) % 14}s">${G[(i * 5) % G.length]}</span>`).join('');
