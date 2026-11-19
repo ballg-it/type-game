@@ -634,7 +634,58 @@ function mapSVG(opts) {
 /* ---------- เนื้อเรื่องสั้นก่อนบอส ----------
    บทของศัตรู/คีย์บอท: กด Enter (หรือคลิก) เพื่อไปต่อ · บทของไอริน: ต้องพิมพ์ประโยคเอง
    ท้ายฉากเลือกท่าที (พิมพ์) ได้โบนัสต่างกัน · Esc = ข้ามไปที่ตัวเลือก */
-const SPEAKER = { queen: ['👑 ราชินีวรรณยุกต์', '#f0abfc'], robo: ['🤖 คีย์บอท', '#67e8f9'], me: ['⌨ ไอริน (คุณ)', '#fbbf24'] };
+const SPEAKER = { queen: ['👑 ราชินีวรรณยุกต์', '#f0abfc'], robo: ['🤖 คีย์บอท', '#67e8f9'], me: ['⌨ ไอริน (คุณ)', '#fbbf24'], nar: ['📜 บทส่งท้าย', '#e9d5ff'] };
+/* ---------- ฉากจบหลังชนะบอส ---------- */
+const ENDINGS = {
+  friend: { icon: '🤝', name: 'มิตรภาพ', desc: 'ราชินีกลายเป็นผู้ปกป้องวรรณยุกต์' },
+  seal:   { icon: '🔒', name: 'ผู้พิทักษ์', desc: 'ผนึกราชินี แล้วไอรินเฝ้าวรรณยุกต์เอง' }
+};
+function endingScript() {
+  const first = !META.wins, close = R.php < R.pmax * 0.25;
+  const L = [
+    { who: 'queen', t: 'ไม่... ไม่จริง... นิ้วของเจ้าเร็วกว่าเสียงวรรณยุกต์ของข้าอีกหรือ...' },
+    { who: 'robo', fx: 'glyphs', t: 'บี๊บ! ตรวจพบวรรณยุกต์ไหลกลับคืนสู่นครนีออน! ไม้เอก ไม้โท ไม้ตรี ไม้จัตวา... ครบทุกตัว!' }
+  ];
+  if (R.revived) L.push({ who: 'robo', t: 'เกือบไปแล้วนะไอริน ดีที่มีขนนกฟีนิกซ์ติดตัวมาด้วย' });
+  else if (close) L.push({ who: 'robo', t: 'เลือดเหลือนิดเดียวเอง... ระบบของผมเกือบช็อตแน่ะ!' });
+  L.push(
+    { who: 'queen', t: 'ข้าแค่... อยากให้ทุกคนได้ยินเสียงของข้า ในเมืองที่ไม่มีใครฟังกันเลย...' },
+    { who: 'me', say: { th: 'ทุกคนได้ยินแล้ว', en: 'we hear you' }, p: 'idle' },
+    { who: 'me', choice: [
+      { icon: '🤝', name: 'ให้อภัย', desc: 'ยื่นมือให้ราชินี', say: { th: 'ให้อภัย', en: 'forgive' }, ending: 'friend', then: [
+        { who: 'queen', e: 'hurt', t: '...เจ้ายังจะช่วยข้าอีกหรือ? หึ... นักพิมพ์ประหลาดจริงๆ' },
+        { who: 'queen', t: 'ก็ได้ ข้าจะเฝ้าวรรณยุกต์พวกนี้ไว้เอง ไม่ให้ใครมาขโมยไปอีก' },
+        { who: 'nar', t: 'นับแต่วันนั้น ราชินีกลายเป็นผู้ดูแลเสียงสูงต่ำของนครนีออน และทุกคืนจะมีเสียงหัวเราะดังมาจากวัง' }] },
+      { icon: '🔒', name: 'ผนึก', desc: 'ผนึกราชินีไว้ในแป้นพิมพ์', say: { th: 'ผนึก', en: 'seal' }, ending: 'seal', then: [
+        { who: 'robo', t: 'กำลังผนึก... ๓... ๒... ๑... บี๊บ! ผนึกลงแป้น Shift เรียบร้อย!' },
+        { who: 'queen', t: 'จำไว้นะนักพิมพ์... ทุกครั้งที่เจ้ากด Shift ข้าจะเฝ้ามองอยู่...' },
+        { who: 'nar', t: 'ไอรินกลายเป็นผู้พิทักษ์แป้นพิมพ์แห่งนครนีออน และคีย์บอทก็ไม่ยอมให้ใครแตะแป้น Shift อีกเลย' }] }] },
+    { who: 'nar', t: first ? 'แต่ไกลออกไปในความมืด... แป้นพิมพ์อีกหลายแผงยังรอคอยนักพิมพ์ผู้กล้า' : 'การเดินทางของนักพิมพ์ยังไม่จบ... เสียงพิมพ์ดังขึ้นอีกครั้งที่ไหนสักแห่ง' }
+  );
+  return L;
+}
+function showEnding() {
+  phase = 'story';
+  document.body.classList.add('cine'); arena.classList.add('cine');
+  ST = { lines: endingScript(), i: -1, buf: '', ending: null, end: true };
+  $('#story').hidden = false; kb.value = ''; kb.focus();
+  nextLine();
+}
+const GLY = [];
+function glyphImg(i) {
+  if (!GLY[i]) { const g = new Px(12, 14); g.blit(GKO, 3, 5, { X: '#fde68a' }); g.blit(MARKS[i], 5, 1, { X: '#fde68a' }); g.outline('#a16207'); GLY[i] = g.toCanvas(document.createElement('canvas')); }
+  return GLY[i];
+}
+// วรรณยุกต์สีทองลอยออกจากราชินีกลับสู่เมือง
+function risingGlyphs(x, t) {
+  for (let i = 0; i < 18; i++) {
+    const ph = (t * 0.28 + i / 18) % 1, side = i % 2 ? 1 : -1;
+    const xx = x + side * (10 + ph * (120 + (i * 37) % 160)), yy = GROUND * 2 - 70 - ph * 250 - Math.sin(ph * 6 + i) * 8;
+    sctx.globalAlpha = Math.min(1, ph * 6, (1 - ph) * 2.5);
+    sctx.drawImage(glyphImg(i % MARKS.length), Math.round(xx) - 12, Math.round(yy) - 14, 24, 28);
+  }
+  sctx.globalAlpha = 1;
+}
 function storyScript() {
   const again = META.wins > 0, low = R.php < R.pmax * 0.5, strong = R.ups.length >= 5;
   return [
@@ -649,10 +700,9 @@ function storyScript() {
     { who: 'robo', t: 'ไอริน! ระวังนะ ถ้าเลือดนางเหลือครึ่ง นางจะโกรธแล้วโจมตีถี่ขึ้น!' },
     { who: 'me', choice: [
       { icon: '🔥', name: 'ใจกล้า', desc: 'เริ่มไฟต์ด้วยเกจท่าไม้ตาย +50%', say: { th: 'ลุยเลย', en: 'bring it' }, bonus: 'ult', p: 'attack',
-        reply: 'ฮะ! ใจกล้าดีนี่ มาดูกันว่าใครจะเหลือรอด!' },
+        then: [{ who: 'queen', e: 'charge', t: 'ฮะ! ใจกล้าดีนี่ มาดูกันว่าใครจะเหลือรอด!' }] },
       { icon: '🧊', name: 'ใจเย็น', desc: 'เริ่มไฟต์พร้อมโล่ 1 ครั้ง', say: { th: 'ตั้งการ์ด', en: 'stay calm' }, bonus: 'shield', p: 'block',
-        reply: 'สุขุมดีนี่... แต่การ์ดนั่นจะทนได้สักกี่ที?' }] },
-    { who: 'queen', e: 'charge', t: '' }   // บทตอบ (เติมจากตัวเลือก)
+        then: [{ who: 'queen', e: 'charge', t: 'สุขุมดีนี่... แต่การ์ดนั่นจะทนได้สักกี่ที?' }] }] }
   ];
 }
 let ST = null;
@@ -675,7 +725,8 @@ function nextLine() {
   ST.shown = 0; ST.full = !L.t;
   const [name, col] = SPEAKER[L.who];
   const who = $('#story .who'); who.textContent = name; who.style.color = col;
-  if (L.e) { play(FIG.E, L.e); setTimeout(() => phase === 'story' && FIG.E.st === L.e && play(FIG.E, 'idle'), 900); }
+  if (L.e) { play(FIG.E, L.e); if (L.e === 'charge') setTimeout(() => phase === 'story' && FIG.E.st === L.e && play(FIG.E, 'idle'), 900); }
+  if (L.fx) { ST.fx = L.fx; ST.fxT = 0; SFX.win(); }
   if (L.p) play(FIG.P, L.p);
   if (L.say) { const lang = storyLang(); L.w = makeWord(L.say[lang], lang, 'story'); }
   if (L.choice) L.choice.forEach(c => { const lang = storyLang(); c.w = makeWord(c.say[lang], lang, 'story'); });
@@ -706,6 +757,7 @@ function renderStory() {
 }
 function storyTick(dt) {
   if (FIG.E.x > 228) FIG.E.x = Math.max(228, FIG.E.x - 160 * dt);   // ราชินีเดินเข้าฉาก
+  if (ST.fx) ST.fxT += dt;
   const L = ST.lines[ST.i];
   if (L && L.t && !ST.full) {
     const was = Math.floor(ST.shown);
@@ -742,13 +794,19 @@ function storyInput() {
 }
 function pickStory(c) {
   if (phase !== 'story') return;
-  ST.bonus = c.bonus; SFX.block();
+  ST.bonus = c.bonus; if (c.ending) ST.ending = c.ending;
+  SFX.block();
   if (c.p) play(FIG.P, c.p);
-  ST.lines[ST.i + 1].t = c.reply;
+  if (c.then) ST.lines.splice(ST.i + 1, 0, ...c.then);
   nextLine();
 }
 function endStory() {
   $('#story').hidden = true; document.body.classList.remove('cine'); arena.classList.remove('cine');
+  if (ST.end) {
+    const e = ST.ending || 'friend';
+    R.ending = e; META.endings = Object.assign({}, META.endings, { [e]: (META.endings && META.endings[e] || 0) + 1 }); saveMeta();
+    ST = null; return showResult(true);
+  }
   META.story = (META.story || 0) + 1; saveMeta();
   R.storyBonus = ST.bonus; ST = null;
   startFight();
@@ -1057,7 +1115,8 @@ function drawStage() {
   sctx.setTransform(1, 0, 0, 1, 0, 0);
   blitSprite(RO.px, xO * 2, true, O.st === 'ko' ? O.t : 0);
   blitSprite(RA.px, xA * 2, false, A.st === 'ko' ? A.t : 0);
-  if (O.id === 'queen' && O.st !== 'ko') drawGlyphs(sctx, xO * 2, GROUND * 2 - 89, gt, 62, 10);
+  if (ST && ST.fx === 'glyphs') risingGlyphs(xO * 2, ST.fxT);
+  if (O.id === 'queen' && O.st !== 'ko' && !(ST && ST.end)) drawGlyphs(sctx, xO * 2, GROUND * 2 - 89, gt, 62, 10);
   if (A.st === 'attack' && A.t >= .18 && A.t < .45) slashArc(xA * 2 + 26, GROUND * 2 - 86, 46, -75, 70, 9, (A.t - .18) / .27, ARC.airin);
   if (O.st === 'attack' && O.t >= .18 && O.t < .45) slashArc(xO * 2 - 24, GROUND * 2 - 92, 58, -110, 55, 11, (O.t - .18) / .27, ARC[O.id] || ARC.oni, true);
   if (A.st === 'ult' && A.t > .3) for (let i = 0; i < 3; i++) {
@@ -1384,7 +1443,7 @@ function startRun() {
   R = newRun();
   $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#shopScr').hidden = true; $('#chScr').hidden = true; SHOP = null;
   R.map = genMap();
-  ST = null; $('#story').hidden = true; document.body.classList.remove('cine'); arena.classList.remove('cine');
+  ST = null; R.ending = null; $('#story').hidden = true; document.body.classList.remove('cine'); arena.classList.remove('cine');
   enterNode(R.map[0][0]);
 }
 
@@ -1508,7 +1567,7 @@ function endFight(win) {
     if (coins) setTimeout(() => fx('gold', `+${coins} 🪙`, P, 0, -60), 350);
     win ? SFX.win() : SFX.lose();
   }, 380);   // หลังเฟรมโดนตีของทุกท่า (โจมตี 180ms, สวนกลับ 340ms)
-  setTimeout(() => (win && !last) ? showPick() : showResult(win), 1400);
+  setTimeout(() => (win && !last) ? showPick() : (win && last) ? showEnding() : showResult(win), 1600);
 }
 
 /* ---------- upgrade pick (พิมพ์เพื่อเลือก) ---------- */
@@ -1686,7 +1745,8 @@ function showResult(win) {
   const acc = st.correct + st.errors ? (st.correct / (st.correct + st.errors) * 100) : 100;
   const secs = Math.round(R.time / 1000);
   $('#resTitle').textContent = win ? 'พิชิตรัน!' : 'แพ้...';
-  $('#resSub').textContent = (win ? `โค่น${FOE.name}ได้แล้ว` : `พ่ายให้${FOE.name} ที่ชั้น ${R.at.layer + 1} / ${MAP_LAYERS}`) +
+  const endN = Object.keys(META.endings || {}).length, EN = win && R.ending && ENDINGS[R.ending];
+  $('#resSub').textContent = (EN ? `ฉากจบ "${EN.icon} ${EN.name}" (ปลดล็อก ${endN}/${Object.keys(ENDINGS).length}) · ` : '') + (win ? `โค่น${FOE.name}ได้แล้ว` : `พ่ายให้${FOE.name} ที่ชั้น ${R.at.layer + 1} / ${MAP_LAYERS}`) +
     ` · ความยาก${DIFF[cfg.diff].label} · ${{ th: 'ไทยล้วน', en: 'อังกฤษล้วน', bi: 'สองภาษา' }[cfg.mode]}`;
   $('#resPath').innerHTML = trailHTML();
   const stat = (v, l) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`;
@@ -1717,6 +1777,7 @@ let MT = null, MENU_BUF = '';
 const metaLang = () => cfg.mode === 'en' ? 'en' : 'th';
 function renderMetaBar() {
   $('#startMeta').innerHTML = `<span class="shard">💎 ${META.shards}</span>` + (META.runs ? ` · เล่น ${META.runs} รัน · พิชิต ${META.wins}` : '') +
+    (META.endings ? ` · ฉากจบ ${Object.keys(META.endings).length}/${Object.keys(ENDINGS).length}` : '') +
     ` · พิมพ์ <b>${META_OPEN[metaLang()]}</b> เพื่อเข้า`;
 }
 function showMeta() {
