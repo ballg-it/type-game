@@ -1,58 +1,153 @@
-"""Split the AI Studio green-screen sprite sheet into transparent Airin frames.
+"""Split AI Studio green-screen sprite sheets into transparent Airin frames.
 
-Usage: python tools/key_frames.py <sheet.png> <out_dir>
+Usage: python tools/key_frames.py <out_dir> <sheet.png> [<sheet2.png> ...]
 
-The sheet is 6 columns x 3 rows of equal cells in this order:
-idle-1 idle-2 attack-1 attack-2 attack-3 block-1 / block-2 hurt-1 hurt-2 hurt-3
-charge-1 charge-2 / ult-1 ult-2 ult-3 win-1 win-2 win-3
-Each cell is keyed (pure-green background -> transparent, green spill removed),
-then every frame is cropped to the same union box so they keep their relative
-positions (same baseline / centre as generated). Prints the idle fit numbers
-used by AIRIN_FIT in index.html.
+Each sheet holds 18 poses, 6 per row in 3 rows, named by SHEETS below (sheet 1 = first
+list, sheet 2 = second list, ...). Poses don't have to sit inside equal cells (slashes may
+stick out): rows and poses are found from the gaps of green between them. Each pose is
+anchored at its grid-cell centre (x) and its row's baseline (lowest foot in the row, y).
+Every sheet is scaled so its first pose (an idle) is IDLE_H px tall (118 = Airin's height on
+the 640x360 stage, so the game draws frames 1:1), then all frames of all sheets go on one
+shared canvas so they keep their relative positions. Prints AIRIN_FIT for index.html.
 """
 import sys, os
 from PIL import Image
 import numpy as np
 
-NAMES = ['idle-1', 'idle-2', 'attack-1', 'attack-2', 'attack-3', 'block-1',
-         'block-2', 'hurt-1', 'hurt-2', 'hurt-3', 'charge-1', 'charge-2',
-         'ult-1', 'ult-2', 'ult-3', 'win-1', 'win-2', 'win-3']
+SHEETS = [
+    ['idle-1', 'idle-2', 'attack-1', 'attack-2', 'attack-3', 'block-1',
+     'block-2', 'hurt-1', 'hurt-2', 'hurt-3', 'charge-1', 'charge-2',
+     'ult-1', 'ult-2', 'ult-3', 'win-1', 'win-2', 'win-3'],
+    ['idle-3', 'idle-4', 'attack-1b', 'attack-2b', 'attack-4', 'block-0',
+     'block-3', 'hurt-0', 'hurt-4', 'charge-3', 'charge-4', 'ult-0',
+     'ult-1b', 'ult-2b', 'ult-4', 'win-0', 'win-2b', 'win-4'],
+]
+COLS, ROWS, IDLE_H = 6, 3, 118
 
 
-def key(cell):
-    a = np.asarray(cell.convert('RGB')).astype(np.float32)
+def key(img):
+    a = np.asarray(img.convert('RGB')).astype(np.float32)
     r, g, b = a[..., 0], a[..., 1], a[..., 2]
-    green = g - np.maximum(r, b)                 # how much greener than the other channels
+    green = g - np.maximum(r, b)                  # how much greener than the other channels
     alpha = np.clip(1 - (green - 40) / 70, 0, 1)  # >110 = background, <40 = solid
     alpha[(g > 200) & (r < 90) & (b < 90)] = 0
-    # despill: pull green down to the other channels on kept pixels
-    g2 = np.where(green > 0, np.maximum(r, b) + np.minimum(green, 0), g)
-    out = np.dstack([r, g2, b, alpha * 255]).astype(np.uint8)
-    # drop speckles: alpha below 8% -> 0
-    out[..., 3][out[..., 3] < 20] = 0
-    return Image.fromarray(out, 'RGBA')
+    g2 = np.where(green > 0, np.maximum(r, b), g)  # despill
+    alpha[alpha < .08] = 0
+    return np.dstack([r, g2, b, alpha * 255]).astype(np.uint8)
 
 
-def main(sheet_path, out_dir):
-    sheet = Image.open(sheet_path)
-    cw, ch = sheet.width // 6, sheet.height // 3
-    frames = [key(sheet.crop(((i % 6) * cw, (i // 6) * ch, (i % 6 + 1) * cw, (i // 6 + 1) * ch)))
-              for i in range(18)]
-    boxes = [f.getchannel('A').point(lambda v: 255 if v > 40 else 0).getbbox() for f in frames]
-    x0 = min(b[0] for b in boxes); y0 = min(b[1] for b in boxes)
-    x1 = max(b[2] for b in boxes); y1 = max(b[3] for b in boxes)
-    pad = 4
-    box = (max(0, x0 - pad), max(0, y0 - pad), min(cw, x1 + pad), min(ch, y1 + pad))
+def runs(occ, min_gap):
+    """[start, end) runs of True, joining runs separated by fewer than min_gap False."""
+    out, i, n = [], 0, len(occ)
+    while i < n:
+        if not occ[i]:
+            i += 1; continue
+        j = i
+        while j < n and occ[j]: j += 1
+        if out and i - out[-1][1] < min_gap: out[-1][1] = j
+        else: out.append([i, j])
+        i = j
+    return out
+
+
+def split(occ, count, min_gap):
+    """Split a 1-D occupancy into `count` runs: drop specks, merge the closest pairs."""
+    rs = [r for r in runs(occ, min_gap) if r[1] - r[0] > 6]
+    while len(rs) > count:
+        k = min(range(len(rs) - 1), key=lambda k: rs[k + 1][0] - rs[k][1])
+        rs[k:k + 2] = [[rs[k][0], rs[k + 1][1]]]
+    while len(rs) < count:   # two poses touch (e.g. swords): cut the widest run at a cell edge
+        k = max(range(len(rs)), key=lambda k: rs[k][1] - rs[k][0])
+        a, b = rs[k]; cw = len(occ) / count
+        cut = int(round(round((a + b) / 2 / cw) * cw))
+        if not a < cut < b: break
+        rs[k:k + 1] = [[a, cut], [cut, b]]
+    if len(rs) != count:
+        sys.exit('found %d groups, expected %d' % (len(rs), count))
+    return rs
+
+
+def label(mask):
+    """4-connected component labels of a 2-D bool array (0 = background)."""
+    lab = np.zeros(mask.shape, np.int32); h, w = mask.shape; n = 0
+    for y0, x0 in zip(*np.nonzero(mask)):
+        if lab[y0, x0]: continue
+        n += 1; lab[y0, x0] = n; stack = [(y0, x0)]
+        while stack:
+            y, x = stack.pop()
+            for yy, xx in ((y - 1, x), (y + 1, x), (y, x - 1), (y, x + 1)):
+                if 0 <= yy < h and 0 <= xx < w and mask[yy, xx] and not lab[yy, xx]:
+                    lab[yy, xx] = n; stack.append((yy, xx))
+    return lab, n
+
+
+def owners(band, cols, B=4):
+    """Per-pixel pose index for a row band. Connected pieces stay whole: a piece that is the
+    biggest one inside a column run is that pose's body; any other piece goes to the run that
+    holds most of it. So a sword poking past the cut stays with the hand that holds it."""
+    h, w = band.shape
+    small = band[:h // B * B, :w // B * B].reshape(h // B, B, w // B, B).any((1, 3))
+    lab, n = label(small)
+    run_of_x = np.zeros(small.shape[1], int)
+    for k, (c0, c1) in enumerate(cols): run_of_x[c0 // B:(c1 + B - 1) // B] = k
+    count = np.zeros((n + 1, len(cols)), int)
+    ys, xs = np.nonzero(lab)
+    np.add.at(count, (lab[ys, xs], run_of_x[xs]), 1)
+    own = count.argmax(1)
+    for k in range(len(cols)): own[count[:, k].argmax()] = k   # the run's body
+    full = np.full((h, w), -1)
+    big = np.repeat(np.repeat(np.where(lab > 0, own[lab], -1), B, 0), B, 1)
+    full[:big.shape[0], :big.shape[1]] = big
+    return full
+
+
+def poses(sheet_path):
+    """[(rgba crop, anchor x, baseline y)] for the 18 poses of one sheet, scaled to IDLE_H."""
+    px = key(Image.open(sheet_path))
+    H, W = px.shape[:2]
+    solid = px[..., 3] > 60
+    cw = W / COLS
+    out = []
+    for r0, r1 in split(solid.any(1), ROWS, H // 100):
+        band = solid[r0:r1]
+        cols = split(band.any(0), COLS, W // 200)
+        own = owners(band, cols)
+        anyone = px[r0:r1, ..., 3] > 0
+        masks = [(own == k) & anyone for k in range(COLS)]
+        base = r0 + max(np.nonzero(m.any(1))[0].max() for m in masks) + 1
+        for k, m in enumerate(masks):
+            ys, xs = np.nonzero(m)
+            y0, y1, x0, x1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
+            f = px[r0 + y0:r0 + y1, x0:x1].copy()
+            f[..., 3] *= m[y0:y1, x0:x1]
+            cell = int((cols[k][0] + cols[k][1]) / 2 // cw)
+            out.append((f, (cell + .5) * cw - x0, base - r0 - y0))
+    s = IDLE_H / out[0][0].shape[0]
+    scaled = []
+    for f, ax, by in out:
+        im = Image.fromarray(f, 'RGBA')
+        im = im.resize((max(1, round(im.width * s)), max(1, round(im.height * s))), Image.LANCZOS)
+        scaled.append((im, ax * s, by * s))
+    return scaled
+
+
+def main(out_dir, *sheets):
+    frames = []
+    for names, path in zip(SHEETS, sheets):
+        frames += zip(names, poses(path))
+    L = max(ax for _, (_, ax, _) in frames); R = max(im.width - ax for _, (im, ax, _) in frames)
+    U = max(by for _, (_, _, by) in frames); D = max(im.height - by for _, (im, _, by) in frames)
+    cw, ch = int(np.ceil(L + R)), int(np.ceil(U + D))
     os.makedirs(out_dir, exist_ok=True)
-    for n, f, b in zip(NAMES, frames, boxes):
-        f.crop(box).save(os.path.join(out_dir, 'airin-%s.png' % n), optimize=True)
-        print(n, 'bbox', b)
-    W, H = box[2] - box[0], box[3] - box[1]
-    ib = boxes[0]
-    print('crop', box, 'size', W, H)
-    print('AIRIN_FIT idle: cx=%.3f foot=%.3f head=%.3f' % (
-        ((ib[0] + ib[2]) / 2 - box[0]) / W, (ib[3] - box[1]) / H, (ib[1] - box[1]) / H))
+    for n, (im, ax, by) in frames:
+        canvas = Image.new('RGBA', (cw, ch))
+        canvas.paste(im, (int(round(L - ax)), int(round(U - by))))
+        canvas.save(os.path.join(out_dir, 'airin-%s.png' % n), optimize=True)
+    idle = frames[0][1]
+    print('%d frames, canvas %dx%d' % (len(frames), cw, ch))
+    print('AIRIN_FIT = { cx: %.3f, foot: %.3f, head: %.3f, h: %d }' % (
+        L / cw, U / ch, (U - idle[2]) / ch, IDLE_H))
 
 
 if __name__ == '__main__':
-    main(sys.argv[1], sys.argv[2])
+    main(*sys.argv[1:])

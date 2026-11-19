@@ -1068,22 +1068,23 @@ function play(f, st) { f.st = st; f.t = 0; lastStageF = -1; }
    AI Studio on green screen, keyed by tools/key_frames.py). All frames share one canvas size and
    baseline. When idle-1 has loaded, drawStage draws these instead of her pixel sprite, switching
    frames on a timeline like the sprite ANIMS. Missing files = pixel art as before. */
-const AIRIN_FRAMES = ['idle-1', 'idle-2', 'attack-1', 'attack-2', 'attack-3', 'block-1', 'block-2',
-  'hurt-1', 'hurt-2', 'hurt-3', 'charge-1', 'charge-2', 'ult-1', 'ult-2', 'ult-3', 'win-1', 'win-2', 'win-3'];
+const AIRIN_FRAMES = ['idle-1', 'idle-2', 'idle-3', 'idle-4', 'attack-1', 'attack-1b', 'attack-2', 'attack-2b', 'attack-3', 'attack-4',
+  'block-0', 'block-1', 'block-2', 'block-3', 'hurt-0', 'hurt-1', 'hurt-2', 'hurt-3', 'hurt-4', 'charge-1', 'charge-2', 'charge-3', 'charge-4',
+  'ult-0', 'ult-1', 'ult-1b', 'ult-2', 'ult-2b', 'ult-3', 'ult-4', 'win-0', 'win-1', 'win-2', 'win-2b', 'win-3', 'win-4'];
 // keys: [time s, frame]; loop: repeat from that time with period `len` (else hold the last frame)
 const AIRIN_ANIM = {
-  idle:   { keys: [[0, 'idle-1'], [.6, 'idle-2']], loop: 0, len: 1.2 },
-  attack: { keys: [[0, 'attack-1'], [.13, 'attack-2'], [.3, 'attack-3'], [.48, 'idle-1']] },   // hit lands at .18
-  block:  { keys: [[0, 'block-1'], [.22, 'block-2']] },
-  hurt:   { keys: [[0, 'hurt-1'], [.12, 'hurt-2'], [.32, 'hurt-3']] },
-  charge: { keys: [[0, 'charge-1'], [.2, 'charge-2']], loop: 0, len: .4 },
-  ultHit: { keys: [[0, 'ult-1'], [.14, 'ult-2'], [.34, 'ult-3']] },
-  win:    { keys: [[0, 'win-1'], [.45, 'win-2'], [1.05, 'win-3']], loop: .45, len: 1.2 },
+  idle:   { keys: [[0, 'idle-1'], [.4, 'idle-2'], [.8, 'idle-3'], [1.2, 'idle-4']], loop: 0, len: 1.6 },
+  attack: { keys: [[0, 'attack-1'], [.07, 'attack-1b'], [.13, 'attack-2'], [.22, 'attack-2b'], [.3, 'attack-3'], [.42, 'attack-4'], [.5, 'idle-1']] },   // hit lands at .18
+  block:  { keys: [[0, 'block-0'], [.06, 'block-1'], [.2, 'block-2'], [.48, 'block-3']] },
+  hurt:   { keys: [[0, 'hurt-0'], [.06, 'hurt-1'], [.16, 'hurt-2'], [.3, 'hurt-3'], [.42, 'hurt-4']] },
+  charge: { keys: [[0, 'charge-1'], [.15, 'charge-3'], [.3, 'charge-2'], [.45, 'charge-4']], loop: 0, len: .6 },
+  ultHit: { keys: [[0, 'ult-0'], [.08, 'ult-1'], [.16, 'ult-1b'], [.24, 'ult-2'], [.38, 'ult-2b'], [.52, 'ult-3'], [.7, 'ult-4']] },
+  win:    { keys: [[0, 'win-0'], [.2, 'win-1'], [.45, 'win-2'], [.75, 'win-2b'], [1.1, 'win-4'], [1.3, 'win-3']] },
   ko:     { keys: [[0, 'hurt-2']] },
 };
 const AIRIN_ART = {}; let airinArtOn = false, airinUltAt = -9;
 // idle-1 fractions inside the frames (printed by tools/key_frames.py); h = Airin's height on the 640×360 stage
-const AIRIN_FIT = { cx: .52, foot: .977, head: .214, h: 118 };
+const AIRIN_FIT = { cx: .444, foot: .993, head: .206, h: 118 };
 for (const n of AIRIN_FRAMES) {
   const im = new Image();
   im.onload = () => { if (n === 'idle-1') airinArtOn = true; lastStageF = -1; };
@@ -1095,7 +1096,7 @@ function airinFrame(A) {
   else if (A.st === 'ult') a = AIRIN_ANIM.charge;   // typing the ultimate = gathering power
   if (a.len && t > a.loop) t = a.loop + (t - a.loop) % (a.len - a.loop);
   let f = a.keys[0][1];
-  for (const [kt, kf] of a.keys) if (t >= kt) f = kf;
+  for (const [kt, kf] of a.keys) if (t >= kt && AIRIN_ART[kf].naturalWidth) f = kf;   // skip frames that failed to load
   return f;
 }
 function drawAirinArt(A, x2) {
@@ -1107,8 +1108,15 @@ function drawAirinArt(A, x2) {
   const y0 = Math.max(0, 360 - ah / k), foot = GROUND * 2;
   const ch = Math.min(AIRIN_FIT.h, foot - y0 - 8);
   const h = ch / (AIRIN_FIT.foot - AIRIN_FIT.head), w = h * im.naturalWidth / im.naturalHeight;
-  sctx.imageSmoothingEnabled = true;
-  sctx.drawImage(im, Math.round(x2 - w * AIRIN_FIT.cx), Math.round(foot - h * AIRIN_FIT.foot), Math.round(w), Math.round(h));
+  // smooth body motion between frames (stage px): lunge on attack, leap on the ultimate
+  const ease = (t, a, b) => { const k = Math.min(1, Math.max(0, (t - a) / (b - a))); return k * k * (3 - 2 * k); };
+  let dx = 0, dy = 0;
+  if (A.st === 'attack') dx = 16 * (ease(A.t, .07, .2) - ease(A.t, .36, .52));
+  const u = gclock - airinUltAt;
+  if (u < .9) { dx = 34 * (ease(u, .06, .26) - ease(u, .5, .85)); dy = -26 * Math.sin(Math.PI * Math.min(1, Math.max(0, (u - .08) / .22))); }
+  // frames are pre-scaled to AIRIN_FIT.h, so at full height they are drawn 1:1 and stay crisp
+  sctx.imageSmoothingEnabled = Math.abs(ch - AIRIN_FIT.h) > .5;
+  sctx.drawImage(im, Math.round(x2 + dx - w * AIRIN_FIT.cx), Math.round(foot + dy - h * AIRIN_FIT.foot), Math.round(w), Math.round(h));
   sctx.imageSmoothingEnabled = false;
 }
 const hurtE = () => { if (FIG.E.st !== 'ko') play(FIG.E, 'hurt'); };   // ไม่ทับท่าล้ม (ตีปิดไฟต์)
@@ -1154,15 +1162,16 @@ function placeFighter(el, x2) {
   el.style.width = (100 * k) + 'px'; el.style.height = (116 * k) + 'px';
 }
 function drawStage() {
-  const fr = Math.floor(gclock * FPS);
+  const sf = airinArtOn ? 30 : FPS;   // painted frames move at 30 fps; pixel sprites still step at FPS
+  const fr = Math.floor(gclock * sf);
   if (fr === lastStageF) return;
   lastStageF = fr; cvIdx = 0;
-  const gt = fr / FPS, A = FIG.P, O = FIG.E;
+  const gt = Math.floor(gclock * FPS) / FPS, A = FIG.P, O = FIG.E;
   const art = airinArtOn && A.id === 'airin';   // painted keyframes replace Airin's pixel sprite
   sctx.imageSmoothingEnabled = false;
   sctx.setTransform(2, 0, 0, 2, 0, 0); sctx.drawImage(BG, 0, 0);
   const RA = renderFig(A), RO = renderFig(O);
-  if (S && S.enraged && O.st !== 'charge' && O.st !== 'ko') { const g = fr % 2 ? '#e879f9' : '#a855f7'; RO.px.outline(g); RO.px.outline(g + '66'); }
+  if (S && S.enraged && O.st !== 'charge' && O.st !== 'ko') { const g = Math.floor(gclock * FPS) % 2 ? '#e879f9' : '#a855f7'; RO.px.outline(g); RO.px.outline(g + '66'); }
   const xA = art ? A.x - knock(A) : A.x + RA.pose.travel * 50 - knock(A), xO = O.x - RO.pose.travel * 50 + knock(O);
   // เงาใต้เท้า
   for (const x of [xA, xO]) { sctx.fillStyle = '#140b30'; sctx.fillRect(Math.round(x) - 12, GROUND - 1, 26, 1); sctx.fillRect(Math.round(x) - 8, GROUND, 18, 1); }
