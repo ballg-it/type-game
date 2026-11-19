@@ -12,7 +12,9 @@ Airin's size on the 640x360 stage, so the game draws frames 1:1) scales them all
 frame goes on one shared canvas so they keep their relative positions. Names of None are
 not written. Sheet 3 is one side-view ready stance repeated; its first cell becomes the
 idle, and idle-1..3 are made from it by lowering the upper body (and the sword, picked by
-colour) 0/1/2 px while the legs stay put - a breathing loop with no AI jitter.
+colour) 0/1/2 px while the legs stay put - a breathing loop with no AI jitter. The game's
+idle uses only idle-1..3 (1-2-3-2): the AI idle-4..10 frames are each drawn differently
+(sword angle, sheath, hair, stance) and made her boil when cycled; they are kept as spares.
 Prints AIRIN_FIT for index.html.
 """
 import sys, os
@@ -167,6 +169,12 @@ def scale(f, ax, by, s):
     im = Image.fromarray(f, 'RGBA')
     im = im.resize((max(1, round(im.width * s)), max(1, round(im.height * s))), Image.LANCZOS)
     a = np.asarray(im).copy(); a[a[..., 3] < 10] = 0   # resampling haze: invisible, but noise
+    # small faint pieces (bits of a neighbour's blade glow) blink in game; small solid ones
+    # (a detached hair tip) are real detail and stay
+    lab, n = label(a[..., 3] > 0)
+    for i in range(1, n + 1):
+        pc = lab == i
+        if pc.sum() < 20 and a[..., 3][pc].mean() < 128: a[pc] = 0
     im = Image.fromarray(a, 'RGBA')
     return im, ax * s, by * s
 
