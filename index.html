@@ -1193,6 +1193,7 @@ const AIRIN_ANIM = {
   ko:     { keys: [[0, 'hurt-2']] },
 };
 const AIRIN_ART = {}; let airinArtOn = false, airinUltAt = -9;
+const AIRIN_POP = { filter: 'saturate(1.35) contrast(1.12) brightness(1.06)', glow: '#a855f7', blur: 9 };
 // idle-1 fractions inside the frames (printed by tools/key_frames.py); h = Airin's height on the 640×360 stage
 const AIRIN_FIT = { cx: .444, foot: .98, head: .22, h: 115 };
 for (const n of AIRIN_FRAMES) {
@@ -1226,7 +1227,57 @@ function drawAirinArt(A, x2) {
   if (u < .9) { dx = 34 * (ease(u, .06, .26) - ease(u, .5, .85)); dy = -26 * Math.sin(Math.PI * Math.min(1, Math.max(0, (u - .08) / .22))); }
   // frames are pre-scaled to AIRIN_FIT.h, so at full height they are drawn 1:1 and stay crisp
   sctx.imageSmoothingEnabled = Math.abs(ch - AIRIN_FIT.h) > .5;
+  // hero pop: punchier colours + purple neon rim so she reads as strongly as the painted enemies
+  sctx.save();
+  sctx.filter = AIRIN_POP.filter;
+  sctx.shadowColor = AIRIN_POP.glow; sctx.shadowBlur = AIRIN_POP.blur + 2 * Math.sin(gclock * 3);
   sctx.drawImage(im, Math.round(x2 + dx - w * AIRIN_FIT.cx), Math.round(foot + dy - h * AIRIN_FIT.foot), Math.round(w), Math.round(h));
+  sctx.restore();
+  sctx.imageSmoothingEnabled = false;
+}
+/* Painted enemies (art/enemies/<id>.png, cut from one AI lineup by tools/split_enemies.sh). One still
+   per enemy, pre-scaled to its stage height `h`, animated by code: breathing / ghost bob, red glow +
+   tremble while charging, lunge on attack, white flash on hit, fall back on KO, magenta aura when the
+   boss is enraged. Missing file = pixel sprite as before. */
+const ENEMY_FIT = { bandit: { h: 128, cx: .53 }, ghost: { h: 132, cx: .56, float: 1 }, oni: { h: 140, cx: .53 }, queen: { h: 154, cx: .54 } };
+const ENEMY_ART = {};
+for (const id in ENEMY_FIT) {
+  const im = new Image(); im.onload = () => { lastStageF = -1; };
+  im.src = 'art/enemies/' + id + '.png'; ENEMY_ART[id] = im;
+}
+const enemyArt = O => { const im = ENEMY_ART[O.id]; return im && im.naturalWidth ? im : null; };
+let tintCv = null;
+function drawEnemyArt(O, x2, enraged) {
+  const im = enemyArt(O), F = ENEMY_FIT[O.id];
+  const aw = arena.clientWidth || 640, ah = arena.clientHeight || 360, cover = aw / ah >= 1.5;
+  const k = cover ? Math.max(aw / 640, ah / 360) : Math.min(aw / 640, ah / 360);
+  const y0 = Math.max(0, 360 - ah / k), foot = GROUND * 2;
+  const h = Math.min(F.h, foot - y0 - 6), w = h * im.naturalWidth / im.naturalHeight;
+  const ease = (t, a, b) => { const q = Math.min(1, Math.max(0, (t - a) / (b - a))); return q * q * (3 - 2 * q); };
+  let dx = 0, dy = 0, sy = 1 + .012 * Math.sin(gclock * 2.6), rot = 0, alpha = 1, flash = 0, glow = enraged ? '#e879f9' : null;
+  if (F.float) dy = -5 + 3 * Math.sin(gclock * 2.1);
+  if (O.st === 'charge') { dx = Math.round(Math.sin(gclock * 60)); glow = '#f43f5e'; }
+  if (O.st === 'attack') { dx = -22 * (ease(O.t, .07, .2) - ease(O.t, .36, .52)); sy = 1; }
+  if (O.st === 'hurt') flash = Math.max(0, 1 - O.t / .14);
+  if (O.st === 'ko') { const q = Math.min(1, O.t / .5); rot = EASE.out(q) * 1.3; alpha = 1 - q * .4; flash = Math.max(0, 1 - O.t / .12); glow = null; }
+  let src = im;
+  if (flash > 0) {   // white hit flash: tint a copy of the frame
+    tintCv = tintCv || document.createElement('canvas');
+    tintCv.width = im.naturalWidth; tintCv.height = im.naturalHeight;
+    const t = tintCv.getContext('2d'); t.drawImage(im, 0, 0);
+    t.globalCompositeOperation = 'source-atop'; t.fillStyle = `rgba(255,255,255,${(flash * .8).toFixed(2)})`;
+    t.fillRect(0, 0, tintCv.width, tintCv.height); t.globalCompositeOperation = 'source-over';
+    src = tintCv;
+  }
+  sctx.save();
+  sctx.translate(Math.round(x2 + dx), foot);
+  if (rot) sctx.rotate(rot);   // KO: fall backwards around the feet (to the right)
+  sctx.globalAlpha = alpha;
+  if (glow) { sctx.shadowColor = glow; sctx.shadowBlur = 10 + 4 * Math.sin(gclock * 8); }
+  sctx.imageSmoothingEnabled = Math.abs(h - F.h) > .5;
+  const hh = h * sy;
+  sctx.drawImage(src, Math.round(-w * F.cx), Math.round(dy - hh * .993), Math.round(w), Math.round(hh));
+  sctx.restore();
   sctx.imageSmoothingEnabled = false;
 }
 /* Move effects from pixelfx (vendor/pixelfx.js, MIT, github.com/patch-gg/pixelfx). They paint a 214×120
@@ -1334,7 +1385,8 @@ function drawStage() {
   sctx.setTransform(2, 0, 0, 2, 0, 0); sctx.drawImage(BG, 0, 0);
   const RA = renderFig(A), RO = renderFig(O);
   if (S && S.enraged && O.st !== 'charge' && O.st !== 'ko') { const g = Math.floor(gclock * FPS) % 2 ? '#e879f9' : '#a855f7'; RO.px.outline(g); RO.px.outline(g + '66'); }
-  const xA = art ? A.x - knock(A) : A.x + RA.pose.travel * 50 - knock(A), xO = O.x - RO.pose.travel * 50 + knock(O);
+  const eart = !!enemyArt(O);   // painted enemy still replaces its pixel sprite
+  const xA = art ? A.x - knock(A) : A.x + RA.pose.travel * 50 - knock(A), xO = eart ? O.x + knock(O) : O.x - RO.pose.travel * 50 + knock(O);
   // เงาใต้เท้า
   for (const x of [xA, xO]) { sctx.fillStyle = '#140b30'; sctx.fillRect(Math.round(x) - 12, GROUND - 1, 26, 1); sctx.fillRect(Math.round(x) - 8, GROUND, 18, 1); }
   // ฝุ่นตอนพุ่ง
@@ -1354,10 +1406,11 @@ function drawStage() {
   }
   // ตัวละครที่ความละเอียดเต็ม (640×360)
   sctx.setTransform(1, 0, 0, 1, 0, 0);
-  blitSprite(RO.px, xO * 2, true, O.st === 'ko' ? O.t : 0);
+  if (eart) drawEnemyArt(O, xO * 2, S && S.enraged && O.st !== 'charge');
+  else blitSprite(RO.px, xO * 2, true, O.st === 'ko' ? O.t : 0);
   if (art) drawAirinArt(A, xA * 2); else blitSprite(RA.px, xA * 2, false, A.st === 'ko' ? A.t : 0);
   if (ST && ST.fx === 'glyphs') risingGlyphs(xO * 2, ST.fxT);
-  if (O.id === 'queen' && O.st !== 'ko' && !(ST && ST.end)) drawGlyphs(sctx, xO * 2, GROUND * 2 - 89, gt, 62, 10);
+  if (!eart && O.id === 'queen' && O.st !== 'ko' && !(ST && ST.end)) drawGlyphs(sctx, xO * 2, GROUND * 2 - 89, gt, 62, 10);
   if (!art && A.st === 'attack' && A.t >= .18 && A.t < .45) slashArc(xA * 2 + 26, GROUND * 2 - 86, 46, -75, 70, 9, (A.t - .18) / .27, ARC.airin);
   if (O.st === 'attack' && O.t >= .18 && O.t < .45) slashArc(xO * 2 - 24, GROUND * 2 - 92, 58, -110, 55, 11, (O.t - .18) / .27, ARC[O.id] || ARC.oni, true);
   if (!art && A.st === 'ult' && A.t > .3) for (let i = 0; i < 3; i++) {
