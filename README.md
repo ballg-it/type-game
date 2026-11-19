@@ -2,6 +2,12 @@
 
 > เอกสารรวบรวมไอเดียเกมฝึกพิมพ์ — แนวหลักคือ **ต่อสู้ + Roguelike + เนื้อเรื่องเบาๆ**
 
+## 🎮 เล่นเกม
+
+- **ต้นแบบไฟต์:** https://ballg-it.github.io/type-game/
+- **ตัวละคร:** https://ballg-it.github.io/type-game/characters.html
+- **เดโมพิกเซล:** https://ballg-it.github.io/type-game/pixel.html
+
 ## ภาษาที่รองรับ
 
 ตัวเกมรองรับ **2 ภาษา: ไทย 🇹🇭 และอังกฤษ 🇬🇧**
