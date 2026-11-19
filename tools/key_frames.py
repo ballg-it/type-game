@@ -1,11 +1,12 @@
 """Split AI Studio green-screen sprite sheets into transparent Airin frames.
 
-Usage: python tools/key_frames.py <out_dir> <sheet1.png> <sheet2.png> <sheet3.png>
+Usage: python tools/key_frames.py <out_dir> <sheet1> <sheet2> <sheet3> <sheet4>
 
 Each sheet holds 18 poses, 6 per row in 3 rows, named by SHEETS below (sheet 1 = first
 list, sheet 2 = second list, ...). Poses don't have to sit inside equal cells (slashes may
 stick out): rows and poses are found from the gaps of green between them. Each pose is
-anchored at its grid-cell centre (x) and its row's baseline (lowest foot in the row, y).
+anchored at the middle of its hips and legs (x, see body_x) and its row's baseline (lowest
+foot in the row, y). Specks under 40 px are dropped (despeckle).
 All sheets are drawn at the same scale, so one factor (sheet 1's standing pose -> STAND_H px,
 Airin's size on the 640x360 stage, so the game draws frames 1:1) scales them all, then every
 frame goes on one shared canvas so they keep their relative positions. Names of None are
@@ -117,7 +118,6 @@ def poses(sheet_path):
     px = key(Image.open(sheet_path))
     H, W = px.shape[:2]
     solid = px[..., 3] > 60
-    cw = W / COLS
     out = []
     for r0, r1 in split(solid.any(1), ROWS, H // 100):
         band = solid[r0:r1]
@@ -130,18 +130,44 @@ def poses(sheet_path):
             masks = [anyone & (xs_grid >= c0) & (xs_grid < c1) for c0, c1 in cols]
         base = r0 + max(np.nonzero(m.any(1))[0].max() for m in masks) + 1
         for k, m in enumerate(masks):
+            m = despeckle(m, solid[r0:r1])
             ys, xs = np.nonzero(m)
             y0, y1, x0, x1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
             f = px[r0 + y0:r0 + y1, x0:x1].copy()
             f[..., 3] *= m[y0:y1, x0:x1]
-            cell = int((cols[k][0] + cols[k][1]) / 2 // cw)
-            out.append((f, (cell + .5) * cw - x0, base - r0 - y0))
+            out.append((f, body_x(f), base - r0 - y0))
+    return out
+
+
+def despeckle(m, solid, keep=40):
+    """Drop specks: solid pieces under `keep` px that are not the pose itself (stray bits
+    from neighbouring cells or JPEG noise), plus the faint pixels around them."""
+    lab, n = label(m & solid)
+    if n < 2: return m
+    area = np.bincount(lab.ravel())
+    drop = np.isin(lab, np.nonzero(area < keep)[0][1:])
+    for _ in range(2):    # grow over their soft edge
+        drop = drop | (np.roll(drop, 1, 0) | np.roll(drop, -1, 0) | np.roll(drop, 1, 1) | np.roll(drop, -1, 1)) & ~(m & solid & ~drop)
+    return m & ~drop
+
+
+def body_x(f):
+    """Anchor x = middle of the hips and legs (lower 60% of the pose, glowing blade left out).
+    Anchoring on the AI's grid cell made poses jump sideways because they are not drawn
+    centred in their cells; the body is what has to stay put between frames."""
+    r, g, b, a = (f[..., i].astype(int) for i in range(4))
+    body = (a > 128) & ~((b > 150) & (g > 150) & (r < 140))
+    ys, xs = np.nonzero(body)
+    low = ys >= ys.min() + (ys.max() - ys.min()) * .4
+    return float(xs[low].mean())
     return out
 
 
 def scale(f, ax, by, s):
     im = Image.fromarray(f, 'RGBA')
     im = im.resize((max(1, round(im.width * s)), max(1, round(im.height * s))), Image.LANCZOS)
+    a = np.asarray(im).copy(); a[a[..., 3] < 10] = 0   # resampling haze: invisible, but noise
+    im = Image.fromarray(a, 'RGBA')
     return im, ax * s, by * s
 
 
@@ -172,6 +198,8 @@ def main(out_dir, *sheets):
     frames = [(n, scale(*p, s)) for n, p in raw if n]
     L = max(ax for _, (_, ax, _) in frames); R = max(im.width - ax for _, (im, ax, _) in frames)
     U = max(by for _, (_, _, by) in frames); D = max(im.height - by for _, (im, _, by) in frames)
+    PAD = 2   # empty margin so the longest blade never ends exactly on the frame edge
+    L += PAD; R += PAD; U += PAD
     cw, ch = int(np.ceil(L + R)), int(np.ceil(U + D)) + 2
     os.makedirs(out_dir, exist_ok=True)
     idle = None
