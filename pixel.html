@@ -43,6 +43,11 @@ h2{margin:26px 0 8px;font-size:22px;color:var(--violet2)}
 .showtxt p{margin:0 0 8px}
 .faces{display:flex;gap:6px;margin:4px 0 8px}.faces img{width:90px;border:2px solid var(--line);border-radius:6px;image-rendering:pixelated}
 .sword{width:100%;max-width:426px;image-rendering:pixelated;margin-bottom:6px}
+.poses{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.poses figure{margin:0;background:linear-gradient(#1a0f3c,#2a1858);border:2px solid var(--line);border-radius:8px;padding:6px;text-align:center}
+.poses figure.use{border-color:var(--violet2)}
+.poses img{max-width:100%;height:110px;object-fit:contain}
+.poses figcaption{font-size:12px;color:var(--muted)}
 .showtxt .spec{color:var(--muted);font-size:13px}
 h2 .rl{font-size:14px;color:var(--muted);font-weight:400}
 .pal{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}
@@ -67,9 +72,11 @@ h2 .rl{font-size:14px;color:var(--muted);font-weight:400}
     <div class="showtxt">
       <p>ตัดจาก character sheet ลบพื้นหลัง ย่อลงตารางพิกเซล (ตัวสูง 113px เท่าตัวละครอื่น) ลดเหลือ 40 สี และเปลี่ยนเส้นเรืองฟ้ารอบตัวเป็นเส้นขอบเข้ม ไฟล์อยู่ใน <code>art/airin/</code></p>
       <div class="faces"><img src="art/airin/face0.png" alt="ปกติ"><img src="art/airin/face1.png" alt="จริงจัง"><img src="art/airin/face2.png" alt="โกรธ"></div>
-      <p class="spec">ภาพนิ่ง ยังไม่ทำแอนิเมชัน · ซ้าย: ด้านหน้า + คีย์บอท · ขวา: ด้านหลัง · หน้าแสดงอารมณ์สำหรับบทสนทนา</p>
+      <p class="spec">ซ้าย: ด้านหน้า + คีย์บอท · ขวา: ด้านหลัง · หน้าแสดงอารมณ์สำหรับบทสนทนา</p>
     </div>
   </div>
+  <h2>ท่าของไอริน <span class="rl">18 ท่า จากชีตพื้นเขียว · ใช้ในฉากต่อสู้ด้านบนแล้ว</span></h2>
+  <div class="poses" id="poses"></div>
 
   <h2>ตัวละคร</h2>
   <div class="bar" id="poseBar">
@@ -776,6 +783,49 @@ function drawSprite(ctx, px, x2, flip) {
   if (flip) { ctx.save(); ctx.translate(left + SW, top); ctx.scale(-1, 1); ctx.drawImage(cv, 0, 0); ctx.restore(); }
   else ctx.drawImage(cv, left, top);
 }
+/* ---- ไอรินแบบภาพที่เจน (สไตล์อนิเมะ) แทนตัววาดด้วยโค้ดในฉากต่อสู้ ---- */
+// ดัชนีท่าจาก art/airin/poses (ตัดจาก poses-sheet-source.jpg เรียงแถวบน→ล่าง ซ้าย→ขวา)
+const AP = { idle: 0, idle2: 6, windup: 2, slash: 4, block: 5, hurt: 7, hurtBig: 8, charge: 11, crouch: 9, iai: 12, winA: 16, winB: 17 };
+const AIMG = { frames: null, white: [], drone: null };
+const loadImg = src => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
+// [w, h, fx, fy] ต่อท่า (จาก frames.json — ฝังไว้เพราะเปิดไฟล์ตรงๆ แบบ file:// ใช้ fetch ไม่ได้)
+const AFR = [[123,125,45,124],[98,125,53,124],[101,124,52,122],[113,132,6,131],[150,100,50,99],[90,136,44,135],[89,141,44,140],[109,132,75,131],[143,131,87,130],[125,97,61,96],[95,122,47,121],[126,128,69,127],[103,115,51,114],[134,117,31,116],[157,123,91,122],[85,137,46,136],[87,139,40,138],[68,139,33,138]];
+Promise.all(AFR.map(([w, h, fx, fy], i) => loadImg(`art/airin/poses/pose${String(i).padStart(2, '0')}.png`).then(img => ({ w, h, fx, fy, img }))))
+  .then(fr => {
+    AIMG.frames = fr;
+    // ภาพขาวล้วน ไว้แฟลชตอนโดนตี
+    AIMG.white = fr.map(f => { const c = document.createElement('canvas'); c.width = f.w; c.height = f.h; const x = c.getContext('2d'); x.drawImage(f.img, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = '#ffffff'; x.fillRect(0, 0, f.w, f.h); return c; });
+  }).catch(e => console.warn('โหลดท่าไอรินไม่ได้ ใช้ตัววาดด้วยโค้ดแทน', e));
+loadImg('art/airin/drone.png').then(i => AIMG.drone = i).catch(() => {});
+// เลือกท่าตามสถานะ: [ดัชนีท่า, เวลาที่เข้าท่านี้ (ไว้ทำเด้งตอนเปลี่ยนท่า)]
+function airinPose(st, tin, gt) {
+  switch (st) {
+    case 'attack': return tin < .15 ? [AP.windup, 0] : tin < .42 ? [AP.slash, .15] : [AP.idle, .42];
+    case 'block': return [AP.block, 0];
+    case 'hurt': return [tin < .3 ? AP.hurtBig : AP.hurt, tin < .3 ? 0 : .3];
+    case 'charge': return [AP.charge, 0];
+    case 'ult': return tin < .3 ? [AP.crouch, 0] : [AP.iai, .3];
+    case 'win': return tin < .7 ? [AP.winA, 0] : [AP.winB, .7];
+    default: return [AP.idle, 0];
+  }
+}
+// แถบแสดงท่าทั้งหมด พร้อมป้ายว่าท่าไหนใช้กับสถานะอะไร
+(() => {
+  const used = {}; Object.entries(AP).forEach(([k, i]) => (used[i] = used[i] || []).push(k));
+  const TH = { idle: 'ยืน', idle2: 'ยืน 2', windup: 'ง้าง', slash: 'ฟัน', block: 'กัน', hurt: 'โดนตี', hurtBig: 'โดนแรง', charge: 'ชาร์จ', crouch: 'ย่อ', iai: 'ไม้ตาย', winA: 'ชนะ', winB: 'ชนะ 2' };
+  document.getElementById('poses').innerHTML = AFR.map((_, i) => `<figure class="${used[i] ? 'use' : ''}"><img src="art/airin/poses/pose${String(i).padStart(2, '0')}.png" alt="ท่า ${i}"><figcaption>#${i}${used[i] ? ' · ' + used[i].map(k => TH[k]).join(', ') : ''}</figcaption></figure>`).join('');
+})();
+function drawAirinImg(ctx, st, tin, gt, x2, y2) {
+  const [k, t0] = airinPose(st, tin, gt), f = AIMG.frames[k];
+  const pop = Math.max(0, 1 - (tin - t0) / .1);                // เด้งสั้นๆ ตอนเปลี่ยนท่า
+  const breath = st === 'idle' || st === 'block' ? Math.sin(gt * 3.2) * .012 : 0;
+  const sx = 1 + pop * .05, sy = 1 - pop * .04 + breath;
+  const img = st === 'hurt' && tin < .1 ? AIMG.white[k] : f.img;
+  ctx.save(); ctx.translate(Math.round(x2), Math.round(y2)); ctx.scale(sx, sy);
+  ctx.imageSmoothingEnabled = true; ctx.drawImage(img, -f.fx, -f.fy); ctx.restore();
+  ctx.imageSmoothingEnabled = false;
+}
+
 function sceneFrame(gtReal) {
   cvIdx = 0;
   const t = gtReal % LOOP, gt = Math.floor(gtReal * 12) / 12;
@@ -798,7 +848,9 @@ function sceneFrame(gtReal) {
   if (sa === 'attack') dust(xA, ta, 1);
   if (so === 'attack') dust(xO, to, -1);
   const rb = new Px(16, 12); rb.blit(ROBO.rows, 0, 0, ROBO.pal); rb.outline(OUT);
-  sctx.drawImage(rb.toCanvas(tmpCv()), A.x - 44 + Math.round(Math.sin(gtReal * 1.3) * 3 + RA.pose.travel * 10), 84 + Math.round(Math.sin(gtReal * 2.4) * 2));
+  const rbx = A.x - 44 + Math.round(Math.sin(gtReal * 1.3) * 3 + RA.pose.travel * 10), rby = 84 + Math.round(Math.sin(gtReal * 2.4) * 2);
+  if (AIMG.drone) { S1(); sctx.drawImage(AIMG.drone, rbx * 2 - 6, rby * 2 - 20); S2(); }
+  else sctx.drawImage(rb.toCanvas(tmpCv()), rbx, rby);
   // ออร่าท่าไม้ตาย (หลังตัวละคร)
   if (sa === 'ult') for (let i = 0; i < 22; i++) {
     const ph = (gtReal * .8 + i * .37) % 1;
@@ -807,8 +859,12 @@ function sceneFrame(gtReal) {
   // ตัวละคร (ความละเอียดเต็ม)
   S1();
   drawSprite(sctx, RO.px, xO * 2, true);
-  drawSprite(sctx, RA.px, xA * 2, false);
-  if (sa === 'attack' && ta >= .18 && ta < .45) slashArc(sctx, xA * 2 + 26, GROUND * 2 - 86, 46, -75, 70, 9, (ta - .18) / .27, ['#ffffff', '#e9d5ff', '#a855f7']);
+  if (AIMG.frames) drawAirinImg(sctx, sa, ta, gtReal, xA * 2, GROUND * 2 + 1);
+  else drawSprite(sctx, RA.px, xA * 2, false);
+  if (sa === 'attack' && ta >= .15 && ta < .45) {
+    if (AIMG.frames) slashArc(sctx, xA * 2 + 30, GROUND * 2 - 78, 64, -100, 50, 12, (ta - .15) / .3, ['#ffffff', '#a5f3fc', '#22d3ee']);
+    else slashArc(sctx, xA * 2 + 26, GROUND * 2 - 86, 46, -75, 70, 9, (ta - .18) / .27, ['#ffffff', '#e9d5ff', '#a855f7']);
+  }
   if (so === 'attack' && to >= .18 && to < .45) slashArc(sctx, xO * 2 - 24, GROUND * 2 - 92, 58, -110, 55, 11, (to - .18) / .27, ['#ffffff', '#fecaca', '#ef4444'], true);
   if (sa === 'ult' && ta > .3) for (let i = 0; i < 3; i++) {
     const y = GROUND * 2 - 20 - ((gtReal * 140 + i * 47) % 160);
@@ -913,7 +969,6 @@ function drawShowBG() {
 }
 const showCv = document.getElementById('show'), showCtx = showCv.getContext('2d'), SHOWBG = drawShowBG();
 // สไปรต์จากภาพที่เจน (PNG พื้นใส) วางบนพื้นที่ y=138
-const loadImg = src => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
 Promise.all(['art/airin/front.png', 'art/airin/back.png', 'art/airin/drone.png'].map(loadImg)).then(([front, back, drone]) => {
   showCtx.drawImage(SHOWBG, 0, 0); showCtx.drawImage(SHOWBG, 40, 0);
   showCtx.drawImage(front, 62 - (front.width >> 1), 140 - front.height);
