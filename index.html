@@ -197,6 +197,19 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
 .shopact .upc .w{font-size:22px}
 @media (max-width:700px){ .shop{flex-direction:column;align-items:stretch} .shop .npc{flex:none;display:grid;grid-template-columns:100px 1fr;align-items:center;gap:0 10px;text-align:left}
   .shop canvas{width:100px;height:92px;grid-row:1/3;grid-column:1} .bubble{grid-column:2} .bubble:after{display:none} .coins{grid-column:2} .shop .upc{flex-basis:100%} }
+.shard{color:#67e8f9;font-weight:700}
+.metabar{display:flex;justify-content:center;gap:10px;align-items:center;margin:-4px 0 10px;font-size:14px;color:var(--muted)}
+.metabar button{background:#2a1d5c;border:2px solid var(--line);color:var(--text);border-radius:999px;padding:4px 14px;cursor:pointer;font-size:14px}
+.metas{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.metas .upc{padding:8px 10px}
+.metas .upc .ic{font-size:24px}
+.metas .upc .ds{min-height:32px;margin:2px 0 6px;font-size:12px}
+.metas .upc .w{font-size:22px}
+.lv{display:flex;gap:3px;justify-content:center;margin:2px 0 4px}
+.lv i{width:14px;height:5px;border-radius:3px;background:#3b2d6e}
+.lv i.on{background:#67e8f9;box-shadow:0 0 6px #67e8f9}
+.upc.max .pr{color:var(--good)}
+.gain{font-size:16px;text-align:center;margin:4px 0 10px;color:#cffafe}
 #kb{position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0}
 </style>
 </head>
@@ -265,6 +278,7 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
       <div class="title">Type Game</div>
       <div class="sub">Type · Fight · Adventure — ต้นแบบรัน: ศัตรู 3 ตัว + บอส</div>
       <div class="path" id="startPath"></div>
+      <div class="metabar"><span id="startMeta"></span><button id="metaBtn1">🏯 ศาลเจ้า</button></div>
       <h3>ภาษาของคำที่พิมพ์</h3>
       <div class="opts" data-group="mode">
         <button class="opt sel" data-v="th">🇹🇭 ไทยล้วน<small>แป้นเกษมณี</small></button>
@@ -285,6 +299,7 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
         <li><b>ท่าไม้ตาย:</b> เกจเต็มแล้วกด <kbd>Tab</kbd> แล้วพิมพ์ประโยคให้จบทันเวลา</li>
         <li><b>Stamina:</b> พิมพ์มั่วจะเหนื่อย ดาเมจเหลือครึ่งเดียว</li>
         <li><b>รัน:</b> ชนะแต่ละไฟต์แล้วเลือกอัปเกรด 1 ใน 3 โดย<b>พิมพ์คำบนการ์ด</b> เลือดไม่ฟื้นเต็มระหว่างไฟต์ ตายแล้วต้องเริ่มใหม่</li>
+        <li><b>ศาลเจ้า 🏯:</b> จบรันได้เศษคริสตัล 💎 (ชนะ/แพ้ก็ได้) เอาไปอัปเกรดถาวรติดตัวทุกรัน</li>
         <li><b>เหรียญ 🪙:</b> ได้จากทุกไฟต์ (แม่น/คอมโบ/สวนกลับ = ได้เยอะ) เอาไปช้อปที่ร้านเหมียวมิก่อนสู้บอส</li>
         <li>ภาษาไทยพิมพ์วรรณยุกต์กับสระบน/ล่างสลับลำดับได้ เช่น น + ำ + ้ ก็นับว่า "น้ำ"</li>
       </ul>
@@ -337,6 +352,7 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
       <div class="sub" id="resSub"></div>
       <div class="path" id="resPath"></div>
       <div class="stats" id="resStats"></div>
+      <div class="gain" id="resGain"></div>
       <h3>อัปเกรดที่เก็บได้</h3>
       <div class="topmiss" id="resUps"></div>
       <h3>แป้นที่พลาดบ่อย</h3>
@@ -344,8 +360,21 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
       <div class="topmiss" id="resTop"></div>
       <div class="row2">
         <button class="go" id="againBtn">เริ่มรันใหม่ <kbd>Enter</kbd></button>
+        <button class="go alt" id="metaBtn2">🏯 ศาลเจ้า</button>
         <button class="go alt" id="menuBtn">เปลี่ยนโหมด</button>
       </div>
+    </div>
+  </div>
+
+  <!-- meta: ศาลเจ้า (อัปเกรดถาวร) -->
+  <div class="overlay" id="metaScr" hidden>
+    <div class="card">
+      <div class="title" style="font-size:40px">🏯 ศาลเจ้าแป้นพิมพ์</div>
+      <div class="sub" id="metaSub"></div>
+      <div class="coins" id="metaShards" style="text-align:center;color:#67e8f9;margin-bottom:10px"></div>
+      <div class="metas" id="metaCards"></div>
+      <div class="shopact" id="metaAct"></div>
+      <div class="sub" style="text-align:center;margin:14px 0 0">พิมพ์คำในกรอบดำเพื่อถวายเศษคริสตัล 💎 (หรือคลิก) · อัปเกรดติดตัวทุกรัน</div>
     </div>
   </div>
   <div id="flash"></div>
@@ -529,9 +558,38 @@ const kb = $('#kb'), arena = $('#arena');
 const cfg = { mode: 'th', diff: 'normal' };
 let S, R, FOE = ENEMIES[0], phase = 'menu', PK = null, SHOP = null;   // phase: menu | fight | pick | shop | result
 const HEAL_BETWEEN = 0.15;   // ฟื้นเลือดหลังชนะแต่ละไฟต์ (สัดส่วนของ HP สูงสุด)
+
+/* ================= แต้มถาวรข้ามรัน (localStorage) =================
+   จบรันได้ "เศษคริสตัล 💎" → ถวายที่ศาลเจ้าเพื่ออัปเกรดถาวร */
+const META_KEY = 'typegame.meta.v1';
+const PERKS = [
+  { id: 'hp',     icon: '❤', name: 'หัวใจนักสู้',   desc: 'HP สูงสุดเริ่มต้น +10',            max: 3, cost: 20, w: { th: 'ใจ', en: 'heart' } },
+  { id: 'coin',   icon: '🪙', name: 'ถุงเงินติดตัว', desc: 'เริ่มรันพร้อมเหรียญ +15',          max: 3, cost: 25, w: { th: 'ทอง', en: 'gold' } },
+  { id: 'heal',   icon: '🍵', name: 'ลมหายใจสงบ',   desc: 'ฟื้นเลือดระหว่างไฟต์ +5%',         max: 2, cost: 30, w: { th: 'ยา', en: 'tea' } },
+  { id: 'ult',    icon: '✦', name: 'จิตตื่นรู้',      desc: 'เริ่มไฟต์ด้วยเกจท่าไม้ตาย +20%',  max: 2, cost: 30, w: { th: 'พลัง', en: 'power' } },
+  { id: 'card',   icon: '🃏', name: 'ตาที่สาม',      desc: 'การ์ดอัปเกรดให้เลือก 4 ใบ (เดิม 3)', max: 1, cost: 80, w: { th: 'ไพ่', en: 'card' } },
+  { id: 'dice',   icon: '🎲', name: 'ลูกเต๋าเหมียว', desc: 'สุ่มของในร้านครั้งแรกฟรี',          max: 1, cost: 40, w: { th: 'ลูกเต๋า', en: 'dice' } },
+  { id: 'revive', icon: '🪽', name: 'ขนนกฟีนิกซ์',   desc: 'ตายครั้งแรกในรัน ฟื้นคืน 30% HP',   max: 1, cost: 100, w: { th: 'ฟื้น', en: 'rise' } }
+];
+const META_EXIT = { th: 'ออก', en: 'back' }, META_OPEN = { th: 'ศาล', en: 'shrine' };
+const perkCost = (p, lv) => p.cost * (lv + 1);
+function loadMeta() {
+  const d = { shards: 0, lv: {}, runs: 0, wins: 0, best: 0, total: 0 };
+  try { return Object.assign(d, JSON.parse(localStorage.getItem(META_KEY)) || {}); } catch (e) { return d; }
+}
+function saveMeta() { try { localStorage.setItem(META_KEY, JSON.stringify(META)); } catch (e) {} }
+const META = loadMeta();
+const lv = id => META.lv[id] || 0;
+// เศษคริสตัลที่ได้ตอนจบรัน: ไฟต์ที่ชนะ + เหรียญที่หาได้ + โบนัสพิชิตรัน
+function runShards(win) {
+  const parts = [[`ชนะ ${R.cleared} ไฟต์`, R.cleared * 6], [`เหรียญ ${R.earned}`, Math.floor(R.earned / 4)]];
+  if (win) parts.push(['พิชิตรัน', 25]);
+  return parts.filter(p => p[1] > 0);
+}
 function newRun() {
   return {
-    idx: 0, php: 100, pmax: 100, shields: 0, coins: 0, earned: 0, bought: [], cleared: 0, ups: [], taken: {}, time: 0, maxCombo: 0,
+    idx: 0, php: 100 + lv('hp') * 10, pmax: 100 + lv('hp') * 10, shields: 0, coins: lv('coin') * 15, earned: 0, bought: [],
+    revive: lv('revive'), revived: false, cleared: 0, ups: [], taken: {}, time: 0, maxCombo: 0,
     mod: { atk: 1, heavy: 1, forgive: false, shieldEvery: 0, counterWin: 0, counterMult: 1,
            ultGain: 1, stamCost: 1, leech: 0, comboCap: 20, letters: {} },
     stats: { correct: 0, errors: 0, words: 0, blocks: 0, counters: 0, miss: {} }
@@ -542,7 +600,7 @@ function freshState() {
   return {
     running: false, paused: false, over: false,
     php: R.php, pmax: R.pmax, ehp, emax: ehp, shields: R.shields, forgiven: false, enraged: false,
-    stamina: 100, tired: false, ult: 0,
+    stamina: 100, tired: false, ult: lv('ult') * 20,
     ultMode: false, ultWord: null, ultTime: 0, ultMax: 0,
     combo: 0, maxCombo: 0, buf: '',
     slots: [null, null, null], def: null,
@@ -820,6 +878,12 @@ function enemyHit() {
     if (S.combo >= 3) fx('bad', 'คอมโบหลุด', P, 0, -40);
     S.combo = 0;
     S.php = Math.max(0, S.php - dmg);
+    if (S.php <= 0 && R.revive > 0) {   // ขนนกฟีนิกซ์
+      R.revive--; R.revived = true;
+      S.php = Math.round(S.pmax * 0.3);
+      setTimeout(() => { if (!S.running) return; play(FIG.P, 'ult'); SFX.ultStart(); flash('white'); fx('big', '🪽 ฟื้นคืนชีพ!', P, 0, -40); setTimeout(() => S.running && play(FIG.P, 'idle'), 900); }, 300);
+      return;
+    }
     if (S.php <= 0) endFight(false);
   }, HIT_DELAY);
   revalidate();
@@ -886,6 +950,8 @@ kb.addEventListener('input', () => { if (!composing) onInput(); });
 function onInput() {
   if (phase === 'pick') return pickInput();
   if (phase === 'shop') return shopInput();
+  if (phase === 'meta') return metaInput();
+  if (phase === 'menu' || phase === 'result') return menuInput();
   if (phase === 'shopExit') { kb.value = ''; return; }
   if (!S || !S.running || S.paused) { kb.value = ''; return; }
   let v = kb.value.replace(/[`~_]/g, '');
@@ -981,7 +1047,7 @@ function renderHUD() {
   $('#stamBox').classList.toggle('tired', S.tired);
   $('#tired').textContent = S.tired ? 'เหนื่อย! ดาเมจ ×0.5' : '';
   $('#ultBar').style.width = S.ult + '%';
-  $('#pTag').textContent = S.shields ? '🛡×' + S.shields : '';
+  $('#pTag').textContent = (S.shields ? '🛡×' + S.shields : '') + (R.revive ? ' 🪽' : '');
   $('#ultBtn').classList.toggle('ready', S.ult >= 100 && !S.ultMode);
   $('#combo').innerHTML = S.combo >= 2 ? `COMBO ${S.combo}<small>ดาเมจ ×${comboMult().toFixed(1)}</small>` : '';
   if (S.def) {
@@ -1084,11 +1150,11 @@ function endFight(win) {
 
 /* ---------- upgrade pick (พิมพ์เพื่อเลือก) ---------- */
 function showPick() {
-  const healed = Math.min(R.pmax - R.php, Math.round(R.pmax * HEAL_BETWEEN));
+  const healed = Math.min(R.pmax - R.php, Math.round(R.pmax * (HEAL_BETWEEN + lv('heal') * 0.05)));
   R.php += healed;
   const pool = UPGRADES.filter(u => !(u.once && R.taken[u.id]) && (!u.cond || u.cond(R)));
   pool.push(letterUpgrade());
-  const ups = shuffle(pool).slice(0, 3);
+  const ups = shuffle(pool).slice(0, 3 + lv('card'));
   const used = new Set();
   PK = { buf: '', cards: ups.map(up => {
     const lang = pickLang();
@@ -1160,7 +1226,7 @@ function shopStock() {
 function showShop() {
   phase = 'shop';
   const L = shopLang();
-  SHOP = { buf: '', items: shopStock(), rollCost: 10, t: 0, st: 'wave', say: pick(SHOP_SAY.hi),
+  SHOP = { buf: '', items: shopStock(), rollCost: lv('dice') ? 0 : 10, t: 0, st: 'wave', say: pick(SHOP_SAY.hi),
          roll: { w: makeWord(SHOP_CMD[L].roll, L, 'roll') }, leave: { w: makeWord(SHOP_CMD[L].leave, L, 'leave') } };
   $('#shopPath').innerHTML = pathHTML(R.idx, R.idx, true);
   $('#pickScr').hidden = true; $('#shopScr').hidden = false;
@@ -1221,7 +1287,7 @@ function shopDo(o) {
   if (R.coins < price) { catSay('poor'); SFX.err(); anim($('#shopCards'), 'err', 230); renderShop(); return; }
   R.coins -= price;
   if (o === SHOP.roll) {
-    SHOP.items = shopStock(); SHOP.rollCost += 5; catSay('roll', 'wave');
+    SHOP.items = shopStock(); SHOP.rollCost = SHOP.rollCost ? SHOP.rollCost + 5 : 10; catSay('roll', 'wave');
     tone(700, 0.08, 'triangle', 0.1); renderShop(true); return;
   }
   o.up.apply(R.mod, R);
@@ -1263,6 +1329,10 @@ function showResult(win) {
     stat(st.words, 'คำที่โจมตี') + stat(`${st.blocks}/${st.counters}`, 'กัน / สวนกลับ') +
     stat(`${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`, 'เวลาในไฟต์') +
     stat(`${R.earned}`, 'เหรียญที่หาได้');
+  const parts = runShards(win), gain = parts.reduce((a, p) => a + p[1], 0);
+  META.shards += gain; META.total += gain; META.runs++; if (win) META.wins++; META.best = Math.max(META.best, R.cleared); saveMeta();
+  $('#resGain').innerHTML = (gain ? `<span class="shard">+${gain} 💎</span> เศษคริสตัล (${parts.map(p => `${esc(p[0])} +${p[1]}`).join(' · ')})` : 'ยังไม่ได้เศษคริสตัล — ชนะสักไฟต์ก่อนนะ') + ` · มีทั้งหมด <span class="shard">${META.shards} 💎</span>` +
+    (R.revived ? ' · 🪽 ใช้ขนนกฟีนิกซ์แล้ว' : '');
   $('#resUps').innerHTML = (R.ups.length ? R.ups.map(esc).join(' · ') : '—') +
     (R.bought.length ? `<br>ซื้อจากร้าน: ${R.bought.map(esc).join(' · ')}` : '');
   const langs = cfg.mode === 'bi' ? ['th', 'en'] : [cfg.mode];
@@ -1272,6 +1342,81 @@ function showResult(win) {
     ? 'พลาดบ่อยที่สุด: ' + top.map(([c, n]) => `<b>${esc(dispChar(c))}</b> (${n})`).join(' · ')
     : 'ไม่พลาดเลย เยี่ยมมาก! 🎉';
   $('#resultScr').hidden = false;
+  kb.value = ''; MENU_BUF = ''; kb.focus();
+}
+
+/* ---------- ศาลเจ้า (พิมพ์เพื่ออัปเกรดถาวร) ---------- */
+let MT = null, MENU_BUF = '';
+const metaLang = () => cfg.mode === 'en' ? 'en' : 'th';
+function renderMetaBar() {
+  $('#startMeta').innerHTML = `<span class="shard">💎 ${META.shards}</span>` + (META.runs ? ` · เล่น ${META.runs} รัน · พิชิต ${META.wins}` : '') +
+    ` · พิมพ์ <b>${META_OPEN[metaLang()]}</b> เพื่อเข้า`;
+}
+function showMeta() {
+  const back = phase;
+  phase = 'meta';
+  const L = metaLang();
+  MT = { buf: '', back, opts: PERKS.map(p => ({ p, w: makeWord(p.w[L], L, 'perk') })), exit: { w: makeWord(META_EXIT[L], L, 'exit') } };
+  $('#metaSub').textContent = `เล่นมาแล้ว ${META.runs} รัน · พิชิต ${META.wins} · ได้เศษคริสตัลรวม ${META.total} 💎`;
+  $('#metaCards').innerHTML = MT.opts.map((o, i) => `<button class="upc" data-i="${i}"><div class="ic">${o.p.icon}</div><div class="nm">${esc(o.p.name)}</div>` +
+    `<div class="lv"></div><div class="ds">${esc(o.p.desc)}</div><div class="pr"></div><div class="w"></div></button>`).join('');
+  $('#metaAct').innerHTML = `<button class="upc" data-a="exit"><div class="nm">⛩ กลับ</div><div class="w"></div></button>`;
+  $('#metaCards').querySelectorAll('.upc').forEach(b => b.onclick = () => metaDo(MT.opts[+b.dataset.i]));
+  $('#metaAct .upc').onclick = () => metaDo(MT.exit);
+  $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#metaScr').hidden = false;
+  kb.value = ''; renderMeta(); kb.focus();
+}
+const metaOpen = () => MT.opts.filter(o => lv(o.p.id) < o.p.max).concat(MT.exit);
+function renderMeta() {
+  $('#metaShards').textContent = `💎 ${META.shards}`;
+  $('#metaCards').querySelectorAll('.upc').forEach((el, i) => {
+    const o = MT.opts[i], l = lv(o.p.id), full = l >= o.p.max, c = perkCost(o.p, l), m = match(MT.buf, o.w);
+    el.querySelector('.lv').innerHTML = Array.from({ length: o.p.max }, (_, k) => `<i class="${k < l ? 'on' : ''}"></i>`).join('');
+    el.querySelector('.pr').textContent = full ? 'เต็มแล้ว ✓' : `💎 ${c}`;
+    el.querySelector('.w').innerHTML = wordHTML(o.w, full ? '' : MT.buf);
+    el.classList.toggle('max', full); el.classList.toggle('poor', !full && META.shards < c);
+    el.classList.toggle('off', (MT.buf !== '' && !m.ok) || full);
+    el.classList.toggle('lock', MT.buf !== '' && m.ok && !full);
+  });
+  const ex = $('#metaAct .upc'), m = match(MT.buf, MT.exit.w);
+  ex.querySelector('.w').innerHTML = wordHTML(MT.exit.w, MT.buf);
+  ex.classList.toggle('off', MT.buf !== '' && !m.ok); ex.classList.toggle('lock', MT.buf !== '' && m.ok);
+}
+function metaInput() {
+  const v = kb.value.replace(/[`~_\s]/g, '');
+  const ok = metaOpen().filter(o => match(v, o.w).ok);
+  if (v === '' || ok.length) {
+    if ([...v].length > [...MT.buf].length) SFX.tick();
+    MT.buf = v; kb.value = v;
+    const done = ok.find(o => match(v, o.w).full);
+    if (done) metaDo(done); else renderMeta();
+    return;
+  }
+  kb.value = MT.buf; SFX.err(); anim($('#metaCards'), 'err', 230);
+}
+function metaDo(o) {
+  if (phase !== 'meta') return;
+  MT.buf = ''; kb.value = '';
+  if (o === MT.exit) {
+    $('#metaScr').hidden = true; phase = MT.back;
+    (phase === 'result' ? $('#resultScr') : $('#startScr')).hidden = false;
+    if (phase === 'result') $('#resGain').innerHTML += ` → เหลือ <span class="shard">${META.shards} 💎</span>`;
+    renderMetaBar(); kb.focus(); return;
+  }
+  const l = lv(o.p.id);
+  if (l >= o.p.max) return renderMeta();
+  const c = perkCost(o.p, l);
+  if (META.shards < c) { SFX.err(); anim($('#metaCards'), 'err', 230); toast('เศษคริสตัลไม่พอ'); return renderMeta(); }
+  META.shards -= c; META.lv[o.p.id] = l + 1; saveMeta();
+  [660, 990, 1320].forEach((f, i) => setTimeout(() => tone(f, 0.14, 'triangle', 0.12), i * 70));
+  renderMeta();
+}
+// เมนู/หน้าสรุป: พิมพ์ "ศาล"/"shrine" เพื่อเข้าศาลเจ้า
+function menuInput() {
+  const v = kb.value.replace(/[`~_\s]/g, '');
+  const ws = Object.entries(META_OPEN).map(([l, t]) => makeWord(t, l, 'open'));
+  if (v && ws.some(w => match(v, w).full)) { kb.value = ''; MENU_BUF = ''; return showMeta(); }
+  if (!ws.some(w => match(v, w).ok)) kb.value = '';
 }
 const dispChar = c => c === ' ' ? 'Space' : (MARK_RE.test(c) ? '◌' + c : c);
 function heatmap(L, miss) {
@@ -1296,7 +1441,10 @@ document.querySelectorAll('.opts').forEach(g => g.addEventListener('click', e =>
 }));
 $('#startBtn').onclick = startRun;
 $('#againBtn').onclick = startRun;
-$('#menuBtn').onclick = () => { phase = 'menu'; $('#resultScr').hidden = true; $('#startScr').hidden = false; };
+$('#menuBtn').onclick = () => { phase = 'menu'; $('#resultScr').hidden = true; $('#startScr').hidden = false; renderMetaBar(); kb.focus(); };
+$('#metaBtn1').onclick = showMeta; $('#metaBtn2').onclick = showMeta;
+document.querySelector('[data-group=mode]').addEventListener('click', renderMetaBar);
+renderMetaBar(); kb.focus();
 
 R = newRun(); FOE = ENEMIES[0];
 FIG.E.id = FOE.sprite;
