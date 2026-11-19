@@ -61,14 +61,13 @@ h2 .rl{font-size:14px;color:var(--muted);font-weight:400}
     <div class="typed" id="typed"></div>
   </div>
 
-  <h2>ตัวละครใหม่: เรย์ <span class="rl">นักดาบ · จากภาพที่เจน</span></h2>
+  <h2>ไอริน <span class="rl">นางเอก · จากภาพที่เจน</span></h2>
   <div class="show">
     <canvas id="show" width="200" height="148"></canvas>
     <div class="showtxt">
-      <p>ตัดจาก character sheet ลบพื้นหลัง ย่อลงตารางพิกเซล (ตัวสูง 113px ใกล้เคียงตัวละครอื่น) และลดเหลือ 40 สี ไฟล์อยู่ใน <code>art/rei/</code></p>
-      <div class="faces"><img src="art/rei/face0.png" alt="ปกติ"><img src="art/rei/face1.png" alt="โกรธ"><img src="art/rei/face2.png" alt="หลับตา"></div>
-      <img class="sword" src="art/rei/sword.png" alt="ดาบ">
-      <p class="spec">ภาพนิ่ง ยังไม่ทำแอนิเมชัน · ซ้าย: ด้านหน้า · ขวา: ด้านหลัง · หน้าแสดงอารมณ์สำหรับบทสนทนา · ดาบสำหรับไอคอน</p>
+      <p>ตัดจาก character sheet ลบพื้นหลัง ย่อลงตารางพิกเซล (ตัวสูง 113px เท่าตัวละครอื่น) ลดเหลือ 40 สี และเปลี่ยนเส้นเรืองฟ้ารอบตัวเป็นเส้นขอบเข้ม ไฟล์อยู่ใน <code>art/airin/</code></p>
+      <div class="faces"><img src="art/airin/face0.png" alt="ปกติ"><img src="art/airin/face1.png" alt="จริงจัง"><img src="art/airin/face2.png" alt="โกรธ"></div>
+      <p class="spec">ภาพนิ่ง ยังไม่ทำแอนิเมชัน · ซ้าย: ด้านหน้า + คีย์บอท · ขวา: ด้านหลัง · หน้าแสดงอารมณ์สำหรับบทสนทนา</p>
     </div>
   </div>
 
@@ -915,9 +914,10 @@ function drawShowBG() {
 const showCv = document.getElementById('show'), showCtx = showCv.getContext('2d'), SHOWBG = drawShowBG();
 // สไปรต์จากภาพที่เจน (PNG พื้นใส) วางบนพื้นที่ y=138
 const loadImg = src => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
-Promise.all(['art/rei/front.png', 'art/rei/back.png'].map(loadImg)).then(([front, back]) => {
+Promise.all(['art/airin/front.png', 'art/airin/back.png', 'art/airin/drone.png'].map(loadImg)).then(([front, back, drone]) => {
   showCtx.drawImage(SHOWBG, 0, 0); showCtx.drawImage(SHOWBG, 40, 0);
-  showCtx.drawImage(front, 52 - (front.width >> 1), 140 - front.height);
+  showCtx.drawImage(front, 62 - (front.width >> 1), 140 - front.height);
+  showCtx.drawImage(drone, 14, 34);
   showCtx.drawImage(back, 148 - (back.width >> 1), 140 - back.height);
 });
 
