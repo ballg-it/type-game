@@ -233,17 +233,19 @@ let failed = 0;
   await type(ultTxt);
   const f1 = await waitFrame(1, 500);
   const loadInfo = await ev(`({ count: ULT_IMGS.length, loaded: ULT_IMGS.filter(im => im.complete && im.naturalWidth > 0).length })`);
-  ok('Ultimate triggers Frame 1 with all 14 frames loaded (' + loadInfo.loaded + '/' + loadInfo.count + ')',
-     f1 >= 1 && loadInfo.count === 14 && loadInfo.loaded === 14 && await ev(`!$('#ultCine').hidden && !!ULT_CINE`));
+  ok('Ultimate triggers Frame 1 with all 18 frames loaded (' + loadInfo.loaded + '/' + loadInfo.count + ')',
+     f1 >= 1 && loadInfo.count === 18 && loadInfo.loaded === 18 && await ev(`!$('#ultCine').hidden && !!ULT_CINE`));
 
-  const f5 = await waitFrame(5, 1300);
-  ok('Ultimate plays through Zoom-in, Eye Cut-in & Flare (frame ' + f5 + ')', f5 >= 5 && f5 <= 14);
-  const f10 = await waitFrame(10, 1400);
-  ok('Ultimate hits 2-Frame Sakuga Impact Flash (frame ' + f10 + ')', f10 >= 10 && f10 <= 14);
-  const f13 = await waitFrame(13, 1000);
+  await waitFrame(6, 1300);
+  const focusSeen = await ev(`$('#ucStage').classList.contains('focus2')`);
+  const f5 = await waitFrame(7, 1800);
+  ok('Ultimate plays through Zoom-in, Eye Cut-in, Eye Macro & Flare (frame ' + f5 + ', focus FX ' + focusSeen + ')', f5 >= 7 && f5 <= 18 && focusSeen);
+  const f10 = await waitFrame(14, 1800);
+  ok('Ultimate hits 2-Frame Sakuga Impact Flash (frame ' + f10 + ')', f10 >= 14 && f10 <= 18);
+  const f13 = await waitFrame(17, 1000);
   const ultDmgTxt = await ev(`$('#ucDmg').textContent`);
   ok('Ultimate reaches Landing & Aftermath with damage pop (frame ' + f13 + ', ' + ultDmgTxt + ')',
-     f13 >= 13 && ultDmgTxt.includes('-'));
+     f13 >= 17 && ultDmgTxt.includes('-'));
 
   await sleep(900);
   const afterUlt = await ev(`({ hidden: $('#ultCine').hidden, ultCine: !!ULT_CINE, ehp: S.ehp })`);
