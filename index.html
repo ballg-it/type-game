@@ -422,6 +422,10 @@ body.cine #story{cursor:default}
   .hgrid{grid-template-columns:1fr}
 }
 .hcard[hidden]{display:none}
+#metaAct .upc.reset .nm{color:#fca5a5}
+#metaAct .upc.reset .ds{font-size:12px;opacity:.8}
+#metaAct .upc.reset.armed{border-color:#ef4444;box-shadow:0 0 0 2px #ef444466,0 0 18px #ef444455}
+#metaAct .upc.reset.armed .ds{color:#fecaca;opacity:1;font-weight:700}
 .hc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .hc-head .mi{width:auto}
 .hgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -647,6 +651,8 @@ body.cine #story{cursor:default}
         <div class="hi"><b>🗺 แผนที่ &amp; บอส</b>7 ชั้น 5 บอส (👑 วรรณยุกต์ · 🪞 กระจก · 👁️ ล่องหน · 🔄 สลับแป้น · 👯 แฝด)</div>
         <div class="hi"><b>🪙 เหรียญ &amp; 💎 ศาลเจ้า</b>ช้อปที่ร้านเหมียวมิ และนำเศษคริสตัลไปอัปเกรดถาวร</div>
         <div class="hi"><b>ก่ ภาษาไทย &amp; ⏸ หยุดเกม</b>วรรณยุกต์สลับลำดับได้ · กด <kbd>Esc</kbd> เพื่อเล่นต่อ เล่นใหม่ หรือกลับ Lobby</div>
+        <div class="hi"><b>🎮 โหมดอื่น</b>ฝึกซ้อม (ไม่มีใครตาย) · ไม่จบ ♾ (ด่านยากขึ้นเรื่อยๆ) · ท้าบอส · ดวลออนไลน์กับเพื่อนด้วยรหัสห้อง 3 คำ</div>
+        <div class="hi"><b>💾 เซฟอัตโนมัติ</b>ปิดเกมกลางรันได้ — กลับมาพิมพ์ <b class="g">ต่อ</b> ที่ Lobby · ล้างข้อมูลทั้งหมดได้ที่ศาลเจ้า</div>
       </div>
       <div class="path" id="startPath"></div>
     </div>
@@ -1372,7 +1378,7 @@ const PERKS = [
   { id: 'dice',   icon: '🎲', name: 'ลูกเต๋าเหมียว', desc: 'สุ่มของในร้านครั้งแรกฟรี',          max: 1, cost: 40, w: { th: 'ลูกเต๋า', en: 'dice' } },
   { id: 'revive', icon: '🪽', name: 'ขนนกฟีนิกซ์',   desc: 'ตายครั้งแรกในรัน ฟื้นคืน 30% HP',   max: 1, cost: 100, w: { th: 'ฟื้น', en: 'rise' } }
 ];
-const META_EXIT = { th: 'ออก', en: 'back' }, META_OPEN = { th: 'ศาล', en: 'shrine' };
+const META_EXIT = { th: 'ออก', en: 'back' }, META_RESET = { th: 'รีเซ็ต', en: 'wipe' }, META_OPEN = { th: 'ศาล', en: 'shrine' };
 const perkCost = (p, lv) => p.cost * (lv + 1);
 function loadMeta() {
   const d = { shards: 0, lv: {}, runs: 0, wins: 0, best: 0, total: 0, endless: 0 };
@@ -3185,17 +3191,19 @@ function showMeta() {
   phase = 'meta';
   updatePauseBtn();
   const L = metaLang();
-  MT = { buf: '', back, opts: PERKS.map(p => ({ p, w: makeWord(p.w[L], L, 'perk') })), exit: { w: makeWord(META_EXIT[L], L, 'exit') } };
+  MT = { buf: '', back, opts: PERKS.map(p => ({ p, w: makeWord(p.w[L], L, 'perk') })), exit: { w: makeWord(META_EXIT[L], L, 'exit') }, reset: { w: makeWord(META_RESET[L], L, 'exit') }, armed: 0 };
   $('#metaSub').textContent = `เล่นมาแล้ว ${META.runs} รัน · พิชิต ${META.wins} · ได้เศษคริสตัลรวม ${META.total} 💎`;
   $('#metaCards').innerHTML = MT.opts.map((o, i) => `<button class="upc" data-i="${i}"><div class="ic">${o.p.icon}</div><div class="nm">${esc(o.p.name)}</div>` +
     `<div class="lv"></div><div class="ds">${esc(o.p.desc)}</div><div class="pr"></div><div class="w"></div></button>`).join('');
-  $('#metaAct').innerHTML = `<button class="upc" data-a="exit"><div class="nm">⛩ กลับ</div><div class="w"></div></button>`;
+  $('#metaAct').innerHTML = `<button class="upc" data-a="exit"><div class="nm">⛩ กลับ</div><div class="w"></div></button>` +
+    `<button class="upc reset" data-a="reset"><div class="nm">🗑 ล้างข้อมูลทั้งหมด</div><div class="ds" id="metaResetTip">เศษคริสตัล อัปเกรด สถิติ และเซฟ</div><div class="w"></div></button>`;
   $('#metaCards').querySelectorAll('.upc').forEach(b => b.onclick = () => metaDo(MT.opts[+b.dataset.i]));
-  $('#metaAct .upc').onclick = () => metaDo(MT.exit);
+  $('#metaAct [data-a=exit]').onclick = () => metaDo(MT.exit);
+  $('#metaAct [data-a=reset]').onclick = () => metaDo(MT.reset);
   $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#metaScr').hidden = false;
   kb.value = ''; renderMeta(); kb.focus();
 }
-const metaOpen = () => MT.opts.filter(o => lv(o.p.id) < o.p.max).concat(MT.exit);
+const metaOpen = () => MT.opts.filter(o => lv(o.p.id) < o.p.max).concat(MT.exit, MT.reset);
 function renderMeta() {
   $('#metaShards').textContent = `💎 ${META.shards}`;
   $('#metaCards').querySelectorAll('.upc').forEach((el, i) => {
@@ -3207,9 +3215,14 @@ function renderMeta() {
     el.classList.toggle('off', (MT.buf !== '' && !m.ok) || full);
     el.classList.toggle('lock', MT.buf !== '' && m.ok && !full);
   });
-  const ex = $('#metaAct .upc'), m = match(MT.buf, MT.exit.w);
-  ex.querySelector('.w').innerHTML = wordHTML(MT.exit.w, MT.buf);
-  ex.classList.toggle('off', MT.buf !== '' && !m.ok); ex.classList.toggle('lock', MT.buf !== '' && m.ok);
+  [['exit', MT.exit], ['reset', MT.reset]].forEach(([a, o]) => {
+    const ex = $(`#metaAct [data-a=${a}]`), m = match(MT.buf, o.w);
+    ex.querySelector('.w').innerHTML = wordHTML(o.w, MT.buf);
+    ex.classList.toggle('off', MT.buf !== '' && !m.ok); ex.classList.toggle('lock', MT.buf !== '' && m.ok);
+  });
+  const armed = MT.armed && performance.now() - MT.armed < 5000;
+  $('#metaAct [data-a=reset]').classList.toggle('armed', !!armed);
+  $('#metaResetTip').textContent = armed ? `⚠ ลบถาวร! พิมพ์ ${MT.reset.w.text} อีกครั้งภายใน 5 วิเพื่อยืนยัน` : 'เศษคริสตัล อัปเกรด สถิติ และเซฟ';
 }
 function metaInput() {
   const v = kb.value.replace(/[`~_\s]/g, '');
@@ -3232,6 +3245,14 @@ function metaDo(o) {
     if (phase === 'result') $('#resGain').innerHTML += ` → เหลือ <span class="shard">${META.shards} 💎</span>`;
     renderMetaBar(); kb.focus(); return;
   }
+  if (o === MT.reset) {
+    if (!MT.armed || performance.now() - MT.armed > 5000) {
+      MT.armed = performance.now(); SFX.err(); anim($('#metaAct [data-a=reset]'), 'err', 230);
+      setTimeout(() => phase === 'meta' && renderMeta(), 5100);
+      return renderMeta();
+    }
+    resetAllProgress(); return;
+  }
   const l = lv(o.p.id);
   if (l >= o.p.max) return renderMeta();
   const c = perkCost(o.p, l);
@@ -3239,6 +3260,11 @@ function metaDo(o) {
   META.shards -= c; META.lv[o.p.id] = l + 1; saveMeta();
   [660, 990, 1320].forEach((f, i) => setTimeout(() => tone(f, 0.14, 'triangle', 0.12), i * 70));
   renderMeta();
+}
+// ล้างความคืบหน้าทั้งหมด (เศษคริสตัล/อัปเกรด/สถิติ/ฉากจบ/เซฟรัน/ฝึกซ้อม/ทัวร์) แต่ไม่แตะการตั้งค่าอื่น แล้วโหลดหน้าใหม่
+function resetAllProgress() {
+  try { [META_KEY, SAVE_KEY, TUT_KEY, TOUR_KEY, ASK_KEY].forEach(k => localStorage.removeItem(k)); } catch (e) {}
+  location.reload();
 }
 // เมนู/หน้าสรุป: พิมพ์คำของเมนูเพื่อเลือก (ทั้งไทยและอังกฤษ แสดงตามภาษาที่เลือก)
 let HELP = false;

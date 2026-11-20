@@ -69,6 +69,14 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   ok('screen tour opens on first fight', await ev(`S.tour && !$('#tourTip').hidden && tourI === 0`));
   await key('Enter'); ok('Enter advances tour', await ev(`tourI === 1`));
   await key('Escape'); ok('Esc closes tour, game not paused', await ev(`!S.tour && !S.paused && $('#tourTip').hidden && localStorage.getItem('typegame.tourDone') === '1'`));
+  // shrine reset: typing รีเซ็ต once only arms it, typing it again wipes progress + save and reloads
+  await ev(`location.reload()`); await sleep(2500);
+  await ev(`META.shards = 77; META.runs = 3; saveMeta(); localStorage.setItem('typegame.save.v1', '{}'); location.reload()`); await sleep(2500);
+  await type('ศาล'); await type('รีเซ็ต');
+  ok('reset armed, nothing wiped yet', await ev(`phase === 'meta' && $('#metaAct .reset').classList.contains('armed') && META.shards === 77`));
+  await sleep(300); await shot('t-reset-armed.png');
+  await type('รีเซ็ต'); await sleep(2500);
+  ok('second รีเซ็ต wipes shards, stats and save', await ev(`phase === 'menu' && META.shards === 0 && META.runs === 0 && !localStorage.getItem('typegame.save.v1') && !localStorage.getItem('typegame.tourDone')`));
   // hero animates
   await ev(`location.reload()`); await sleep(2500);
   const fr = []; for (let i = 0; i < 8; i++) { fr.push(await ev(`airinFrame(HERO)+'|'+HERO.st`)); await sleep(600); }
