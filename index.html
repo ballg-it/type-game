@@ -2288,7 +2288,7 @@ function metaDo(o) {
 // เมนู/หน้าสรุป: พิมพ์คำของเมนูเพื่อเลือก (ทั้งไทยและอังกฤษ แสดงตามภาษาที่เลือก)
 let HELP = false;
 const MENU = () => [
-  { id: 'start', w: { th: 'เริ่ม', en: 'go' }, fn: startRun, in: ['menu'] },
+  { id: 'start', w: { th: 'เริ่ม', en: 'go' }, fn: startGame, in: ['menu'] },
   { id: 'practice', w: { th: 'ฝึก', en: 'train' }, fn: startPractice, in: ['menu'] },
   { id: 'shrine', w: META_OPEN, fn: showMeta, in: ['menu', 'result'] },
   { id: 'duel', w: PVP_OPEN, fn: () => showPvp(), in: ['menu', 'result'] },
@@ -2791,6 +2791,17 @@ function tutFinish() {
     { icon: '🏠', name: 'กลับเมนู', desc: 'ไปหน้าแรก', word: { th: 'เมนู', en: 'menu' }, fn: toMenu, end: 1 }] });
 }
 function tutQuit() { if (S && S.tut) { tutStop(); toMenu(); } }
+// กด "เริ่มเกม" ครั้งแรก (ยังไม่เคยฝึกครบ) → ถามก่อนว่าจะฝึกซ้อมไหม · เลือก "ไม่ต้องถามอีก" ได้
+const ASK_KEY = 'typegame.askPractice';
+function startGame() {
+  if (lsGet(TUT_KEY) || lsGet(ASK_KEY) || navigator.webdriver) return startRun();
+  if (HELP) showHelp(false);
+  $('#startScr').hidden = true; $('#resultScr').hidden = true;
+  showChoice({ title: '🎓 ฝึกซ้อมก่อนไหม?', sub: 'มือใหม่แนะนำให้ฝึก 4 ขั้นสั้นๆ ก่อน (ไม่มีใครตาย) — พิมพ์คำใต้การ์ดเพื่อเลือก', opts: [
+    { icon: '🥋', name: 'ฝึกซ้อมก่อน', desc: 'โจมตี → คอมโบ → ป้องกัน → ท่าไม้ตาย แล้วค่อยเข้าเกมจริง', word: { th: 'ฝึก', en: 'train' }, fn: startPractice, end: 1 },
+    { icon: '⚔', name: 'เล่นเลย', desc: 'ลุยแผนที่ 7 ชั้นทันที (ครั้งหน้าจะถามอีก)', word: { th: 'เริ่ม', en: 'go' }, fn: startRun, end: 1 },
+    { icon: '🚫', name: 'เล่นเลย ไม่ต้องถามอีก', desc: 'ยังเข้าฝึกซ้อมได้จากเมนูหน้าแรก', word: { th: 'ลุย', en: 'skip' }, fn: () => { lsSet(ASK_KEY, '1'); startRun(); }, end: 1 }] });
+}
 $('#skipTut').onclick = tutQuit;
 $('#practiceBtn').onclick = startPractice;
 if (lsGet(TUT_KEY)) $('#practiceNew').hidden = true;
@@ -2890,7 +2901,7 @@ document.querySelectorAll('.opts').forEach(g => g.addEventListener('click', e =>
   g.querySelectorAll('.opt').forEach(o => o.classList.toggle('sel', o === b));
   cfg[g.dataset.group] = b.dataset.v;
 }));
-$('#startBtn').onclick = startRun;
+$('#startBtn').onclick = startGame;
 $('#againBtn').onclick = startRun;
 $('#menuBtn').onclick = () => { phase = 'menu'; $('#resultScr').hidden = true; $('#startScr').hidden = false; renderMetaBar(); kb.focus(); };
 $('#story').onclick = () => phase === 'story' && storyAdvance();
