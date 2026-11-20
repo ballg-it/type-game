@@ -2282,7 +2282,11 @@ document.addEventListener('keydown', e => {
     else if (e.key === 'Enter') { e.preventDefault(); storyAdvance(); }
     return;
   }
-  if (phase === 'pvp') { if (e.key === 'Backspace' && !kb.value) pvBack(); return; }
+  if (phase === 'pvp') {
+    if (e.key === 'Escape') { e.preventDefault(); pvBack(true); }
+    else if (e.key === 'Backspace' && !kb.value) pvBack();
+    return;
+  }
   if (phase === 'menu' && HELP && (e.key === 'Escape' || e.key === 'Enter')) { e.preventDefault(); showHelp(false); return; }
   if (phase === 'menu' && !HELP && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) { e.preventDefault(); menuSel(MSEL + (e.key === 'ArrowUp' ? -1 : 1)); SFX.tick(); return; }
   if (e.key === 'Escape') {
@@ -3419,7 +3423,12 @@ function pvInput() {
   kb.value = PV.buf; SFX.err(); anim($('#pvCards'), 'err', 230);
 }
 function pvDo(o) { if (phase !== 'pvp' || o.off) return; PV.buf = ''; kb.value = ''; SFX.block(); o.fn(); kb.focus(); }
-function pvBack() { if (PV.step === 'join' && PV.code.length) { PV.code.pop(); pvRender(true); } }
+// Backspace (ช่องว่าง) = ลบคำรหัสล่าสุด → กลับหน้าแรกดวล → กลับ Lobby · Esc = ถอยทีละหน้า (ข้ามการลบคำ)
+function pvBack(esc) {
+  if (PV.step === 'join' && PV.code.length && !esc) { PV.code.pop(); pvRender(true); return; }
+  if (PV.step === 'join') { pvStep('home'); return; }
+  pvLeave();
+}
 function pvCodeAdd(i) {
   if (PV.step !== 'join') return;
   PV.code.push(i); PV.buf = ''; kb.value = '';

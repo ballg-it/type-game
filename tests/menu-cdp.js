@@ -29,7 +29,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   await cmd('Page.navigate', { url: 'file:///' + path.resolve(__dirname, '../index.html').replace(/\\/g, '/') }); await sleep(2500);
 
   let s = await st(); ok('menu shown', s.phase === 'menu' && s.start && s.tcard && !s.help);
-  await type('ศา'); s = await st(); ok('partial shrine locks only shrine', s.buf === 'ศา' && s.lock.join() === 'shrine' && s.off.length === 4);
+  await type('ศา'); s = await st(); ok('partial shrine locks only shrine', s.buf === 'ศา' && s.lock.join() === 'shrine' && s.off.length === await ev(`menuItems().length - 1`));
   await shot('t-partial.png');
   await type('ล'); s = await st(); ok('shrine opens', s.phase === 'meta' && s.meta);
   await ev(`metaDo(MT.exit)`); s = await st(); ok('back to menu', s.phase === 'menu' && s.start && s.buf === '' && s.lock.length === 0);
@@ -39,20 +39,25 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   await key('Escape'); s = await st(); ok('Esc closes help', !s.HELP && !s.help && s.tcard);
   await type('วิธีเล่น'); await type('กลับ'); s = await st(); ok('typing กลับ closes help', !s.HELP && s.tcard);
   await type('วิธีเล่น'); await key('Enter'); s = await st(); ok('Enter in help closes help, not start', !s.HELP && s.phase === 'menu');
-  await key('ArrowDown'); await key('ArrowDown'); await key('ArrowDown'); await key('ArrowDown'); s = await st(); ok('arrows select help', s.msel === 4);
+  const hi = await ev(`visibleMenuEls().findIndex(e => e.dataset.m === 'help')`);   // เมนูมี "เล่นต่อ" เพิ่มเมื่อมีเซฟ
+  for (let i = 0; i < hi; i++) await key('ArrowDown'); s = await st(); ok('arrows select help', s.msel === hi);
   await key('Enter'); s = await st(); ok('Enter opens selected (help)', s.HELP); await key('Escape');
   await key('ArrowDown'); s = await st(); ok('arrow wraps to start', s.msel === 0);
   // English mode
   await ev(`document.querySelector('[data-group=mode] [data-v=en]').click()`);
   const w = await ev(`[...document.querySelectorAll('#startScr .mi .w')].map(e=>e.textContent)`);
-  ok('english words shown ' + w.join('/'), w.join() === 'go,train,shrine,duel,help,back');
+  ok('english words shown ' + w.join('/'), w.join() === 'resume,go,train,endless,boss,shrine,duel,help,back');
   await type('help'); s = await st(); ok('help (en)', s.HELP); await type('back'); s = await st(); ok('back (en)', !s.HELP);
   // practice mode (train / ฝึก): guided fight, coach shown, skip returns to menu
   await type('train'); s = await st(); ok('train starts practice', s.phase === 'fight' && await ev(`!!(S.tut && R.practice) && !$('#coach').hidden && !S.tour`));
   await ev(`$('#skipTut').click()`); s = await st(); ok('skip practice back to menu', s.phase === 'menu' && s.start && await ev(`$('#coach').hidden && !S.running`));
   await type('duel'); s = await st(); ok('duel opens pvp', s.phase === 'pvp' && s.pvp);
-  await ev(`pvBack ? pvBack() : 0`); await sleep(200); s = await st(); console.log('after pvBack', JSON.stringify(s));
-  if (s.phase !== 'menu') { await ev(`location.reload()`); await sleep(2500); await ev(`document.querySelector('[data-group=mode] [data-v=en]').click()`); }
+  await key('Backspace'); await sleep(200); s = await st(); ok('Backspace on duel home returns to menu', s.phase === 'menu' && s.start && !s.pvp);
+  await type('duel'); await ev(`pvStep('join'); pvCodeAdd(0); pvCodeAdd(1)`);
+  await key('Backspace'); ok('Backspace in join removes last code word', await ev(`PV.step === 'join' && PV.code.length === 1`));
+  await key('Backspace'); await key('Backspace'); ok('Backspace with empty code goes to duel home', await ev(`phase === 'pvp' && PV.step === 'home'`));
+  await ev(`pvStep('join'); pvCodeAdd(2)`); await key('Escape'); ok('Esc in join goes to duel home', await ev(`PV.step === 'home'`));
+  await key('Escape'); s = await st(); ok('Esc on duel home returns to menu', s.phase === 'menu' && s.start && !s.pvp);
   await type('go'); await sleep(400); s = await st(); ok('go starts run', s.phase !== 'menu' && !s.start);
   // Enter path + start while help open
   await ev(`location.reload()`); await sleep(2500);
