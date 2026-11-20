@@ -828,7 +828,7 @@ const DIFF = {
 };
 // สวนกลับ (parry): ต้อง "เริ่มพิมพ์" คำกันในช่วงทองท้ายแถบ แล้วพิมพ์ให้จบก่อนโดน — พิมพ์รอไว้ก่อนแล้วกดตัวสุดท้ายตอนทอง = แค่กัน
 // ช่วงทองยาวตามความยาวคำ (ไทย 3 ตัว ≈ 1.05 วิ, อังกฤษ 5 ตัว ≈ 1.45 วิ, เพดาน 60% ของแถบ) — คนพิมพ์ ~4 ตัว/วิ ขึ้นไปสวนได้ (รวมเวลาตอบสนอง)
-const COUNTER_WINDOW = 0.45, COUNTER_PER_CHAR = 0.2, COUNTER_CHIP = 0.5, COUNTER_NEXT = 2, COUNTER_ULT = 6;
+const COUNTER_WINDOW = 0.45, COUNTER_PER_CHAR = 0.2, COUNTER_CHIP = 0, COUNTER_NEXT = 2, COUNTER_ULT = 6;
 const KB_TH = {
   u: ['ๅ/-ภถุึคตจขช', 'ๆไำพะัีรนยบลฃ', 'ฟหกดเ้่าสวง', 'ผปแอิืทมใฝ'],
   s: ['+๑๒๓๔ู฿๕๖๗๘๙', '๐"ฎฑธํ๊ณฯญฐ,ฅ', 'ฤฆฏโฌ็๋ษศซ.', '()ฉฮฺ์?ฒฬฦ']
@@ -2499,13 +2499,13 @@ function block() {
   anim(P, 'shield', 460); play(FIG.P, 'block'); play(FIG.E, 'attack');
   if (parry) {
     S.stats.counters++;
-    // สวนกลับ = ตีเบาๆ ทันที + คำโจมตีถัดไปแรง ×2 (เดิมสวนแรงทันที 26 = รอสวนอย่างเดียวก็ชนะ ดู HANDOFF)
-    const dmg = Math.max(1, Math.round(COUNTER_CHIP * (3 + defLen * 2.2) * comboMult() * (S.tired ? 0.5 : 1) * R.mod.counterMult));
+    // สวนกลับ = ศัตรูเสียหลัก (ไม่มีดาเมจ) + คำโจมตีถัดไปแรง ×2 — กัน/สวนอย่างเดียวชนะไม่ได้ ต้องตี (เดิมสวนแรง 26 = รอสวนอย่างเดียวก็ชนะ ดู HANDOFF)
+    const dmg = Math.round(COUNTER_CHIP * (3 + defLen * 2.2) * comboMult() * (S.tired ? 0.5 : 1) * R.mod.counterMult);
     S.cBuff = true;
     SFX.counter();
     setTimeout(() => { play(FIG.P, 'attack'); }, 160);
-    setTimeout(() => { hurtE(); spark(E); spark(E, 'blue'); fx('gold', 'COUNTER! -' + dmg, E, 0, -10); fx('msg', '⚡ คำต่อไป ×2', P, 40, -40); shake(); hitstop(140); }, 160 + HIT_DELAY);
-    addUlt(COUNTER_ULT); dealDamage(dmg, 'counter');
+    setTimeout(() => { hurtE(); spark(E); spark(E, 'blue'); fx('gold', dmg ? 'COUNTER! -' + dmg : 'COUNTER!', E, 0, -10); fx('msg', '⚡ คำต่อไป ×2', P, 40, -40); shake(); hitstop(140); }, 160 + HIT_DELAY);
+    addUlt(COUNTER_ULT); if (dmg) dealDamage(dmg, 'counter');
     if (R.pvp) pvSend({ t: 'blk', c: 1 });
   } else {
     S.stats.blocks++;
