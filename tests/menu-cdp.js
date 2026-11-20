@@ -45,8 +45,10 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   await key('ArrowDown'); s = await st(); ok('arrow wraps to start', s.msel === 0);
   // English mode
   await ev(`document.querySelector('[data-group=mode] [data-v=en]').click()`);
-  const w = await ev(`[...document.querySelectorAll('#startScr .mi .w')].map(e=>e.textContent)`);
-  ok('english words shown ' + w.join('/'), w.join() === 'resume,go,train,endless,boss,shrine,duel,help,back');
+  const w = await ev(`visibleMenuEls().map(e=>e.querySelector('.w').textContent)`);
+  // "resume" row shows only when a run save existed at menu render (depends on test-profile leftovers)
+  const hasSave = await ev(`!$('#continueBtn').hidden`);
+  ok('english words shown ' + w.join('/'), w.join() === (hasSave ? 'resume,' : '') + 'go,train,endless,boss,shrine,duel,help');
   await type('help'); s = await st(); ok('help (en)', s.HELP); await type('back'); s = await st(); ok('back (en)', !s.HELP);
   // practice mode (train / ฝึก): guided fight, coach shown, skip returns to menu
   await type('train'); s = await st(); ok('train starts practice', s.phase === 'fight' && await ev(`!!(S.tut && R.practice) && !$('#coach').hidden && !S.tour`));
