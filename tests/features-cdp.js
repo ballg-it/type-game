@@ -91,8 +91,10 @@ let failed = 0;
   const mirrorSt = await ev(`(() => {
     const s2 = S.slots[2];
     const domText = $('#s2 .w').textContent;
-    const rev = [...s2.raw].reverse().map(c => c.b + c.m.join('')).join('');
-    return { id: FOE.id, mirror: !!s2.mirror, domMatchesRev: domText === rev, realText: s2.text, ehp: S.ehp, mech: $('#mechBar').textContent };
+    // reversed by syllable: leading vowel stays before its consonant, so no displayed text ends in เแโใไ
+    const rev = mirrorItems(s2.raw.map((c, i) => ({ c, i }))).map(({ c }) => c.b + c.m.join('')).join('');
+    const sameLetters = [...rev].sort().join() === [...s2.raw.map(c => c.b + c.m.join('')).join('')].sort().join();
+    return { id: FOE.id, mirror: !!s2.mirror, domMatchesRev: domText === rev && sameLetters && !/[เแโใไ]$/.test(domText), realText: s2.text, ehp: S.ehp, mech: $('#mechBar').textContent };
   })()`);
   ok('mirror boss reverses word visually (' + mirrorSt.realText + ')', mirrorSt.id === 'mirror' && mirrorSt.mirror && mirrorSt.domMatchesRev && mirrorSt.mech.includes('กระจก'));
   await shot('boss-mirror.png');

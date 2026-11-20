@@ -2556,8 +2556,8 @@ function wordHTML(w, buf = S.buf) {
   const m = match(buf, w);
   const n = m.ok ? m.n : 0;
   const swapMap = (phase === 'fight' && S && S.running && S.keySwap && !S.ultMode) ? S.keySwap.map : null;
-  const items = w.raw.map((c, i) => ({ c, i }));
-  if (w.mirror) items.reverse();
+  let items = w.raw.map((c, i) => ({ c, i }));
+  if (w.mirror) items = mirrorItems(items);
   return items.map(({ c, i }) => {
     const txt = (c.b === ' ' ? ' ' : c.b) + c.m.join('');
     let cls = 'rest';
@@ -2567,6 +2567,19 @@ function wordHTML(w, buf = S.buf) {
     if (swapMap && swapMap[c.b] && cls !== 'done') cls += ' swapped';
     return `<span class="${cls}">${esc(txt)}</span>`;
   }).join('');
+}
+// บอสกระจก: กลับด้านทีละ "พยางค์" ไม่ใช่ทีละตัว — ภาษาไทยถ้ากลับทีละตัว สระหน้า (เ แ โ ใ ไ) กับ ะ า ำ ๆ จะหลุดจากพยางค์จนอ่านไม่ออก
+// (ภูเขาไฟระเบิด → ดเบิระไฟเขาภู แทน ดบิเะรฟไาขเภู) · อังกฤษไม่มีตัวเหล่านี้จึงกลับทีละตัวเหมือนเดิม
+const TH_LEAD = 'เแโใไ', TH_TRAIL = 'ะาำๆ';
+function mirrorItems(items) {
+  const groups = []; let joinNext = false;
+  for (const it of items) {
+    const b = it.c.b;
+    if (joinNext || (TH_TRAIL.includes(b) && groups.length)) groups[groups.length - 1].push(it);
+    else groups.push([it]);
+    joinNext = TH_LEAD.includes(b);
+  }
+  return groups.reverse().flat();
 }
 const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
