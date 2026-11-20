@@ -185,12 +185,43 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
 .tut-focus{outline:3px solid var(--gold);outline-offset:4px;border-radius:14px;animation:tutGlow .8s infinite alternate}
 @keyframes tutGlow{from{outline-color:#fbbf24}to{outline-color:#fbbf2433}}
 .go.tut{background:linear-gradient(90deg,#b45309,#f59e0b);box-shadow:0 0 24px #f59e0b88;position:relative}
+/* ---------- screen tour (แนะนำตำแหน่งบนจอก่อนเริ่ม) ---------- */
+#tourBlock{position:fixed;inset:0;z-index:59}
+#tourHole{position:fixed;z-index:60;border-radius:14px;pointer-events:none;transition:all .3s ease;
+  box-shadow:0 0 0 9999px #06031ad0,0 0 0 3px var(--gold),0 0 30px 4px #fbbf24aa}
+#tourTip{position:fixed;z-index:61;width:min(380px,calc(100vw - 32px));background:#150d30;border:2px solid var(--gold);border-radius:14px;padding:12px 16px 14px;box-shadow:0 10px 40px #000a;transition:top .3s ease,left .3s ease;line-height:1.6}
+#tourTip .tn{font-size:12px;color:var(--gold);font-weight:600;letter-spacing:1px}
+#tourTip .tt{font-size:20px;font-weight:600;margin:2px 0 4px}
+#tourTip .tx{font-size:14px;color:#d8d0f5}
+#tourTip .tx b{color:var(--gold)}
+#tourTip .tb{display:flex;gap:8px;margin-top:12px;align-items:center}
+#tourTip .tb button{border:0;border-radius:9px;padding:6px 14px;cursor:pointer;font-size:14px;color:#fff;background:#2a1d5c}
+#tourTip .tb .nx{margin-left:auto;background:linear-gradient(90deg,#7c3aed,#c026d3)}
+#tourTip .tb .sk{background:none;color:var(--muted);padding:6px 4px}
+#tourTip .dots{display:flex;gap:4px;margin-top:8px}
+#tourTip .dots i{width:7px;height:7px;border-radius:50%;background:#ffffff26}
+#tourTip .dots i.on{background:var(--gold)}
+#help{position:absolute;top:10px;right:56px;background:#0005;border:1px solid #ffffff22;color:var(--text);border-radius:8px;padding:2px 9px;cursor:pointer;z-index:30;font-weight:600}
 .go.tut .new{position:absolute;top:-10px;right:12px;font-size:12px;background:var(--bad);border-radius:8px;padding:0 8px}
 </style>
 </head>
 <body>
 <div id="game">
   <button id="mute" title="เปิด/ปิดเสียง">🔊</button>
+  <button id="help" title="แนะนำหน้าจอ">?</button>
+  <div id="tourBlock" hidden></div>
+  <div id="tourHole" hidden></div>
+  <div id="tourTip" hidden>
+    <div class="tn" id="tourNum"></div>
+    <div class="tt" id="tourTitle"></div>
+    <div class="tx" id="tourText"></div>
+    <div class="dots" id="tourDots"></div>
+    <div class="tb">
+      <button class="sk" id="tourSkip">ข้าม <kbd>Esc</kbd></button>
+      <button id="tourBack">ย้อน</button>
+      <button class="nx" id="tourNext">ถัดไป <kbd>Enter</kbd></button>
+    </div>
+  </div>
   <div id="hud">
     <div class="hpbox p">
       <div class="name">นักพิมพ์ <span>Lv.1</span></div>
@@ -699,7 +730,7 @@ kb.addEventListener('compositionend', () => { composing = false; onInput(); });
 kb.addEventListener('input', () => { if (!composing) onInput(); });
 
 function onInput() {
-  if (!S || !S.running || S.paused) { kb.value = ''; return; }
+  if (!S || !S.running || S.paused || S.tour) { kb.value = ''; return; }
   let v = kb.value.replace(/[`~_]/g, '');
   v = S.ultMode ? v.replace(/^\s+/, '').replace(/\s{2,}/g, ' ') : v.replace(/\s+/g, '');
   if (v === S.buf) { kb.value = v; return; }
@@ -740,7 +771,7 @@ document.addEventListener('keydown', e => {
   }
 });
 document.addEventListener('mousedown', e => { if (!e.target.closest('button')) setTimeout(() => kb.focus(), 0); });
-window.addEventListener('blur', () => { if (S && S.running && !S.paused) setPause(true); });
+window.addEventListener('blur', () => { if (S && S.running && !S.paused && !S.tour) setPause(true); });
 
 function setPause(p) {
   S.paused = p; $('#pauseScr').hidden = !p;
@@ -822,7 +853,7 @@ function update(dt) {
 let last = 0;
 function loop(ts) {
   const dt = Math.min(0.05, (ts - last) / 1000 || 0); last = ts;
-  if (S && S.running && !S.paused) {
+  if (S && S.running && !S.paused && !S.tour) {
     if (S.freeze > 0) S.freeze -= dt * 1000;
     else update(dt);
   }
@@ -831,7 +862,8 @@ function loop(ts) {
 }
 
 /* ================= Game flow ================= */
-function startGame() {
+function startGame(noTour) {
+  if (S && S.tour) endTour();
   S = freshState();
   [0, 1, 2].forEach(newSlotWord);
   S.running = true; S.stats.start = performance.now();
@@ -842,6 +874,7 @@ function startGame() {
   kb.value = ''; kb.focus(); ac();
   renderWords();
   toast(cfg.mode === 'en' ? 'พร้อม! ตั้งแป้นเป็นภาษาอังกฤษ' : cfg.mode === 'th' ? 'พร้อม! ตั้งแป้นเป็นภาษาไทย' : 'พร้อม! สลับแป้นด้วย ~ หรือ Alt+Shift');
+  if (noTour !== true && !lsGet(TOUR_KEY)) startTour();
 }
 
 function endGame(win) {
@@ -898,8 +931,8 @@ document.querySelectorAll('.opts').forEach(g => g.addEventListener('click', e =>
   g.querySelectorAll('.opt').forEach(o => o.classList.toggle('sel', o === b));
   cfg[g.dataset.group] = b.dataset.v;
 }));
-$('#startBtn').onclick = startGame;
-$('#againBtn').onclick = startGame;
+$('#startBtn').onclick = () => startGame();
+$('#againBtn').onclick = () => startGame();
 $('#menuBtn').onclick = () => { $('#resultScr').hidden = true; $('#startScr').hidden = false; };
 
 /* ================= Tutorial =================
@@ -923,7 +956,7 @@ function setFocus(sels) { clearFocus(); sels.forEach(s => $(s).classList.add('tu
 function coach(prog, ok) { $('#coachProg').innerHTML = prog || ''; $('#coach').classList.toggle('ok', !!ok); }
 
 function startTutorial() {
-  startGame();
+  startGame(true);
   S.tut = { i: -1, id: '', n: 0, enemyOn: false, busy: false };
   $('#eName').textContent = 'หุ่นซ้อม'; $('#legend').hidden = true; $('#coach').hidden = false;
   toast(cfg.mode === 'en' ? 'ตั้งแป้นเป็นภาษาอังกฤษก่อนนะ' : cfg.mode === 'th' ? 'ตั้งแป้นเป็นภาษาไทยก่อนนะ' : 'สองภาษา: สลับแป้นด้วย ~ หรือ Alt+Shift');
@@ -980,9 +1013,103 @@ function tutFinish() {
 function tutQuit() { if (S.tut) { tutStop(); $('#startScr').hidden = false; } }
 $('#tutBtn').onclick = startTutorial;
 $('#skipTut').onclick = tutQuit;
-$('#tutFightBtn').onclick = startGame;
+$('#tutFightBtn').onclick = () => startGame();
 $('#tutMenuBtn').onclick = () => { $('#tutDoneScr').hidden = true; $('#startScr').hidden = false; };
 if (lsGet(TUT_KEY)) $('#tutNew').hidden = true;
+
+/* ================= Screen tour =================
+   กดเริ่มเกมครั้งแรก → หยุดเกมไว้ แล้วไฮไลต์ทีละจุดบนจอพร้อมคำอธิบาย
+   (กด ? มุมขวาบนเพื่อดูซ้ำได้ทุกเมื่อ) */
+const TOUR_KEY = 'typegame.tourDone';
+const TOUR = [
+  { sel: '.hpbox.p', title: 'พลังชีวิตของคุณ', text: 'แถบเขียวซ้ายบน ถ้าหมดคือแพ้ — โดนศัตรูตีเมื่อป้องกันไม่ทัน' },
+  { sel: '.hpbox.e', title: 'พลังชีวิตศัตรู', text: 'แถบแดงขวาบน ตีให้หมดเพื่อชนะ' },
+  { sel: '#words', title: 'ช่องคำโจมตี', text: 'มี 3 ช่อง <b>พิมพ์คำในช่องไหนก็ได้</b> ไม่ต้องกด Enter พิมพ์ครบคำ = ตีทันที<br>⚡ เร็ว = คำสั้น · 🔥 แรง = คำยาว ดาเมจแสดงใต้คำ' },
+  { sel: '#defBox', title: 'กล่องป้องกัน', text: 'เมื่อศัตรูชาร์จ กล่องแดงจะเด้งขึ้น <b>รีบพิมพ์คำในกล่องนี้</b> ก่อนแถบเต็ม<br>กันตอนแถบถึงช่วง <b>สีทอง</b> = สวนกลับ ×2',
+    demo() { S.def = makeWord(cfg.mode === 'en' ? 'block' : 'กัน', cfg.mode === 'en' ? 'en' : 'th', 'def'); S.enemy.charge = 1.6; S.enemy.chargeMax = 2.5; E.classList.add('charging'); } },
+  { sel: '#combo', title: 'คอมโบ', text: 'พิมพ์ถูกต่อเนื่อง ดาเมจคูณขึ้นเรื่อยๆ (สูงสุด ×3)<br>พิมพ์ผิดหรือโดนตี คอมโบหลุด',
+    demo() { S.combo = 5; } },
+  { sel: '#stamBox', title: 'Stamina', text: 'พิมพ์ผิดเสีย Stamina ถ้าหมดจะ <b>เหนื่อย ดาเมจเหลือครึ่ง</b> จนกว่าจะฟื้น — พิมพ์ช้าแต่แม่นดีกว่า' },
+  { sel: '#ultBtn', title: 'ท่าไม้ตาย', text: 'เกจเต็มเมื่อตีและกันได้ พอเรืองแสงให้กด <kbd>Tab</kbd> แล้วพิมพ์ประโยคให้จบทันเวลา',
+    demo() { S.ult = 100; } },
+  { sel: '#help', title: 'ปุ่มช่วยเหลือ', text: '<kbd>Esc</kbd> หยุดเกม · 🔊 ปิดเสียง · <b>?</b> เปิดคำแนะนำนี้อีกครั้ง' },
+  { sel: null, title: 'พร้อมแล้ว!', text: () => (cfg.mode === 'en' ? 'ตั้งแป้นพิมพ์เป็น <b>ภาษาอังกฤษ</b>' : cfg.mode === 'th' ? 'ตั้งแป้นพิมพ์เป็น <b>ภาษาไทย</b>' : 'โหมดสองภาษา: สลับแป้นด้วย <kbd>~</kbd> หรือ <kbd>Alt+Shift</kbd>') + ' แล้วกด <b>เริ่ม</b> ได้เลย' }
+];
+let tourI = 0, tourSnap = null;
+function startTour() {
+  if (!S || !S.running || S.tour) return;
+  if (S.paused) setPause(false);
+  S.tour = true; tourI = 0;
+  tourSnap = { def: S.def, combo: S.combo, ult: S.ult, charge: S.enemy.charge, chargeMax: S.enemy.chargeMax, charging: E.classList.contains('charging') };
+  S.buf = ''; kb.value = ''; kb.blur();
+  $('#tourBlock').hidden = $('#tourHole').hidden = $('#tourTip').hidden = false;
+  $('#tourDots').innerHTML = TOUR.map(() => '<i></i>').join('');
+  showTourStep();
+}
+function tourRestore() {
+  const t = tourSnap; S.def = t.def; S.combo = t.combo; S.ult = t.ult; S.enemy.charge = t.charge; S.enemy.chargeMax = t.chargeMax;
+  E.classList.toggle('charging', t.charging);
+}
+function showTourStep() {
+  tourRestore();
+  const st = TOUR[tourI];
+  if (st.demo) st.demo();
+  renderWords(); renderHUD();
+  $('#tourNum').textContent = `แนะนำหน้าจอ ${tourI + 1}/${TOUR.length}`;
+  $('#tourTitle').textContent = st.title;
+  $('#tourText').innerHTML = typeof st.text === 'function' ? st.text() : st.text;
+  $('#tourBack').style.visibility = tourI ? 'visible' : 'hidden';
+  $('#tourNext').innerHTML = tourI === TOUR.length - 1 ? 'เริ่ม! <kbd>Enter</kbd>' : 'ถัดไป <kbd>Enter</kbd>';
+  $('#tourDots').querySelectorAll('i').forEach((d, i) => d.classList.toggle('on', i === tourI));
+  placeTour();
+}
+function placeTour() {
+  if (!S || !S.tour) return;
+  const st = TOUR[tourI], hole = $('#tourHole'), tip = $('#tourTip');
+  const el = st.sel && $(st.sel);
+  const r = el && el.getBoundingClientRect();
+  const W = innerWidth, H = innerHeight, pad = 8;
+  if (!r || !r.width) {   // ไม่มีเป้า (หรือถูกซ่อนบนจอเล็ก) → กล่องกลางจอ
+    Object.assign(hole.style, { left: W / 2 + 'px', top: H / 2 + 'px', width: '0px', height: '0px' });
+    tip.style.left = (W - tip.offsetWidth) / 2 + 'px'; tip.style.top = (H - tip.offsetHeight) / 2 + 'px';
+    return;
+  }
+  Object.assign(hole.style, { left: r.left - pad + 'px', top: r.top - pad + 'px', width: r.width + pad * 2 + 'px', height: r.height + pad * 2 + 'px' });
+  const tw = tip.offsetWidth, th = tip.offsetHeight, gap = 18;
+  let top = r.bottom + pad + gap;
+  if (top + th > H - 10) top = r.top - pad - gap - th;          // ไม่พอข้างล่าง → ไว้ข้างบน
+  top = Math.max(10, Math.min(H - th - 10, top));
+  const left = Math.max(16, Math.min(W - tw - 16, r.left + r.width / 2 - tw / 2));
+  tip.style.top = top + 'px'; tip.style.left = left + 'px';
+}
+function tourGo(d) {
+  const n = tourI + d;
+  if (n < 0) return;
+  if (n >= TOUR.length) return endTour();
+  tourI = n; showTourStep();
+}
+function endTour() {
+  if (!S || !S.tour) return;
+  tourRestore(); S.tour = false; tourSnap = null;
+  $('#tourBlock').hidden = $('#tourHole').hidden = $('#tourTip').hidden = true;
+  lsSet(TOUR_KEY, '1');
+  if (!S.stats.correct && !S.stats.words && !S.stats.errors) S.stats.start = performance.now();   // ไม่นับเวลาที่อ่านคำแนะนำ
+  renderWords(); kb.focus();
+}
+$('#tourNext').onclick = () => tourGo(1);
+$('#tourBack').onclick = () => tourGo(-1);
+$('#tourSkip').onclick = endTour;
+$('#help').onclick = startTour;
+addEventListener('resize', placeTour);
+// คีย์ตอนเปิดคำแนะนำ: Enter/→ ถัดไป, ← ย้อน, Esc ข้าม
+// ผูกที่ window แบบ capture เพื่อให้ทำงานก่อน handler ของเกมเสมอ (Enter ที่กดเริ่มเกมจะไม่ไปข้ามขั้นแรก)
+window.addEventListener('keydown', e => {
+  if (!S || !S.tour) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  if (e.key === 'Enter' || e.key === 'ArrowRight' || e.key === ' ') tourGo(1);
+  else if (e.key === 'ArrowLeft') tourGo(-1);
+  else if (e.key === 'Escape') endTour();
+}, true);
 
 S = freshState(); [0, 1, 2].forEach(newSlotWord); renderWords();
 requestAnimationFrame(loop);
