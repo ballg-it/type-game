@@ -752,3 +752,185 @@ ANIMS.bandit = ANIMS.oni;
 ANIMS.ghost = FIGHTER;
 SMEAR.bandit = ['#fde68a', 36];
 SMEAR.ghost = ['#a5f3fc', 0];
+
+/* =================== บอสใหม่ 4 ตัว: กระจก / ล่องหน / สลับแป้น / แฝด =================== */
+CHARS.mirror = {
+  name: 'จอมกระจกเงา', role: 'บอส · คำกลับด้าน', theme: 'red', enemy: true, rim: '#e0f2fe',
+  desc: 'จอมเวทชุดผลึกเงิน มีเศษกระจกลอยหมุนรอบตัว คทากระจกสะท้อนคำกลับด้าน',
+  draw(px, r, p, gt) {
+    const C = { robe: '#334155', robeD: '#1e293b', robeL: '#64748b', trim: '#7dd3fc', trimL: '#e0f2fe', glass: '#bae6fd', glassL: '#ffffff', glassD: '#38bdf8', hood: '#0f172a', eye: '#38bdf8', eyeL: '#ffffff', silver: '#cbd5e1', silverD: '#94a3b8' };
+    const T = r.T, hip = r.hip, s = r.sway, hem = 140, H = (x, y) => ({ x: hip.x + x, y });
+    // เศษกระจกด้านหลัง
+    const shards = [];
+    for (let i = 0; i < 6; i++) {
+      const a = gt * 1.4 + i * Math.PI / 3;
+      shards.push({ x: Math.round(80 + Math.cos(a) * 50), y: Math.round(62 + Math.sin(a) * 14 + Math.sin(gt * 2.5 + i) * 3), back: Math.sin(a) < 0, i });
+    }
+    const drawShard = sh => {
+      const x = sh.x, y = sh.y;
+      px.poly([{ x, y: y - 7 }, { x: x + 4, y }, { x, y: y + 7 }, { x: x - 4, y }], sh.back ? C.glassD : C.glass);
+      px.line({ x, y: y - 6 }, { x: x + 2, y: y - 1 }, .45, sh.back ? C.glass : C.glassL);
+    };
+    shards.filter(o => o.back).forEach(drawShard);
+    // ผ้าคลุมเงินปลิว
+    const cp = (x, y) => add(T(x, y, false), s * Math.max(0, y + 12) / 5, 0);
+    px.poly([T(-6, -18), T(4, -18), cp(-14, 16), cp(-20, 10), cp(-16, -6)], C.robeD);
+    arm(px, r.ba, 5.4, C.robeD, C.hood, C.silverD, C.robeD);
+    drape(px, r.ba, C.robeD, C.hood, 18, C.trim);
+    // ชุดคลุมผลึกยาว
+    px.poly([T(-7, -17), T(7, -17), T(8, -5), H(19, hem), H(-19, hem), T(-8, -5)], C.robe);
+    px.poly([T(-7, -16), T(-3, -16), H(-10, hem), H(-19, hem), T(-8, -5)], C.robeD);
+    px.poly([T(3, -6), T(8, -5), H(19, hem), H(11, hem)], C.robeL);
+    px.line(H(-18, hem - 6), H(18, hem - 6), .8, C.trim);
+    // ลายกระจกกลางอก
+    const cr = T(1, -11);
+    px.poly([add(cr, 0, -6), add(cr, 5, 0), add(cr, 0, 6), add(cr, -5, 0)], C.glass);
+    px.poly([add(cr, 0, -4), add(cr, 2.5, 0), add(cr, 0, 4), add(cr, -2.5, 0)], C.glassL);
+    // หัวฮู้ด + หน้ากากกระจก
+    const c = r.hc, P = (x, y) => ({ x: c.x + x, y: c.y + y });
+    px.poly([P(-13, -12), P(4, -17), P(12, -8), P(12, 8), P(3, 14), P(-11, 12), P(-15, 0)], C.robe);
+    px.poly([P(-13, -12), P(-5, -15), P(-7, 12), P(-11, 12), P(-15, 0)], C.robeD);
+    px.line(P(-2, -16), P(11, -7), .8, C.trim);
+    // หน้ากากผลึกสีเงินสะท้อนแสง
+    px.poly([P(-2, -10), P(9, -9), P(11, 0), P(8, 10), P(-1, 10), P(-5, 0)], C.glass);
+    px.poly([P(-5, 0), P(-1, 10), P(3, 10), P(-1, 0), P(2, -10), P(-2, -10)], C.silver);
+    px.line(P(2, -9), P(8, 8), .5, C.glassL);
+    // ตาเรืองแสงฟ้าผ่านหน้ากาก
+    px.line(P(1, -2), P(6, -3), .9, C.eye); px.set(c.x + 3, c.y - 2, C.eyeL);
+    px.line(P(8, -3), P(10.5, -2.5), .8, C.eye);
+    // คทากระจก
+    const d = r.fa.dir, h = r.fa.h, A = (k, o = 0) => add(h, d.x * k - d.y * o, d.y * k + d.x * o);
+    px.line(A(-10), A(36), 1.6, C.silverD); px.line(A(-9, -.8), A(35, -.8), .5, C.glassL);
+    px.poly([A(32, -8), A(44, 0), A(32, 8), A(26, 0)], C.trim);
+    px.poly([A(33, -5), A(40, 0), A(33, 5), A(29, 0)], C.glassL);
+    arm(px, r.fa, 5.4, C.robe, C.robeD, C.silver, C.silverD);
+    drape(px, r.fa, C.robeL, C.robeD, 18, C.trimL);
+    shards.filter(o => !o.back).forEach(drawShard);
+  }
+};
+
+CHARS.phantom = {
+  name: 'ภูตล่องหน', role: 'บอส · คำจางหาย', theme: 'red', enemy: true, rim: '#99f6e4',
+  desc: 'วิญญาณนักฆ่าในผ้าคลุมหมอก มีดวงตาเรืองแสงกลางหน้ากากและควันวิญญาณ',
+  draw(px, r, p, gt) {
+    const C = { cl: '#1e1b4b', clD: '#0f0d2e', clL: '#3730a3', mist: '#2dd4bf', mistD: '#0f766e', mistL: '#ccfbf1', eye: '#5eead4', eyeC: '#ffffff', mask: '#09071a', blade: '#5eead4', bladeL: '#f0fdfa' };
+    const T = r.T, s = r.sway, bob = Math.round(Math.sin(gt * 2.2) * 4);
+    const Q = (x, y) => add(T(x, y), 0, bob);
+    // ควันล่องหนรอบตัว
+    for (let i = 0; i < 5; i++) {
+      const ph = (gt * .9 + i * .2) % 1;
+      const mx = Math.round(80 + Math.sin(gt * 2 + i * 1.4) * 32), my = Math.round(128 - ph * 55);
+      px.disc(mx, my, 3.2 * (1 - ph * .6), i % 2 ? C.mistD : C.mist);
+    }
+    // ชายผ้าคลุมขาดลอยเหนือพื้น
+    px.poly([Q(-9, -18), Q(8, -18), Q(14, 14), Q(8, 22), Q(3, 14), Q(-3, 24), Q(-9, 15), Q(-16 + s * .5, 22), Q(-15, 2)], C.cl);
+    px.poly([Q(-9, -18), Q(-3, -18), Q(-5, 16), Q(-16 + s * .5, 22), Q(-15, 2)], C.clD);
+    px.line(Q(14, 14), Q(8, 22), .6, C.mistD); px.line(Q(-3, 24), Q(-9, 15), .6, C.mist);
+    // ผ้าพันคอเรืองแสง
+    px.poly([Q(-9, -18), Q(9, -18), Q(8, -12), Q(-10, -12)], C.mistD);
+    px.line(Q(-9, -17), Q(8, -17), .6, C.mist);
+    spike(px, Q(-9, -15), add(Q(-26, -10), s * .8, Math.sin(gt * 3) * 3), 5, C.mist);
+    // หัว + ดวงตาใหญ่กลางหน้ากาก
+    const c = add(r.hc, 0, bob), P = (x, y) => ({ x: c.x + x, y: c.y + y });
+    px.poly([P(-13, -10), P(3, -16), P(12, -8), P(11, 8), P(2, 13), P(-12, 10), P(-15, -2)], C.cl);
+    px.poly([P(-3, -9), P(10, -7), P(11, 4), P(6, 10), P(-3, 8), P(-5, -1)], C.mask);
+    // ดวงตาล่องหน (กะพริบจางเป็นจังหวะ)
+    const open = (Math.floor(gt * 1.5) % 5) !== 0;
+    if (open) {
+      px.poly([P(-1, -1), P(4.5, -5.5), P(10, -1), P(4.5, 3.5)], C.eye);
+      px.disc(c.x + 4.5, c.y - 1, 2.2, C.eyeC);
+      px.set(c.x + 5, c.y - 1, C.mask);
+    } else {
+      px.line(P(-1, -1), P(10, -1), .7, C.eye);
+    }
+    // กริชวิญญาณ
+    const d = r.fa.dir, h = add(r.fa.h, 0, bob), A = (k, o = 0) => add(h, d.x * k - d.y * o, d.y * k + d.x * o);
+    px.line(A(-5), A(30), 1.5, C.blade);
+    px.line(A(0, -.7), A(26, -.7), .5, C.bladeL);
+    spike(px, A(27), A(36, 0), 3, C.bladeL);
+    arm(px, { ...r.fa, s: add(r.fa.s, 0, bob), e: add(r.fa.e, 0, bob), h }, 4.8, C.clL, C.clD, C.mist, C.mistD);
+  }
+};
+
+CHARS.jester = {
+  name: 'ตัวตลกสลับแป้น', role: 'บอส · สลับปุ่มกลางไฟต์', theme: 'red', enemy: true, rim: '#bef264',
+  desc: 'ตัวตลกไซเบอร์พังก์หมวกเขากระดิ่งปุ่มคีย์ สลับแป้นพิมพ์กลางไฟต์',
+  draw(px, r, p, gt) {
+    const C = { a: '#4d7c0f', aL: '#a3e635', aD: '#365314', b: '#7e22ce', bL: '#c084fc', bD: '#4c1d95', gold: '#facc15', goldD: '#ca8a04', white: '#f8fafc', dark: '#18181b', eye: '#a3e635', cap: '#f1f5f9', capD: '#94a3b8' };
+    const T = r.T, s = r.sway;
+    arm(px, r.ba, 4.8, C.bD, C.dark, C.white, C.capD);
+    leg(px, r.bl, { c: C.bD, d: C.dark, boot: C.a, bootD: C.aD, foot: 10 });
+    leg(px, r.fl, { c: C.a, d: C.aD, boot: C.b, bootD: C.bD, foot: 10 });
+    // ลำตัวลายสลับสองสี (เขียว-ม่วง)
+    px.poly([T(-7, -17), T(0, -17), T(0, -2), T(-6, -2)], C.b);
+    px.poly([T(0, -17), T(7, -17), T(6, -2), T(0, -2)], C.a);
+    // ปกคอจีบแฉก
+    for (let x = -7; x <= 6; x += 4) spike(px, T(x, -17), T(x + 1, -11), 5, x % 8 === 0 ? C.aL : C.gold);
+    // หัว + หน้ากากครึ่งยิ้ม + หมวกตัวตลก 2 เขา
+    const c = r.hc, P = (x, y) => ({ x: c.x + x, y: c.y + y });
+    // เขาหมวกซ้าย-ขวาพร้อมปุ่มคีย์ห้อยปลาย
+    px.taper(P(-5, -12), P(-22 + s * .8, -22), 5, 2, C.b);
+    px.taper(P(3, -13), P(16 + s * .4, -26), 5, 2, C.a);
+    const b1 = P(-23 + s * .8, -22), b2 = P(17 + s * .4, -26);
+    rect(px, b1.x - 3, b1.y - 3, 6, 6, C.gold); px.set(b1.x, b1.y, C.dark);
+    rect(px, b2.x - 3, b2.y - 3, 6, 6, C.aL); px.set(b2.x, b2.y, C.dark);
+    // หน้ากาก
+    px.poly([P(-8, -11), P(8, -11), P(11, -2), P(9, 10), P(1, 13), P(-8, 9), P(-10, -2)], C.white);
+    px.poly([P(-8, -11), P(1, -11), P(1, 13), P(-8, 9), P(-10, -2)], C.dark);
+    // ตา + รอยยิ้มกว้าง
+    px.disc(c.x + 2, c.y - 3, 2.3, C.eye); px.disc(c.x + 8, c.y - 3, 2, C.bL);
+    px.line(P(-2, 5), P(9, 4), .9, C.b); px.line(P(-1, 6), P(8, 5), .5, C.aL);
+    // ปุ่มคีย์ลอยเล่นกลรอบมือ
+    for (let i = 0; i < 3; i++) {
+      const a = gt * 3.6 + i * 2.1, kx = Math.round(r.fa.h.x + 12 + Math.cos(a) * 14), ky = Math.round(r.fa.h.y - 10 + Math.sin(a) * 10);
+      rect(px, kx - 4, ky - 4, 8, 8, C.capD); rect(px, kx - 3, ky - 3, 6, 5, C.cap);
+      px.set(kx, ky - 1, i % 2 ? C.b : C.aD);
+    }
+    arm(px, r.fa, 4.8, C.aL, C.aD, C.white, C.capD);
+  }
+};
+
+CHARS.twins = {
+  name: 'แฝดแห่งคีย์บอร์ด', role: 'บอส · ศัตรู 2 ตัวพร้อมกัน', theme: 'red', enemy: true, rim: '#fde68a',
+  alive: [1, 1],   // อัปเดตจากเกมเมื่อแฝดตัวใดตัวหนึ่งล้ม
+  desc: 'นักสู้ฝาแฝด อัคคี (แดง) และ วารี (ฟ้า) สลับกันรุกไล่พร้อมกัน',
+  draw(px, r, p, gt) {
+    const alive = CHARS.twins.alive || [1, 1];
+    const drawOne = (ox, oy, C, phase) => {
+      const bob = Math.round(Math.sin(gt * 3 + phase) * 2);
+      const S = pt => ({ x: pt.x + ox, y: pt.y + oy + bob });
+      const T = (rx, ry, u = true) => S(r.T(rx * .76, ry * .76, u));
+      const limbS = l => ({ s: S(l.s), e: S(lerp(l.s, l.e, .78)), h: S(lerp(l.s, l.h, .78)), dir: l.dir });
+      const fa = limbS(r.fa), ba = limbS(r.ba), fl = limbS(r.fl), bl = limbS(r.bl);
+      arm(px, ba, 3.8, C.mainD, C.dark, C.glow, C.mainD);
+      leg(px, bl, { th: 4.2, kn: 3.4, an: 2.8, foot: 6, c: C.dark, d: '#090714', boot: C.mainD, bootD: C.dark });
+      leg(px, fl, { th: 4.2, kn: 3.4, an: 2.8, foot: 6, c: C.pants, d: C.dark, boot: C.main, bootD: C.mainD });
+      px.poly([T(-7, -17), T(7, -17), T(6, -2), T(-6, -2)], C.main);
+      px.line(T(-5, -12), T(5, -12), .7, C.glow);
+      // หัว + ผ้าคาดผม + ผมแหลม
+      const hc = S({ x: r.hc.x * .9 + 8, y: r.hc.y + 8 }), P = (x, y) => ({ x: hc.x + x, y: hc.y + y });
+      px.poly([P(-10, -8), P(5, -11), P(9, -3), P(7, 8), P(-5, 9), P(-11, 1)], C.hair);
+      spike(px, P(-7, -5), P(-20 + r.sway * .6, -8 + phase), 5, C.glow);
+      px.poly([P(-2, -6), P(8, -5), P(8, 5), P(1, 8), P(-3, 3)], '#f6d1bc');
+      px.line(P(-7, -6), P(8, -7), 1.1, C.main);
+      px.disc(hc.x + 4, hc.y, 1.5, C.glow); px.set(hc.x + 4, hc.y, '#ffffff');
+      // ดาบสั้นพลังงาน
+      const d = fa.dir, h = fa.h, A = k => add(h, d.x * k, d.y * k);
+      px.line(A(-3), A(26), 1.4, C.glow); px.line(A(0), A(24), .6, '#ffffff');
+      arm(px, fa, 4, C.main, C.mainD, C.glow, C.mainD);
+    };
+    // วารี (ฟ้า) ยืนหลัง-ซ้ายเล็กน้อย · อัคคี (แดง) ยืนหน้า-ขวาเล็กน้อย
+    if (alive[1]) drawOne(-14, -4, { main: '#0284c7', mainD: '#075985', glow: '#67e8f9', hair: '#0c4a6e', pants: '#1e3a5f', dark: '#082f49' }, 2.2);
+    if (alive[0]) drawOne(14, 2,   { main: '#dc2626', mainD: '#7f1d1d', glow: '#fb923c', hair: '#450a0a', pants: '#3b1518', dark: '#1c090b' }, 0);
+  }
+};
+
+ANIMS.mirror = ANIMS.queen;
+ANIMS.phantom = FIGHTER;
+ANIMS.jester = FIGHTER;
+ANIMS.twins = FIGHTER;
+SMEAR.mirror = ['#bae6fd', 34];
+SMEAR.phantom = ['#5eead4', 30];
+SMEAR.jester = ['#a3e635', 0];
+SMEAR.twins = ['#fde047', 24];
+
