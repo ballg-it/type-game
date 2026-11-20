@@ -2180,7 +2180,10 @@ function drawAirinArt(A, x2) {
    per enemy, pre-scaled to its stage height `h`, animated by code: breathing / ghost bob, red glow +
    tremble while charging, lunge on attack, white flash on hit, fall back on KO, magenta aura when the
    boss is enraged. Missing file = pixel sprite as before. */
-const ENEMY_FIT = { bandit: { h: 128, cx: .53 }, ghost: { h: 132, cx: .56, float: 1 }, oni: { h: 140, cx: .53 }, queen: { h: 154, cx: .54 } };
+const ENEMY_FIT = {
+  bandit: { h: 128, cx: .53 }, ghost: { h: 132, cx: .56, float: 1 }, oni: { h: 140, cx: .53 }, queen: { h: 154, cx: .54 },
+  mirror: { h: 152, cx: .50 }, phantom: { h: 144, cx: .48, float: 1 }, jester: { h: 146, cx: .52 }, twins: { h: 138, cx: .52 }
+};
 const ENEMY_ART = {};
 for (const id in ENEMY_FIT) {
   const im = new Image(); im.onload = () => { lastStageF = -1; };

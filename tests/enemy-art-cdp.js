@@ -4,9 +4,9 @@
 const { spawn } = require('child_process');
 const fs = require('fs'), path = require('path');
 const OUT = process.argv[2] || path.join(require('os').tmpdir(), 'typegame-cdp', 'enemies'); fs.mkdirSync(OUT, { recursive: true });
-const CH = process.env.CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+const CH = process.env.CHROME || (fs.existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : 'C:/Program Files/Google/Chrome/Application/chrome.exe');
 const port = 9334;
-const proc = spawn(CH, ['--headless=new', '--disable-gpu', '--allow-file-access-from-files', `--remote-debugging-port=${port}`,
+const proc = spawn(CH, ['--headless=new', '--no-sandbox', '--disable-gpu', '--allow-file-access-from-files', `--remote-debugging-port=${port}`,
   `--user-data-dir=${path.join(OUT, '..', 'prof-enemy')}`, '--window-size=1280,720', 'about:blank'], { stdio: 'ignore' });
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 (async () => {
@@ -23,9 +23,10 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   const ok = (name, c) => console.log(c ? 'PASS' : 'FAIL', name);
   await cmd('Runtime.enable'); await cmd('Page.enable');
   const url = 'file:///' + path.resolve(__dirname, '../index.html').split(path.sep).join('/');
-  for (const foe of ['bandit', 'ghost', 'oni', 'queen']) {
+  for (const foe of ['bandit', 'ghost', 'oni', 'queen', 'mirror', 'phantom', 'jester', 'twins']) {
     await cmd('Page.navigate', { url }); await sleep(2000);
-    await ev(`startRun(); FOE = makeFoe({ foe: '${foe}', t: '${foe === 'queen' ? 'boss' : 'fight'}', layer: 2 }); startFight(); S.enemy.t = 99; true`);
+    const isBoss = ['queen', 'mirror', 'phantom', 'jester', 'twins'].includes(foe);
+    await ev(`startRun(); FOE = makeFoe({ foe: '${foe}', t: '${isBoss ? 'boss' : 'fight'}', layer: 2 }); startFight(); S.enemy.t = 99; true`);
     await sleep(600);
     ok(foe + ' art loaded and drawn', await ev(`!!enemyArt(FIG.E) && phase === 'fight'`));
     await shot(foe + '-idle.png');

@@ -11,3 +11,7 @@ python tools/key_art.py art/enemies/bandit-green.jpg art/enemies/bandit.png 128
 python tools/key_art.py art/enemies/ghost-green.jpg art/enemies/ghost.png 132
 python tools/key_art.py art/enemies/oni-green.jpg art/enemies/oni.png 140
 python tools/key_art.py art/enemies/queen-green.jpg art/enemies/queen.png 154
+python tools/key_art.py art/enemies/mirror-green.jpg art/enemies/mirror.png 152
+python tools/key_art.py art/enemies/phantom-green.jpg art/enemies/phantom.png 144
+python tools/key_art.py art/enemies/jester-green.jpg art/enemies/jester.png 146
+python tools/key_art.py art/enemies/twins-green.jpg art/enemies/twins.png 138
