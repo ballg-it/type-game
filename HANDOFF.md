@@ -1,11 +1,11 @@
-# HANDOFF — Type Game (สถานะ ณ 2026-11-20 เย็น — หลัง PR #8 + commit `a7892bc`)
+# HANDOFF — Type Game (สถานะ ณ 2026-11-20 เย็น — หลัง PR #8 + commit `a7892bc`, `784259f`)
 
 ## ⚡ สถานะล่าสุด (อ่านก่อน)
 - **push แล้ว:** `a7892bc` บน `ccr-a67b83da-eggwh5` = แก้บั๊ก PvP Backspace/Esc (`pvBack`), `tests/menu-cdp.js` ปรับตามเมนูใหม่ + เช็ก PvP, `tools/ult_frames.py`
-- **ยังไม่ commit (ผู้ใช้ยังไม่ได้สั่ง):** คัตซีนท่าไม้ตาย 14 → **18 เฟรม** — `art/ult-01..18.jpg` (ไฟล์ 02–14 ถูกเรียงเลขใหม่, 15–18 ใหม่), `index.html` (`ULT_SEQ`/`ULT_END_MS`=3100, CSS `.uc-focus`/`.uc-vig`/`cam-push`/`cam-macro`, step `focus`, เสียง `heart`), `tests/features-cdp.js`, `README.md`, HANDOFF นี้, `tools/ult_capture.js` (ใหม่) — เทสต์ทั้งสองไฟล์ผ่าน `errors []`
-  - commit เฉพาะ: `git add HANDOFF.md README.md index.html tests/features-cdp.js tools/ult_capture.js tools/recv.js art/ult-*.jpg` (**ไม่เอา** `art/ult-preview-*.gif`, `art/ult-capture-18f.gif` = พรีวิวเฉย ๆ) แล้ว push: ถ้า `git push` ค้าง (หน้าต่าง credential ไม่โผล่) ใช้ `git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin pixel-game:ccr-a67b83da-eggwh5`
+- **push แล้ว:** `784259f` = คัตซีนท่าไม้ตาย 14 → **18 เฟรม** — `art/ult-01..18.jpg`, `index.html` (`ULT_SEQ`/`ULT_END_MS`=3100, CSS `.uc-focus`/`.uc-vig`/`cam-push`/`cam-macro`, step `focus`, เสียง `heart`), `tests/features-cdp.js`, `tools/ult_capture.js`, `tools/recv.js` — เทสต์ผ่าน `errors []` · GIF พรีวิว `art/ult-preview-*.gif`, `art/ult-capture-18f.gif` untracked ตั้งใจ (ไม่ commit)
+  - ถ้า `git push` ค้าง (หน้าต่าง credential ไม่โผล่) ใช้ `git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin pixel-game:ccr-a67b83da-eggwh5`
 - **ลำดับเฟรมตอนนี้:** 01 ย่อชาร์จ · **02 ออร่าพุ่ง (ใหม่)** · 03 ยกดาบ · 04 ซูมเชื่อม · 05 cut-in ตา · **06 มาโครตาเห็นปีศาจสะท้อนในรูม่านตา (ใหม่, ค้าง 460ms, focus 2)** · 07 ตาแฟลช+ชื่อท่า · **08 ซูมเอาต์ (ใหม่)** · 09 พุ่งออก · **10 สปรินต์ afterimage (ใหม่, ครอปเลื่อนกล้อง)** · 11 dash · 12 ง้าง · 13 ฟัน · 14–15 sakuga impact · 16 X-blast · 17 ลงพื้น+ดาเมจ · 18 settle
-- ผู้ใช้ขอ "เน้นช่วงซูมให้ดูมีอะไร" → ทำแล้ว (เฟรม 06 + เอฟเฟกต์โฟกัส) รอผู้ใช้ดู GIF `art/ult-capture-18f.gif` แล้วตัดสินว่าจะปรับต่อ/commit
+- ผู้ใช้ขอ "เน้นช่วงซูมให้ดูมีอะไร" → ทำแล้ว (เฟรม 06 + เอฟเฟกต์โฟกัส) commit แล้ว — รอผู้ใช้ดู GIF `art/ult-capture-18f.gif` ว่าจะปรับต่อไหม
 - เครื่องมือ: `python tools/ult_frames.py insert AFTER img ...` (แปลง 1376×768 + เรียงเลข + พิมพ์ map เก่า→ใหม่; ต้องแก้ `ULT_SEQ` เอง) · `python tools/ult_frames.py gif out.gif` (ภาพล้วนตามจังหวะ) · `node tools/ult_capture.js out.gif` (อัดเกมจริงจาก headless Chrome พร้อมเอฟเฟกต์ ~11 ภาพ/วิ)
 
 ## ภาพรวม
