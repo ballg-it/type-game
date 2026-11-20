@@ -353,11 +353,56 @@ body.cine #story{cursor:default}
   .hgrid{grid-template-columns:1fr}
   .mi .nm small{display:none}
 }
+/* ---------- โหมดฝึกซ้อม: กล่องโค้ช + ไฮไลต์ ---------- */
+#coach{position:absolute;left:14px;top:10px;z-index:20;max-width:min(440px,calc(100% - 28px));background:#12082bf2;border:2px solid var(--gold);border-radius:14px;padding:10px 14px 12px;box-shadow:0 0 30px #fbbf2455;font-size:15px;line-height:1.6}
+#coach[hidden]{display:none}
+#coach .ch{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;color:var(--gold);font-weight:600;letter-spacing:1px}
+#coach .ch button{background:none;border:1px solid #ffffff33;color:var(--muted);border-radius:6px;padding:0 8px;cursor:pointer;font-size:12px;font-family:inherit}
+#coach .ct{margin-top:4px}
+#coach .ct b{color:var(--gold)}
+#coach .cp{margin-top:6px;font-size:13px;color:var(--cyan);min-height:20px}
+#coach.ok{border-color:var(--good);box-shadow:0 0 30px #4ade8066}
+.tut-focus{outline:3px solid var(--gold);outline-offset:4px;border-radius:14px;animation:tutGlow .8s infinite alternate}
+@keyframes tutGlow{from{outline-color:#fbbf24}to{outline-color:#fbbf2433}}
+.mi .new{font-size:.55em;font-weight:600;background:var(--bad);color:#fff;border-radius:8px;padding:1px 8px;margin-left:8px;vertical-align:middle}
+.mi .new[hidden]{display:none}
+/* ---------- แนะนำหน้าจอ (spotlight) ---------- */
+#tourBlock{position:fixed;inset:0;z-index:59}
+#tourHole{position:fixed;z-index:60;border-radius:14px;pointer-events:none;transition:all .3s ease;
+  box-shadow:0 0 0 9999px #06031ad0,0 0 0 3px var(--gold),0 0 30px 4px #fbbf24aa}
+#tourTip{position:fixed;z-index:61;width:min(380px,calc(100vw - 32px));background:#150d30;border:2px solid var(--gold);border-radius:14px;padding:12px 16px 14px;box-shadow:0 10px 40px #000a;transition:top .3s ease,left .3s ease;line-height:1.6}
+#tourBlock[hidden],#tourHole[hidden],#tourTip[hidden]{display:none}
+#tourTip .tn{font-size:12px;color:var(--gold);font-weight:600;letter-spacing:1px}
+#tourTip .tt{font-size:20px;font-weight:600;margin:2px 0 4px}
+#tourTip .tx{font-size:14px;color:#d8d0f5}
+#tourTip .tx b{color:var(--gold)}
+#tourTip .tb{display:flex;gap:8px;margin-top:12px;align-items:center}
+#tourTip .tb button{border:0;border-radius:9px;padding:6px 14px;cursor:pointer;font-size:14px;color:#fff;background:#2a1d5c;font-family:inherit}
+#tourTip .tb .nx{margin-left:auto;background:linear-gradient(90deg,#7c3aed,#c026d3)}
+#tourTip .tb .sk{background:none;color:var(--muted);padding:6px 4px}
+#tourTip .dots{display:flex;gap:4px;margin-top:8px}
+#tourTip .dots i{width:7px;height:7px;border-radius:50%;background:#ffffff26}
+#tourTip .dots i.on{background:var(--gold)}
+#tourBtn{position:absolute;top:10px;right:56px;background:#0005;border:1px solid #ffffff22;color:var(--text);border-radius:8px;padding:2px 9px;cursor:pointer;z-index:30;font-weight:600;font-family:inherit}
 </style>
 </head>
 <body>
 <div id="game">
   <button id="mute" title="เปิด/ปิดเสียง">🔊</button>
+  <button id="tourBtn" title="แนะนำหน้าจอ">?</button>
+  <div id="tourBlock" hidden></div>
+  <div id="tourHole" hidden></div>
+  <div id="tourTip" hidden>
+    <div class="tn" id="tourNum"></div>
+    <div class="tt" id="tourTitle"></div>
+    <div class="tx" id="tourText"></div>
+    <div class="dots" id="tourDots"></div>
+    <div class="tb">
+      <button class="sk" id="tourSkip">ข้าม <kbd>Esc</kbd></button>
+      <button id="tourBack">ย้อน</button>
+      <button class="nx" id="tourNext">ถัดไป <kbd>Enter</kbd></button>
+    </div>
+  </div>
   <div id="hud">
     <div class="hpbox p">
       <div class="name">นักพิมพ์ <span id="pTag"></span></div>
@@ -382,6 +427,12 @@ body.cine #story{cursor:default}
 
     <div id="legend">
       <b>✓</b> พิมพ์ถูก = ตี<br><b>✓</b> พิมพ์แม่น = คอมโบ<br><b>✓</b> พิมพ์ผิด = เสียจังหวะ
+    </div>
+
+    <div id="coach" hidden>
+      <div class="ch"><span id="coachStep">ฝึกซ้อม 1/4</span><button id="skipTut">ออกจากการฝึก ✕</button></div>
+      <div class="ct" id="coachText"></div>
+      <div class="cp" id="coachProg"></div>
     </div>
 
     <div id="defBox" hidden>
@@ -432,6 +483,7 @@ body.cine #story{cursor:default}
       </div>
       <div class="mlist" id="menuList">
         <button class="mi sel" id="startBtn" data-m="start"><span class="ar">▶</span><span class="nm">เริ่มเกม</span><span class="w"></span></button>
+        <button class="mi" id="practiceBtn" data-m="practice"><span class="ar">▶</span><span class="nm">ฝึกซ้อม<span class="new" id="practiceNew">มือใหม่</span></span><span class="w"></span></button>
         <button class="mi" id="metaBtn1" data-m="shrine"><span class="ar">▶</span><span class="nm">ศาลเจ้า</span><span class="w"></span></button>
         <button class="mi" id="pvpBtn" data-m="duel"><span class="ar">▶</span><span class="nm">ดวล PvP</span><span class="w"></span></button>
         <button class="mi" id="helpBtn" data-m="help"><span class="ar">▶</span><span class="nm">วิธีเล่น</span><span class="w"></span></button>
@@ -1432,6 +1484,7 @@ window.addEventListener('resize', () => { lastStageF = -1; });
 
 function dealDamage(dmg, kind = 'atk', power = 0) {
   if (R.pvp) return pvDeal(dmg, kind, power);
+  if (R.practice) { S.ehp = Math.max(1, S.ehp - dmg); return; }   // หุ่นซ้อมไม่ตาย
   S.ehp = Math.max(0, S.ehp - dmg);
   if (S.ehp <= 0) return endFight(true);
   if (FOE.boss && !S.enraged && S.ehp <= S.emax / 2) {
@@ -1441,7 +1494,7 @@ function dealDamage(dmg, kind = 'atk', power = 0) {
 }
 function addUlt(n) {
   const was = S.ult >= 100;
-  S.ult = Math.min(100, S.ult + n * R.mod.ultGain);
+  S.ult = Math.min(S.tut && S.tut.id !== 'ult' ? 90 : 100, S.ult + n * R.mod.ultGain);   // ตอนฝึก เกจยังไม่เต็มก่อนถึงขั้นท่าไม้ตาย
   if (!was && S.ult >= 100) toast('ท่าไม้ตายพร้อม! กด Tab');
 }
 function addCombo() {
@@ -1466,6 +1519,7 @@ function attack(i) {
   dealDamage(dmg, 'atk', power);
   newSlotWord(i);
   const el = $('#s' + i); anim(el, 'pop', 260);
+  tutEvent('attack');
 }
 
 function block() {
@@ -1487,6 +1541,7 @@ function block() {
     SFX.block(); spark(P, 'blue'); fx('msg', 'BLOCK', P, 40, -20); hitstop(60);
     addUlt(6);
   }
+  tutEvent(rem <= counterWin() ? 'counter' : 'block');
 }
 
 function enemyStartCharge() {
@@ -1500,6 +1555,7 @@ function enemyStartCharge() {
   S.buf = ''; kb.value = '';
   E.classList.add('charging'); play(FIG.E, 'charge');
   SFX.warn();
+  if (S.tut) { e.chargeMax = 4; tutEvent('charge'); }   // ตอนฝึกชาร์จช้า
   renderWords();
 }
 
@@ -1519,8 +1575,9 @@ function enemyHit() {
     fx('hurtp', '-' + dmg, P);
     if (S.combo >= 3) fx('bad', 'คอมโบหลุด', P, 0, -40);
     S.combo = 0; renderWords();
-    S.php = Math.max(0, S.php - dmg);
+    S.php = Math.max(R.practice ? 1 : 0, S.php - dmg);
     if (R.pvp) S.pvTaken += dmg;
+    tutEvent('hurt');
     if (S.php <= 0 && R.revive > 0) {   // ขนนกฟีนิกซ์
       R.revive--; R.revived = true;
       S.php = Math.round(S.pmax * 0.3);
@@ -1533,7 +1590,7 @@ function enemyHit() {
 }
 
 function mistake() {
-  S.stats.errors++;
+  S.stats.errors++; tutEvent('mistake');
   S.stamina = Math.max(0, S.stamina - 10 * R.mod.stamCost);
   SFX.err();
   anim($('#words'), 'err', 230);
@@ -1550,11 +1607,12 @@ function tryUlt() {
   else { S.def = null; S.enemy.state = 'idle'; S.enemy.t = idleTime(); E.classList.remove('charging'); }
   const lang = pickLang();
   S.ultWord = makeWord(pick(ULT[lang]), lang, 'ult');
-  S.ultMax = (S.ultWord.len * 0.32 + 3) * DIFF[cfg.diff].ult; S.ultTime = S.ultMax;
+  S.ultMax = (S.ultWord.len * 0.32 + 3) * DIFF[cfg.diff].ult * (S.tut ? 2 : 1); S.ultTime = S.ultMax;
   S.buf = ''; kb.value = '';
   $('#ultBox').hidden = false; flash('white'); SFX.ultStart();
   play(FIG.P, 'ult'); if (!R.pvp) play(FIG.E, 'idle');
   renderWords();
+  tutEvent('ultStart');
 }
 function endUlt() { S.ultMode = false; S.ultWord = null; S.buf = ''; kb.value = ''; $('#ultBox').hidden = true; renderWords(); }
 function ultHit() {
@@ -1564,8 +1622,9 @@ function ultHit() {
   play(FIG.P, 'attack'); airinUltAt = gclock; flash('white'); SFX.ultHit();
   setTimeout(() => { hurtE(); spark(E, 'huge'); fx('big', 'ท่าไม้ตาย! -' + dmg, E, 0, -20); shake(); hitstop(220); }, HIT_DELAY);
   dealDamage(dmg, 'ult', 1);
+  tutEvent('ult');
 }
-function ultFail() { if (R.pvp) pvSend({ t: 'ultx' }); endUlt(); play(FIG.P, 'idle'); fx('bad', 'ท่าไม้ตายพลาด!', P, 0, -40); SFX.err(); }
+function ultFail() { if (R.pvp) pvSend({ t: 'ultx' }); endUlt(); play(FIG.P, 'idle'); fx('bad', 'ท่าไม้ตายพลาด!', P, 0, -40); SFX.err(); tutEvent('ultFail'); }
 
 /* ================= Input ================= */
 function candidates() {
@@ -1601,7 +1660,7 @@ function onInput() {
   if (phase === 'busy') { kb.value = ''; return; }
   if (phase === 'menu' || phase === 'result') return menuInput();
   if (phase === 'shopExit') { kb.value = ''; return; }
-  if (!S || !S.running || S.paused) { kb.value = ''; return; }
+  if (!S || !S.running || S.paused || S.tour) { kb.value = ''; return; }
   let v = kb.value.replace(/[`~_]/g, '');
   v = S.ultMode ? v.replace(/^\s+/, '').replace(/\s{2,}/g, ' ') : v.replace(/\s+/g, '');
   if (v === S.buf) { kb.value = v; return; }
@@ -1651,7 +1710,7 @@ document.addEventListener('keydown', e => {
   }
 });
 document.addEventListener('mousedown', e => { if (!e.target.closest('button')) setTimeout(() => kb.focus(), 0); });
-window.addEventListener('blur', () => { if (phase === 'fight' && S && S.running && !S.paused && !R.pvp) setPause(true); });
+window.addEventListener('blur', () => { if (phase === 'fight' && S && S.running && !S.paused && !S.tour && !R.pvp) setPause(true); });
 
 function setPause(p) {
   S.paused = p; $('#pauseScr').hidden = !p;
@@ -1730,6 +1789,7 @@ function update(dt) {
     if (S.ultTime <= 0) ultFail();
     return;
   }
+  if (S.tut && !S.tut.enemyOn) return;   // ตอนฝึก ศัตรูโจมตีเฉพาะขั้นป้องกัน
   const e = S.enemy;
   if (e.state === 'idle') { if (R.pvp ? S.pvQ.length : (e.t -= dt) <= 0) enemyStartCharge(); }
   else if (e.state === 'charge') { e.charge += dt; if (e.charge >= e.chargeMax) enemyHit(); }
@@ -1739,7 +1799,7 @@ function loop(ts) {
   const dt = Math.min(0.05, (ts - last) / 1000 || 0); last = ts;
   const paused = S && S.paused, frozen = S && S.freeze > 0;
   if (frozen && !paused) S.freeze -= dt * 1000;
-  else if (S && S.running && !paused) update(dt);
+  else if (S && S.running && !paused && !S.tour) update(dt);
   if (!paused && !frozen) stageTick(dt);
   if (SHOP && (phase === 'shop' || phase === 'shopExit')) drawShopCat(dt);
   if (ST && phase === 'story') storyTick(dt);
@@ -1844,7 +1904,7 @@ function chDo(o) {
   phase = 'busy'; kb.value = ''; SFX.block();
   $('#chScr').hidden = true;
   if (o.fn() === 'pick') return showPick(true);
-  if (!o.nd) showMap();
+  if (!o.nd && !o.end) showMap();
 }
 
 function startFight() {
@@ -1866,6 +1926,7 @@ function startFight() {
   renderWords();
   banner(FOE.icon + ' ' + FOE.name, trait(FOE));
   if (R.trail.length === 1) toast(cfg.mode === 'en' ? 'พร้อม! ตั้งแป้นเป็นภาษาอังกฤษ' : cfg.mode === 'th' ? 'พร้อม! ตั้งแป้นเป็นภาษาไทย' : 'พร้อม! สลับแป้นด้วย ~ หรือ Alt+Shift');
+  if (!R.practice && !navigator.webdriver && !lsGet(TOUR_KEY)) startTour();   // ไฟต์จริงครั้งแรก → แนะนำหน้าจอ
 }
 
 function endFight(win) {
@@ -2228,6 +2289,7 @@ function metaDo(o) {
 let HELP = false;
 const MENU = () => [
   { id: 'start', w: { th: 'เริ่ม', en: 'go' }, fn: startRun, in: ['menu'] },
+  { id: 'practice', w: { th: 'ฝึก', en: 'train' }, fn: startPractice, in: ['menu'] },
   { id: 'shrine', w: META_OPEN, fn: showMeta, in: ['menu', 'result'] },
   { id: 'duel', w: PVP_OPEN, fn: () => showPvp(), in: ['menu', 'result'] },
   { id: 'help', w: { th: 'วิธีเล่น', en: 'help' }, fn: () => showHelp(true), in: ['menu'] },
@@ -2639,6 +2701,188 @@ function pvAgain() {
   history.replaceState(null, '', location.href.split('#')[0]);
   setTimeout(() => { showPvp(); pvJoin(code); }, 0);
 })();
+
+/* ================= โหมดฝึกซ้อม (เมนู "ฝึกซ้อม" / พิมพ์ ฝึก หรือ train) =================
+   ไฟต์จริงกับโจรค้อนคีย์ แต่ไม่มีใครตาย (R.practice) — สอนทีละขั้น: โจมตี → คอมโบ → ป้องกัน → ท่าไม้ตาย
+   ศัตรูโจมตีเฉพาะขั้นป้องกัน (S.tut.enemyOn) ชาร์จช้า 4 วิ · ท่าไม้ตายให้เวลา ×2 พลาดคืนเกจ */
+const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+const TUT_KEY = 'typegame.tutDone', TOUR_KEY = 'typegame.tourDone';
+const TUT_STEPS = [
+  { id: 'attack', focus: ['#words'],
+    text: '<b>โจมตี:</b> พิมพ์คำใน <b>ช่องไหนก็ได้</b> จาก 3 ช่องด้านล่าง ไม่ต้องกด Enter — พิมพ์ครบคำ = ตีทันที<br>คำสั้นออกเร็ว คำยาวตีแรงกว่า' },
+  { id: 'combo', focus: ['#words', '#combo'],
+    text: '<b>คอมโบ:</b> พิมพ์ถูกต่อกันอีก <b>3 คำ</b> โดยไม่ผิดเลย ดาเมจจะคูณขึ้นเรื่อยๆ<br>พิมพ์ผิดตัวเดียว คอมโบหลุดนับใหม่' },
+  { id: 'defend', focus: ['#words'],
+    text: '<b>ป้องกัน:</b> เดี๋ยวศัตรูจะชาร์จ! พิมพ์คำใน <b>กล่องสีแดง</b> ให้ทันก่อนแถบเต็ม<br>ถ้ากันในช่วง <b>สีทอง</b> ท้ายแถบ จะสวนกลับ ×2' },
+  { id: 'ult', focus: ['#ultBtn'],
+    text: '<b>ท่าไม้ตาย:</b> เกจเต็มแล้ว! กด <kbd>Tab</kbd> แล้วพิมพ์ประโยคให้จบก่อนหมดเวลา<br>(ตอนฝึกให้เวลาเพิ่ม 2 เท่า)' }
+];
+function clearFocus() { document.querySelectorAll('.tut-focus').forEach(el => el.classList.remove('tut-focus')); }
+function setFocus(sels) { clearFocus(); sels.forEach(s => $(s) && $(s).classList.add('tut-focus')); }
+function coach(prog, ok) { $('#coachProg').innerHTML = prog || ''; $('#coach').classList.toggle('ok', !!ok); }
+
+function startPractice() {
+  if (HELP) showHelp(false);
+  R = newRun(); R.practice = true; R.at = { layer: 0 }; R.trail = [R.at];
+  $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#shopScr').hidden = true; $('#chScr').hidden = true; SHOP = null;
+  ST = null; $('#story').hidden = true; document.body.classList.remove('cine'); arena.classList.remove('cine');
+  FOE = ENEMIES[0];
+  startFight();
+  S.ult = 0; S.shields = 0;
+  $('#wave').textContent = '🎓 โหมดฝึกซ้อม'; $('#eTag').textContent = 'ฝึก';
+  S.tut = { i: -1, id: '', n: 0, enemyOn: false, busy: false };
+  $('#legend').hidden = true; $('#coach').hidden = false;
+  tutNext();
+}
+function tutNext() {
+  const T = S.tut; T.i++; T.n = 0; T.busy = false; T.enemyOn = false;
+  if (T.i >= TUT_STEPS.length) return tutFinish();
+  const st = TUT_STEPS[T.i]; T.id = st.id;
+  S.ehp = S.emax;
+  $('#coachStep').textContent = `ฝึกซ้อม ${T.i + 1}/${TUT_STEPS.length}`;
+  $('#coachText').innerHTML = st.text;
+  setFocus(st.focus); coach('');
+  if (st.id === 'combo') coach('ทำได้ 0 / 3');
+  if (st.id === 'defend') { coach('เตรียมตัว...'); tutCharge(2); }
+  if (st.id === 'ult') { S.ult = 100; coach('กด <kbd>Tab</kbd> ได้เลย'); }
+}
+function tutCharge(delay) { const e = S.enemy; e.state = 'idle'; e.t = delay; S.tut.enemyOn = true; }
+function tutPass(msg) {
+  const T = S.tut; if (T.busy) return;
+  T.busy = true; T.enemyOn = false; clearFocus(); coach('✓ ' + msg, true);
+  setTimeout(() => { if (S.tut === T && S.running) tutNext(); }, 1500);
+}
+function tutEvent(ev) {
+  const T = S && S.tut; if (!T || T.busy) return;
+  if (T.id === 'attack' && ev === 'attack') tutPass('เยี่ยม! แค่นี้ก็ตีได้แล้ว');
+  else if (T.id === 'combo') {
+    if (ev === 'attack') { T.n++; coach(`ทำได้ ${T.n} / 3`); if (T.n >= 3) tutPass(`คอมโบ ${S.combo}! ดาเมจ ×${comboMult().toFixed(1)}`); }
+    else if (ev === 'mistake' && T.n) { T.n = 0; coach('พิมพ์ผิด คอมโบหลุด — เริ่มนับใหม่ 0 / 3'); }
+  }
+  else if (T.id === 'defend') {
+    if (ev === 'charge') { setFocus(['#defBox']); coach('พิมพ์คำในกล่องแดง!'); }
+    else if (ev === 'block') tutPass('กันได้! (ครั้งหน้าลองกันตอนแถบเป็นสีทอง จะสวนกลับ)');
+    else if (ev === 'counter') tutPass('สวนกลับ! สุดยอด ×2');
+    else if (ev === 'hurt') { setFocus(['#words']); coach('ไม่ทัน! ลองอีกครั้ง — พิมพ์คำในกล่องแดงทันทีที่มันขึ้น'); tutCharge(1.5); }
+  }
+  else if (T.id === 'ult') {
+    if (ev === 'ultStart') { setFocus(['#ultBox']); coach('พิมพ์ประโยคให้จบ (มีเว้นวรรคด้วย)'); }
+    else if (ev === 'ultFail') { S.ult = 100; setFocus(['#ultBtn']); coach('หมดเวลา! เกจคืนให้แล้ว กด <kbd>Tab</kbd> ลองใหม่'); }
+    else if (ev === 'ult') tutPass('ท่าไม้ตายเข้าเต็มๆ!');
+  }
+}
+function tutStop() {
+  if (S) { S.running = false; S.tut = null; S.def = null; }
+  clearFocus(); E.classList.remove('charging'); play(FIG.E, 'idle');
+  $('#coach').hidden = true; $('#defBox').hidden = true; $('#ultBox').hidden = true; $('#legend').hidden = false;
+}
+function toMenu() {
+  if (HELP) showHelp(false);
+  $('#pauseScr').hidden = true; $('#chScr').hidden = true;
+  phase = 'menu'; MENU_BUF = ''; kb.value = '';
+  $('#startScr').hidden = false; renderMetaBar(); renderMenu(); kb.focus();
+}
+function tutFinish() {
+  tutStop(); lsSet(TUT_KEY, '1'); $('#practiceNew').hidden = true; SFX.win();
+  showChoice({ title: '🎓 ฝึกครบแล้ว!', sub: 'พิมพ์คำ = ตี · กล่องแดง = กัน · Tab = ท่าไม้ตาย · Esc = หยุด — พิมพ์คำใต้การ์ดเพื่อเลือก', opts: [
+    { icon: '⚔', name: 'เริ่มเกมจริง', desc: 'ลุยแผนที่ 7 ชั้น จนถึงบอส', word: { th: 'เริ่ม', en: 'go' }, fn: startRun, end: 1 },
+    { icon: '🔁', name: 'ฝึกอีกรอบ', desc: 'ทวนทั้ง 4 ขั้นอีกครั้ง', word: { th: 'ซ้อม', en: 'again' }, fn: startPractice, end: 1 },
+    { icon: '🏠', name: 'กลับเมนู', desc: 'ไปหน้าแรก', word: { th: 'เมนู', en: 'menu' }, fn: toMenu, end: 1 }] });
+}
+function tutQuit() { if (S && S.tut) { tutStop(); toMenu(); } }
+$('#skipTut').onclick = tutQuit;
+$('#practiceBtn').onclick = startPractice;
+if (lsGet(TUT_KEY)) $('#practiceNew').hidden = true;
+
+/* ================= แนะนำหน้าจอ (ไฟต์จริงครั้งแรก หรือกด ? ระหว่างไฟต์) =================
+   หยุดเกมไว้ (S.tour) แล้วไฮไลต์ทีละจุด · กล่องกัน/คอมโบ/เกจไม้ตายแสดงตัวอย่างชั่วคราวแล้วคืนค่าเดิม
+   Enter/→ ถัดไป · ← ย้อน · Esc ข้าม · ไม่เปิดเองเมื่อรันผ่านเครื่องมือทดสอบ (navigator.webdriver) */
+const TOUR = [
+  { sel: '.hpbox.p', title: 'พลังชีวิตของคุณ', text: 'แถบเขียวซ้ายบน ถ้าหมดคือแพ้ — <b>เลือดต่อเนื่องทั้งรัน</b> ชนะแล้วฟื้นแค่นิดเดียว' },
+  { sel: '.hpbox.e', title: 'ศัตรู', text: 'แถบแดงขวาบน ตีให้หมดเพื่อชนะ · ศัตรูแต่ละตัวเน้นแป้นต่างกัน (ดูป้ายตอนเริ่มไฟต์)' },
+  { sel: '#wave', title: 'ชั้นที่อยู่', text: 'แผนที่มี 7 ชั้น ชนะแล้วเลือกทางต่อเองโดยพิมพ์คำ — ชั้นสุดท้ายคือบอส' },
+  { sel: '#words', title: 'ช่องคำโจมตี', text: 'มี 3 ช่อง <b>พิมพ์คำในช่องไหนก็ได้</b> ไม่ต้องกด Enter พิมพ์ครบคำ = ตีทันที<br>⚡ เร็ว = คำสั้น · 🔥 แรง = คำยาว ดาเมจแสดงใต้คำ' },
+  { sel: '#defBox', title: 'กล่องป้องกัน', text: 'เมื่อศัตรูชาร์จ กล่องแดงจะเด้งขึ้น <b>รีบพิมพ์คำในกล่องนี้</b> ก่อนแถบเต็ม<br>กันตอนแถบถึงช่วง <b>สีทอง</b> = สวนกลับ ×2',
+    demo() { const l = cfg.mode === 'en' ? 'en' : 'th'; S.def = makeWord(DEF[l][0], l, 'def'); S.enemy.charge = S.enemy.chargeMax * .62; E.classList.add('charging'); } },
+  { sel: '#combo', title: 'คอมโบ', text: 'พิมพ์ถูกต่อเนื่อง ดาเมจคูณขึ้นเรื่อยๆ<br>พิมพ์ผิดหรือโดนตี คอมโบหลุด', demo() { S.combo = 5; } },
+  { sel: '#stamBox', title: 'Stamina', text: 'พิมพ์ผิดเสีย Stamina ถ้าหมดจะ <b>เหนื่อย ดาเมจเหลือครึ่ง</b> จนกว่าจะฟื้น — ช้าแต่แม่นดีกว่า' },
+  { sel: '#ultBtn', title: 'ท่าไม้ตาย', text: 'เกจเต็มเมื่อตีและกันได้ พอเรืองแสงให้กด <kbd>Tab</kbd> แล้วพิมพ์ประโยคให้จบทันเวลา', demo() { S.ult = 100; } },
+  { sel: '#tourBtn', title: 'ปุ่มช่วยเหลือ', text: '<kbd>Esc</kbd> หยุดเกม · 🔊 ปิดเสียง · <b>?</b> เปิดคำแนะนำนี้อีกครั้ง' },
+  { sel: null, title: 'พร้อมแล้ว!', text: () => (cfg.mode === 'en' ? 'ตั้งแป้นพิมพ์เป็น <b>ภาษาอังกฤษ</b>' : cfg.mode === 'th' ? 'ตั้งแป้นพิมพ์เป็น <b>ภาษาไทย</b>' : 'โหมดสองภาษา: สลับแป้นด้วย <kbd>~</kbd> หรือ <kbd>Alt+Shift</kbd>') + ' แล้วกด <b>เริ่ม</b> ได้เลย' }
+];
+let tourI = 0, tourSnap = null;
+function startTour() {
+  if (phase !== 'fight' || !S || !S.running || S.tour || S.tut || R.pvp) return;
+  if (S.paused) setPause(false);
+  S.tour = true; tourI = 0;
+  tourSnap = { def: S.def, combo: S.combo, ult: S.ult, charge: S.enemy.charge, charging: E.classList.contains('charging') };
+  S.buf = ''; kb.value = '';
+  $('#tourBlock').hidden = $('#tourHole').hidden = $('#tourTip').hidden = false;
+  $('#tourDots').innerHTML = TOUR.map(() => '<i></i>').join('');
+  showTourStep();
+}
+function tourRestore() {
+  const t = tourSnap; S.def = t.def; S.combo = t.combo; S.ult = t.ult; S.enemy.charge = t.charge;
+  E.classList.toggle('charging', t.charging);
+}
+function showTourStep() {
+  tourRestore();
+  const st = TOUR[tourI];
+  if (st.demo) st.demo();
+  renderWords(); renderHUD();
+  $('#tourNum').textContent = `แนะนำหน้าจอ ${tourI + 1}/${TOUR.length}`;
+  $('#tourTitle').textContent = st.title;
+  $('#tourText').innerHTML = typeof st.text === 'function' ? st.text() : st.text;
+  $('#tourBack').style.visibility = tourI ? 'visible' : 'hidden';
+  $('#tourNext').innerHTML = tourI === TOUR.length - 1 ? 'เริ่ม! <kbd>Enter</kbd>' : 'ถัดไป <kbd>Enter</kbd>';
+  $('#tourDots').querySelectorAll('i').forEach((d, i) => d.classList.toggle('on', i === tourI));
+  placeTour();
+}
+function placeTour() {
+  if (!S || !S.tour) return;
+  const st = TOUR[tourI], hole = $('#tourHole'), tip = $('#tourTip');
+  const el = st.sel && $(st.sel), r = el && el.getBoundingClientRect();
+  const W = innerWidth, H = innerHeight, pad = 8;
+  if (!r || !r.width) {   // ไม่มีเป้า (หรือถูกซ่อนบนจอเล็ก) → กล่องกลางจอ
+    Object.assign(hole.style, { left: W / 2 + 'px', top: H / 2 + 'px', width: '0px', height: '0px' });
+    tip.style.left = (W - tip.offsetWidth) / 2 + 'px'; tip.style.top = (H - tip.offsetHeight) / 2 + 'px';
+    return;
+  }
+  Object.assign(hole.style, { left: r.left - pad + 'px', top: r.top - pad + 'px', width: r.width + pad * 2 + 'px', height: r.height + pad * 2 + 'px' });
+  const tw = tip.offsetWidth, th = tip.offsetHeight, gap = 18;
+  let top = r.bottom + pad + gap;
+  if (top + th > H - 10) top = r.top - pad - gap - th;   // ข้างล่างไม่พอ → ไว้ข้างบน
+  top = Math.max(10, Math.min(H - th - 10, top));
+  tip.style.top = top + 'px'; tip.style.left = Math.max(16, Math.min(W - tw - 16, r.left + r.width / 2 - tw / 2)) + 'px';
+}
+function tourGo(d) {
+  const n = tourI + d;
+  if (n < 0) return;
+  if (n >= TOUR.length) return endTour();
+  tourI = n; showTourStep();
+}
+function endTour() {
+  if (!S || !S.tour) return;
+  tourRestore(); S.tour = false; tourSnap = null;
+  $('#tourBlock').hidden = $('#tourHole').hidden = $('#tourTip').hidden = true;
+  lsSet(TOUR_KEY, '1');
+  if (!S.stats.correct && !S.stats.words && !S.stats.errors) S.stats.start = performance.now();   // ไม่นับเวลาที่อ่านคำแนะนำ
+  renderWords(); kb.focus();
+}
+$('#tourNext').onclick = () => tourGo(1);
+$('#tourBack').onclick = () => tourGo(-1);
+$('#tourSkip').onclick = endTour;
+$('#tourBtn').onclick = startTour;
+addEventListener('resize', placeTour);
+// ผูกที่ window แบบ capture ให้ทำงานก่อน handler ของเกม (Enter ที่กดเริ่มจะไม่ไปข้ามขั้นแรก, Tab ไม่ร่ายท่าไม้ตาย)
+window.addEventListener('keydown', e => {
+  if (!S || !S.tour) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  if (e.key === 'Enter' || e.key === 'ArrowRight' || e.key === ' ') tourGo(1);
+  else if (e.key === 'ArrowLeft') tourGo(-1);
+  else if (e.key === 'Escape') endTour();
+}, true);
 
 /* ================= Menu ================= */
 document.querySelectorAll('.opts').forEach(g => g.addEventListener('click', e => {
