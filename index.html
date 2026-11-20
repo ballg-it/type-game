@@ -32,7 +32,10 @@ button{font-family:inherit}
 .wave{display:inline-block;border:2px solid var(--violet);border-radius:10px;padding:2px 16px;font-weight:600;background:#140c2ecc}
 #combo{margin-top:6px;font-weight:800;font-size:22px;color:var(--gold);text-shadow:0 0 12px #f59e0b88;min-height:30px}
 #combo small{display:block;font-size:12px;color:var(--muted);font-weight:400;text-shadow:none}
-#mute{position:absolute;top:10px;right:12px;background:#0005;border:1px solid #ffffff22;color:var(--text);border-radius:8px;padding:2px 8px;cursor:pointer;z-index:30}
+#mute,#bgmBtn{position:absolute;top:10px;background:#0b0618aa;border:1px solid #ffffff28;color:var(--text);border-radius:8px;padding:2px 8px;cursor:pointer;z-index:52;transition:opacity .15s,border-color .15s,background .15s}
+#mute{right:12px}
+#bgmBtn{right:52px}
+#bgmBtn.off,#mute.off{opacity:.45}
 
 /* ---------- Arena ---------- */
 #arena{position:relative;flex:1;min-height:300px;overflow:hidden;border-top:1px solid #ffffff10;border-bottom:1px solid #ffffff10;
@@ -415,7 +418,7 @@ body.cine #story{cursor:default}
 .mlist.err{animation:errShake .22s}
 .ts-hint{margin:6px 0 0 14px;font-size:12px;color:var(--muted)}
 .ts-hint kbd{margin-right:3px}
-.ts-stats{position:absolute;top:14px;right:16px;display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;max-width:60%;z-index:2}
+.ts-stats{position:absolute;top:14px;right:104px;display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;max-width:calc(60% - 88px);z-index:2}
 .ts-stats span{background:#0b0618cc;border:1px solid #c084fc66;border-radius:999px;padding:3px 12px;font-size:13px;color:var(--muted)}
 .ts-stats span b{color:var(--text);font-weight:600}
 .ts-stats span.shard b{color:var(--cyan)}
@@ -487,10 +490,10 @@ body.cine #story{cursor:default}
 #tourTip .dots{display:flex;gap:4px;margin-top:8px}
 #tourTip .dots i{width:7px;height:7px;border-radius:50%;background:#ffffff26}
 #tourTip .dots i.on{background:var(--gold)}
-#tourBtn{position:absolute;top:10px;right:56px;background:#0005;border:1px solid #ffffff22;color:var(--text);border-radius:8px;padding:2px 9px;cursor:pointer;z-index:30;font-weight:600;font-family:inherit}
-#pauseBtn{position:absolute;top:10px;right:96px;background:#0005;border:1px solid #ffffff22;color:var(--text);border-radius:8px;padding:2px 8px;cursor:pointer;z-index:30;font-weight:600;font-family:inherit}
+#tourBtn{position:absolute;top:10px;right:92px;background:#0005;border:1px solid #ffffff22;color:var(--text);border-radius:8px;padding:2px 9px;cursor:pointer;z-index:30;font-weight:600;font-family:inherit}
+#pauseBtn{position:absolute;top:10px;right:132px;background:#0005;border:1px solid #ffffff22;color:var(--text);border-radius:8px;padding:2px 8px;cursor:pointer;z-index:30;font-weight:600;font-family:inherit}
 #pauseBtn[hidden]{display:none}
-#pauseBtn:hover,#tourBtn:hover,#mute:hover{border-color:var(--violet2);background:#24144ecc}
+#pauseBtn:hover,#tourBtn:hover,#mute:hover,#bgmBtn:hover{border-color:var(--violet2);background:#24144ecc}
 /* ---------- ธาตุ / คำหลอก / กลไกบอสใหม่ ---------- */
 .slot .elem{position:absolute;top:6px;left:8px;font-size:12px;padding:0 6px;border-radius:6px;background:#0005;font-weight:600}
 .slot.el-fire{border-color:#fb923c66}
@@ -537,7 +540,8 @@ body.cine #story{cursor:default}
 </head>
 <body>
 <div id="game">
-  <button id="mute" title="เปิด/ปิดเสียง">🔊</button>
+  <button id="mute" title="เปิด/ปิดเสียงทั้งหมด">🔊</button>
+  <button id="bgmBtn" title="เปิด/ปิดเพลงประกอบ (BGM)">🎵</button>
   <button id="tourBtn" title="แนะนำหน้าจอ">?</button>
   <button id="pauseBtn" title="หยุดเกม / เมนู (Esc)" hidden>⏸</button>
   <div id="tourBlock" hidden></div>
@@ -1535,9 +1539,19 @@ function newSlotWord(i, forceSafe) {
   S.slots[i] = w;
 }
 
-/* ================= Audio ================= */
-let AC = null, muted = false;
-function ac() { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); return AC; }
+/* ================= Audio (SFX + BGM Web Audio Synth) ================= */
+const AUDIO_KEY = 'typegame.audio.v1';
+let AC = null, muted = false, bgmOn = true;
+try {
+  const savedAud = JSON.parse(localStorage.getItem(AUDIO_KEY) || 'null');
+  if (savedAud) { muted = !!savedAud.muted; if (savedAud.bgmOn !== undefined) bgmOn = !!savedAud.bgmOn; }
+} catch (e) {}
+function saveAudioPref() { try { localStorage.setItem(AUDIO_KEY, JSON.stringify({ muted, bgmOn })); } catch (e) {} }
+function ac() {
+  if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+  if (AC.state === 'suspended') AC.resume().catch(() => {});
+  return AC;
+}
 function tone(f, dur, type = 'sine', vol = 0.15, f2) {
   if (muted) return; const c = ac(), t = c.currentTime;
   const o = c.createOscillator(), g = c.createGain();
@@ -1567,7 +1581,462 @@ const SFX = {
   win() { [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => tone(f, 0.25, 'triangle', 0.15), i * 120)); },
   lose() { [392, 330, 262].forEach((f, i) => setTimeout(() => tone(f, 0.35, 'triangle', 0.15), i * 180)); }
 };
-$('#mute').onclick = () => { muted = !muted; $('#mute').textContent = muted ? '🔇' : '🔊'; kb.focus(); };
+
+/* ---------- BGM Synth Loop (4 ธีม: menu / shop / battle / boss) ---------- */
+const BGM = (() => {
+  const m2f = m => 440 * Math.pow(2, (m - 69) / 12);
+  const BASE_GAIN = 0.42;
+  const TRACKS = {
+    // 1) Neon Shrine — โลไฟไซเบอร์พังก์ญี่ปุ่นเบาๆ (92 BPM, D minor pentatonic)
+    menu: {
+      bpm: 92, leadType: 'koto',
+      chords: [
+        { b: 38, p: [50, 57, 60, 64] },             // Dm9
+        { b: 34, p: [46, 53, 57, 62] },             // Bbmaj7
+        { b: 43, p: [55, 58, 62, 65] },             // Gm9
+        { b: 33, p: [45, 52, 57, 62], p2: [45, 52, 55, 61] } // Asus4 -> A7
+      ],
+      mel: {
+        0: [74, 3], 3: [76, 3], 6: [77, 4], 10: [81, 4], 14: [77, 2],
+        16: [74, 4], 20: [72, 2], 22: [74, 4], 26: [69, 4], 30: [70, 2],
+        32: [74, 3], 35: [77, 3], 38: [79, 4], 42: [77, 4], 46: [74, 2],
+        48: [76, 6], 54: [74, 4], 58: [73, 4], 62: [76, 2]
+      },
+      kick: [0, 10], snare: [], hat: [4, 12], arp: [2, 6, 10, 14], bassMode: 'chill'
+    },
+    // 2) Miaomi Tea House — คาเฟ่โคมไฟอุ่นๆ Rhodes เปียโนไฟฟ้า + โลไฟแจ๊สเบาๆ (82 BPM, Fmaj9–Dm9–Gm9–C9)
+    shop: {
+      bpm: 82, leadType: 'warm', swing: 0.018,
+      chords: [
+        { b: 41, p: [53, 57, 60, 64, 67] },                     // Fmaj9
+        { b: 38, p: [50, 53, 57, 60, 64] },                     // Dm9
+        { b: 43, p: [55, 58, 62, 65, 69] },                     // Gm9
+        { b: 36, p: [48, 55, 58, 62, 65], p2: [48, 52, 58, 62, 67] } // C13sus4 -> C9
+      ],
+      mel: {
+        0: [69, 4], 4: [72, 2], 6: [74, 4], 10: [72, 2], 12: [69, 4],
+        16: [67, 2], 18: [69, 4], 22: [65, 6], 28: [67, 4],
+        32: [69, 3], 35: [70, 3], 38: [74, 4], 42: [72, 2], 44: [70, 4],
+        48: [69, 4], 52: [67, 4], 56: [64, 3], 59: [67, 5]
+      },
+      kick: [0, 10], brush: [4, 12, 14], chime: [14, 46], bassMode: 'cozy'
+    },
+    // 3) Neon Blade — ซินธ์เวฟไฟต์จังหวะสนุก พิมพ์เข้ามือ (122 BPM, D minor)
+    battle: {
+      bpm: 122, leadType: 'synth',
+      chords: [
+        { b: 38, p: [50, 53, 57] },                 // Dm
+        { b: 34, p: [46, 50, 53] },                 // Bb
+        { b: 36, p: [48, 52, 55] },                 // C
+        { b: 33, p: [45, 48, 52] }                  // Am
+      ],
+      mel: {
+        0: [74, 3], 3: [77, 3], 6: [81, 2], 8: [79, 2], 10: [77, 2], 12: [76, 2], 14: [74, 2],
+        16: [70, 4], 20: [74, 2], 22: [77, 4], 26: [74, 4], 30: [72, 2],
+        32: [72, 3], 35: [76, 3], 38: [79, 2], 40: [77, 2], 42: [76, 2], 44: [74, 2], 46: [72, 2],
+        48: [69, 4], 52: [72, 2], 54: [76, 4], 58: [79, 2], 60: [77, 2], 62: [76, 2]
+      },
+      kick: [0, 6, 8, 14], snare: [4, 12], hat: [0, 2, 4, 6, 8, 10, 12, 14], arp: [1, 5, 9, 13], bassMode: 'drive'
+    },
+    // 4) Crimson Torii — บอสไฟต์บันไดเสียงญี่ปุ่น E Phrygian + กลองไทโกะ (136 BPM)
+    boss: {
+      bpm: 136, leadType: 'shamisen',
+      chords: [
+        { b: 40, p: [52, 55, 59] },                 // Em
+        { b: 41, p: [53, 57, 60] },                 // F (Phrygian!)
+        { b: 38, p: [50, 53, 57] },                 // Dm
+        { b: 35, p: [47, 52, 57], p2: [47, 51, 54] } // Bsus4 -> B
+      ],
+      mel: {
+        0: [76, 2], 2: [76, 1], 3: [77, 3], 6: [83, 2], 8: [81, 2], 10: [79, 2], 12: [77, 2], 14: [76, 2],
+        16: [77, 3], 19: [81, 3], 22: [84, 2], 24: [83, 2], 26: [81, 2], 28: [79, 2], 30: [77, 2],
+        32: [74, 2], 34: [74, 1], 35: [77, 3], 38: [81, 2], 40: [79, 2], 42: [77, 2], 44: [76, 2], 46: [74, 2],
+        48: [71, 2], 50: [76, 2], 52: [77, 2], 54: [76, 2], 56: [75, 2], 58: [76, 2], 60: [79, 2], 62: [78, 2]
+      },
+      kick: [0, 3, 8, 10], snare: [4, 12], taiko: [0, 6, 14], hat: [0, 2, 4, 6, 8, 10, 12, 14], arp: [1, 3, 5, 7, 9, 11, 13, 15], bassMode: 'boss'
+    }
+  };
+
+  let bus = null, filter = null, leadIn = null, noiseBuf = null;
+  let timer = null, track = 'menu', pendingTrack = null, nextT = 0, step = 0, unlocked = false;
+  let lastMix = '', switchTimer = null, enraged = false;
+
+  function ensureGraph() {
+    if (bus || !AC) return !!bus;
+    const c = AC;
+    bus = c.createGain();
+    bus.gain.setValueAtTime(0.0001, c.currentTime);
+    filter = c.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(3600, c.currentTime);
+    filter.Q.setValueAtTime(0.7, c.currentTime);
+    filter.connect(bus).connect(c.destination);
+
+    // ดีเลย์เบาๆ เฉพาะเสียงเมโลดี้ ให้บรรยากาศเมืองนีออนโดยไม่กลบเบส
+    leadIn = c.createGain();
+    leadIn.gain.setValueAtTime(1, c.currentTime);
+    const dly = c.createDelay(0.5), fb = c.createGain(), wet = c.createGain(), dlp = c.createBiquadFilter();
+    dly.delayTime.setValueAtTime(0.22, c.currentTime);
+    fb.gain.setValueAtTime(0.2, c.currentTime);
+    wet.gain.setValueAtTime(0.18, c.currentTime);
+    dlp.type = 'lowpass'; dlp.frequency.setValueAtTime(1700, c.currentTime);
+    leadIn.connect(filter);
+    leadIn.connect(dly);
+    dly.connect(dlp).connect(wet).connect(filter);
+    dlp.connect(fb).connect(dly);
+
+    // บัฟเฟอร์นอยส์ใช้ซ้ำสำหรับสแนร์/ไฮแฮต
+    const len = Math.floor(c.sampleRate * 0.16);
+    noiseBuf = c.createBuffer(1, len, c.sampleRate);
+    const d = noiseBuf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 1.8);
+    return true;
+  }
+
+  function playPad(notes, t, dur, vol) {
+    const c = AC;
+    for (const m of notes) {
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(m2f(m), t);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(vol, t + Math.min(0.12, dur * 0.25));
+      g.gain.setValueAtTime(vol * 0.85, t + Math.max(0.13, dur * 0.72));
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g).connect(filter);
+      o.start(t); o.stop(t + dur + 0.03);
+    }
+  }
+  function playRhodes(notes, t, dur, vol) {
+    const c = AC;
+    notes.forEach((m, idx) => {
+      const nt = t + idx * 0.024, f = m2f(m);
+      const o = c.createOscillator(), lp = c.createBiquadFilter(), g = c.createGain();
+      o.type = 'sine'; o.frequency.setValueAtTime(f, nt);
+      lp.type = 'lowpass'; lp.frequency.setValueAtTime(1400, nt);
+      g.gain.setValueAtTime(0.0001, nt);
+      g.gain.linearRampToValueAtTime(vol, nt + 0.02);
+      g.gain.exponentialRampToValueAtTime(vol * 0.45, nt + Math.min(0.55, dur * 0.45));
+      g.gain.exponentialRampToValueAtTime(0.0001, nt + dur);
+      o.connect(lp).connect(g).connect(filter);
+      o.start(nt); o.stop(nt + dur + 0.04);
+      // เสียง tine อุ่นๆ ตอนกดคีย์
+      const o2 = c.createOscillator(), g2 = c.createGain();
+      o2.type = 'triangle'; o2.frequency.setValueAtTime(f * 2, nt);
+      g2.gain.setValueAtTime(0.0001, nt);
+      g2.gain.linearRampToValueAtTime(vol * 0.16, nt + 0.008);
+      g2.gain.exponentialRampToValueAtTime(0.0001, nt + 0.16);
+      o2.connect(g2).connect(filter);
+      o2.start(nt); o2.stop(nt + 0.18);
+    });
+  }
+  function playBass(midi, t, dur, vol, bright) {
+    const c = AC, o = c.createOscillator(), lp = c.createBiquadFilter(), g = c.createGain();
+    o.type = bright === 'cozy' ? 'sine' : (bright ? 'sawtooth' : 'triangle');
+    o.frequency.setValueAtTime(m2f(midi), t);
+    lp.type = 'lowpass';
+    lp.frequency.setValueAtTime(bright === 'cozy' ? 280 : (bright ? 740 : 380), t);
+    lp.frequency.exponentialRampToValueAtTime(bright === 'cozy' ? 140 : (bright ? 230 : 180), t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(vol, t + (bright === 'cozy' ? 0.025 : 0.01));
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(lp).connect(g).connect(filter);
+    o.start(t); o.stop(t + dur + 0.03);
+  }
+  function playLead(midi, t, dur, kind) {
+    const c = AC, f = m2f(midi);
+    const o = c.createOscillator(), g = c.createGain(), lp = c.createBiquadFilter();
+    lp.type = 'lowpass';
+    if (kind === 'koto' || kind === 'shamisen') {
+      o.type = kind === 'shamisen' ? 'sawtooth' : 'triangle';
+      lp.frequency.setValueAtTime(kind === 'shamisen' ? 2400 : 1900, t);
+      lp.frequency.exponentialRampToValueAtTime(620, t + Math.min(dur, 0.36));
+      const v = kind === 'shamisen' ? 0.055 : 0.072;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(v, t + 0.008);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(0.22, dur * 0.95));
+      // โอเวอร์โทนอ่อนๆ ให้ฟีลสายดีด
+      const o2 = c.createOscillator(), g2 = c.createGain();
+      o2.type = 'sine'; o2.frequency.setValueAtTime(f * 2, t);
+      g2.gain.setValueAtTime(0.0001, t); g2.gain.linearRampToValueAtTime(v * 0.25, t + 0.006);
+      g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.14);
+      o2.connect(g2).connect(leadIn); o2.start(t); o2.stop(t + 0.17);
+    } else if (kind === 'warm') {
+      // เสียงเปียโนไฟฟ้า/ขลุ่ยไม้โทนอุ่นนุ่ม (ช่วงกลางต่ำ ไม่แหลม)
+      o.type = 'sine'; lp.frequency.setValueAtTime(1450, t);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(0.088, t + 0.022);
+      g.gain.exponentialRampToValueAtTime(0.048, t + Math.min(0.45, dur * 0.6));
+      g.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(0.32, dur * 1.05));
+      const o2 = c.createOscillator(), g2 = c.createGain();
+      o2.type = 'triangle'; o2.frequency.setValueAtTime(f, t);
+      g2.gain.setValueAtTime(0.0001, t); g2.gain.linearRampToValueAtTime(0.02, t + 0.018);
+      g2.gain.exponentialRampToValueAtTime(0.0001, t + Math.min(0.38, dur * 0.85));
+      o2.connect(g2).connect(leadIn);
+      // ไวบราโต้อ่อนๆ ให้เสียงละมุนมีชีวิต
+      const lfo = c.createOscillator(), lg = c.createGain();
+      lfo.frequency.setValueAtTime(4.4, t); lg.gain.setValueAtTime(f * 0.0022, t);
+      lfo.connect(lg).connect(o.frequency); lfo.start(t); lfo.stop(t + dur + 0.06);
+      o2.start(t); o2.stop(t + dur + 0.05);
+    } else {
+      o.type = 'triangle';
+      lp.frequency.setValueAtTime(2100, t);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(0.064, t + 0.015);
+      g.gain.setValueAtTime(0.052, t + Math.max(0.02, dur * 0.65));
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    }
+    o.frequency.setValueAtTime(f, t);
+    o.connect(lp).connect(g).connect(leadIn);
+    o.start(t); o.stop(t + dur + 0.06);
+  }
+  function playArp(midi, t, dur, vol) {
+    const c = AC, o = c.createOscillator(), g = c.createGain();
+    o.type = 'triangle'; o.frequency.setValueAtTime(m2f(midi + 12), t);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(vol, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g).connect(leadIn);
+    o.start(t); o.stop(t + dur + 0.03);
+  }
+  function playKick(t, vol = 0.15, soft = false) {
+    const c = AC, o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(soft ? 96 : 132, t);
+    o.frequency.exponentialRampToValueAtTime(soft ? 44 : 42, t + 0.13);
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + (soft ? 0.18 : 0.15));
+    o.connect(g).connect(filter);
+    o.start(t); o.stop(t + 0.2);
+  }
+  function playTaiko(t) {
+    const c = AC, o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(108, t);
+    o.frequency.exponentialRampToValueAtTime(54, t + 0.16);
+    g.gain.setValueAtTime(0.14, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+    o.connect(g).connect(filter);
+    o.start(t); o.stop(t + 0.24);
+  }
+  function playSnare(t, vol = 0.055) {
+    const c = AC, s = c.createBufferSource(), hp = c.createBiquadFilter(), g = c.createGain();
+    s.buffer = noiseBuf; hp.type = 'bandpass'; hp.frequency.setValueAtTime(1600, t); hp.Q.setValueAtTime(0.8, t);
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+    s.connect(hp).connect(g).connect(filter); s.start(t); s.stop(t + 0.14);
+    const o = c.createOscillator(), og = c.createGain();
+    o.type = 'triangle'; o.frequency.setValueAtTime(195, t); o.frequency.exponentialRampToValueAtTime(110, t + 0.06);
+    og.gain.setValueAtTime(vol * 0.7, t); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+    o.connect(og).connect(filter); o.start(t); o.stop(t + 0.08);
+  }
+  function playHat(t, vol = 0.02) {
+    const c = AC, s = c.createBufferSource(), hp = c.createBiquadFilter(), g = c.createGain();
+    s.buffer = noiseBuf; hp.type = 'highpass'; hp.frequency.setValueAtTime(6200, t);
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.045);
+    s.connect(hp).connect(g).connect(filter); s.start(t); s.stop(t + 0.055);
+  }
+  function playBrush(t, vol = 0.013) {
+    const c = AC, s = c.createBufferSource(), bp = c.createBiquadFilter(), g = c.createGain();
+    s.buffer = noiseBuf; bp.type = 'bandpass'; bp.frequency.setValueAtTime(2600, t); bp.Q.setValueAtTime(1.1, t);
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(vol, t + 0.014);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+    s.connect(bp).connect(g).connect(filter); s.start(t); s.stop(t + 0.11);
+  }
+  function playChime(midi, t) {
+    const c = AC, o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o.frequency.setValueAtTime(m2f(midi), t);
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.014, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.65);
+    o.connect(g).connect(leadIn); o.start(t); o.stop(t + 0.68);
+  }
+
+  function scheduleStep(st, t, stepDur) {
+    const tr = TRACKS[track] || TRACKS.menu;
+    const bar = Math.floor(st / 16) % tr.chords.length;
+    const b = st % 16;
+    const ch = tr.chords[bar];
+    const sw = (tr.swing && b % 2 === 1) ? tr.swing : 0;
+    const stT = t + sw;
+
+    // Pad / Rhodes chords
+    if (track === 'shop') {
+      if (b === 0) playRhodes(ch.p, stT, stepDur * (ch.p2 ? 8.2 : 15.2), 0.042);
+      if (b === 8 && ch.p2) playRhodes(ch.p2, stT, stepDur * 7.8, 0.042);
+      if (b === 10 && !ch.p2) playRhodes(ch.p.slice(1, 4), stT, stepDur * 5.2, 0.022);
+    } else {
+      if (b === 0) playPad(ch.p, stT, stepDur * (ch.p2 ? 8 : 15.5), track === 'menu' ? 0.042 : 0.032);
+      if (b === 8 && ch.p2) playPad(ch.p2, stT, stepDur * 7.8, track === 'menu' ? 0.042 : 0.034);
+    }
+
+    // Bass
+    if (tr.bassMode === 'chill') {
+      if (b === 0) playBass(ch.b, stT, stepDur * 7.5, 0.11, false);
+      else if (b === 8) playBass(ch.b + 7, stT, stepDur * 3.5, 0.065, false);
+      else if (b === 12) playBass(ch.b, stT, stepDur * 3.5, 0.08, false);
+    } else if (tr.bassMode === 'cozy') {
+      if (b === 0) playBass(ch.b, stT, stepDur * 9.5, 0.135, 'cozy');
+      else if (b === 10) playBass(ch.b + 7, stT, stepDur * 3.5, 0.085, 'cozy');
+      else if (b === 14) playBass(ch.b + (bar === 3 ? 5 : 2), stT, stepDur * 2.1, 0.07, 'cozy');
+    } else if (tr.bassMode === 'drive') {
+      if (b % 2 === 0) playBass(ch.b + (b === 6 || b === 14 ? 12 : 0), stT, stepDur * 1.75, 0.092, true);
+    } else if (tr.bassMode === 'boss') {
+      if (b % 2 === 0) {
+        const oct = (b === 6 || b === 14 || (enraged && b === 10)) ? 12 : 0;
+        const shift = (bar === 3 && b >= 8 && b < 12) ? 1 : 0;
+        playBass(ch.b + shift + oct, stT, stepDur * 1.7, 0.1, true);
+      }
+    }
+
+    // Melody
+    const mn = tr.mel[st];
+    if (mn) playLead(mn[0], stT, stepDur * mn[1] * 0.96, tr.leadType);
+
+    // Arpeggio shimmer
+    if (tr.arp && tr.arp.includes(b)) {
+      const notes = (b >= 8 && ch.p2) ? ch.p2 : ch.p;
+      const note = notes[(bar + b) % notes.length];
+      playArp(note, stT, stepDur * 1.9, track === 'menu' ? 0.022 : 0.026);
+    }
+
+    // Percussion
+    if (tr.kick && tr.kick.includes(b)) playKick(stT, track === 'shop' ? 0.085 : track === 'menu' ? 0.085 : 0.155, track === 'shop');
+    if (tr.taiko && tr.taiko.includes(b)) playTaiko(stT);
+    if (tr.snare && tr.snare.includes(b)) playSnare(stT, track === 'boss' ? 0.06 : 0.05);
+    if (tr.brush && tr.brush.includes(b)) playBrush(stT, b === 14 ? 0.008 : 0.013);
+    if (tr.chime && tr.chime.includes(st)) playChime(st === 14 ? 81 : 84, stT);
+    const hatOn = (tr.hat && tr.hat.includes(b)) || (track === 'boss' && enraged);
+    if (hatOn) playHat(stT, track === 'menu' ? 0.012 : (b % 4 === 2 ? 0.024 : 0.015));
+  }
+
+  function tick() {
+    if (!AC || AC.state !== 'running' || !bgmOn || muted || document.hidden) return;
+    const tr = TRACKS[track] || TRACKS.menu;
+    const bpm = tr.bpm * (track === 'boss' && enraged ? 1.06 : 1);
+    const stepDur = 60 / bpm / 4;
+    const horizon = AC.currentTime + 0.14;
+    if (nextT < AC.currentTime - 0.25) nextT = AC.currentTime + 0.04;
+    while (nextT < horizon) {
+      scheduleStep(step, nextT, stepDur);
+      nextT += stepDur;
+      step = (step + 1) % 64;
+    }
+  }
+
+  function desiredTrack() {
+    if (phase === 'shop' || phase === 'shopExit') return 'shop';
+    if (phase === 'fight') return (FOE && (FOE.boss || FOE.elite)) ? 'boss' : 'battle';
+    return 'menu';
+  }
+  function desiredMix() {
+    if (!bgmOn || muted || document.hidden) return { g: 0.0001, f: 1800, r: 0.12 };
+    if (ULT_CINE) return { g: BASE_GAIN * 0.14, f: 1200, r: 0.15 };
+    if (PAUSED || (S && S.tour)) return { g: BASE_GAIN * 0.36, f: 480, r: 0.2 };
+    if (phase === 'busy') return { g: BASE_GAIN * 0.26, f: 1600, r: 0.18 };
+    if (phase === 'story') return { g: BASE_GAIN * 0.72, f: 1500, r: 0.3 };
+    return { g: BASE_GAIN, f: 3800, r: 0.28 };
+  }
+  function applyMix(force) {
+    if (!bus || !AC) return;
+    const m = desiredMix();
+    const key = `${m.g.toFixed(4)}|${m.f}`;
+    if (!force && key === lastMix) return;
+    lastMix = key;
+    const t = AC.currentTime;
+    bus.gain.cancelScheduledValues(t);
+    bus.gain.setValueAtTime(Math.max(0.0001, bus.gain.value), t);
+    bus.gain.linearRampToValueAtTime(m.g, t + m.r);
+    filter.frequency.cancelScheduledValues(t);
+    filter.frequency.setValueAtTime(Math.max(40, filter.frequency.value), t);
+    filter.frequency.exponentialRampToValueAtTime(m.f, t + m.r);
+  }
+  function switchTrack(next) {
+    if (next === track || next === pendingTrack) return;
+    clearTimeout(switchTimer);
+    if (!bus || !AC || !bgmOn || muted) { track = next; pendingTrack = null; step = 0; return; }
+    pendingTrack = next;
+    const t = AC.currentTime;
+    bus.gain.cancelScheduledValues(t);
+    bus.gain.setValueAtTime(Math.max(0.0001, bus.gain.value), t);
+    bus.gain.linearRampToValueAtTime(0.0001, t + 0.18);
+    lastMix = 'fade';
+    switchTimer = setTimeout(() => {
+      track = next; pendingTrack = null; step = 0;
+      if (AC) nextT = AC.currentTime + 0.05;
+      applyMix(true);
+    }, 185);
+  }
+  function start() {
+    if (!bgmOn || muted) return;
+    try { ac(); } catch (e) { return; }
+    if (!ensureGraph()) return;
+    unlocked = true;
+    if (!timer) {
+      nextT = AC.currentTime + 0.06;
+      timer = setInterval(tick, 40);
+    }
+    applyMix(true);
+  }
+  function stop() {
+    clearTimeout(switchTimer);
+    pendingTrack = null;
+    if (timer) { clearInterval(timer); timer = null; }
+    applyMix(true);
+  }
+  function sync() {
+    enraged = !!(phase === 'fight' && FOE && FOE.boss && S && S.enraged);
+    const want = desiredTrack();
+    if (want !== track && want !== pendingTrack) switchTrack(want);
+    if (pendingTrack) return;
+    if (unlocked && bgmOn && !muted && !document.hidden) {
+      if (!timer) start();
+      applyMix(false);
+    } else if (bus) {
+      applyMix(false);
+    }
+  }
+  function unlock() {
+    if (!unlocked) {
+      track = desiredTrack();
+      if (bgmOn && !muted) start();
+    } else if (AC && AC.state === 'suspended' && bgmOn && !muted) {
+      AC.resume().catch(() => {});
+    }
+  }
+  function preview(name) {
+    if (!TRACKS[name]) return;
+    if (!unlocked) unlock();
+    switchTrack(name);
+  }
+  return { start, stop, sync, unlock, preview, get track() { return track; }, get running() { return !!timer; }, tracks: Object.keys(TRACKS) };
+})();
+
+function renderAudioBtns() {
+  $('#mute').textContent = muted ? '🔇' : '🔊';
+  $('#mute').classList.toggle('off', muted);
+  const b = $('#bgmBtn');
+  if (b) {
+    b.textContent = '🎵';
+    b.classList.toggle('off', !bgmOn || muted);
+    b.title = bgmOn ? 'ปิดเพลงประกอบ (BGM)' : 'เปิดเพลงประกอบ (BGM)';
+  }
+}
+renderAudioBtns();
+$('#mute').onclick = () => {
+  muted = !muted; saveAudioPref(); renderAudioBtns();
+  if (muted) BGM.stop(); else BGM.start();
+  kb.focus();
+};
+$('#bgmBtn').onclick = () => {
+  bgmOn = !bgmOn;
+  if (bgmOn && muted) muted = false;
+  saveAudioPref(); renderAudioBtns();
+  if (bgmOn) BGM.start(); else BGM.stop();
+  toast(bgmOn ? '🎵 เปิดเพลงประกอบแล้ว' : '🎵 ปิดเพลงประกอบ');
+  kb.focus();
+};
+document.addEventListener('visibilitychange', () => BGM.sync());
+window.addEventListener('pointerdown', () => BGM.unlock(), { passive: true });
+window.addEventListener('keydown', () => BGM.unlock(), { passive: true });
 
 /* ================= FX helpers ================= */
 function centerOf(el) {
@@ -2762,6 +3231,7 @@ function loop(ts) {
   if (R && R.pvp) pvTick(ts);
   if (S) renderHUD();
   drawStage();
+  BGM.sync();
   requestAnimationFrame(loop);
 }
 
