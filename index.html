@@ -172,6 +172,20 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
   .hint{display:none}
 }
 #kb{position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0}
+
+/* ---------- tutorial ---------- */
+#coach{position:absolute;left:14px;top:10px;z-index:20;max-width:min(440px,calc(100% - 28px));background:#12082bf2;border:2px solid var(--gold);border-radius:14px;padding:10px 14px 12px;box-shadow:0 0 30px #fbbf2455;font-size:15px;line-height:1.6}
+#coach[hidden]{display:none}
+#coach .ch{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;color:var(--gold);font-weight:600;letter-spacing:1px}
+#coach .ch button{background:none;border:1px solid #ffffff33;color:var(--muted);border-radius:6px;padding:0 8px;cursor:pointer;font-size:12px}
+#coach .ct{margin-top:4px}
+#coach .ct b{color:var(--gold)}
+#coach .cp{margin-top:6px;font-size:13px;color:var(--cyan);min-height:20px}
+#coach.ok{border-color:var(--good);box-shadow:0 0 30px #4ade8066}
+.tut-focus{outline:3px solid var(--gold);outline-offset:4px;border-radius:14px;animation:tutGlow .8s infinite alternate}
+@keyframes tutGlow{from{outline-color:#fbbf24}to{outline-color:#fbbf2433}}
+.go.tut{background:linear-gradient(90deg,#b45309,#f59e0b);box-shadow:0 0 24px #f59e0b88;position:relative}
+.go.tut .new{position:absolute;top:-10px;right:12px;font-size:12px;background:var(--bad);border-radius:8px;padding:0 8px}
 </style>
 </head>
 <body>
@@ -188,7 +202,7 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
       <div id="combo"></div>
     </div>
     <div class="hpbox e">
-      <div class="name">โอนิดาบแดง <span>Lv.1</span></div>
+      <div class="name"><b id="eName" style="font-weight:600">โอนิดาบแดง</b> <span>Lv.1</span></div>
       <div class="bar"><i id="ehpBar"></i></div>
       <div class="num" id="ehpNum">160 / 160</div>
     </div>
@@ -266,6 +280,12 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
       <div class="tbar"><i id="ultTimeBar"></i></div>
     </div>
 
+    <div id="coach" hidden>
+      <div class="ch"><span id="coachStep">สอนเล่น 1/4</span><button id="skipTut">ข้ามการสอน ✕</button></div>
+      <div class="ct" id="coachText"></div>
+      <div class="cp" id="coachProg"></div>
+    </div>
+
     <div id="fx"></div>
     <div id="toast"></div>
   </div>
@@ -309,7 +329,22 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
         <li><b>Stamina:</b> พิมพ์มั่วจะเหนื่อย ดาเมจเหลือครึ่งเดียว</li>
         <li>ภาษาไทยพิมพ์วรรณยุกต์กับสระบน/ล่างสลับลำดับได้ เช่น น + ำ + ้ ก็นับว่า "น้ำ"</li>
       </ul>
-      <button class="go" id="startBtn">เริ่มไฟต์ <kbd>Enter</kbd></button>
+      <div class="row2">
+        <button class="go tut" id="tutBtn">🎓 สอนเล่น (1 นาที)<span class="new" id="tutNew">มือใหม่เริ่มที่นี่</span></button>
+        <button class="go" id="startBtn">เริ่มไฟต์ <kbd>Enter</kbd></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- tutorial done -->
+  <div class="overlay" id="tutDoneScr" hidden>
+    <div class="card" style="max-width:520px;text-align:center">
+      <div class="title" style="font-size:44px">ผ่านการสอน!</div>
+      <p class="sub">สรุปสั้นๆ: พิมพ์คำ = ตี · กล่องแดง = กัน · <kbd>Tab</kbd> = ท่าไม้ตาย · <kbd>Esc</kbd> = หยุด</p>
+      <div class="row2">
+        <button class="go" id="tutFightBtn">เริ่มไฟต์จริง <kbd>Enter</kbd></button>
+        <button class="go alt" id="tutMenuBtn">กลับเมนู</button>
+      </div>
     </div>
   </div>
 
@@ -526,12 +561,12 @@ function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.ad
 /* ================= Combat ================= */
 const P = $('#player'), E = $('#enemy');
 function dealDamage(dmg) {
-  S.ehp = Math.max(0, S.ehp - dmg);
+  S.ehp = Math.max(S.tut ? 1 : 0, S.ehp - dmg);   // หุ่นซ้อมไม่ตาย
   if (S.ehp <= 0) endGame(true);
 }
 function addUlt(n) {
   const was = S.ult >= 100;
-  S.ult = Math.min(100, S.ult + n);
+  S.ult = Math.min(S.tut && S.tut.id !== 'ult' ? 90 : 100, S.ult + n);   // ตอนสอน ยังไม่ให้เกจเต็มก่อนถึงขั้นท่าไม้ตาย
   if (!was && S.ult >= 100) toast('ท่าไม้ตายพร้อม! กด Tab');
 }
 function addCombo() { S.combo++; S.maxCombo = Math.max(S.maxCombo, S.combo); }
@@ -552,6 +587,7 @@ function attack(i) {
   dealDamage(dmg);
   newSlotWord(i);
   const el = $('#s' + i); anim(el, 'pop', 260);
+  tutEvent('attack');
 }
 
 function block() {
@@ -565,10 +601,12 @@ function block() {
     SFX.counter(); anim(P, 'lunge', 280);
     setTimeout(() => { anim(E, 'hurt', 360); spark(E); spark(E, 'blue'); fx('gold', 'COUNTER! -' + dmg, E, 0, -10); shake(); hitstop(140); }, 90);
     addUlt(14); dealDamage(dmg);
+    tutEvent('counter');
   } else {
     S.stats.blocks++;
     SFX.block(); spark(P, 'blue'); fx('msg', 'BLOCK', P, 40, -20); hitstop(60);
     addUlt(6);
+    tutEvent('block');
   }
 }
 
@@ -594,7 +632,8 @@ function enemyHit() {
     fx('hurtp', '-' + dmg, P);
     if (S.combo >= 3) fx('bad', 'คอมโบหลุด', P, 0, -40);
     S.combo = 0;
-    S.php = Math.max(0, S.php - dmg);
+    S.php = Math.max(S.tut ? 1 : 0, S.php - dmg);
+    tutEvent('hurt');
     if (S.php <= 0) endGame(false);
   }, 110);
   revalidate();
@@ -608,6 +647,7 @@ function mistake() {
   SFX.err();
   anim($('#words'), 'err', 230); anim(P, 'wobble', 260);
   if (S.ultMode) anim($('#ultBox'), 'err', 230);
+  tutEvent('mistake');
 }
 
 function tryUlt() {
@@ -616,10 +656,11 @@ function tryUlt() {
   S.def = null; S.enemy.state = 'idle'; S.enemy.t = rand(...DIFF[cfg.diff].idle); E.classList.remove('charging');
   const lang = pickLang();
   S.ultWord = makeWord(pick(ULT[lang]), lang, 'ult');
-  S.ultMax = (S.ultWord.len * 0.32 + 3) * DIFF[cfg.diff].ult; S.ultTime = S.ultMax;
+  S.ultMax = (S.ultWord.len * 0.32 + 3) * DIFF[cfg.diff].ult * (S.tut ? 2 : 1); S.ultTime = S.ultMax;
   S.buf = ''; kb.value = '';
   $('#ultBox').hidden = false; flash('white'); SFX.ultStart();
   renderWords();
+  tutEvent('ultStart');
 }
 function endUlt() { S.ultMode = false; S.ultWord = null; S.buf = ''; kb.value = ''; $('#ultBox').hidden = true; renderWords(); }
 function ultHit() {
@@ -629,8 +670,9 @@ function ultHit() {
   anim(P, 'lunge', 280); flash('white'); SFX.ultHit();
   setTimeout(() => { anim(E, 'hurt', 360); spark(E, 'huge'); fx('big', 'ท่าไม้ตาย! -' + dmg, E, 0, -20); shake(); hitstop(220); }, 90);
   dealDamage(dmg);
+  tutEvent('ult');
 }
-function ultFail() { endUlt(); fx('bad', 'ท่าไม้ตายพลาด!', P, 0, -40); SFX.err(); }
+function ultFail() { endUlt(); fx('bad', 'ท่าไม้ตายพลาด!', P, 0, -40); SFX.err(); tutEvent('ultFail'); }
 
 /* ================= Input ================= */
 function candidates() {
@@ -693,7 +735,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Tab') { e.preventDefault(); tryUlt(); return; }
   if (e.key === 'Escape') { if (S && S.running) setPause(!S.paused); return; }
   if (e.key === 'Enter') {
-    if (!$('#startScr').hidden || !$('#resultScr').hidden) { e.preventDefault(); startGame(); return; }
+    if (!$('#startScr').hidden || !$('#resultScr').hidden || !$('#tutDoneScr').hidden) { e.preventDefault(); startGame(); return; }
     if (S && S.paused) { setPause(false); return; }
   }
 });
@@ -773,7 +815,8 @@ function update(dt) {
     return;
   }
   const e = S.enemy;
-  if (e.state === 'idle') { e.t -= dt; if (e.t <= 0) enemyStartCharge(); }
+  if (S.tut && !S.tut.enemyOn) return;   // ตอนสอน ศัตรูโจมตีเฉพาะขั้นป้องกัน
+  if (e.state === 'idle') { e.t -= dt; if (e.t <= 0) { enemyStartCharge(); if (S.tut) tutChargeStarted(); } }
   else if (e.state === 'charge') { e.charge += dt; if (e.charge >= e.chargeMax) enemyHit(); }
 }
 let last = 0;
@@ -794,6 +837,8 @@ function startGame() {
   S.running = true; S.stats.start = performance.now();
   P.className = 'fighter'; E.className = 'fighter';
   $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#ultBox').hidden = true; $('#pauseScr').hidden = true;
+  $('#tutDoneScr').hidden = true; $('#coach').hidden = true; $('#legend').hidden = false; $('#eName').textContent = 'โอนิดาบแดง';
+  clearFocus();
   kb.value = ''; kb.focus(); ac();
   renderWords();
   toast(cfg.mode === 'en' ? 'พร้อม! ตั้งแป้นเป็นภาษาอังกฤษ' : cfg.mode === 'th' ? 'พร้อม! ตั้งแป้นเป็นภาษาไทย' : 'พร้อม! สลับแป้นด้วย ~ หรือ Alt+Shift');
@@ -856,6 +901,88 @@ document.querySelectorAll('.opts').forEach(g => g.addEventListener('click', e =>
 $('#startBtn').onclick = startGame;
 $('#againBtn').onclick = startGame;
 $('#menuBtn').onclick = () => { $('#resultScr').hidden = true; $('#startScr').hidden = false; };
+
+/* ================= Tutorial =================
+   เล่นในฉากจริงกับ "หุ่นซ้อม" (หุ่นไม่ตาย ผู้เล่นก็ไม่ตาย) ทีละขั้น:
+   โจมตี → คอมโบ → ป้องกัน → ท่าไม้ตาย */
+const TUT_KEY = 'typegame.tutDone';
+const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+const TUT_STEPS = [
+  { id: 'attack', focus: ['#words'],
+    text: '<b>โจมตี:</b> พิมพ์คำใน <b>ช่องไหนก็ได้</b> จาก 3 ช่องด้านล่าง พิมพ์ครบคำ = ตีทันที<br>คำสั้นออกเร็ว คำยาวตีแรงกว่า' },
+  { id: 'combo', focus: ['#words', '#combo'],
+    text: '<b>คอมโบ:</b> พิมพ์ถูกต่อกันอีก <b>3 คำ</b> โดยไม่ผิดเลย ดาเมจจะคูณขึ้นเรื่อยๆ<br>พิมพ์ผิดตัวเดียว คอมโบหลุดนับใหม่' },
+  { id: 'defend', focus: ['#words'],
+    text: '<b>ป้องกัน:</b> เดี๋ยวศัตรูจะชาร์จ! พิมพ์คำใน <b>กล่องสีแดง</b> ให้ทันก่อนแถบเต็ม<br>ถ้ากันในช่วง <b>สีทอง</b> ท้ายแถบ จะสวนกลับ ×2' },
+  { id: 'ult', focus: ['#ultBtn'],
+    text: '<b>ท่าไม้ตาย:</b> เกจเต็มแล้ว! กด <kbd>Tab</kbd> แล้วพิมพ์ประโยคให้จบก่อนหมดเวลา<br>(ตอนสอนให้เวลาเพิ่ม 2 เท่า)' }
+];
+function clearFocus() { document.querySelectorAll('.tut-focus').forEach(el => el.classList.remove('tut-focus')); }
+function setFocus(sels) { clearFocus(); sels.forEach(s => $(s).classList.add('tut-focus')); }
+function coach(prog, ok) { $('#coachProg').innerHTML = prog || ''; $('#coach').classList.toggle('ok', !!ok); }
+
+function startTutorial() {
+  startGame();
+  S.tut = { i: -1, id: '', n: 0, enemyOn: false, busy: false };
+  $('#eName').textContent = 'หุ่นซ้อม'; $('#legend').hidden = true; $('#coach').hidden = false;
+  toast(cfg.mode === 'en' ? 'ตั้งแป้นเป็นภาษาอังกฤษก่อนนะ' : cfg.mode === 'th' ? 'ตั้งแป้นเป็นภาษาไทยก่อนนะ' : 'สองภาษา: สลับแป้นด้วย ~ หรือ Alt+Shift');
+  tutNext();
+}
+function tutNext() {
+  const T = S.tut; T.i++; T.n = 0; T.busy = false; T.enemyOn = false;
+  if (T.i >= TUT_STEPS.length) return tutFinish();
+  const st = TUT_STEPS[T.i]; T.id = st.id;
+  S.ehp = S.emax;
+  $('#coachStep').textContent = `สอนเล่น ${T.i + 1}/${TUT_STEPS.length}`;
+  $('#coachText').innerHTML = st.text;
+  setFocus(st.focus); coach('');
+  if (st.id === 'combo') coach('ทำได้ 0 / 3');
+  if (st.id === 'defend') { coach('เตรียมตัว...'); tutCharge(2); }
+  if (st.id === 'ult') { S.ult = 100; coach('กด <kbd>Tab</kbd> ได้เลย'); }
+}
+// ให้ศัตรูเริ่มชาร์จหลัง delay วินาที
+function tutCharge(delay) { const e = S.enemy; e.state = 'idle'; e.t = delay; S.tut.enemyOn = true; }
+// ตอนสอน ชาร์จนานกว่าปกติ + ไฮไลต์กล่องแดง
+function tutChargeStarted() { S.enemy.chargeMax = 4; setFocus(['#defBox']); coach('พิมพ์คำในกล่องแดง!'); }
+function tutPass(msg) {
+  const T = S.tut; if (T.busy) return;
+  T.busy = true; T.enemyOn = false; clearFocus(); coach('✓ ' + msg, true);
+  setTimeout(() => { if (S.tut === T && S.running) tutNext(); }, 1500);
+}
+function tutEvent(ev) {
+  const T = S && S.tut; if (!T || T.busy) return;
+  if (T.id === 'attack' && ev === 'attack') tutPass('เยี่ยม! แค่นี้ก็ตีได้แล้ว');
+  else if (T.id === 'combo') {
+    if (ev === 'attack') { T.n++; coach(`ทำได้ ${T.n} / 3`); if (T.n >= 3) tutPass(`คอมโบ ${S.combo}! ดาเมจ ×${comboMult().toFixed(1)}`); }
+    else if (ev === 'mistake' && T.n) { T.n = 0; coach('พิมพ์ผิด คอมโบหลุด — เริ่มนับใหม่ 0 / 3'); }
+  }
+  else if (T.id === 'defend') {
+    if (ev === 'block') tutPass('กันได้! (ครั้งหน้าลองกันตอนแถบเป็นสีทอง จะสวนกลับ)');
+    else if (ev === 'counter') tutPass('สวนกลับ! สุดยอด ×2');
+    else if (ev === 'hurt') { setFocus(['#words']); coach('ไม่ทัน! ลองอีกครั้ง — พิมพ์คำในกล่องแดงทันทีที่มันขึ้น'); tutCharge(1.5); }
+  }
+  else if (T.id === 'ult') {
+    if (ev === 'ultStart') { setFocus(['#ultBox']); coach('พิมพ์ประโยคให้จบ (มีเว้นวรรคด้วย)'); }
+    else if (ev === 'ultFail') { S.ult = 100; setFocus(['#ultBtn']); coach('หมดเวลา! เกจคืนให้แล้ว กด <kbd>Tab</kbd> ลองใหม่'); }
+    else if (ev === 'ult') tutPass('ท่าไม้ตายเข้าเต็มๆ!');
+  }
+}
+function tutStop() {
+  S.running = false; S.tut = null; S.def = null; clearFocus(); E.classList.remove('charging');
+  $('#coach').hidden = true; $('#defBox').hidden = true; $('#legend').hidden = false; $('#eName').textContent = 'โอนิดาบแดง';
+}
+function tutFinish() {
+  tutStop(); $('#tutDoneScr').hidden = false;
+  lsSet(TUT_KEY, '1'); $('#tutNew').hidden = true;
+  SFX.win();
+}
+function tutQuit() { if (S.tut) { tutStop(); $('#startScr').hidden = false; } }
+$('#tutBtn').onclick = startTutorial;
+$('#skipTut').onclick = tutQuit;
+$('#tutFightBtn').onclick = startGame;
+$('#tutMenuBtn').onclick = () => { $('#tutDoneScr').hidden = true; $('#startScr').hidden = false; };
+if (lsGet(TUT_KEY)) $('#tutNew').hidden = true;
 
 S = freshState(); [0, 1, 2].forEach(newSlotWord); renderWords();
 requestAnimationFrame(loop);
