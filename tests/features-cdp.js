@@ -54,23 +54,24 @@ let failed = 0;
   await sleep(2200);
   await ev(`localStorage.setItem('typegame.tourDone', '1')`);
 
-  // 1. Title screen + 8 menu items layout check
+  // 1. Title screen + 8 visible menu items layout check (Teacher Mode removed)
   const menuInfo = await ev(`(() => {
-    const items = [...document.querySelectorAll('#menuList .mi')];
+    const items = [...document.querySelectorAll('#menuList .mi:not([hidden])')];
     const bar = document.querySelector('.ts-bar').getBoundingClientRect();
     const last = items[items.length - 1].getBoundingClientRect();
     const words = items.map(e => e.querySelector('.w').textContent);
     const firsts = new Set(words.map(w => [...w][0]));
-    return { count: items.length, words, uniqueFirsts: firsts.size === words.length, noOverlap: last.bottom < bar.top + 4 };
+    const noTeacher = !document.getElementById('teacherBtn') && !document.getElementById('teacherScr');
+    return { count: items.length, words, uniqueFirsts: firsts.size === words.length, noOverlap: last.bottom < bar.top + 4, noTeacher };
   })()`);
-  ok('title menu has 8 items with unique TH prefixes & no overlap (' + menuInfo.words.join('/') + ')',
-     menuInfo.count === 8 && menuInfo.uniqueFirsts && menuInfo.noOverlap);
+  ok('title menu has 8 visible items, unique TH prefixes, no overlap & no Teacher Mode (' + menuInfo.words.join('/') + ')',
+     menuInfo.count === 8 && menuInfo.uniqueFirsts && menuInfo.noOverlap && menuInfo.noTeacher);
   await shot('title.png');
 
   // Check EN prefixes unique too
   await ev(`document.querySelector('[data-group=mode] [data-v=en]').click()`);
   const enMenu = await ev(`(() => {
-    const words = [...document.querySelectorAll('#menuList .mi .w')].map(e => e.textContent);
+    const words = [...document.querySelectorAll('#menuList .mi:not([hidden]) .w')].map(e => e.textContent);
     return { words, unique: new Set(words.map(w => w[0])).size === words.length };
   })()`);
   ok('title menu EN prefixes unique (' + enMenu.words.join('/') + ')', enMenu.unique && enMenu.words.length === 8);
@@ -210,59 +211,138 @@ let failed = 0;
   ok('bandit charge spawns spellCharge & attack spawns slash + groundSlam (live=' + banditFx.countAfterAttack + ')',
      banditFx.hasCharge && banditFx.countAfterAttack >= 2);
 
-  // 5C. Teacher Mode (open via menu typing ครู, custom words with spaces, share link)
+  // 6. Cutscene System (Opening Cutscene, Midpoint Cutscene, Boss VS Cutscene, Cutscene Viewer)
   await ev(`toMenu();`);
   await sleep(200);
-  await type('ครู');
-  await sleep(250);
-  ok('typing ครู opens Teacher Mode', await ev(`phase === 'teacher' && !$('#teacherScr').hidden`));
-  await shot('teacher.png');
-
-  await ev(`(() => {
-    $('#tTitle').value = 'ทดสอบห้องเรียน';
-    $('#tWords').value = 'git push\\nnpm run\\nต้มยำกุ้ง';
-    $('#tFoe').value = 'bandit';
-    $('#tSafe').checked = true;
-    $('#tWords').dispatchEvent(new Event('input'));
-  })()`);
-  const tCountTxt = await ev(`$('#tCount').textContent`);
-  ok('Teacher Mode counts & tiers custom words (' + tCountTxt + ')', tCountTxt.includes('พบ 3 คำ'));
-
-  await ev(`$('#tStartBtn').click()`);
+  await ev(`startRun();`);
   await sleep(350);
-  const tFight = await ev(`({
-    phase, teacher: R.teacher, wave: $('#wave').textContent,
-    slots: S.slots.map(w => w.text)
+  const openCine = await ev(`({
+    phase, kind: ST && ST.kind, cine: document.body.classList.contains('cine'),
+    topVis: !$('#cineTop').hidden, cardVis: !$('#cineCard').hidden,
+    title: $('#ccTitle').textContent, portVis: !$('#storyPort').hidden
   })`);
-  ok('Teacher Mode starts fight with custom words (' + tFight.slots.join(' | ') + ')',
-     tFight.phase === 'fight' && tFight.teacher && tFight.wave.includes('ทดสอบห้องเรียน') &&
-     tFight.slots.every(t => ['git push', 'npm run', 'ต้มยำกุ้ง'].includes(t)));
+  ok('startRun plays Opening Cutscene with title card, letterbox & portrait (' + openCine.title + ')',
+     openCine.phase === 'story' && openCine.kind === 'opening' && openCine.cine && openCine.topVis && openCine.cardVis && openCine.portVis);
+  await shot('cutscene-opening-1.png');
 
-  // Type a multi-word phrase with space ('git push')
-  await ev(`S.slots[0] = makeWord('git push', 'en', 'atk'); renderWords();`);
-  const ehpT0 = await ev(`S.ehp`);
-  await type('git push');
-  await sleep(250);
-  ok('Teacher Mode accepts multi-word phrase with space ("git push")', await ev(`S.ehp < ${ehpT0}`));
+  // Advance to Queen vortex scene (line 1)
+  await ev(`storyAdvance(); storyAdvance();`);
+  await sleep(450);
+  await shot('cutscene-opening-2.png');
+  const queenScene = await ev(`({ who: ST && ST.lines[ST.i].who, fx: ST && ST.fx, mood: ST && ST.mood })`);
+  ok('Opening Cutscene advances to Queen vortex scene', queenScene.who === 'queen' && queenScene.fx === 'vortex');
 
-  // Test Teacher Mode finish -> result screen
-  await ev(`endFight(true)`);
-  await sleep(1800);
-  const tRes = await ev(`({ phase, title: $('#resTitle').textContent, sub: $('#resSub').textContent })`);
-  ok('Teacher Mode result screen renders cleanly', tRes.phase === 'result' && tRes.title.includes('ผ่านชุดคำศัพท์') && tRes.sub.includes('ทดสอบห้องเรียน'));
+  // Skip Opening Cutscene -> Layer 1 Fight
+  await ev(`storySkip();`);
+  await sleep(350);
+  const afterSkip = await ev(`({ phase, run: S.running, cine: document.body.classList.contains('cine'), pauseBtnVis: !$('#pauseBtn').hidden })`);
+  ok('Skipping Opening Cutscene enters Layer 1 fight cleanly',
+     afterSkip.phase === 'fight' && afterSkip.run && !afterSkip.cine && afterSkip.pauseBtnVis);
 
-  // Test #class= shareable URL hash
-  const hashUrl = await ev(`(() => {
-    const payload = { t: 'วิทย์ ป.6', w: 'ออกซิเจน\\nแรงโน้มถ่วง\\nแสงอาทิตย์', f: 'mirror', d: 'easy', s: 1 };
-    return location.href.split('#')[0] + '#class=' + b64uEnc(JSON.stringify(payload));
-  })()`);
-  await cmd('Page.navigate', { url: 'about:blank' });
+  // Trigger Act II Midpoint Cutscene at Layer 4
+  await ev(`S.running = false; enterNode(R.map[3][0]);`);
+  await sleep(350);
+  const midCine = await ev(`({ phase, kind: ST && ST.kind, title: $('#ccTitle').textContent })`);
+  ok('Entering Layer 4 triggers Act II Midpoint Cutscene (' + midCine.title + ')',
+     midCine.phase === 'story' && midCine.kind === 'mid');
+  await ev(`storySkip();`);
+  await sleep(300);
+
+  // Trigger Act III Boss Cutscene with Boss VS Card
+  await ev(`S.running = false; enterNode(R.map[6][0]);`);
+  await sleep(400);
+  const bossCine = await ev(`({ phase, kind: ST && ST.kind, bossCard: $('#cineCard').classList.contains('boss'), title: $('#ccTitle').textContent })`);
+  ok('Entering Boss layer triggers Act III Boss VS Cutscene (' + bossCine.title + ')',
+     bossCine.phase === 'story' && bossCine.kind === 'boss' && bossCine.bossCard);
+  await shot('cutscene-boss.png');
+  await ev(`storySkip();`);
   await sleep(200);
-  await cmd('Page.navigate', { url: hashUrl });
+  ok('Esc in Boss Cutscene jumps straight to stance choice', await ev(`phase === 'story' && !!(ST && ST.lines[ST.i].choice)`));
+
+  // Cutscene Viewer from Lobby
+  await ev(`toMenu();`);
+  await sleep(200);
+  await type('คัตซีน');
+  await sleep(250);
+  ok('Typing คัตซีน opens Cutscene Viewer from Lobby',
+     await ev(`phase === 'choice' && $('#chTitle').textContent.includes('คัตซีน') && CH.opts.length === 5`));
+  await type('เปิด');
+  await sleep(350);
+  ok('Cutscene Viewer plays preview cutscene and returns to viewer on skip',
+     await ev(`phase === 'story' && ST.preview === true`));
+  await ev(`storySkip();`);
+  await sleep(200);
+  ok('Skipping preview cutscene returns to Cutscene Viewer', await ev(`phase === 'choice' && $('#chTitle').textContent.includes('คัตซีน')`));
+
+  // 7. Pause Menu (เล่นต่อ / เล่นใหม่ / กลับ Lobby) + Lobby Continue (เล่นต่อ)
+  await ev(`toMenu(); startRun(true);`);
+  await sleep(350);
+  await ev(`S.php = 73; S.ehp = 55; R.coins = 42; renderHUD();`);
+  await ev(`setPause(true);`);
+  await sleep(250);
+  const pauseSt = await ev(`({
+    paused: PAUSED && S.paused,
+    vis: !$('#pauseScr').hidden,
+    btns: [...document.querySelectorAll('#pauseBtns .pbtn .nm')].map(e => e.textContent),
+    words: [...document.querySelectorAll('#pauseBtns .pbtn .w')].map(e => e.textContent)
+  })`);
+  ok('Pause screen shows เล่นต่อ / เล่นใหม่ / กลับ Lobby (' + pauseSt.btns.join(' | ') + ')',
+     pauseSt.paused && pauseSt.vis && pauseSt.btns.join() === 'เล่นต่อ,เล่นใหม่,กลับ Lobby');
+  await shot('pause.png');
+
+  // Resume by typing ต่อ
+  await type('ต่อ');
+  await sleep(200);
+  ok('Typing ต่อ in Pause resumes fight', await ev(`!PAUSED && !S.paused && $('#pauseScr').hidden && phase === 'fight'`));
+
+  // Pause -> Lobby (saves run snapshot)
+  await ev(`setPause(true);`);
+  await sleep(150);
+  await type('ล็อบบี้');
+  await sleep(250);
+  const lobbyWithSave = await ev(`(() => {
+    const items = [...document.querySelectorAll('#menuList .mi:not([hidden])')];
+    const bar = document.querySelector('.ts-bar').getBoundingClientRect();
+    const last = items[items.length - 1].getBoundingClientRect();
+    const words = items.map(e => e.querySelector('.w').textContent);
+    const firsts = new Set(words.map(w => [...w][0]));
+    return {
+      phase, startVis: !$('#startScr').hidden, contVis: !$('#continueBtn').hidden,
+      tag: $('#contTag').textContent, count: items.length,
+      uniqueFirsts: firsts.size === words.length, noOverlap: last.bottom < bar.top + 4
+    };
+  })()`);
+  ok('กลับ Lobby saves run and shows เล่นต่อ in Lobby with unique prefixes & no overlap (' + lobbyWithSave.tag + ')',
+     lobbyWithSave.phase === 'menu' && lobbyWithSave.startVis && lobbyWithSave.contVis &&
+     lobbyWithSave.count === 9 && lobbyWithSave.uniqueFirsts && lobbyWithSave.noOverlap);
+  await shot('lobby-continue.png');
+
+  // Continue from Lobby (type ต่อ) -> restores HP/enemy HP/coins!
+  await type('ต่อ');
+  await sleep(350);
+  const resumed = await ev(`({ phase, run: S.running, php: Math.ceil(S.php), ehp: Math.ceil(S.ehp), coins: R.coins })`);
+  ok('Typing ต่อ in Lobby restores saved fight state (HP=' + resumed.php + ', EHP=' + resumed.ehp + ', coins=' + resumed.coins + ')',
+     resumed.phase === 'fight' && resumed.run && resumed.php === 73 && resumed.ehp === 55 && resumed.coins === 42);
+
+  // Pause -> Restart (เล่นใหม่) -> resets HP/coins and clears old save
+  await ev(`setPause(true);`);
+  await sleep(150);
+  await type('ใหม่');
+  await sleep(350);
+  const restarted = await ev(`({ phase, run: S.running, php: Math.ceil(S.php), pmax: S.pmax, coins: R.coins, layer: R.at.layer })`);
+  ok('Typing ใหม่ in Pause restarts a fresh run cleanly (HP=' + restarted.php + '/' + restarted.pmax + ')',
+     restarted.phase === 'fight' && restarted.run && restarted.php === restarted.pmax && restarted.coins === 0 && restarted.layer === 0);
+
+  // Result screen -> กลับ Lobby button works and clears saved run
+  await ev(`endFight(false);`);
   await sleep(1800);
-  const hashLoaded = await ev(`({ phase, title: $('#tTitle').value, foe: $('#tFoe').value, words: $('#tWords').value })`);
-  ok('Shareable #class= URL opens Teacher Mode with decoded payload',
-     hashLoaded.phase === 'teacher' && hashLoaded.title === 'วิทย์ ป.6' && hashLoaded.foe === 'mirror' && hashLoaded.words.includes('ออกซิเจน'));
+  const resBtns = await ev(`({ phase, again: $('#againBtn').textContent, menu: $('#menuBtn').textContent, hasSave: !!loadRunSnapshot() })`);
+  ok('Result screen shows เล่นใหม่ & กลับ Lobby and clears saved run',
+     resBtns.phase === 'result' && resBtns.again.includes('เล่นใหม่') && resBtns.menu.includes('Lobby') && !resBtns.hasSave);
+  await ev(`$('#menuBtn').click();`);
+  await sleep(200);
+  ok('Clicking กลับ Lobby on Result screen returns to Lobby cleanly',
+     await ev(`phase === 'menu' && !$('#startScr').hidden && $('#resultScr').hidden && $('#continueBtn').hidden`));
 
   console.log('errors', JSON.stringify(errs));
   if (errs.length) failed++;
