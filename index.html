@@ -21,7 +21,7 @@ button{font-family:inherit}
 .hpbox{flex:1;min-width:0}
 .hpbox .name{font-weight:600;font-size:15px;display:flex;justify-content:space-between}
 .hpbox .name span{color:var(--muted);font-weight:400}
-.hpbox.e .name{flex-direction:row-reverse;padding-right:126px}
+.hpbox.e .name{flex-direction:row-reverse;padding-right:84px}
 .bar{height:16px;background:#0006;border:2px solid #ffffff22;border-radius:8px;overflow:hidden;position:relative}
 .bar i{display:block;height:100%;width:100%;transition:width .18s}
 #phpBar{background:linear-gradient(90deg,#16a34a,#4ade80)}
@@ -115,10 +115,8 @@ kbd{font-family:inherit;border:1px solid #ffffff44;border-bottom-width:3px;borde
 #flash{position:fixed;inset:0;pointer-events:none;z-index:40;opacity:0}
 #flash.red{animation:flashRed .35s}
 #flash.white{animation:flashWhite .4s}
-#flash.purple{animation:flashPurple .48s}
 @keyframes flashRed{from{opacity:1;box-shadow:inset 0 0 160px #ef4444}to{opacity:0}}
 @keyframes flashWhite{from{opacity:.8;background:#fff}to{opacity:0;background:#fff}}
-@keyframes flashPurple{from{opacity:.72;background:radial-gradient(circle,#e879f9,#7c3aed 65%,#1e0b3a)}to{opacity:0;background:#7c3aed}}
 #toast{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);background:#7f1d1dee;border:1px solid var(--bad);border-radius:10px;padding:6px 14px;font-size:15px;z-index:15;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
 #toast.show{opacity:1}
 
@@ -249,41 +247,12 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
 .legend{font-size:12px;color:var(--muted);text-align:center;margin:-4px 0 10px}
 @media (max-width:700px){ #chCards .upc{padding:8px 10px} #chCards .upc .ic{font-size:22px} #chCards .upc .ds{min-height:0;margin:2px 0 6px} #chCards .upc .w{font-size:22px} }
 .chsub2{text-align:center;font-size:14px;margin:0 0 10px;color:#e9d5ff}
-/* ---------- คัตซีน & เนื้อเรื่อง ---------- */
-#cineTop,#cineBot{position:absolute;left:0;right:0;z-index:11;background:#05020e;pointer-events:none}
-#cineTop{top:0;height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #a855f744;pointer-events:auto;animation:cineBarTop .35s ease-out}
-#cineBot{bottom:0;height:28px;border-top:1px solid #a855f733;animation:cineBarBot .35s ease-out}
-#cineTop[hidden],#cineBot[hidden]{display:none}
-#cineLabel{font-size:13px;font-weight:600;letter-spacing:1.4px;color:var(--violet2);text-transform:uppercase;text-shadow:0 0 10px #a855f788}
-#cineSkip{background:#221349cc;border:1px solid #c084fc66;color:#e9d5ff;border-radius:999px;padding:3px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s}
-#cineSkip:hover{background:#4c1d95;border-color:#f0abfc;color:#fff}
-#cineSkip kbd{font-size:10px;margin-left:3px}
-@keyframes cineBarTop{from{transform:translateY(-100%)}to{transform:none}}
-@keyframes cineBarBot{from{transform:translateY(100%)}to{transform:none}}
-
-#cineCard{position:absolute;left:50%;top:31%;transform:translate(-50%,-50%);z-index:11;text-align:center;pointer-events:none;width:min(680px,calc(100% - 32px));padding:18px 26px;
-  background:linear-gradient(90deg,transparent,#0b0520e8 16%,#0b0520e8 84%,transparent);border-top:2px solid var(--cc-col,#c084fc);border-bottom:2px solid var(--cc-col,#c084fc);
-  box-shadow:0 0 42px #7c3aed55;animation:cineCardIn .45s cubic-bezier(.2,.9,.3,1)}
-#cineCard[hidden]{display:none}
-#cineCard .cc-tag{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--cc-col,#c084fc);text-transform:uppercase;margin-bottom:4px}
-#cineCard .cc-title{font-size:clamp(28px,4.2vw,44px);font-weight:800;font-style:italic;line-height:1.1;color:#fff;text-shadow:0 0 22px var(--cc-col,#a855f7),0 3px 0 #000}
-#cineCard .cc-sub{font-size:15px;color:#e9d5ff;margin-top:6px;text-shadow:0 2px 0 #000}
-#cineCard.boss{background:linear-gradient(90deg,transparent,#2a0624ee 14%,#2a0624ee 86%,transparent);box-shadow:0 0 55px #ec489977}
-@keyframes cineCardIn{from{opacity:0;transform:translate(-50%,-50%) scale(.92);letter-spacing:6px}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
-
-#story{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);width:min(780px,calc(100% - 24px));z-index:12;background:linear-gradient(180deg,#160c32f5,#0d0720f8);border:2px solid var(--line);border-radius:16px;padding:12px 16px 10px;box-shadow:0 0 44px #6d28d977,inset 0 1px 0 #ffffff18;cursor:pointer;display:flex;gap:14px;align-items:flex-start}
+/* ---------- เนื้อเรื่องก่อนบอส ---------- */
+#story{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);width:min(760px,calc(100% - 24px));z-index:12;background:#120a28f2;border:2px solid var(--line);border-radius:14px;padding:12px 18px 10px;box-shadow:0 0 40px #6d28d966;cursor:pointer}
 #story[hidden]{display:none}
 #story.err .reply{animation:errShake .22s}
-.sp-port{flex:none;width:76px;height:76px;border-radius:12px;background:#0b0618;border:2px solid var(--line);overflow:hidden;position:relative;display:grid;place-items:center;box-shadow:0 0 16px #0008;transition:border-color .2s,box-shadow .2s}
-.sp-port canvas{width:100%;height:100%;display:block}
-.sp-port .sp-ic{font-size:34px;display:none}
-.sp-port.icon canvas{display:none}
-.sp-port.icon .sp-ic{display:block}
-.sp-port.talking{animation:portBob .32s ease-in-out infinite alternate}
-@keyframes portBob{from{transform:translateY(0)}to{transform:translateY(-2px)}}
-.sp-body{flex:1;min-width:0}
-#story .who{font-weight:700;font-size:15px;margin-bottom:3px;letter-spacing:.3px}
-#story .txt{font-size:19px;line-height:1.5;min-height:54px}
+#story .who{font-weight:700;font-size:15px;margin-bottom:4px}
+#story .txt{font-size:20px;line-height:1.5;min-height:60px}
 #story .reply .w{display:inline-block;font-size:26px;font-weight:600;background:#0006;border-radius:10px;padding:2px 14px;margin-top:4px}
 #story .reply .upcs{margin-top:6px}
 #story .reply .upc{padding:8px 10px}
@@ -295,14 +264,9 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
 #story .hint{font-size:12px;color:var(--muted);text-align:right;margin-top:4px}
 #story .hint kbd{font-size:11px}
 body.cine #words,body.cine #buf,body.cine #bottom,body.cine #legend,body.cine #combo{visibility:hidden}
-body.cine #story{cursor:pointer}
-@media (max-width:700px){
-  .sp-port{width:56px;height:56px}
-  #story{gap:10px;padding:10px 12px}
-  #story .txt{font-size:16px;min-height:44px}
-  #story .reply .upcs{flex-direction:row}
-  #cineCard{top:32%;padding:12px 14px}
-}
+body.cine #story{cursor:default}
+#arena.cine::before{content:'';position:absolute;left:0;right:0;top:0;height:9%;background:#000;z-index:11}
+@media (max-width:700px){ #story .txt{font-size:17px;min-height:48px} #story .reply .upcs{flex-direction:row} }
 #kb{position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0}
 /* ---------- title screen ---------- */
 #startScr{position:fixed;display:block;padding:0;background:#0b0618;backdrop-filter:none;overflow:hidden}
@@ -348,12 +312,6 @@ body.cine #story{cursor:pointer}
 .mi.lock{color:#fff;background:linear-gradient(90deg,#c026d3cc,transparent);border-left-color:#fff;transform:translateX(8px)}
 .mi.lock .ar{opacity:1;transform:none}
 .mi.off{opacity:.3}
-.mi[hidden]{display:none}
-.mi.cont{border-left-color:var(--cyan);background:linear-gradient(90deg,#0e749055,transparent)}
-.mi.cont.sel{background:linear-gradient(90deg,#0891b2ee,#7c3aedbb 60%,transparent);border-left-color:#67e8f9;box-shadow:-6px 0 24px -6px #22d3ee}
-.mi .badge{font-size:.58em;font-weight:600;background:#0891b2cc;color:#ecfeff;border:1px solid #67e8f988;border-radius:8px;padding:1px 8px;margin-left:8px;vertical-align:middle}
-#startScr.hasSave .mi{padding:min(4px,.42vh) 14px;font-size:clamp(14px,1.55vw,18.5px)}
-#startScr.hasSave .logo{margin-bottom:max(8px,1.6vh)}
 .mlist.err{animation:errShake .22s}
 .ts-hint{margin:6px 0 0 14px;font-size:12px;color:var(--muted)}
 .ts-hint kbd{margin-right:3px}
@@ -426,9 +384,6 @@ body.cine #story{cursor:pointer}
 #tourTip .dots i{width:7px;height:7px;border-radius:50%;background:#ffffff26}
 #tourTip .dots i.on{background:var(--gold)}
 #tourBtn{position:absolute;top:10px;right:56px;background:#0005;border:1px solid #ffffff22;color:var(--text);border-radius:8px;padding:2px 9px;cursor:pointer;z-index:30;font-weight:600;font-family:inherit}
-#pauseBtn{position:absolute;top:10px;right:96px;background:#0005;border:1px solid #ffffff22;color:var(--text);border-radius:8px;padding:2px 8px;cursor:pointer;z-index:30;font-weight:600;font-family:inherit}
-#pauseBtn[hidden]{display:none}
-#pauseBtn:hover,#tourBtn:hover,#mute:hover{border-color:var(--violet2);background:#24144ecc}
 /* ---------- ธาตุ / คำหลอก / กลไกบอสใหม่ ---------- */
 .slot .elem{position:absolute;top:6px;left:8px;font-size:12px;padding:0 6px;border-radius:6px;background:#0005;font-weight:600}
 .slot.el-fire{border-color:#fb923c66}
@@ -456,28 +411,25 @@ body.cine #story{cursor:pointer}
 .tbar2 .tn{display:flex;justify-content:space-between;margin-bottom:2px}
 .tbar2 .bar{height:8px;border-width:1px}
 .tbar2.dead{opacity:.35;text-decoration:line-through}
-/* ---------- เมนูหยุดชั่วคราว (Pause) ---------- */
-.pause-card{max-width:460px;text-align:center}
-.pbtns{display:flex;flex-direction:column;gap:10px;margin-top:14px}
-.pbtns.err{animation:errShake .22s}
-.pbtn{display:flex;align-items:center;gap:12px;width:100%;padding:12px 16px;border-radius:12px;border:2px solid var(--line);background:#1f1545;color:var(--text);font-size:18px;font-weight:600;cursor:pointer;transition:transform .1s,border-color .12s,background .12s,opacity .1s}
-.pbtn .ic{font-size:20px;width:28px;text-align:center}
-.pbtn .nm{flex:1;text-align:left}
-.pbtn .w{font-size:18px;font-weight:600;background:#0006;border-radius:8px;padding:2px 10px;color:var(--violet2)}
-.pbtn .w .rest{color:var(--violet2)}
-.pbtn.sel,.pbtn:hover{border-color:var(--violet2);background:linear-gradient(90deg,#5b21b6ee,#7c3aedcc);color:#fff;transform:translateX(3px);box-shadow:0 0 18px #8b5cf666}
-.pbtn.sel .w,.pbtn.sel .w .rest,.pbtn:hover .w,.pbtn:hover .w .rest{color:#fff}
-.pbtn.lock{border-color:#f0abfc;background:linear-gradient(90deg,#9333eaee,#c026d3cc);transform:translateX(6px);box-shadow:0 0 22px #d946ef88}
-.pbtn.off{opacity:.32}
-.pbtn.alt{background:#181036}
-.pause-tip{margin:12px 0 0;font-size:12px;color:var(--muted)}
+/* ---------- โหมดครู ---------- */
+#teacherScr .card{max-width:780px}
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.tfield label{display:block;font-size:13px;color:var(--violet2);margin-bottom:4px;font-weight:600}
+.tfield input[type=text],.tfield textarea,.tfield select{width:100%;background:#1f1545;border:2px solid var(--line);border-radius:10px;color:var(--text);font-family:inherit;font-size:15px;padding:8px 10px;outline:none}
+.tfield input[type=text]:focus,.tfield textarea:focus,.tfield select:focus{border-color:var(--violet2);box-shadow:0 0 12px #8b5cf655}
+.tfield textarea{min-height:112px;resize:vertical;line-height:1.5}
+.tpresets{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 8px}
+.tpresets button{background:#241852;border:1px solid var(--line);color:#e9d5ff;border-radius:999px;padding:4px 12px;font-size:13px;cursor:pointer}
+.tpresets button:hover{border-color:var(--violet2);background:#342272}
+.tmeta{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);margin-top:4px;flex-wrap:wrap;gap:8px}
+.tchk{display:flex;align-items:center;gap:6px;font-size:14px;color:#e9d5ff;cursor:pointer;margin-top:8px}
+@media (max-width:700px){ .tgrid{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
 <div id="game">
   <button id="mute" title="เปิด/ปิดเสียง">🔊</button>
   <button id="tourBtn" title="แนะนำหน้าจอ">?</button>
-  <button id="pauseBtn" title="หยุดเกม / เมนู (Esc)" hidden>⏸</button>
   <div id="tourBlock" hidden></div>
   <div id="tourHole" hidden></div>
   <div id="tourTip" hidden>
@@ -539,25 +491,7 @@ body.cine #story{cursor:pointer}
     </div>
 
     <div id="banner"><div class="bn"></div><div class="bt"></div></div>
-    <div id="cineTop" hidden>
-      <span id="cineLabel">🎬 CUTSCENE</span>
-      <button id="cineSkip" type="button">⏭ ข้ามคัตซีน <kbd>Esc</kbd></button>
-    </div>
-    <div id="cineCard" hidden>
-      <div class="cc-tag" id="ccTag"></div>
-      <div class="cc-title" id="ccTitle"></div>
-      <div class="cc-sub" id="ccSub"></div>
-    </div>
-    <div id="cineBot" hidden></div>
-    <div id="story" hidden>
-      <div class="sp-port" id="storyPort"><canvas id="portCv" width="76" height="76"></canvas><span class="sp-ic" id="portIc"></span></div>
-      <div class="sp-body">
-        <div class="who"></div>
-        <div class="txt"></div>
-        <div class="reply"></div>
-        <div class="hint"></div>
-      </div>
-    </div>
+    <div id="story" hidden><div class="who"></div><div class="txt"></div><div class="reply"></div><div class="hint"></div></div>
     <div id="fx"></div>
     <div id="toast"></div>
   </div>
@@ -591,12 +525,11 @@ body.cine #story{cursor:pointer}
         <div class="tagline">Type <b>✦</b> Fight <b>✦</b> Adventure</div>
       </div>
       <div class="mlist" id="menuList">
-        <button class="mi cont" id="continueBtn" data-m="continue" hidden><span class="ar">▶</span><span class="nm">เล่นต่อ<span class="badge" id="contTag"></span></span><span class="w"></span></button>
         <button class="mi sel" id="startBtn" data-m="start"><span class="ar">▶</span><span class="nm">เริ่มเกม</span><span class="w"></span></button>
         <button class="mi" id="practiceBtn" data-m="practice"><span class="ar">▶</span><span class="nm">ฝึกซ้อม<span class="new" id="practiceNew">มือใหม่</span></span><span class="w"></span></button>
         <button class="mi" id="endlessBtn" data-m="endless"><span class="ar">▶</span><span class="nm">Endless ♾</span><span class="w"></span></button>
         <button class="mi" id="bossBtn" data-m="boss"><span class="ar">▶</span><span class="nm">ท้าดวลบอส 👑</span><span class="w"></span></button>
-        <button class="mi" id="cutsceneBtn" data-m="cutscene"><span class="ar">▶</span><span class="nm">คัตซีน 🎬</span><span class="w"></span></button>
+        <button class="mi" id="teacherBtn" data-m="teacher"><span class="ar">▶</span><span class="nm">โหมดครู 👩‍🏫</span><span class="w"></span></button>
         <button class="mi" id="metaBtn1" data-m="shrine"><span class="ar">▶</span><span class="nm">ศาลเจ้า</span><span class="w"></span></button>
         <button class="mi" id="pvpBtn" data-m="duel"><span class="ar">▶</span><span class="nm">ดวล PvP</span><span class="w"></span></button>
         <button class="mi" id="helpBtn" data-m="help"><span class="ar">▶</span><span class="nm">วิธีเล่น</span><span class="w"></span></button>
@@ -623,7 +556,7 @@ body.cine #story{cursor:pointer}
         <div class="hi"><b>💨 Stamina</b>พิมพ์มั่วจะเหนื่อย ดาเมจเหลือครึ่งเดียว</div>
         <div class="hi"><b>🗺 แผนที่ &amp; บอส</b>7 ชั้น 5 บอส (👑 วรรณยุกต์ · 🪞 กระจก · 👁️ ล่องหน · 🔄 สลับแป้น · 👯 แฝด)</div>
         <div class="hi"><b>🪙 เหรียญ &amp; 💎 ศาลเจ้า</b>ช้อปที่ร้านเหมียวมิ และนำเศษคริสตัลไปอัปเกรดถาวร</div>
-        <div class="hi"><b>ก่ ภาษาไทย &amp; ⏸ หยุดเกม</b>วรรณยุกต์สลับลำดับได้ · กด <kbd>Esc</kbd> เพื่อเล่นต่อ เล่นใหม่ หรือกลับ Lobby</div>
+        <div class="hi"><b>👩‍🏫 โหมดครู &amp; ก่ ภาษาไทย</b>ใส่ชุดคำศัพท์เองแล้วแชร์ลิงก์ได้ · วรรณยุกต์สลับลำดับได้</div>
       </div>
       <div class="path" id="startPath"></div>
     </div>
@@ -670,15 +603,10 @@ body.cine #story{cursor:pointer}
 
   <!-- pause -->
   <div class="overlay" id="pauseScr" hidden>
-    <div class="card pause-card">
-      <div class="title" style="font-size:40px">⏸ หยุดชั่วคราว</div>
-      <p class="sub" id="pauseSub">กด <kbd>Esc</kbd> เพื่อเล่นต่อ</p>
-      <div class="pbtns" id="pauseBtns">
-        <button class="pbtn sel" id="resumeBtn" data-p="resume"><span class="ic">▶</span><span class="nm">เล่นต่อ</span><span class="w"></span></button>
-        <button class="pbtn" id="restartBtn" data-p="restart"><span class="ic">🔄</span><span class="nm">เล่นใหม่</span><span class="w"></span></button>
-        <button class="pbtn alt" id="lobbyBtn" data-p="lobby"><span class="ic">🏠</span><span class="nm">กลับ Lobby</span><span class="w"></span></button>
-      </div>
-      <p class="pause-tip"><kbd>↑</kbd><kbd>↓</kbd> + <kbd>Enter</kbd> · พิมพ์คำในกรอบ · หรือกด <kbd>Esc</kbd> เพื่อเล่นต่อ</p>
+    <div class="card" style="max-width:420px;text-align:center">
+      <div class="title" style="font-size:40px">หยุดชั่วคราว</div>
+      <p class="sub">กด <kbd>Esc</kbd> หรือคลิกเพื่อเล่นต่อ</p>
+      <button class="go" id="resumeBtn">เล่นต่อ</button>
     </div>
   </div>
 
@@ -696,9 +624,9 @@ body.cine #story{cursor:pointer}
       <div id="resKb"></div>
       <div class="topmiss" id="resTop"></div>
       <div class="row2">
-        <button class="go" id="againBtn">🔄 เล่นใหม่ <kbd>Enter</kbd></button>
+        <button class="go" id="againBtn">เริ่มรันใหม่ <kbd>Enter</kbd></button>
         <button class="go alt" id="metaBtn2">🏯 ศาลเจ้า</button>
-        <button class="go alt" id="menuBtn">🏠 กลับ Lobby</button>
+        <button class="go alt" id="menuBtn">เปลี่ยนโหมด</button>
       </div>
     </div>
   </div>
@@ -723,6 +651,43 @@ body.cine #story{cursor:pointer}
       <div class="pvstat" id="pvStat"></div>
       <div class="upcs" id="pvCards"></div>
       <div class="sub" style="text-align:center;margin:14px 0 0" id="pvHint">พิมพ์คำในกรอบดำเพื่อเลือก (หรือคลิก)</div>
+    </div>
+  </div>
+  <!-- โหมดครู: ใส่ชุดคำศัพท์เอง + แชร์ลิงก์ห้องเรียน -->
+  <div class="overlay" id="teacherScr" hidden>
+    <div class="card">
+      <div class="title" style="font-size:38px">👩‍🏫 โหมดครู — ชุดคำศัพท์เอง</div>
+      <div class="sub">วางรายการคำศัพท์ของวิชาที่ต้องการฝึก (คั่นด้วยบรรทัดใหม่หรือลูกน้ำ ,) รองรับทั้งไทย อังกฤษ ตัวเลข และวลี</div>
+      <div class="tpresets" id="tPresets"></div>
+      <div class="tfield">
+        <label for="tTitle">ชื่อชุดคำศัพท์</label>
+        <input type="text" id="tTitle" placeholder="เช่น คำศัพท์วิทยาศาสตร์ ป.6 / อาหารไทย">
+      </div>
+      <div class="tfield" style="margin-top:8px">
+        <label for="tWords">รายการคำศัพท์ (อย่างน้อย 1 คำ · แบ่งระดับ เร็ว/กลาง/แรง ให้อัตโนมัติ)</label>
+        <textarea id="tWords" placeholder="ต้มยำกุ้ง&#10;ผัดกะเพรา&#10;ก๋วยเตี๋ยว&#10;..."></textarea>
+        <div class="tmeta"><span id="tCount">0 คำ</span><span id="tWarn" style="color:var(--bad)"></span></div>
+      </div>
+      <div class="tgrid">
+        <div class="tfield">
+          <label for="tFoe">คู่ต่อสู้ / บอส</label>
+          <select id="tFoe"></select>
+        </div>
+        <div class="tfield">
+          <label for="tDiff">ระดับความยาก</label>
+          <select id="tDiff">
+            <option value="easy">ง่าย (ชาร์จช้า ดาเมจเบา)</option>
+            <option value="normal" selected>ปกติ</option>
+            <option value="hard">ยาก (ชาร์จไว ดาเมจแรง)</option>
+          </select>
+        </div>
+      </div>
+      <label class="tchk"><input type="checkbox" id="tSafe"> โหมดฝึกห้องเรียน (เลือดไม่หมด ไม่แพ้ — เหมาะสำหรับนักเรียนฝึกจนจบ)</label>
+      <div class="row2">
+        <button class="go" id="tStartBtn">⚔ เริ่มฝึกด้วยชุดคำนี้</button>
+        <button class="go alt" id="tShareBtn">📋 คัดลอกลิงก์ให้นักเรียน</button>
+        <button class="go alt" id="tBackBtn">↩ กลับเมนู</button>
+      </div>
     </div>
   </div>
   <div id="flash"></div>
@@ -992,140 +957,24 @@ function mapSVG(opts) {
     `<div class="legend">🔨👻👹 ศัตรู · 💀 ศัตรูเก่ง · ❓ เหตุการณ์ · 🔥 จุดพัก · 🐱 ร้าน · 👑🪞👁️🔄👯 บอส</div>`;
 }
 
-/* ---------- ระบบคัตซีน & เนื้อเรื่อง (4 องก์) ----------
-   บทของศัตรู/คีย์บอท/ผู้บรรยาย: กด Enter / Space (หรือคลิก) เพื่อไปต่อ · บทของไอริน: พิมพ์ประโยคเอง
-   Esc หรือปุ่ม "ข้ามคัตซีน": ข้ามไปที่ตัวเลือก หรือข้ามฉากเข้าเกมทันที */
+/* ---------- เนื้อเรื่องสั้นก่อนบอส ----------
+   บทของศัตรู/คีย์บอท: กด Enter (หรือคลิก) เพื่อไปต่อ · บทของไอริน: ต้องพิมพ์ประโยคเอง
+   ท้ายฉากเลือกท่าที (พิมพ์) ได้โบนัสต่างกัน · Esc = ข้ามไปที่ตัวเลือก */
 const SPEAKER = {
   queen:   ['👑 ราชินีวรรณยุกต์', '#f0abfc'],
   mirror:  ['🪞 จอมกระจกเงา', '#7dd3fc'],
   phantom: ['👁️ ภูตล่องหน', '#5eead4'],
   jester:  ['🔄 ตัวตลกสลับแป้น', '#bef264'],
   twins:   ['👯 แฝดอัคคี & วารี', '#fde047'],
-  bandit:  ['🔨 โจรค้อนคีย์', '#fbbf24'],
-  ghost:   ['👻 ภูตตัวเลข', '#67e8f9'],
-  oni:     ['👹 โอนิดาบแดง', '#f87171'],
   robo:    ['🤖 คีย์บอท', '#67e8f9'],
   me:      ['⌨ ไอริน (คุณ)', '#fbbf24'],
-  nar:     ['📜 บทบรรยาย', '#e9d5ff']
+  nar:     ['📜 บทส่งท้าย', '#e9d5ff']
 };
-const BOSS_SUB = {
-  queen:   'ผู้ขโมยเสียงสูงต่ำแห่งนครนีออน',
-  mirror:  'ภาพสะท้อนลวงตาแห่งห้องโถงกระจก',
-  phantom: 'เงาในสายหมอกที่ลบเลือนทุกถ้อยคำ',
-  jester:  'จอมป่วนผู้สลับสายแป้นพิมพ์กลางศึก',
-  twins:   'คู่พิฆาตสองธาตุ — อัคคีและวารี'
-};
-const SPEAKER_PITCH = { robo: 880, me: 620, nar: 420, bandit: 260, queen: 360, mirror: 480, phantom: 540, jester: 680, twins: 390 };
 /* ---------- ฉากจบหลังชนะบอส ---------- */
 const ENDINGS = {
   friend: { icon: '🤝', name: 'มิตรภาพ', desc: 'ราชินีกลายเป็นผู้ปกป้องวรรณยุกต์' },
   seal:   { icon: '🔒', name: 'ผู้พิทักษ์', desc: 'ผนึกราชินี แล้วไอรินเฝ้าวรรณยุกต์เอง' }
 };
-function hideCineUI() {
-  $('#story').hidden = true;
-  $('#cineTop').hidden = true;
-  $('#cineBot').hidden = true;
-  $('#cineCard').hidden = true;
-  $('#storyPort').classList.remove('talking');
-  document.body.classList.remove('cine');
-  arena.classList.remove('cine');
-}
-function clearStageFx() {
-  if (typeof fxLive !== 'undefined') { fxLive.length = 0; fxCharge = null; fxECharge = null; }
-  $('#fx').innerHTML = '';
-  $('#banner').classList.remove('show');
-  $('#toast').classList.remove('show');
-}
-function showCineUI(label) {
-  clearStageFx();
-  $('#cineLabel').textContent = label || '🎬 CUTSCENE';
-  $('#cineTop').hidden = false;
-  $('#cineBot').hidden = false;
-  $('#story').hidden = false;
-  $('#cineCard').hidden = true;
-  document.body.classList.add('cine');
-  arena.classList.add('cine');
-}
-function drawPortrait(who) {
-  const box = $('#storyPort'), cv = $('#portCv'), ic = $('#portIc');
-  const [, col] = SPEAKER[who] || [FOE.icon + ' ' + FOE.name, '#c084fc'];
-  box.style.borderColor = col;
-  box.style.boxShadow = `0 0 18px ${col}66, inset 0 0 16px ${col}33`;
-  if (who === 'nar') {
-    box.classList.add('icon'); ic.textContent = '📜'; return;
-  }
-  box.classList.remove('icon');
-  const ctx = cv.getContext('2d');
-  ctx.clearRect(0, 0, 76, 76);
-  const grd = ctx.createRadialGradient(38, 34, 4, 38, 42, 46);
-  grd.addColorStop(0, col + '44'); grd.addColorStop(1, '#090418');
-  ctx.fillStyle = grd; ctx.fillRect(0, 0, 76, 76);
-  if (who === 'robo') {
-    const rb = new Px(16, 12); rb.blit(ROBO.rows, 0, 0, ROBO.pal); rb.outline(OUT);
-    const tmp = rb.toCanvas(document.createElement('canvas'));
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(tmp, 6, 14, 64, 48);
-    return;
-  }
-  if (who === 'me') {
-    const im = airinArtOn && AIRIN_ART['idle-1'] && AIRIN_ART['idle-1'].naturalWidth ? AIRIN_ART['idle-1'] : null;
-    if (im) {
-      ctx.imageSmoothingEnabled = true;
-      const sx = im.naturalWidth * 0.24, sy = im.naturalHeight * 0.04, sw = im.naturalWidth * 0.52, sh = sw;
-      ctx.drawImage(im, sx, sy, sw, sh, 2, 2, 72, 72);
-    } else {
-      const sp = renderChar('airin', 'idle', 0, 0).px.toCanvas(document.createElement('canvas'));
-      ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(sp, 18, 2, 36, 36, 4, 4, 68, 68);
-    }
-    return;
-  }
-  const eim = ENEMY_ART[who] && ENEMY_ART[who].naturalWidth ? ENEMY_ART[who] : null;
-  if (eim) {
-    ctx.imageSmoothingEnabled = true;
-    const sw = Math.min(eim.naturalWidth, eim.naturalHeight * 0.72), sx = (eim.naturalWidth - sw) / 2, sy = eim.naturalHeight * 0.03;
-    ctx.drawImage(eim, sx, sy, sw, sw, 2, 2, 72, 72);
-  } else {
-    const sp = renderChar(CHARS[who] ? who : 'queen', 'idle', 0, 0).px.toCanvas(document.createElement('canvas'));
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(sp, 14, 2, 44, 44, 2, 2, 72, 72);
-  }
-}
-function openingScript() {
-  return [
-    { who: 'nar', mood: 'night', hideP: true, hideE: true,
-      card: { tag: 'ACT I · บทเปิดเรื่อง', title: 'ค่ำคืนที่เสียงหายไป', sub: 'นครนีออน — หอคอยแป้นพิมพ์ 7 ชั้น', color: '#c084fc' },
-      t: 'นครนีออนเคยสว่างไสวด้วยเสียงพิมพ์และถ้อยคำ... จนกระทั่งค่ำคืนหนึ่ง เสียงวรรณยุกต์ทุกตัวพลันหายไปจากเมือง' },
-    { who: 'queen', foeId: 'queen', hideP: true, hideE: false, eFromX: 258, eTargetX: 215, mood: 'vortex', fx: 'vortex', e: 'charge', flash: 'purple', shake: true, sfx: 'ult',
-      t: 'ไม้เอก ไม้โท ไม้ตรี ไม้จัตวา... ข้าจะยึดเสียงสูงต่ำทั้งหมดไว้แต่เพียงผู้เดียว! เมืองนี้จะต้องไร้เสียงตลอดกาล!' },
-    { who: 'robo', hideP: false, pFromX: -16, pTargetX: 96, hideE: true, mood: 'night', fx: null, p: 'idle', sfx: 'warn',
-      t: 'บี๊บ!! แจ้งเตือนฉุกเฉิน! ราชินีวรรณยุกต์ส่งสมุนยึดหอคอยครบทั้ง 7 ชั้นแล้ว... ไอริน มีแค่เธอที่ยังพิมพ์ได้!' },
-    { who: 'me', hideE: false, foeId: 'bandit', eFromX: 345, eTargetX: 228, mood: 'clash', p: 'charge', pfx: 'charge',
-      say: { th: 'คืนเสียงมา', en: 'take it back' } },
-    { who: 'bandit', mood: 'clash', p: 'attack', e: 'charge', flash: 'white', shake: true, sfx: 'counter', pfx: 'slash',
-      t: 'เฮ้ย! นักพิมพ์ตัวจ้อยคิดจะฝ่าด่านแรกขึ้นหอคอยเรอะ? ลองผ่านค้อนคีย์ของข้าไปก่อนเถอะ!' }
-  ];
-}
-function midScript(bossId) {
-  const b = ENEMIES.find(e => e.id === bossId) || ENEMIES.find(e => e.boss);
-  const taunt = {
-    queen:   'หึ... ฝ่ามาได้ถึงครึ่งหอคอยแล้วหรือ? วังวรรณยุกต์ของข้ารออยู่ชั้นบนสุด เข้ามาสิ!',
-    mirror:  'ภาพสะท้อนของเจ้าเริ่มสั่นไหวแล้วนะ นักพิมพ์... อีกไม่นานเราจะได้พบกันในห้องโถงกระจก',
-    phantom: 'หมอกกำลังหนาขึ้นเรื่อยๆ... คิดหรือว่าความจำของเจ้าจะพาไปถึงยอดหอคอยได้?',
-    jester:  'ฮิๆ เก่งเหมือนกันนี่นา! รีบขึ้นมาเลย ข้าเตรียมสลับสายคีย์บอร์ดรอไว้แล้ว!',
-    twins:   'สัมผัสได้ถึงความร้อนและสายน้ำไหม? อัคคีและวารีรอทดสอบเจ้าอยู่ที่ชั้นบน!'
-  }[b.id] || 'อีกไม่กี่ชั้นก็จะถึงยอดหอคอยแล้ว... เตรียมตัวให้พร้อม!';
-  return [
-    { who: 'nar', mood: 'ominous', hideP: false, hideE: true, pTargetX: 96,
-      card: { tag: 'ACT II · เขตชั้นใน', title: 'เงามืดเหนือหอคอย', sub: 'ครึ่งทางสู่ยอดหอคอยแป้นพิมพ์', color: '#f472b6' },
-      t: 'ไอรินก้าวเข้าสู่เขตชั้นในของหอคอยนีออน แสงไฟกะพริบถี่ขึ้น... คลื่นพลังของบอสแผ่ลงมาจากชั้นบนสุด' },
-    { who: 'robo', mood: 'ominous', hideE: true, p: 'block', sfx: 'warn',
-      t: `บี๊บ! ตรวจพบศัตรูระดับสูงและคำหลอกมากขึ้น! อีกไม่กี่ชั้นก็จะถึงห้องโถงของ${b.name}แล้วนะไอริน!` },
-    { who: b.id, foeId: b.id, hideE: false, eFromX: 340, eTargetX: 242, mood: 'vortex', fx: 'vortex', e: 'charge', flash: 'purple', shake: true, sfx: 'ult',
-      t: taunt },
-    { who: 'me', mood: 'clash', p: 'charge', pfx: 'charge', say: { th: 'ไม่ถอยหรอก', en: 'never yield' } }
-  ];
-}
 function endingScript() {
   const first = !META.wins, close = R.php < R.pmax * 0.25;
   if (FOE.id !== 'queen') {
@@ -1137,26 +986,24 @@ function endingScript() {
       twins:   'ทั้งอัคคีและวารี... พ่ายแพ้พร้อมกัน! จังหวะนิ้วของเจ้ารวดเร็วเกินคาด!'
     }[id];
     const L = [
-      { who: id, mood: 'ominous', e: 'hurt', shake: true, t: fall },
-      { who: 'robo', mood: 'dawn', fx: 'glyphs', flash: 'white', sfx: 'win', t: `บี๊บ! ปลดปล่อยพลังจาก${FOE.name}เรียบร้อย! ระบบแป้นพิมพ์กลับสู่สภาวะปกติแล้ว` }
+      { who: id, t: fall },
+      { who: 'robo', fx: 'glyphs', t: `บี๊บ! ปลดปล่อยพลังจาก${FOE.name}เรียบร้อย! ระบบแป้นพิมพ์กลับสู่สภาวะปกติแล้ว` }
     ];
     if (close) L.push({ who: 'robo', t: 'เลือดเหลือนิดเดียวเอง... แต่ผ่านมาได้อย่างเท่!' });
     L.push(
       { who: 'me', choice: [
         { icon: '🤝', name: 'จับมือ', desc: 'ชวนมาร่วมฝึกนักพิมพ์รุ่นใหม่', say: { th: 'ให้อภัย', en: 'forgive' }, ending: 'friend', then: [
           { who: id, t: 'หึ... ถ้าเจ้าว่าอย่างนั้น ครั้งหน้าข้าจะช่วยทดสอบนักพิมพ์คนอื่นแทนก็แล้วกัน' },
-          { who: 'nar', mood: 'dawn', p: 'win', card: { tag: 'EPILOGUE · จบบริบูรณ์', title: '🤝 แสงอรุณแห่งมิตรภาพ', sub: `ไอริน & ${FOE.name}`, color: '#fde047' },
-            t: `ไอรินและ${FOE.name}กลายเป็นคู่ซ้อมแห่งนครนีออน เสียงแป้นพิมพ์ดังก้องไปด้วยความหวัง` }] },
+          { who: 'nar', t: `ไอรินและ${FOE.name}กลายเป็นคู่ซ้อมแห่งนครนีออน เสียงแป้นพิมพ์ดังก้องไปด้วยความหวัง` }] },
         { icon: '🔒', name: 'ผนึก', desc: 'ผนึกพลังไว้ในแป้นพิมพ์', say: { th: 'ผนึก', en: 'seal' }, ending: 'seal', then: [
-          { who: 'robo', flash: 'purple', sfx: 'ult', t: 'กำลังผนึกข้อมูลบอสเข้าสู่คลัง... ๓... ๒... ๑... เรียบร้อย!' },
-          { who: 'nar', mood: 'dawn', p: 'win', card: { tag: 'EPILOGUE · จบบริบูรณ์', title: '🔒 ผู้พิทักษ์นครนีออน', sub: 'ความสงบสุขกลับคืนสู่แป้นพิมพ์', color: '#67e8f9' },
-            t: `ไอรินปราบ${FOE.name}และปกป้องแป้นพิมพ์แห่งนครนีออนไว้ได้อีกครั้ง` }] }] }
+          { who: 'robo', t: 'กำลังผนึกข้อมูลบอสเข้าสู่คลัง... ๓... ๒... ๑... เรียบร้อย!' },
+          { who: 'nar', t: `ไอรินปราบ${FOE.name}และปกป้องแป้นพิมพ์แห่งนครนีออนไว้ได้อีกครั้ง` }] }] }
     );
     return L;
   }
   const L = [
-    { who: 'queen', mood: 'ominous', e: 'hurt', shake: true, t: 'ไม่... ไม่จริง... นิ้วของเจ้าเร็วกว่าเสียงวรรณยุกต์ของข้าอีกหรือ...' },
-    { who: 'robo', mood: 'dawn', fx: 'glyphs', flash: 'white', sfx: 'win', t: 'บี๊บ! ตรวจพบวรรณยุกต์ไหลกลับคืนสู่นครนีออน! ไม้เอก ไม้โท ไม้ตรี ไม้จัตวา... ครบทุกตัว!' }
+    { who: 'queen', t: 'ไม่... ไม่จริง... นิ้วของเจ้าเร็วกว่าเสียงวรรณยุกต์ของข้าอีกหรือ...' },
+    { who: 'robo', fx: 'glyphs', t: 'บี๊บ! ตรวจพบวรรณยุกต์ไหลกลับคืนสู่นครนีออน! ไม้เอก ไม้โท ไม้ตรี ไม้จัตวา... ครบทุกตัว!' }
   ];
   if (R.revived) L.push({ who: 'robo', t: 'เกือบไปแล้วนะไอริน ดีที่มีขนนกฟีนิกซ์ติดตัวมาด้วย' });
   else if (close) L.push({ who: 'robo', t: 'เลือดเหลือนิดเดียวเอง... ระบบของผมเกือบช็อตแน่ะ!' });
@@ -1167,28 +1014,20 @@ function endingScript() {
       { icon: '🤝', name: 'ให้อภัย', desc: 'ยื่นมือให้ราชินี', say: { th: 'ให้อภัย', en: 'forgive' }, ending: 'friend', then: [
         { who: 'queen', e: 'hurt', t: '...เจ้ายังจะช่วยข้าอีกหรือ? หึ... นักพิมพ์ประหลาดจริงๆ' },
         { who: 'queen', t: 'ก็ได้ ข้าจะเฝ้าวรรณยุกต์พวกนี้ไว้เอง ไม่ให้ใครมาขโมยไปอีก' },
-        { who: 'nar', mood: 'dawn', p: 'win', card: { tag: 'EPILOGUE · ฉากจบมิตรภาพ', title: '🤝 แสงอรุณแห่งนครนีออน', sub: 'เสียงหัวเราะและเสียงวรรณยุกต์กลับคืนมา', color: '#fde047' },
-          t: 'นับแต่วันนั้น ราชินีกลายเป็นผู้ดูแลเสียงสูงต่ำของนครนีออน และทุกคืนจะมีเสียงหัวเราะดังมาจากวัง' }] },
+        { who: 'nar', t: 'นับแต่วันนั้น ราชินีกลายเป็นผู้ดูแลเสียงสูงต่ำของนครนีออน และทุกคืนจะมีเสียงหัวเราะดังมาจากวัง' }] },
       { icon: '🔒', name: 'ผนึก', desc: 'ผนึกราชินีไว้ในแป้นพิมพ์', say: { th: 'ผนึก', en: 'seal' }, ending: 'seal', then: [
-        { who: 'robo', flash: 'purple', sfx: 'ult', t: 'กำลังผนึก... ๓... ๒... ๑... บี๊บ! ผนึกลงแป้น Shift เรียบร้อย!' },
+        { who: 'robo', t: 'กำลังผนึก... ๓... ๒... ๑... บี๊บ! ผนึกลงแป้น Shift เรียบร้อย!' },
         { who: 'queen', t: 'จำไว้นะนักพิมพ์... ทุกครั้งที่เจ้ากด Shift ข้าจะเฝ้ามองอยู่...' },
-        { who: 'nar', mood: 'dawn', p: 'win', card: { tag: 'EPILOGUE · ฉากจบผู้พิทักษ์', title: '🔒 ผู้พิทักษ์แป้นพิมพ์', sub: 'ราชินีถูกผนึกไว้ในแป้น Shift', color: '#67e8f9' },
-          t: 'ไอรินกลายเป็นผู้พิทักษ์แป้นพิมพ์แห่งนครนีออน และคีย์บอทก็ไม่ยอมให้ใครแตะแป้น Shift อีกเลย' }] }] },
+        { who: 'nar', t: 'ไอรินกลายเป็นผู้พิทักษ์แป้นพิมพ์แห่งนครนีออน และคีย์บอทก็ไม่ยอมให้ใครแตะแป้น Shift อีกเลย' }] }] },
     { who: 'nar', t: first ? 'แต่ไกลออกไปในความมืด... แป้นพิมพ์อีกหลายแผงยังรอคอยนักพิมพ์ผู้กล้า' : 'การเดินทางของนักพิมพ์ยังไม่จบ... เสียงพิมพ์ดังขึ้นอีกครั้งที่ไหนสักแห่ง' }
   );
   return L;
 }
-function showEnding(preview) {
+function showEnding() {
   phase = 'story';
-  if (preview) {
-    R = newRun(); FOE = ENEMIES.find(e => e.id === 'queen'); S = freshState();
-    FIG.P.x = 96; FIG.E.id = FOE.sprite; FIG.E.x = 228; play(FIG.P, 'idle'); play(FIG.E, 'idle');
-    $('#eName').textContent = FOE.name; $('#eTag').textContent = 'EPILOGUE'; $('#wave').textContent = '🎬 บทส่งท้าย';
-  }
-  showCineUI('🎬 EPILOGUE · บทส่งท้าย');
-  ST = { kind: 'ending', lines: endingScript(), i: -1, buf: '', ending: null, end: true, preview: !!preview, mood: 'ominous', pTargetX: 96, eTargetX: 228, hideP: false, hideE: false };
-  kb.value = ''; kb.focus();
-  updatePauseBtn();
+  document.body.classList.add('cine'); arena.classList.add('cine');
+  ST = { lines: endingScript(), i: -1, buf: '', ending: null, end: true };
+  $('#story').hidden = false; kb.value = ''; kb.focus();
   nextLine();
 }
 const GLY = [];
@@ -1206,27 +1045,8 @@ function risingGlyphs(x, t) {
   }
   sctx.globalAlpha = 1;
 }
-// วรรณยุกต์สีทองถูกดูดเข้าหาบอสในวังวนสีม่วง (คัตซีนเปิดเรื่อง / กลางเรื่อง)
-function vortexGlyphs(cx, cy, t) {
-  sctx.save();
-  for (let r = 0; r < 3; r++) {
-    const rad = 28 + ((r * 34 - t * 48) % 102 + 102) % 102;
-    sctx.strokeStyle = `rgba(217,70,239,${(0.45 * (1 - rad / 135)).toFixed(2)})`;
-    sctx.lineWidth = 2;
-    sctx.beginPath(); sctx.ellipse(cx, cy, rad, rad * 0.55, 0, 0, Math.PI * 2); sctx.stroke();
-  }
-  for (let i = 0; i < 14; i++) {
-    const ph = (t * 0.38 + i / 14) % 1, inv = 1 - ph;
-    const ang = t * 2.4 + i * 0.9 + ph * 3.5;
-    const xx = cx + Math.cos(ang) * (16 + inv * 155), yy = cy + Math.sin(ang) * (10 + inv * 80);
-    sctx.globalAlpha = Math.min(1, ph * 4, inv * 3);
-    sctx.drawImage(glyphImg(i % MARKS.length), Math.round(xx) - 10, Math.round(yy) - 12, 20, 24);
-  }
-  sctx.restore();
-}
 function storyScript() {
   const again = META.wins > 0, low = R.php < R.pmax * 0.5, strong = R.ups.length >= 5;
-  const bossCard = { tag: 'WARNING // BOSS', title: `${FOE.icon} ${FOE.name}`, sub: BOSS_SUB[FOE.id] || trait(FOE), color: (SPEAKER[FOE.id] && SPEAKER[FOE.id][1]) || '#f0abfc', boss: true };
   if (FOE.id !== 'queen') {
     const id = FOE.id;
     const intro = {
@@ -1236,158 +1056,69 @@ function storyScript() {
       twins:   ['บี๊บ! ตรวจพบคลื่นความร้อนและคลื่นน้ำพร้อมกัน... ศัตรูมีสองตัว!', 'ข้าคืออัคคี! และข้าคือวารี! เลือกเป้าให้ถูกแล้วรับมือพวกเราสองคนพร้อมกันให้ได้!', 'อัคคีแพ้ 💧 น้ำ · วารีแพ้ 🌪️ ลม — ถ้าล้มตัวหนึ่ง อีกตัวจะโกรธนะ!']
     }[id];
     return [
-      { who: 'robo', mood: 'ominous', card: bossCard, sfx: 'warn', t: intro[0] },
-      { who: id, e: 'charge', mood: 'vortex', flash: 'purple', shake: true, pfx: 'burst', t: intro[1] },
-      { who: 'me', mood: 'clash', say: { th: 'พร้อมแล้ว', en: 'ready now' }, p: 'block' },
+      { who: 'robo', t: intro[0] },
+      { who: id, e: 'charge', t: intro[1] },
+      { who: 'me', say: { th: 'พร้อมแล้ว', en: 'ready now' }, p: 'block' },
       { who: 'robo', t: intro[2] },
       { who: 'me', choice: [
         { icon: '🔥', name: 'ใจกล้า', desc: 'เริ่มไฟต์ด้วยเกจท่าไม้ตาย +50%', say: { th: 'ลุยเลย', en: 'bring it' }, bonus: 'ult', p: 'attack',
-          then: [{ who: id, e: 'charge', shake: true, pfx: 'slash', t: 'น่าสนใจ! เข้ามาเลย!' }] },
+          then: [{ who: id, e: 'charge', t: 'น่าสนใจ! เข้ามาเลย!' }] },
         { icon: '🧊', name: 'ใจเย็น', desc: 'เริ่มไฟต์พร้อมโล่ 1 ครั้ง', say: { th: 'ตั้งการ์ด', en: 'stay calm' }, bonus: 'shield', p: 'block',
           then: [{ who: id, e: 'charge', t: 'ระวังตัวดีนี่... แต่จะกันได้นานแค่ไหนกัน?' }] }] }
     ];
   }
   return [
-    { who: 'robo', mood: 'ominous', card: bossCard, sfx: 'warn', t: 'บี๊บ! ตรวจพบคลื่นวรรณยุกต์ความเข้มสูง... ประตูข้างหน้าคือวังของราชินี!' },
-    { who: 'queen', e: 'charge', mood: 'vortex', flash: 'purple', shake: true, pfx: 'burst',
-      t: again ? 'เจ้าอีกแล้วหรือ นักพิมพ์... ครั้งก่อนข้าแค่ประมาท คราวนี้ไม่มีทางหรอก!'
-               : 'หึๆ... นักพิมพ์ตัวน้อย ฝ่าลูกน้องข้ามาจนถึงวังได้ด้วยหรือ' },
-    { who: 'queen', fx: 'vortex', t: 'ไม้เอก ไม้โท ไม้ตรี ไม้จัตวา... วรรณยุกต์ทุกตัวในนครนีออนเป็นของข้าแล้ว! คำทุกคำจะต้องไร้เสียงสูงต่ำตลอดไป' },
-    { who: 'me', mood: 'clash', fx: null, say: { th: 'คืนวรรณยุกต์มา', en: 'give them back' }, p: 'block' },
+    { who: 'robo', t: 'บี๊บ! ตรวจพบคลื่นวรรณยุกต์ความเข้มสูง... ประตูข้างหน้าคือวังของราชินี!' },
+    { who: 'queen', e: 'charge', t: again ? 'เจ้าอีกแล้วหรือ นักพิมพ์... ครั้งก่อนข้าแค่ประมาท คราวนี้ไม่มีทางหรอก!'
+                                         : 'หึๆ... นักพิมพ์ตัวน้อย ฝ่าลูกน้องข้ามาจนถึงวังได้ด้วยหรือ' },
+    { who: 'queen', t: 'ไม้เอก ไม้โท ไม้ตรี ไม้จัตวา... วรรณยุกต์ทุกตัวในนครนีออนเป็นของข้าแล้ว! คำทุกคำจะต้องไร้เสียงสูงต่ำตลอดไป' },
+    { who: 'me', say: { th: 'คืนวรรณยุกต์มา', en: 'give them back' }, p: 'block' },
     { who: 'queen', t: low ? 'เลือดเหลือแค่นั้น ยังกล้าสั่งข้าอีกหรือ? น่าขันจริงๆ!'
                      : strong ? 'อืม... เจ้าแข็งแกร่งขึ้นมากระหว่างทาง แต่ก็แค่นั้นแหละ'
                      : 'สั่งข้าหรือ? นิ้วแค่นั้นจะทำอะไรข้าได้' },
     { who: 'robo', t: 'ไอริน! ระวังนะ ถ้าเลือดนางเหลือครึ่ง นางจะโกรธแล้วโจมตีถี่ขึ้น!' },
     { who: 'me', choice: [
       { icon: '🔥', name: 'ใจกล้า', desc: 'เริ่มไฟต์ด้วยเกจท่าไม้ตาย +50%', say: { th: 'ลุยเลย', en: 'bring it' }, bonus: 'ult', p: 'attack',
-        then: [{ who: 'queen', e: 'charge', shake: true, pfx: 'slash', t: 'ฮะ! ใจกล้าดีนี่ มาดูกันว่าใครจะเหลือรอด!' }] },
+        then: [{ who: 'queen', e: 'charge', t: 'ฮะ! ใจกล้าดีนี่ มาดูกันว่าใครจะเหลือรอด!' }] },
       { icon: '🧊', name: 'ใจเย็น', desc: 'เริ่มไฟต์พร้อมโล่ 1 ครั้ง', say: { th: 'ตั้งการ์ด', en: 'stay calm' }, bonus: 'shield', p: 'block',
         then: [{ who: 'queen', e: 'charge', t: 'สุขุมดีนี่... แต่การ์ดนั่นจะทนได้สักกี่ที?' }] }] }
   ];
 }
 let ST = null;
 const storyLang = () => cfg.mode === 'en' ? 'en' : cfg.mode === 'bi' && Math.random() < .5 ? 'en' : 'th';
-function showOpeningCutscene(preview) {
+function showStory(nd) {
   phase = 'story';
-  if (preview) { R = newRun(); R.map = genMap(); }
-  FOE = ENEMIES.find(e => e.id === 'queen');
-  S = freshState(); [0, 1, 2].forEach(newSlotWord); renderWords();
-  FIG.P.x = 96; FIG.E.id = 'queen'; FIG.E.x = 340; play(FIG.P, 'idle'); play(FIG.E, 'idle');
-  $('#eName').textContent = 'นครนีออน'; $('#eTag').textContent = 'ACT I';
-  $('#wave').textContent = '🎬 บทเปิดเรื่อง';
-  showCineUI('🎬 ACT I · ค่ำคืนที่เสียงหายไป');
-  ST = { kind: 'opening', lines: openingScript(), i: -1, buf: '', preview: !!preview, mood: 'night', pTargetX: 96, eTargetX: 228, hideP: true, hideE: true };
-  kb.value = ''; kb.focus();
-  updatePauseBtn();
-  nextLine();
-}
-function showMidCutscene(nd, preview) {
-  phase = 'story';
-  if (preview) { R = newRun(); R.map = genMap(); }
-  const bnd = R.map && R.map[MAP_LAYERS - 1] && R.map[MAP_LAYERS - 1][0];
-  const bossId = (bnd && bnd.foe) || 'queen';
-  FOE = ENEMIES.find(e => e.id === bossId) || ENEMIES.find(e => e.boss);
-  S = freshState(); [0, 1, 2].forEach(newSlotWord); renderWords();
-  FIG.P.x = 96; FIG.E.id = FOE.sprite; FIG.E.x = 340; play(FIG.P, 'idle'); play(FIG.E, 'idle');
-  $('#eName').textContent = 'เขตชั้นใน'; $('#eTag').textContent = 'ACT II';
-  $('#wave').textContent = nd ? `ชั้น ${nd.layer + 1} / ${MAP_LAYERS}` : '🎬 เขตชั้นใน';
-  showCineUI('🎬 ACT II · เงามืดเหนือหอคอย');
-  ST = { kind: 'mid', nd, lines: midScript(bossId), i: -1, buf: '', preview: !!preview, mood: 'ominous', pTargetX: 96, eTargetX: 242, hideP: false, hideE: true };
-  kb.value = ''; kb.focus();
-  updatePauseBtn();
-  nextLine();
-}
-function showStory(nd, preview) {
-  phase = 'story';
-  if (preview) { R = newRun(); R.map = genMap(); nd = R.map[MAP_LAYERS - 1][0]; }
   FOE = makeFoe(nd); S = freshState(); [0, 1, 2].forEach(newSlotWord); renderWords();
-  FIG.P.x = 96; FIG.E.id = FOE.sprite; FIG.E.x = 360; play(FIG.P, 'idle'); play(FIG.E, 'idle');
+  FIG.E.id = FOE.sprite; FIG.E.x = 360; play(FIG.P, 'idle'); play(FIG.E, 'idle');
   $('#eName').textContent = FOE.name; $('#eTag').textContent = 'BOSS';
   $('#wave').textContent = `ชั้น ${nd.layer + 1} / ${MAP_LAYERS}`;
-  showCineUI(`🎬 ACT III · เผชิญหน้า${FOE.name}`);
-  ST = { kind: 'boss', nd, lines: storyScript(), i: -1, buf: '', bonus: null, preview: !!preview, mood: 'ominous', pTargetX: 96, eTargetX: 228, hideP: false, hideE: false };
-  if (!preview) saveRunSnapshot('bossStory');
-  kb.value = ''; kb.focus();
-  updatePauseBtn();
+  document.body.classList.add('cine'); arena.classList.add('cine');
+  ST = { nd, lines: storyScript(), i: -1, buf: '', bonus: null };
+  $('#story').hidden = false; kb.value = ''; kb.focus();
   nextLine();
-}
-function showCutsceneMenu() {
-  if (HELP) showHelp(false);
-  $('#startScr').hidden = true; $('#resultScr').hidden = true;
-  showChoice({
-    title: '🎬 โรงฉายคัตซีน',
-    sub: 'เลือกฉากเนื้อเรื่องที่ต้องการรับชม — พิมพ์คำใต้การ์ด (หรือคลิก) · กด Esc กลับ Lobby',
-    lobbyMenu: true,
-    opts: [
-      { icon: '🌃', name: 'บทที่ 1: ค่ำคืนที่เสียงหายไป', desc: 'คัตซีนเปิดเรื่อง — ราชินีขโมยวรรณยุกต์ & ไอรินออกศึก', word: { th: 'เปิด', en: 'intro' }, fn: () => showOpeningCutscene(true), end: 1 },
-      { icon: '⚡', name: 'บทที่ 2: เงามืดเหนือหอคอย', desc: 'คัตซีนกลางทาง — เข้าสู่เขตชั้นในของหอคอยนีออน', word: { th: 'กลาง', en: 'mid' }, fn: () => showMidCutscene(null, true), end: 1 },
-      { icon: '👑', name: 'บทที่ 3: เผชิญหน้าบอส', desc: 'คัตซีนก่อนสู้บอส — ปะทะราชินีวรรณยุกต์', word: { th: 'บอส', en: 'boss' }, fn: () => showStory(null, true), end: 1 },
-      { icon: '🌅', name: 'บทส่งท้าย: แสงอรุณ', desc: 'คัตซีนฉากจบ — เลือกโชคชะตาของราชินี (2 แบบ)', word: { th: 'จบ', en: 'end' }, fn: () => showEnding(true), end: 1 },
-      { icon: '🏠', name: 'กลับ Lobby', desc: 'กลับหน้าแรก', word: { th: 'ออก', en: 'lobby' }, fn: toMenu, end: 1 }
-    ]
-  });
-  $('#chCards').style.display = 'grid';
-  $('#chCards').style.gridTemplateColumns = 'repeat(auto-fit,minmax(220px,1fr))';
 }
 function nextLine() {
   ST.i++; ST.buf = ''; kb.value = '';
   const L = ST.lines[ST.i];
   if (!L) return endStory();
-  ST.shown = 0; ST.full = !L.t; ST.lastBlip = 0;
-  if (L.foeId) FIG.E.id = L.foeId;
-  if (L.hideE !== undefined) ST.hideE = L.hideE;
-  if (L.hideP !== undefined) ST.hideP = L.hideP;
-  if (L.eFromX !== undefined) FIG.E.x = L.eFromX;
-  if (L.eTargetX !== undefined) ST.eTargetX = L.eTargetX;
-  if (L.pFromX !== undefined) FIG.P.x = L.pFromX;
-  if (L.pTargetX !== undefined) ST.pTargetX = L.pTargetX;
-  if (L.mood) ST.mood = L.mood;
-  if (L.fx !== undefined) { ST.fx = L.fx; ST.fxT = 0; }
-  const cardEl = $('#cineCard');
-  if (L.card) {
-    $('#ccTag').textContent = L.card.tag || '';
-    $('#ccTitle').textContent = L.card.title || '';
-    $('#ccSub').textContent = L.card.sub || '';
-    cardEl.style.setProperty('--cc-col', L.card.color || '#c084fc');
-    cardEl.classList.toggle('boss', !!L.card.boss);
-    cardEl.hidden = false;
-    cardEl.style.animation = 'none'; void cardEl.offsetWidth; cardEl.style.animation = '';
-  } else if (!L.keepCard) {
-    cardEl.hidden = true;
-  }
+  ST.shown = 0; ST.full = !L.t;
   const [name, col] = SPEAKER[L.who] || [FOE.icon + ' ' + FOE.name, '#f0abfc'];
   const who = $('#story .who'); who.textContent = name; who.style.color = col;
-  drawPortrait(L.who);
   if (L.e) { play(FIG.E, L.e); if (L.e === 'charge') setTimeout(() => phase === 'story' && FIG.E.st === L.e && play(FIG.E, 'idle'), 900); }
-  if (L.p) { play(FIG.P, L.p); if (L.p === 'attack') setTimeout(() => phase === 'story' && FIG.P.st === 'attack' && play(FIG.P, 'idle'), 550); }
-  if (L.flash) flash(L.flash);
-  if (L.shake) shake();
-  if (L.sfx === 'warn') SFX.warn();
-  else if (L.sfx === 'ult') SFX.ultStart();
-  else if (L.sfx === 'win') SFX.win();
-  else if (L.sfx === 'counter') SFX.counter();
-  else if (L.sfx === 'block') SFX.block();
-  else if (L.sfx === 'hit') SFX.hit(0.8);
-  else if (L.who !== 'me' && L.who !== 'nar') tone(SPEAKER_PITCH[L.who] || 520, 0.05, 'square', 0.04);
-  if (L.pfx && window.PFX) {
-    const ef = FX_ENEMY[FIG.E.id] || FX_ENEMY.queen;
-    if (L.pfx === 'slash') fxAt('slash', FIG.P.x * 2 + 54, { y: (GROUND * 2 - 74) / FXK, palette: FX_PURPLE, size: 1.5, scale: 1.5 });
-    else if (L.pfx === 'charge') fxAt('hitSparks', FIG.P.x * 2 + 12, { y: (GROUND * 2 - 64) / FXK, palette: FX_SPARK, size: 1.2 });
-    else if (L.pfx === 'burst') fxAt('hitSparks', FIG.E.x * 2, { y: (GROUND * 2 - 80) / FXK, palette: ef.sp, size: 1.5, count: 16 });
-  }
+  if (L.fx) { ST.fx = L.fx; ST.fxT = 0; SFX.win(); }
+  if (L.p) play(FIG.P, L.p);
   if (L.say) { const lang = storyLang(); L.w = makeWord(L.say[lang], lang, 'story'); }
   if (L.choice) L.choice.forEach(c => { const lang = storyLang(); c.w = makeWord(c.say[lang], lang, 'story'); });
-  lastStageF = -1;
+  if (L.who !== 'me' && L.who !== 'nar') tone(L.who === 'robo' ? 880 : 520, 0.05, 'square', 0.04);
   renderStory();
 }
 function renderStory() {
   const L = ST.lines[ST.i], txt = $('#story .txt'), rep = $('#story .reply'), hint = $('#story .hint');
   $('#story').classList.toggle('choice', !!L.choice);
-  $('#storyPort').classList.toggle('talking', L.t !== undefined && !ST.full);
   if (L.t !== undefined) {
     txt.textContent = [...L.t].slice(0, Math.floor(ST.shown)).join('');
     rep.innerHTML = '';
-    hint.innerHTML = (ST.full ? '<kbd>Enter</kbd> / <kbd>Space</kbd> ต่อไป' : '<kbd>Enter</kbd> แสดงทั้งหมด') + ' · <kbd>Esc</kbd> ข้าม';
+    hint.innerHTML = (ST.full ? '<kbd>Enter</kbd> ต่อไป' : '<kbd>Enter</kbd> แสดงทั้งหมด') + ' · <kbd>Esc</kbd> ข้าม';
   } else if (L.say) {
     txt.textContent = 'พิมพ์คำพูดของคุณ:';
     rep.innerHTML = `<span class="w">${wordHTML(L.w, ST.buf)}</span>`;
@@ -1404,39 +1135,26 @@ function renderStory() {
   }
 }
 function storyTick(dt) {
-  const eT = ST.eTargetX != null ? ST.eTargetX : 228;
-  const pT = ST.pTargetX != null ? ST.pTargetX : 96;
-  if (Math.abs(FIG.E.x - eT) > 0.5) FIG.E.x += Math.sign(eT - FIG.E.x) * Math.min(Math.abs(eT - FIG.E.x), 180 * dt);
-  if (Math.abs(FIG.P.x - pT) > 0.5) FIG.P.x += Math.sign(pT - FIG.P.x) * Math.min(Math.abs(pT - FIG.P.x), 180 * dt);
+  if (FIG.E.x > 228) FIG.E.x = Math.max(228, FIG.E.x - 160 * dt);   // ราชินีเดินเข้าฉาก
   if (ST.fx) ST.fxT += dt;
   const L = ST.lines[ST.i];
   if (L && L.t && !ST.full) {
     const was = Math.floor(ST.shown);
-    ST.shown += dt * 42;
-    const now = Math.floor(ST.shown);
+    ST.shown += dt * 38;
     if (ST.shown >= [...L.t].length) ST.full = true;
-    if (now !== was) {
-      if (now - (ST.lastBlip || 0) >= 3 && !ST.full) {
-        ST.lastBlip = now;
-        const f = SPEAKER_PITCH[L.who] || 480;
-        tone(f + ((now * 19) % 40) - 20, 0.025, 'triangle', 0.018);
-      }
-      renderStory();
-    }
+    if (Math.floor(ST.shown) !== was) renderStory();
   }
 }
 function storyAdvance() {
   const L = ST.lines[ST.i];
-  if (!L || L.t === undefined) return;   // บทของเราต้องพิมพ์
+  if (L.t === undefined) return;   // บทของเราต้องพิมพ์
   if (!ST.full) { ST.shown = [...L.t].length; ST.full = true; renderStory(); return; }
   nextLine();
 }
 function storySkip() {
-  if (!ST) return;
-  if (ST.preview) return endStory();
   const ci = ST.lines.findIndex(l => l.choice);
-  if (ci >= 0 && ST.i < ci) { ST.i = ci - 1; nextLine(); }
-  else endStory();
+  if (ST.i < ci) { ST.i = ci - 1; nextLine(); }
+  else storyAdvance();
 }
 function storyInput() {
   const L = ST.lines[ST.i];
@@ -1462,21 +1180,14 @@ function pickStory(c) {
   nextLine();
 }
 function endStory() {
-  const cur = ST;
-  ST = null;
-  hideCineUI();
-  FIG.P.x = 96;
-  if (!cur) return;
-  if (cur.preview) return showCutsceneMenu();
-  if (cur.kind === 'opening') return enterNode(R.map[0][0]);
-  if (cur.kind === 'mid') return enterNode(cur.nd, true);
-  if (cur.end) {
-    const e = cur.ending || 'friend';
+  $('#story').hidden = true; document.body.classList.remove('cine'); arena.classList.remove('cine');
+  if (ST.end) {
+    const e = ST.ending || 'friend';
     R.ending = e; META.endings = Object.assign({}, META.endings, { [e]: (META.endings && META.endings[e] || 0) + 1 }); saveMeta();
-    return showResult(true);
+    ST = null; return showResult(true);
   }
   META.story = (META.story || 0) + 1; saveMeta();
-  R.storyBonus = cur.bonus;
+  R.storyBonus = ST.bonus; ST = null;
   startFight();
 }
 
@@ -1677,9 +1388,15 @@ function newSlotWord(i, forceSafe) {
   if (S.def) others.push(S.def);
   let w;
   for (let k = 0; k < 40; k++) {
-    const lang = pickLang();
-    const pool = Math.random() < (FOE.boss ? 0.85 : 0.7) ? FOE.words[lang] : WORDS[lang];
-    const txt = pick(pool[TIERS[i]]);
+    let txt, lang;
+    if (R && R.teacher && R.teacherWords) {
+      txt = pick(R.teacherWords[TIERS[i]]);
+      lang = [...txt].some(isThai) ? 'th' : 'en';
+    } else {
+      lang = pickLang();
+      const pool = Math.random() < (FOE.boss ? 0.85 : 0.7) ? FOE.words[lang] : WORDS[lang];
+      txt = pick(pool[TIERS[i]]);
+    }
     w = makeWord(txt, lang, 'atk');
     if (!others.some(o => o.text === w.text || o.c[0].b === w.c[0].b)) break;
   }
@@ -1692,7 +1409,7 @@ function newSlotWord(i, forceSafe) {
     w.elem = pick(fresh.length && Math.random() < 0.7 ? fresh : ELEM_KEYS);
   }
   // คำหลอก (Decoy): สุ่มเกิดได้เฉพาะช่อง 0 หรือ 1 (ทีละไม่เกิน 1 ช่อง, ตั้งแต่ชั้น 2 / ด่าน 2 / ท้าบอส)
-  const canTrap = !forceSafe && R && !R.practice && !R.pvp && i < 2 &&
+  const canTrap = !forceSafe && R && !R.practice && !R.pvp && !R.teacher && i < 2 &&
     ((R.at && R.at.layer >= 1) || (R.endless && R.wave >= 2) || R.bossMode) &&
     !S.slots.some((x, j) => j !== i && x && x.trap);
   const trapChance = FOE.boss || FOE.elite ? 0.22 : cfg.diff === 'easy' ? 0.08 : 0.14;
@@ -2046,104 +1763,47 @@ function placeFighter(el, x2) {
   el.style.left = (ox + (x2 - 50) * k) + 'px'; el.style.top = (oy + (GROUND * 2 - 124) * k) + 'px';
   el.style.width = (100 * k) + 'px'; el.style.height = (116 * k) + 'px';
 }
-function drawCutsceneBackFX(mood) {
-  sctx.save();
-  sctx.setTransform(1, 0, 0, 1, 0, 0);
-  if (mood === 'night') {
-    sctx.fillStyle = 'rgba(7,4,26,0.38)'; sctx.fillRect(0, 0, 640, 360);
-    sctx.strokeStyle = 'rgba(167,139,250,0.28)'; sctx.lineWidth = 1;
-    for (let i = 0; i < 28; i++) {
-      const rx = ((i * 67 + gclock * 45) % 680) - 20;
-      const ry = ((i * 53 + gclock * 260) % 380) - 20;
-      sctx.beginPath(); sctx.moveTo(rx, ry); sctx.lineTo(rx - 5, ry + 18); sctx.stroke();
-    }
-  } else if (mood === 'ominous' || mood === 'vortex') {
-    sctx.fillStyle = 'rgba(34,4,46,0.42)'; sctx.fillRect(0, 0, 640, 360);
-    if (Math.sin(gclock * 7.3) > 0.96) { sctx.fillStyle = 'rgba(240,171,252,0.16)'; sctx.fillRect(0, 0, 640, 360); }
-    for (let i = 0; i < 16; i++) {
-      const ex = (i * 43 + Math.sin(gclock + i) * 18) % 640;
-      const ey = 320 - ((gclock * 38 + i * 29) % 280);
-      sctx.fillStyle = i % 2 ? 'rgba(232,121,249,0.55)' : 'rgba(244,63,94,0.45)';
-      sctx.fillRect(Math.round(ex), Math.round(ey), 3, 3);
-    }
-  } else if (mood === 'dawn') {
-    const grd = sctx.createLinearGradient(0, 0, 0, 340);
-    grd.addColorStop(0, 'rgba(251,191,36,0.22)'); grd.addColorStop(0.55, 'rgba(192,132,252,0.14)'); grd.addColorStop(1, 'rgba(15,8,34,0)');
-    sctx.fillStyle = grd; sctx.fillRect(0, 0, 640, 360);
-  }
-  sctx.restore();
-}
-function drawCutsceneFrontFX(mood, xO2) {
-  sctx.save();
-  sctx.setTransform(1, 0, 0, 1, 0, 0);
-  if (ST && ST.fx === 'vortex') vortexGlyphs(xO2, GROUND * 2 - 78, ST.fxT);
-  if (ST && ST.fx === 'glyphs') risingGlyphs(xO2, ST.fxT);
-  if (mood === 'clash') {
-    for (let i = 0; i < 12; i++) {
-      const ph = (gclock * 2.2 + i * 0.27) % 1;
-      const sx = 320 + Math.cos(i * 1.7 + gclock * 5) * (10 + ph * 64);
-      const sy = GROUND * 2 - 74 + Math.sin(i * 2.1 + gclock * 4) * (8 + ph * 42);
-      sctx.fillStyle = i % 2 ? `rgba(192,132,252,${(1 - ph).toFixed(2)})` : `rgba(251,191,36,${(1 - ph).toFixed(2)})`;
-      sctx.fillRect(Math.round(sx), Math.round(sy), 3, 3);
-    }
-  }
-  const vig = sctx.createRadialGradient(320, 180, 140, 320, 180, 370);
-  vig.addColorStop(0, 'rgba(0,0,0,0)'); vig.addColorStop(1, 'rgba(6,2,18,0.52)');
-  sctx.fillStyle = vig; sctx.fillRect(0, 0, 640, 360);
-  sctx.restore();
-}
 function drawStage() {
   const sf = airinArtOn ? 30 : FPS;   // painted frames move at 30 fps; pixel sprites still step at FPS
   const fr = Math.floor(gclock * sf);
   if (fr === lastStageF) return;
   lastStageF = fr; cvIdx = 0;
   const gt = Math.floor(gclock * FPS) / FPS, A = FIG.P, O = FIG.E;
-  const cine = phase === 'story' && ST;
-  const showP = !(cine && ST.hideP), showE = !(cine && ST.hideE);
   if (CHARS.twins) CHARS.twins.alive = S && S.twins ? S.twins.map(t => t.hp > 0 ? 1 : 0) : [1, 1];
   const art = airinArtOn && A.id === 'airin';   // painted keyframes replace Airin's pixel sprite
   sctx.imageSmoothingEnabled = false;
   sctx.setTransform(2, 0, 0, 2, 0, 0); sctx.drawImage(BG, 0, 0);
-  if (cine) drawCutsceneBackFX(ST.mood);
-  sctx.setTransform(2, 0, 0, 2, 0, 0);
   const RA = renderFig(A), RO = renderFig(O);
   if (S && S.enraged && O.st !== 'charge' && O.st !== 'ko') { const g = Math.floor(gclock * FPS) % 2 ? '#e879f9' : '#a855f7'; RO.px.outline(g); RO.px.outline(g + '66'); }
   const eart = !!enemyArt(O);   // painted enemy still replaces its pixel sprite
   const xA = art ? A.x - knock(A) : A.x + RA.pose.travel * 50 - knock(A), xO = eart ? O.x + knock(O) : O.x - RO.pose.travel * 50 + knock(O);
   // เงาใต้เท้า
-  const shXs = []; if (showP) shXs.push(xA); if (showE) shXs.push(xO);
-  for (const x of shXs) { sctx.fillStyle = '#140b30'; sctx.fillRect(Math.round(x) - 12, GROUND - 1, 26, 1); sctx.fillRect(Math.round(x) - 8, GROUND, 18, 1); }
+  for (const x of [xA, xO]) { sctx.fillStyle = '#140b30'; sctx.fillRect(Math.round(x) - 12, GROUND - 1, 26, 1); sctx.fillRect(Math.round(x) - 8, GROUND, 18, 1); }
   // ฝุ่นตอนพุ่ง
   const dust = (x, f, dir) => {
     if (f.st !== 'attack' || f.t < .13 || f.t > .45) return;
     const k = (f.t - .13) / .32;
     for (let i = 0; i < 4; i++) pset(x - dir * (6 + i * 4 + k * 8), GROUND - 1 - Math.round(k * 3 + (i % 2)), k > .6 ? '#6d4bd6' : '#a78bfa');
   };
-  if (showP) dust(xA, A, 1); if (showE) dust(xO, O, -1);
+  dust(xA, A, 1); dust(xO, O, -1);
   // คีย์บอทลอยตามไอริน
-  if (showP) {
-    const rb = new Px(16, 12); rb.blit(ROBO.rows, 0, 0, ROBO.pal); rb.outline(OUT);
-    sctx.drawImage(rb.toCanvas(tmpCv()), Math.round(A.x - 44 + Math.sin(gclock * 1.3) * 3 + RA.pose.travel * 10), 84 + Math.round(Math.sin(gclock * 2.4) * 2));
-  }
+  const rb = new Px(16, 12); rb.blit(ROBO.rows, 0, 0, ROBO.pal); rb.outline(OUT);
+  sctx.drawImage(rb.toCanvas(tmpCv()), Math.round(A.x - 44 + Math.sin(gclock * 1.3) * 3 + RA.pose.travel * 10), 84 + Math.round(Math.sin(gclock * 2.4) * 2));
   // ออร่าท่าไม้ตาย
-  if (showP && !art && A.st === 'ult') for (let i = 0; i < 22; i++) {
+  if (!art && A.st === 'ult') for (let i = 0; i < 22; i++) {
     const ph = (gclock * .8 + i * .37) % 1;
     pset(A.x - 18 + ((i * 37) % 36), GROUND - 4 - ph * 70, i % 2 ? '#e879f9' : '#c084fc');
   }
   // ตัวละครที่ความละเอียดเต็ม (640×360)
   sctx.setTransform(1, 0, 0, 1, 0, 0);
-  if (showE) {
-    if (eart) drawEnemyArt(O, xO * 2, S && S.enraged && O.st !== 'charge');
-    else blitSprite(RO.px, xO * 2, true, O.st === 'ko' ? O.t : 0);
-  }
-  if (showP) {
-    if (art) drawAirinArt(A, xA * 2); else blitSprite(RA.px, xA * 2, false, A.st === 'ko' ? A.t : 0);
-  }
-  if (cine) drawCutsceneFrontFX(ST.mood, xO * 2);
-  if (showE && !eart && O.id === 'queen' && O.st !== 'ko' && !(ST && ST.end)) drawGlyphs(sctx, xO * 2, GROUND * 2 - 89, gt, 62, 10);
-  if (showP && !art && A.st === 'attack' && A.t >= .18 && A.t < .45) slashArc(xA * 2 + 26, GROUND * 2 - 86, 46, -75, 70, 9, (A.t - .18) / .27, ARC.airin);
-  if (showE && !window.PFX && O.st === 'attack' && O.t >= .18 && O.t < .45) slashArc(xO * 2 - 24, GROUND * 2 - 92, 58, -110, 55, 11, (O.t - .18) / .27, ARC[O.id] || ARC.oni, true);
-  if (showP && !art && A.st === 'ult' && A.t > .3) for (let i = 0; i < 3; i++) {
+  if (eart) drawEnemyArt(O, xO * 2, S && S.enraged && O.st !== 'charge');
+  else blitSprite(RO.px, xO * 2, true, O.st === 'ko' ? O.t : 0);
+  if (art) drawAirinArt(A, xA * 2); else blitSprite(RA.px, xA * 2, false, A.st === 'ko' ? A.t : 0);
+  if (ST && ST.fx === 'glyphs') risingGlyphs(xO * 2, ST.fxT);
+  if (!eart && O.id === 'queen' && O.st !== 'ko' && !(ST && ST.end)) drawGlyphs(sctx, xO * 2, GROUND * 2 - 89, gt, 62, 10);
+  if (!art && A.st === 'attack' && A.t >= .18 && A.t < .45) slashArc(xA * 2 + 26, GROUND * 2 - 86, 46, -75, 70, 9, (A.t - .18) / .27, ARC.airin);
+  if (!window.PFX && O.st === 'attack' && O.t >= .18 && O.t < .45) slashArc(xO * 2 - 24, GROUND * 2 - 92, 58, -110, 55, 11, (O.t - .18) / .27, ARC[O.id] || ARC.oni, true);
+  if (!art && A.st === 'ult' && A.t > .3) for (let i = 0; i < 3; i++) {
     const y = GROUND * 2 - 20 - ((gclock * 140 + i * 47) % 160);
     for (let k = 0; k < 10; k++) pset(xA * 2 - 30 + i * 30 + Math.sin(y * .1 + i) * 3, y + k, k < 3 ? '#ffffff' : '#e879f9');
   }
@@ -2211,7 +1871,7 @@ function trapHit(i) {
   fx('hurtp', '☠️ คำหลอก! -' + dmg, P, 0, -10);
   if (S.combo >= 3) fx('bad', 'คอมโบหลุด', P, 0, -45);
   S.combo = 0; S.stats.errors++;
-  const safe = R.practice;
+  const safe = R.practice || (R.teacher && R.teacherSafe);
   S.php = Math.max(safe ? 1 : 0, S.php - dmg);
   newSlotWord(i, true);
   anim($('#s' + i), 'pop', 260);
@@ -2302,7 +1962,7 @@ function enemyHit() {
     fx('hurtp', '-' + dmg, P);
     if (S.combo >= 3) fx('bad', 'คอมโบหลุด', P, 0, -40);
     S.combo = 0; renderWords();
-    const safe = R.practice;
+    const safe = R.practice || (R.teacher && R.teacherSafe);
     S.php = Math.max(safe ? 1 : 0, S.php - dmg);
     if (R.pvp) S.pvTaken += dmg;
     tutEvent('hurt');
@@ -2380,7 +2040,7 @@ kb.addEventListener('compositionend', () => { composing = false; onInput(); });
 kb.addEventListener('input', () => { if (!composing) onInput(); });
 
 function onInput() {
-  if (PAUSED) return pauseInput();
+  if (phase === 'teacher') return;
   if (phase === 'pick') return pickInput();
   if (phase === 'shop') return shopInput();
   if (phase === 'meta') return metaInput();
@@ -2429,254 +2089,33 @@ function onInput() {
 }
 
 document.addEventListener('keydown', e => {
+  if (phase === 'teacher') { if (e.key === 'Escape') { e.preventDefault(); closeTeacher(); } return; }
   if (document.activeElement && document.activeElement !== kb && /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) return;
-  if (PAUSED) {
-    if (e.key === 'Tab') { e.preventDefault(); return; }
-    if (e.key === 'Escape') { e.preventDefault(); setPause(false); return; }
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); pauseSel(PAUSE_SEL + (e.key === 'ArrowUp' ? -1 : 1)); SFX.tick(); return; }
-    if (e.key === 'Enter') { e.preventDefault(); pauseGo(); return; }
-    return;
-  }
   if (e.key === 'Tab') { e.preventDefault(); tryUlt(); return; }
   if (phase === 'story') {
     if (e.key === 'Escape') { e.preventDefault(); storySkip(); }
     else if (e.key === 'Enter') { e.preventDefault(); storyAdvance(); }
-    else if (e.key === ' ' && ST && ST.lines[ST.i] && ST.lines[ST.i].t !== undefined) { e.preventDefault(); storyAdvance(); }
     return;
   }
   if (phase === 'pvp') { if (e.key === 'Backspace' && !kb.value) pvBack(); return; }
   if (phase === 'menu' && HELP && (e.key === 'Escape' || e.key === 'Enter')) { e.preventDefault(); showHelp(false); return; }
   if (phase === 'menu' && !HELP && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) { e.preventDefault(); menuSel(MSEL + (e.key === 'ArrowUp' ? -1 : 1)); SFX.tick(); return; }
-  if (e.key === 'Escape') {
-    if (canPause()) { e.preventDefault(); setPause(true); return; }
-    if (phase === 'choice' && CH && CH.lobbyMenu) { e.preventDefault(); toMenu(); return; }
-    return;
-  }
+  if (e.key === 'Escape') { if (S && S.running && !R.pvp) setPause(!S.paused); return; }
   if (e.key === 'Enter') {
     if (phase === 'menu') { e.preventDefault(); menuGo(); return; }
     if (phase === 'result') { e.preventDefault(); again(); return; }
+    if (S && S.paused) { setPause(false); return; }
   }
 });
 document.addEventListener('mousedown', e => { if (!e.target.closest('button,input,textarea,select,label')) setTimeout(() => kb.focus(), 0); });
-window.addEventListener('blur', () => { if (phase === 'fight' && S && S.running && !PAUSED && !S.tour && !R.pvp) setPause(true); });
+window.addEventListener('blur', () => { if (phase === 'fight' && S && S.running && !S.paused && !S.tour && !R.pvp) setPause(true); });
 
-/* ================= Pause + Save/Continue + Restart + Lobby ================= */
-const SAVE_KEY = 'typegame.save.v1';
-let PAUSED = false, PAUSE_SEL = 0, PAUSE_BUF = '';
-const PAUSE_ITEMS = [
-  { id: 'resume',  w: { th: 'ต่อ',    en: 'resume' }, fn: () => setPause(false) },
-  { id: 'restart', w: { th: 'ใหม่',   en: 'again'  }, fn: () => restartGame() },
-  { id: 'lobby',   w: { th: 'ล็อบบี้', en: 'lobby'  }, fn: () => goLobby() }
-];
-function canPause() {
-  if (!R || R.pvp || (S && S.tour)) return false;
-  if (phase === 'fight') return !!(S && S.running);
-  if (phase === 'pick' || phase === 'shop') return true;
-  if (phase === 'choice') return !(CH && CH.lobbyMenu);
-  return false;
-}
-function updatePauseBtn() {
-  const b = $('#pauseBtn');
-  if (b) b.hidden = !canPause();
-}
-function pauseStatusText() {
-  if (!R) return 'กด Esc เพื่อเล่นต่อ';
-  if (R.practice) return '🎓 โหมดฝึกซ้อม';
-  if (R.bossMode) return `👑 ท้าดวลบอส · ${FOE.icon} ${FOE.name}`;
-  const hp = Math.ceil(phase === 'fight' && S ? S.php : R.php);
-  if (R.endless) return `♾ Endless ด่าน ${R.wave} · HP ${hp}/${R.pmax} · 🪙 ${R.coins}`;
-  return `🗺 ชั้น ${(R.at ? R.at.layer : 0) + 1} / ${MAP_LAYERS} · HP ${hp}/${R.pmax} · 🪙 ${R.coins}`;
-}
-function pauseWords() {
-  const L = metaLang();
-  return PAUSE_ITEMS.map(it => ({
-    it,
-    ws: Object.entries(it.w).map(([l, t]) => makeWord(t, l, 'open')),
-    disp: makeWord(it.w[L], L, 'open')
-  }));
-}
-function renderPause() {
-  const items = pauseWords();
-  items.forEach((p, i) => {
-    const el = $(`#pauseBtns .pbtn[data-p=${p.it.id}]`);
-    if (!el) return;
-    const ok = p.ws.some(w => match(PAUSE_BUF, w).ok);
-    const h = wordHTML(p.disp, match(PAUSE_BUF, p.disp).ok ? PAUSE_BUF : '');
-    el.querySelector('.w').innerHTML = PAUSE_BUF ? h : h.replace('class="next"', 'class="rest"');
-    el.classList.toggle('sel', !PAUSE_BUF && i === PAUSE_SEL);
-    el.classList.toggle('lock', PAUSE_BUF !== '' && ok);
-    el.classList.toggle('off', PAUSE_BUF !== '' && !ok);
-  });
-}
-function pauseSel(i) {
-  PAUSE_SEL = (i + PAUSE_ITEMS.length) % PAUSE_ITEMS.length;
-  PAUSE_BUF = ''; kb.value = '';
-  renderPause();
-}
-function pauseGo() {
-  SFX.tick();
-  PAUSE_ITEMS[PAUSE_SEL].fn();
-}
-function pauseInput() {
-  const v = kb.value.replace(/[`~_\s]/g, ''), items = pauseWords();
-  const done = v && items.find(p => p.ws.some(w => match(v, w).full));
-  if (done) { kb.value = ''; PAUSE_BUF = ''; return done.it.fn(); }
-  if (items.some(p => p.ws.some(w => match(v, w).ok))) {
-    if ([...v].length > [...PAUSE_BUF].length) SFX.tick();
-    PAUSE_BUF = v; kb.value = v;
-  } else {
-    kb.value = ''; PAUSE_BUF = '';
-    if (v) { SFX.err(); anim($('#pauseBtns'), 'err', 230); }
-  }
-  renderPause();
-}
 function setPause(p) {
-  PAUSED = !!p;
-  if (S) S.paused = PAUSED;
-  PAUSE_BUF = ''; kb.value = '';
-  $('#pauseScr').hidden = !PAUSED;
-  if (PAUSED) {
-    PAUSE_SEL = 0;
-    $('#pauseSub').textContent = pauseStatusText();
-    renderPause();
-  }
-  kb.focus();
-}
-function cleanupActiveState() {
-  PAUSED = false; PAUSE_BUF = '';
-  if (S) {
-    if (S.tour) endTour();
-    if (S.tut) tutStop();
-    S.running = false; S.paused = false; S.def = null; S.ultMode = false;
-  }
-  ST = null; SHOP = null; PK = null; CH = null;
-  E.classList.remove('charging');
-  ['#pauseScr', '#pickScr', '#chScr', '#shopScr', '#resultScr', '#metaScr', '#pvpScr', '#defBox', '#ultBox', '#mechBar', '#twinsHud'].forEach(q => { const el = $(q); if (el) el.hidden = true; });
-  clearStageFx();
-  hideCineUI();
-  updatePauseBtn();
-}
-function saveRunSnapshot(stageOverride) {
-  if (!R || R.practice || R.bossMode || R.pvp) return;
-  if (!R.endless && (!R.map || !R.at)) return;
-  const stage = stageOverride || (phase === 'fight' ? 'fight' : phase === 'pick' ? 'pick' : phase === 'shop' ? 'shop' : phase === 'story' ? 'bossStory' : CH && CH.map ? 'map' : (R.at && R.at.t === 'rest' ? 'rest' : R.at && R.at.t === 'event' ? 'event' : 'map'));
-  const snap = {
-    v: 1, kind: R.endless ? 'endless' : 'story', stage,
-    mode: cfg.mode, diff: cfg.diff,
-    R: {
-      php: Math.ceil(phase === 'fight' && S ? S.php : R.php),
-      pmax: R.pmax, coins: R.coins, earned: R.earned,
-      shields: phase === 'fight' && S ? S.shields : R.shields,
-      revive: R.revive, revived: !!R.revived, cleared: R.cleared, time: R.time,
-      maxCombo: R.maxCombo, ups: R.ups, bought: R.bought, taken: R.taken,
-      mod: R.mod, stats: R.stats, storyBonus: R.storyBonus || null, midCutsceneDone: !!R.midCutsceneDone,
-      endless: !!R.endless, wave: R.wave || 0, shopped: R.shopped || 0, bossOrder: R.bossOrder || null,
-      map: R.map ? R.map.map(row => row.map(n => ({ layer: n.layer, col: n.col, t: n.t, foe: n.foe || null, y: n.y, next: n.next }))) : null,
-      atIdx: R.map && R.at ? [R.at.layer, R.at.col] : null,
-      trailIdx: R.map ? R.trail.map(n => [n.layer, n.col]) : null,
-      at: R.endless ? R.at : null,
-      trail: R.endless ? R.trail : null
-    },
-    fight: stage === 'fight' && S ? {
-      foe: { id: FOE.id, name: FOE.name, hp: FOE.hp, dmg: FOE.dmg, idle: FOE.idle, elite: !!FOE.elite },
-      php: Math.ceil(S.php), ehp: Math.ceil(S.ehp), emax: S.emax,
-      ult: Math.round(S.ult), shields: S.shields, enraged: !!S.enraged,
-      twins: S.twins ? S.twins.map(t => ({ ...t })) : null
-    } : null
-  };
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify(snap)); } catch (e) {}
-}
-function loadRunSnapshot() {
-  try {
-    const d = JSON.parse(localStorage.getItem(SAVE_KEY));
-    return d && d.v === 1 && d.R ? d : null;
-  } catch (e) { return null; }
-}
-function clearSavedRun() {
-  try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
-}
-function updateContinueBtn() {
-  const snap = loadRunSnapshot(), btn = $('#continueBtn'), scr = $('#startScr');
-  if (!btn) return;
-  if (snap) {
-    btn.hidden = false;
-    scr.classList.add('hasSave');
-    $('#contTag').textContent = snap.kind === 'endless'
-      ? `♾ ด่าน ${snap.R.wave || 1} · HP ${snap.R.php}`
-      : `ชั้น ${((snap.R.atIdx && snap.R.atIdx[0]) || 0) + 1}/${MAP_LAYERS} · HP ${snap.R.php}`;
-  } else {
-    btn.hidden = true;
-    scr.classList.remove('hasSave');
-  }
-}
-function continueRun() {
-  const snap = loadRunSnapshot();
-  if (!snap) return startGame();
-  if (HELP) showHelp(false);
-  cleanupActiveState();
-  cfg.mode = snap.mode || cfg.mode;
-  cfg.diff = DIFF[snap.diff] ? snap.diff : cfg.diff;
-  document.querySelectorAll('[data-group=mode] .opt').forEach(o => o.classList.toggle('sel', o.dataset.v === cfg.mode));
-  document.querySelectorAll('[data-group=diff] .opt').forEach(o => o.classList.toggle('sel', o.dataset.v === cfg.diff));
-  const sr = snap.R;
-  R = newRun();
-  Object.assign(R, {
-    php: sr.php, pmax: sr.pmax, coins: sr.coins, earned: sr.earned, shields: sr.shields,
-    revive: sr.revive, revived: !!sr.revived, cleared: sr.cleared, time: sr.time,
-    maxCombo: sr.maxCombo, ups: sr.ups || [], bought: sr.bought || [], taken: sr.taken || {},
-    mod: Object.assign(R.mod, sr.mod || {}), stats: Object.assign(R.stats, sr.stats || {}),
-    storyBonus: sr.storyBonus || null, midCutsceneDone: !!sr.midCutsceneDone
-  });
-  if (snap.kind === 'endless') {
-    R.endless = true; R.wave = sr.wave || 1; R.shopped = sr.shopped || 0; R.bossOrder = sr.bossOrder || null;
-    R.at = sr.at; R.trail = sr.trail || [];
-  } else {
-    R.map = sr.map;
-    R.at = sr.atIdx ? R.map[sr.atIdx[0]][sr.atIdx[1]] : R.map[0][0];
-    R.trail = (sr.trailIdx || [[0, 0]]).map(([l, c]) => R.map[l][c]);
-  }
-  $('#startScr').hidden = true; $('#resultScr').hidden = true;
-  if (snap.stage === 'fight' && snap.fight) {
-    const base = ENEMIES.find(e => e.id === snap.fight.foe.id) || ENEMIES[0];
-    FOE = { ...base, ...snap.fight.foe };
-    startFight();
-    S.php = Math.min(S.pmax, Math.max(1, snap.fight.php));
-    S.ehp = Math.min(S.emax, Math.max(1, snap.fight.ehp));
-    S.ult = snap.fight.ult || 0;
-    S.shields = snap.fight.shields || 0;
-    S.enraged = !!snap.fight.enraged;
-    if (snap.fight.twins && S.twins) S.twins = snap.fight.twins.map(t => ({ ...t }));
-    renderHUD(); renderWords();
-    toast('▶ กลับมาเล่นต่อ!');
-  } else if (snap.stage === 'pick') showPick();
-  else if (snap.stage === 'shop') showShop();
-  else if (snap.stage === 'rest') showRest();
-  else if (snap.stage === 'event') showEvent();
-  else if (snap.stage === 'bossStory') showStory(R.at);
-  else showMap();
-}
-function restartGame() {
-  const mode = R ? { practice: R.practice, bossMode: R.bossMode, bossId: R.bossId, endless: R.endless } : {};
-  cleanupActiveState();
-  clearSavedRun();
-  if (mode.practice) return startPractice();
-  if (mode.bossMode) return startBossChallenge(mode.bossId);
-  if (mode.endless) return startEndless();
-  return startRun(true);
-}
-function goLobby() {
-  const hadSaveable = R && !R.practice && !R.bossMode && !R.pvp && (R.endless || (R.map && R.at));
-  if (hadSaveable) saveRunSnapshot();
-  cleanupActiveState();
-  toMenu();
-  if (hadSaveable) toast('💾 บันทึกความคืบหน้าแล้ว — กด "เล่นต่อ" ได้จาก Lobby');
+  S.paused = p; $('#pauseScr').hidden = !p;
+  if (!p) kb.focus();
 }
 $('#resumeBtn').onclick = () => setPause(false);
-$('#restartBtn').onclick = () => restartGame();
-$('#lobbyBtn').onclick = () => goLobby();
-$('#pauseBtn').onclick = () => { if (PAUSED) setPause(false); else if (canPause()) setPause(true); };
 $('#pauseScr').onclick = e => { if (e.target.id === 'pauseScr') setPause(false); };
-document.querySelectorAll('#pauseBtns .pbtn').forEach((el, i) => el.addEventListener('mouseenter', () => pauseSel(i)));
 
 /* ================= Rendering ================= */
 function wordHTML(w, buf = S.buf) {
@@ -2758,7 +2197,7 @@ function renderHUD() {
   $('#combo').innerHTML = S.combo >= 2 ? `COMBO ${S.combo}<small>ดาเมจ ×${comboMult().toFixed(1)}</small>` : '';
   // แสดงธาตุ + จุดอ่อนศัตรู (ปิดในฝึกซ้อมและ PvP)
   if (!R.pvp && !R.practice && S.running) {
-    const baseTag = FOE.boss ? 'BOSS' : FOE.elite ? 'ELITE' : 'Lv.' + ((R.at && R.at.layer || 0) + 1);
+    const baseTag = FOE.boss ? 'BOSS' : FOE.elite ? 'ELITE' : R.teacher ? 'โหมดครู' : 'Lv.' + ((R.at && R.at.layer || 0) + 1);
     const elInfo = S.twins ? '🔴 แพ้ 💧 · 🔵 แพ้ 🌪️' : (S.elem && ELEMENTS[S.elem] ? `${ELEMENTS[S.elem].icon} แพ้ ${ELEMENTS[ELEMENTS[S.elem].weak].icon}` : '');
     $('#eTag').textContent = elInfo ? `${baseTag} · ${elInfo}` : baseTag;
   }
@@ -2833,7 +2272,7 @@ function update(dt) {
 let last = 0;
 function loop(ts) {
   const dt = Math.min(0.05, (ts - last) / 1000 || 0); last = ts;
-  const paused = PAUSED || (S && S.paused), frozen = S && S.freeze > 0;
+  const paused = S && S.paused, frozen = S && S.freeze > 0;
   if (frozen && !paused) S.freeze -= dt * 1000;
   else if (S && S.running && !paused && !S.tour) update(dt);
   if (!paused && !frozen) stageTick(dt);
@@ -2854,27 +2293,19 @@ function banner(title, sub) {
   anim(b, 'show', 2500);
 }
 
-function startRun(skipIntro) {
-  clearSavedRun();
+function startRun() {
   R = newRun();
   if (HELP) showHelp(false);
-  PAUSED = false; $('#pauseScr').hidden = true;
   $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#shopScr').hidden = true; $('#chScr').hidden = true; SHOP = null;
   R.map = genMap();
-  ST = null; R.ending = null; hideCineUI();
-  if (!skipIntro) return showOpeningCutscene(false);
+  ST = null; R.ending = null; $('#story').hidden = true; document.body.classList.remove('cine'); arena.classList.remove('cine');
   enterNode(R.map[0][0]);
 }
 
 /* ---------- เดินบนแผนที่ ---------- */
-function enterNode(nd, skipMid) {
-  R.at = nd;
-  if (R.trail[R.trail.length - 1] !== nd) R.trail.push(nd);
+function enterNode(nd) {
+  R.at = nd; R.trail.push(nd);
   $('#chScr').hidden = true; $('#pickScr').hidden = true; $('#shopScr').hidden = true;
-  if (!skipMid && nd.layer === 3 && !R.midCutsceneDone && !R.endless && !R.practice && !R.bossMode && !R.pvp) {
-    R.midCutsceneDone = true;
-    return showMidCutscene(nd, false);
-  }
   if (nd.t === 'boss') return showStory(nd);
   if (nd.foe) { FOE = makeFoe(nd); return startFight(); }
   if (nd.t === 'shop') return showShop();
@@ -2892,27 +2323,24 @@ function showMap() {
   });
   showChoice({ title: '🗺 เลือกเส้นทาง', sub: `ชั้น ${R.at.layer + 2} / ${MAP_LAYERS} · HP ${Math.ceil(R.php)} / ${R.pmax} · 🪙 ${R.coins}` + (R.shields ? ` · 🛡×${R.shields}` : ''),
     map: true, opts, keepOpen: true });
-  saveRunSnapshot('map');
 }
 function showRest() {
   const h = Math.min(R.pmax - R.php, Math.round(R.pmax * 0.35));
   showChoice({ title: '🔥 จุดพัก', sub: `กองไฟอุ่นๆ ใต้ประตูโทริอิ · HP ${Math.ceil(R.php)} / ${R.pmax}`, opts: [
     { icon: '😴', name: 'พักผ่อน', desc: `ฟื้น HP 35% (+${h})`, word: { th: 'พัก', en: 'rest' }, fn: () => { R.php += h; toast(`ฟื้น HP +${h}`); } },
     { icon: '🥋', name: 'ฝึกซ้อม', desc: 'เลือกอัปเกรด 1 ใน 3 (ไม่ฟื้นเลือด)', word: { th: 'ฝึก', en: 'train' }, fn: () => 'pick' }] });
-  saveRunSnapshot('rest');
 }
 function showEvent() {
   const ev = pick(EVENTS)();
   ev.opts = ev.opts.map(o => ({ ...o, fn: () => { const msg = o.fn(); if (msg) toast(msg); } }));
   showChoice(ev);
-  saveRunSnapshot('event');
 }
 // หน้าตัวเลือกกลาง: พิมพ์คำบนการ์ดเพื่อเลือก
 let CH = null;
-function showChoice({ title, sub, opts, map, lobbyMenu }) {
+function showChoice({ title, sub, opts, map }) {
   phase = 'choice';
   const used = new Set();
-  CH = { buf: '', map, lobbyMenu: !!lobbyMenu, opts: opts.map(o => {
+  CH = { buf: '', map, opts: opts.map(o => {
     let { word, lang } = o;
     if (typeof word === 'object') { lang = cfg.mode === 'en' ? 'en' : cfg.mode === 'bi' && Math.random() < .5 ? 'en' : 'th'; word = word[lang]; }
     used.add(word[0]);
@@ -2924,7 +2352,6 @@ function showChoice({ title, sub, opts, map, lobbyMenu }) {
     `<div class="ds">${esc(o.desc)}</div><div class="w"></div></button>`).join('');
   $('#chCards').querySelectorAll('.upc').forEach(b => b.onclick = () => chDo(CH.opts[+b.dataset.i]));
   $('#pickScr').hidden = true; $('#shopScr').hidden = true; $('#chScr').hidden = false;
-  updatePauseBtn();
   kb.value = ''; renderChoice(); kb.focus();
 }
 function renderChoice() {
@@ -2958,32 +2385,30 @@ function chDo(o) {
 }
 
 function startFight() {
-  ST = null; hideCineUI(); PAUSED = false;
   S = freshState();
-  FIG.P.x = 96; FIG.E.id = FOE.sprite; FIG.E.x = 228; play(FIG.P, 'idle'); play(FIG.E, 'idle');
+  FIG.E.id = FOE.sprite; FIG.E.x = 228; play(FIG.P, 'idle'); play(FIG.E, 'idle');
   if (R.storyBonus === 'ult') S.ult = Math.min(100, S.ult + 50);
   if (R.storyBonus === 'shield') S.shields++;
   R.storyBonus = null;
   $('#eName').textContent = FOE.name;
   $('#eTag').textContent = FOE.boss ? 'BOSS' : FOE.elite ? 'ELITE' : 'Lv.' + ((R.at && R.at.layer || 0) + 1);
-  const where = R.bossMode ? '👑 ท้าดวลบอส'
+  const where = R.teacher ? `👩‍🏫 ${R.teacherTitle || 'โหมดครู'}`
+    : R.bossMode ? '👑 ท้าดวลบอส'
     : R.endless ? `♾ ด่าน ${R.wave}` + (META.endless ? ` · สถิติ ${META.endless}` : '')
     : `ชั้น ${R.at.layer + 1} / ${MAP_LAYERS}`;
   $('#bottom .hint').innerHTML = '<kbd>Tab</kbd> ท่าไม้ตาย · <kbd>Esc</kbd> หยุดเกม · พิมพ์คำไหนก็ได้ใน 3 ช่อง';
-  $('#wave').textContent = (R.bossMode ? '' : FOE.boss ? 'บอส · ' : FOE.elite ? 'ศัตรูเก่ง · ' : '') + where;
+  $('#wave').textContent = (R.teacher || R.bossMode ? '' : FOE.boss ? 'บอส · ' : FOE.elite ? 'ศัตรูเก่ง · ' : '') + where;
   [0, 1, 2].forEach(i => { const el = $('#s' + i); if (el) el.style.removeProperty('--fade'); newSlotWord(i); });
   if (FOE.bossMech === 'swap') rollKeySwap(true);
   phase = 'fight';
   S.running = true; S.stats.start = performance.now();
   P.className = 'fighter'; E.className = 'fighter'; S.enraged = false;
-  $('#pickScr').hidden = true; $('#ultBox').hidden = true; $('#pauseScr').hidden = true;
-  updatePauseBtn();
-  saveRunSnapshot('fight');
+  $('#pickScr').hidden = true; $('#ultBox').hidden = true; $('#pauseScr').hidden = true; $('#teacherScr').hidden = true;
   kb.value = ''; kb.focus(); ac();
   renderWords();
-  banner(FOE.icon + ' ' + FOE.name, trait(FOE));
-  if (R.trail.length === 1) toast(cfg.mode === 'en' ? 'พร้อม! ตั้งแป้นเป็นภาษาอังกฤษ' : cfg.mode === 'th' ? 'พร้อม! ตั้งแป้นเป็นภาษาไทย' : 'พร้อม! สลับแป้นด้วย ~ หรือ Alt+Shift');
-  if (!R.practice && !R.bossMode && !navigator.webdriver && !lsGet(TOUR_KEY)) startTour();   // ไฟต์จริงครั้งแรก → แนะนำหน้าจอ
+  banner(FOE.icon + ' ' + FOE.name, R.teacher ? `ชุดคำ: ${R.teacherTitle || 'กำหนดเอง'}` : trait(FOE));
+  if (R.trail.length === 1 && !R.teacher) toast(cfg.mode === 'en' ? 'พร้อม! ตั้งแป้นเป็นภาษาอังกฤษ' : cfg.mode === 'th' ? 'พร้อม! ตั้งแป้นเป็นภาษาไทย' : 'พร้อม! สลับแป้นด้วย ~ หรือ Alt+Shift');
+  if (!R.practice && !R.teacher && !R.bossMode && !navigator.webdriver && !lsGet(TOUR_KEY)) startTour();   // ไฟต์จริงครั้งแรก → แนะนำหน้าจอ
 }
 
 function endFight(win) {
@@ -2998,19 +2423,17 @@ function endFight(win) {
   R.time += st.end - st.start; R.maxCombo = Math.max(R.maxCombo, S.maxCombo);
   R.php = S.php; R.shields = S.shields;
   let coins = 0;
-  if (win) { R.cleared++; coins = R.bossMode ? 0 : fightCoins(st, S.maxCombo); R.coins += coins; R.earned += coins; }
-  const standalone = !!R.bossMode;
+  if (win) { R.cleared++; coins = (R.teacher || R.bossMode) ? 0 : fightCoins(st, S.maxCombo); R.coins += coins; R.earned += coins; }
+  const standalone = !!(R.teacher || R.bossMode);
   const last = !!FOE.boss && !R.endless && !standalone;
   phase = 'busy';   // ล็อกการพิมพ์/Enter จนกว่าหน้าเลือกอัปเกรดหรือหน้าสรุปจะขึ้น
-  updatePauseBtn();
   setTimeout(() => {
-    if (phase !== 'busy') return;
     play(win ? FIG.E : FIG.P, 'ko'); play(win ? FIG.P : FIG.E, 'win');
     fx(win ? 'big' : 'hurtp', win ? 'K.O.!' : 'แพ้...', win ? E : P, 0, -30);
     if (coins) setTimeout(() => fx('gold', `+${coins} 🪙`, P, 0, -60), 350);
     win ? SFX.win() : SFX.lose();
   }, 380);   // หลังเฟรมโดนตีของทุกท่า (โจมตี 180ms, สวนกลับ 340ms)
-  setTimeout(() => { if (phase !== 'busy') return; standalone ? showResult(win) : (win && !last) ? showPick() : (win && last) ? showEnding() : showResult(win); }, 1600);
+  setTimeout(() => standalone ? showResult(win) : (win && !last) ? showPick() : (win && last) ? showEnding() : showResult(win), 1600);
 }
 
 /* ---------- upgrade pick (พิมพ์เพื่อเลือก) ---------- */
@@ -3026,8 +2449,6 @@ function showPick(training) {
   phase = 'pick';
   const healed = training ? 0 : Math.min(R.pmax - R.php, Math.round(R.pmax * (HEAL_BETWEEN + lv('heal') * 0.05)));
   R.php += healed;
-  updatePauseBtn();
-  saveRunSnapshot('pick');
   const ups = shuffle(upPool()).slice(0, 3 + lv('card') + (!training && FOE.elite ? 1 : 0));
   const used = new Set();
   PK = { buf: '', cards: ups.map(up => {
@@ -3101,8 +2522,6 @@ function showShop() {
          roll: { w: makeWord(SHOP_CMD[L].roll, L, 'roll') }, leave: { w: makeWord(SHOP_CMD[L].leave, L, 'leave') } };
   $('#shopPath').innerHTML = trailHTML();
   $('#pickScr').hidden = true; $('#shopScr').hidden = false;
-  updatePauseBtn();
-  saveRunSnapshot('shop');
   kb.value = ''; renderShop(true); kb.focus();
 }
 const shopOpts = () => [...SHOP.items.filter(i => !i.sold), SHOP.roll, SHOP.leave];
@@ -3247,31 +2666,33 @@ function shuffle(a) {
 /* ---------- result ---------- */
 function showResult(win) {
   phase = 'result';
-  clearSavedRun();
-  updatePauseBtn();
   if (R.endless) return showEndlessResult();
   const st = R.stats, min = Math.max(1 / 60, R.time / 60000);
   const wpm = Math.round(st.correct / 5 / min);
   const acc = st.correct + st.errors ? (st.correct / (st.correct + st.errors) * 100) : 100;
   const secs = Math.round(R.time / 1000);
   const stat = (v, l) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`;
-  if (R.bossMode) {
-    $('#resTitle').textContent = win ? `👑 โค่น${FOE.name}!` : 'แพ้...';
-    $('#resSub').textContent = `ท้าดวลบอส ${FOE.icon} ${FOE.name} · ความยาก${DIFF[cfg.diff].label} · ${{ th: 'ไทยล้วน', en: 'อังกฤษล้วน', bi: 'สองภาษา' }[cfg.mode]}`;
+  if (R.teacher || R.bossMode) {
+    $('#resTitle').textContent = R.teacher ? (win ? '👩‍🏫 ผ่านชุดคำศัพท์!' : '👩‍🏫 จบการฝึก') : (win ? `👑 โค่น${FOE.name}!` : 'แพ้...');
+    $('#resSub').textContent = R.teacher
+      ? `ชุดคำ "${R.teacherTitle || 'กำหนดเอง'}" · คู่ต่อสู้ ${FOE.icon} ${FOE.name} · ความยาก${DIFF[cfg.diff].label}`
+      : `ท้าดวลบอส ${FOE.icon} ${FOE.name} · ความยาก${DIFF[cfg.diff].label} · ${{ th: 'ไทยล้วน', en: 'อังกฤษล้วน', bi: 'สองภาษา' }[cfg.mode]}`;
     $('#resPath').innerHTML = '';
     $('#resStats').innerHTML =
       stat(wpm, 'WPM เฉลี่ย') + stat(acc.toFixed(1) + '%', 'ความแม่นยำ') + stat(R.maxCombo, 'คอมโบสูงสุด') +
       stat(st.words, 'คำที่โจมตี') + stat(`${st.blocks}/${st.counters}`, 'กัน / สวนกลับ') +
       stat(`${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`, 'เวลาในไฟต์');
-    let gainHtml = 'ยังไม่ได้เศษคริสตัล — โค่นบอสให้ได้เพื่อรับ 15 💎';
-    if (win) {
+    let gainHtml = R.teacher ? 'โหมดครู — ดูแป้นที่พลาดบ่อยด้านล่างเพื่อนำไปฝึกต่อ' : 'ยังไม่ได้เศษคริสตัล — โค่นบอสให้ได้เพื่อรับ 15 💎';
+    if (R.bossMode && win) {
       META.shards += 15; META.total += 15; saveMeta();
       gainHtml = `<span class="shard">+15 💎</span> โบนัสท้าดวลบอส · มีทั้งหมด <span class="shard">${META.shards} 💎</span>`;
     }
     $('#resGain').innerHTML = gainHtml;
-    $('#resUps').innerHTML = '—';
-    $('#againBtn').innerHTML = '🔄 เล่นใหม่ <kbd>Enter</kbd>';
-    const langs = cfg.mode === 'bi' ? ['th', 'en'] : [cfg.mode];
+    $('#resUps').innerHTML = R.teacher ? `จำนวนคำในชุด: ${R.teacherCount || 0} คำ` : '—';
+    $('#againBtn').innerHTML = R.teacher ? 'ฝึกชุดเดิมอีกครั้ง <kbd>Enter</kbd>' : 'ท้าดวลอีกครั้ง <kbd>Enter</kbd>';
+    const hasTh = Object.keys(st.miss).some(isThai) || (R.teacher && R.teacherHasTh);
+    const hasEn = Object.keys(st.miss).some(c => /[a-zA-Z0-9]/.test(c)) || (R.teacher && R.teacherHasEn);
+    const langs = R.teacher ? (hasTh && hasEn ? ['th', 'en'] : hasEn ? ['en'] : ['th']) : (cfg.mode === 'bi' ? ['th', 'en'] : [cfg.mode]);
     $('#resKb').innerHTML = langs.map(l => heatmap(l === 'th' ? KB_TH : KB_EN, st.miss)).join('<div style="height:10px"></div>');
     const top = Object.entries(st.miss).sort((a, b) => b[1] - a[1]).slice(0, 6);
     $('#resTop').innerHTML = top.length ? 'พลาดบ่อยที่สุด: ' + top.map(([c, n]) => `<b>${esc(dispChar(c))}</b> (${n})`).join(' · ') : 'ไม่พลาดเลย เยี่ยมมาก! 🎉';
@@ -3279,7 +2700,7 @@ function showResult(win) {
     kb.value = ''; MENU_BUF = ''; kb.focus();
     return;
   }
-  $('#resTitle').textContent = win ? 'พิชิตรัน!' : 'แพ้...'; $('#againBtn').innerHTML = '🔄 เล่นใหม่ <kbd>Enter</kbd>';
+  $('#resTitle').textContent = win ? 'พิชิตรัน!' : 'แพ้...'; $('#againBtn').innerHTML = 'เริ่มรันใหม่ <kbd>Enter</kbd>';
   const endN = Object.keys(META.endings || {}).length, EN = win && R.ending && ENDINGS[R.ending];
   $('#resSub').textContent = (EN ? `ฉากจบ "${EN.icon} ${EN.name}" (ปลดล็อก ${endN}/${Object.keys(ENDINGS).length}) · ` : '') + (win ? `โค่น${FOE.name}ได้แล้ว` : `พ่ายให้${FOE.name} ที่ชั้น ${R.at.layer + 1} / ${MAP_LAYERS}`) +
     ` · ความยาก${DIFF[cfg.diff].label} · ${{ th: 'ไทยล้วน', en: 'อังกฤษล้วน', bi: 'สองภาษา' }[cfg.mode]}`;
@@ -3315,13 +2736,11 @@ function renderMetaBar() {
     ? `<span>เล่น <b>${META.runs}</b> รัน</span><span>พิชิต <b>${META.wins}</b></span><span>ไกลสุด <b>${META.best}</b> ชั้น</span>` +
       (n ? `<span>ฉากจบ <b>${n}/${Object.keys(ENDINGS).length}</b></span>` : '')
     : META.endless ? '' : '<span>ยังไม่เคยเล่น — ลุยรันแรกเลย!</span>') + (META.endless ? `<span>♾ ไกลสุด <b>${META.endless}</b> ด่าน</span>` : '');
-  updateContinueBtn();
   renderMenu();
 }
 function showMeta() {
   const back = phase;
   phase = 'meta';
-  updatePauseBtn();
   const L = metaLang();
   MT = { buf: '', back, opts: PERKS.map(p => ({ p, w: makeWord(p.w[L], L, 'perk') })), exit: { w: makeWord(META_EXIT[L], L, 'exit') } };
   $('#metaSub').textContent = `เล่นมาแล้ว ${META.runs} รัน · พิชิต ${META.wins} · ได้เศษคริสตัลรวม ${META.total} 💎`;
@@ -3380,22 +2799,17 @@ function metaDo(o) {
 }
 // เมนู/หน้าสรุป: พิมพ์คำของเมนูเพื่อเลือก (ทั้งไทยและอังกฤษ แสดงตามภาษาที่เลือก)
 let HELP = false;
-const MENU = () => {
-  const list = [
-    { id: 'start', w: { th: 'เริ่ม', en: 'go' }, fn: startGame, in: ['menu'] },
-    { id: 'practice', w: { th: 'ฝึก', en: 'train' }, fn: startPractice, in: ['menu'] },
-    { id: 'endless', w: { th: 'ไม่จบ', en: 'endless' }, fn: startEndless, in: ['menu'] },
-    { id: 'boss', w: { th: 'บอส', en: 'boss' }, fn: showBossSelect, in: ['menu'] },
-    { id: 'cutscene', w: { th: 'คัตซีน', en: 'cutscene' }, fn: showCutsceneMenu, in: ['menu'] },
-    { id: 'shrine', w: META_OPEN, fn: showMeta, in: ['menu', 'result'] },
-    { id: 'duel', w: PVP_OPEN, fn: () => showPvp(), in: ['menu', 'result'] },
-    { id: 'help', w: { th: 'วิธีเล่น', en: 'help' }, fn: () => showHelp(true), in: ['menu'] },
-  ];
-  if (loadRunSnapshot()) list.unshift({ id: 'continue', w: { th: 'ต่อ', en: 'resume' }, fn: continueRun, in: ['menu'] });
-  return list;
-};
+const MENU = () => [
+  { id: 'start', w: { th: 'เริ่ม', en: 'go' }, fn: startGame, in: ['menu'] },
+  { id: 'practice', w: { th: 'ฝึก', en: 'train' }, fn: startPractice, in: ['menu'] },
+  { id: 'endless', w: { th: 'ไม่จบ', en: 'endless' }, fn: startEndless, in: ['menu'] },
+  { id: 'boss', w: { th: 'บอส', en: 'boss' }, fn: showBossSelect, in: ['menu'] },
+  { id: 'teacher', w: { th: 'ครู', en: 'class' }, fn: showTeacher, in: ['menu'] },
+  { id: 'shrine', w: META_OPEN, fn: showMeta, in: ['menu', 'result'] },
+  { id: 'duel', w: PVP_OPEN, fn: () => showPvp(), in: ['menu', 'result'] },
+  { id: 'help', w: { th: 'วิธีเล่น', en: 'help' }, fn: () => showHelp(true), in: ['menu'] },
+];
 const MENU_BACK = { id: 'back', w: { th: 'กลับ', en: 'back' }, fn: () => showHelp(false) };
-const visibleMenuEls = () => [...document.querySelectorAll('#menuList .mi:not([hidden])')];
 function menuItems(all) {
   const L = metaLang();
   return (all ? MENU().concat(MENU_BACK) : HELP ? [MENU_BACK] : MENU().filter(m => m.in.includes(phase))).map(m => ({ m,
@@ -3411,7 +2825,6 @@ function renderMenu() {
     el.querySelector('.w').innerHTML = MENU_BUF ? h : h.replace('class="next"', 'class="rest"');   // no cursor until typing starts
     el.classList.toggle('off', MENU_BUF !== '' && live.includes(it.m.id) && !ok); el.classList.toggle('lock', MENU_BUF !== '' && ok);
   });
-  menuSel(Math.min(MSEL, Math.max(0, visibleMenuEls().length - 1)));
 }
 function menuInput() {
   const v = kb.value.replace(/[`~_\s]/g, ''), its = menuItems();
@@ -3425,17 +2838,13 @@ function menuInput() {
 }
 let MSEL = 0;   // เมนูที่เลือกด้วยลูกศร
 function menuSel(i) {
-  const els = visibleMenuEls();
-  if (!els.length) return;
+  const els = [...document.querySelectorAll('#menuList .mi')];
   MSEL = (i + els.length) % els.length;
-  document.querySelectorAll('#menuList .mi').forEach(el => el.classList.remove('sel'));
-  els[MSEL].classList.add('sel');
+  els.forEach((el, k) => el.classList.toggle('sel', k === MSEL));
 }
 function menuGo() {
-  const els = visibleMenuEls(), cur = els[MSEL];
-  if (!cur) return;
-  const it = MENU().find(m => m.id === cur.dataset.m);
-  if (it) { SFX.tick(); it.fn(); }
+  const it = MENU().find(m => m.id === document.querySelectorAll('#menuList .mi')[MSEL].dataset.m);
+  SFX.tick(); it.fn();
 }
 function showHelp(on) {
   HELP = on; MENU_BUF = ''; kb.value = '';
@@ -3457,10 +2866,7 @@ function heroLoop(now) {
   x.imageSmoothingEnabled = false; x.clearRect(0, 0, c.width, c.height); x.drawImage(im, 0, 0);
 }
 requestAnimationFrame(heroLoop);
-document.querySelectorAll('#menuList .mi').forEach(el => el.addEventListener('mouseenter', () => {
-  const idx = visibleMenuEls().indexOf(el);
-  if (idx >= 0) menuSel(idx);
-}));
+document.querySelectorAll('#menuList .mi').forEach((el, i) => el.addEventListener('mouseenter', () => menuSel(i)));
 (() => {   // ฉากหลังเมือง + ตัวอักษรนีออนลอยขึ้น
   const x = $('#titleBg').getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(BG, 0, 0);
   // AI-painted backdrop (art/title-bg.jpg, Nano Banana); the code-drawn city stays as the fallback
@@ -3514,14 +2920,13 @@ function pvLoad() {
 }
 function showPvp(step = 'home') {
   phase = 'pvp';
-  updatePauseBtn();
   ['#startScr', '#resultScr', '#metaScr', '#pickScr', '#chScr', '#shopScr'].forEach(q => $(q).hidden = true);
   $('#pvpScr').hidden = false;
   pvStep(step);
 }
 function pvStep(step, stat = '') {
   PV.step = step; PV.stat = stat; PV.buf = ''; kb.value = '';
-  const back = { icon: '🏠', name: 'กลับ Lobby', desc: 'ตัดการเชื่อมต่อ', w: pvWord(PV_W.back), fn: pvLeave };
+  const back = { icon: '↩', name: 'กลับเมนู', desc: 'ตัดการเชื่อมต่อ', w: pvWord(PV_W.back), fn: pvLeave };
   if (step === 'home') PV.opts = [
     { icon: '🏠', name: 'สร้างห้อง', desc: 'ได้รหัส 3 คำไปบอกเพื่อน', w: pvWord(PV_W.host), fn: pvHost },
     { icon: '🚪', name: 'เข้าห้อง', desc: 'พิมพ์รหัส 3 คำของเพื่อน', w: pvWord(PV_W.join), fn: () => { PV.code = []; pvStep('join'); } }, back];
@@ -3659,7 +3064,7 @@ function pvLeave() {
   $('#pvpScr').hidden = true;
   R = newRun(); FOE = ENEMIES[0]; FIG.E.id = FOE.sprite;
   S = freshState(); [0, 1, 2].forEach(newSlotWord); renderWords();
-  toMenu();
+  phase = 'menu'; $('#startScr').hidden = false; renderMetaBar(); kb.focus();
 }
 const MODE_TXT = { th: '🇹🇭 ไทย', en: '🇬🇧 อังกฤษ', bi: '🔀 สองภาษา' };
 
@@ -3832,12 +3237,10 @@ function endlessFoe(w) {
       idle: base.idle * Math.max(0.6, 1 - 0.02 * sc) * (el ? 0.9 : 1), elite: el, name: (el ? 'ยอด' : '') + base.name } };
 }
 function startEndless() {
-  clearSavedRun();
   if (HELP) showHelp(false);
-  PAUSED = false; $('#pauseScr').hidden = true;
   R = newRun(); R.endless = true; R.wave = 0; R.shopped = 0;
   $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#shopScr').hidden = true; $('#chScr').hidden = true; SHOP = null;
-  ST = null; hideCineUI();
+  ST = null; $('#story').hidden = true; document.body.classList.remove('cine'); arena.classList.remove('cine');
   endlessNext();
 }
 function endlessNext() {
@@ -3849,7 +3252,7 @@ function endlessNext() {
   startFight();
   if (R.wave > 1 && R.wave === META.endless + 1) toast('🏆 ทำลายสถิติเดิมแล้ว!');
 }
-const again = () => (R && R.bossMode ? () => startBossChallenge(R.bossId) : R && R.endless ? startEndless : () => startRun(true))();
+const again = () => (R && R.teacher ? startTeacherFight : R && R.bossMode ? () => startBossChallenge(R.bossId) : R && R.endless ? startEndless : startRun)();
 function showEndlessResult() {
   const st = R.stats, min = Math.max(1 / 60, R.time / 60000);
   const wpm = Math.round(st.correct / 5 / min);
@@ -3874,7 +3277,7 @@ function showEndlessResult() {
   $('#resKb').innerHTML = langs.map(l => heatmap(l === 'th' ? KB_TH : KB_EN, st.miss)).join('<div style="height:10px"></div>');
   const top = Object.entries(st.miss).sort((a, b) => b[1] - a[1]).slice(0, 6);
   $('#resTop').innerHTML = top.length ? 'พลาดบ่อยที่สุด: ' + top.map(([c, n]) => `<b>${esc(dispChar(c))}</b> (${n})`).join(' · ') : 'ไม่พลาดเลย เยี่ยมมาก! 🎉';
-  $('#againBtn').innerHTML = '🔄 เล่น Endless ใหม่ <kbd>Enter</kbd>';
+  $('#againBtn').innerHTML = 'เล่น Endless อีกครั้ง <kbd>Enter</kbd>';
   $('#resultScr').hidden = false;
   kb.value = ''; MENU_BUF = ''; kb.focus();
 }
@@ -3902,10 +3305,9 @@ function coach(prog, ok) { $('#coachProg').innerHTML = prog || ''; $('#coach').c
 
 function startPractice() {
   if (HELP) showHelp(false);
-  PAUSED = false; $('#pauseScr').hidden = true;
   R = newRun(); R.practice = true; R.at = { layer: 0 }; R.trail = [R.at];
   $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#shopScr').hidden = true; $('#chScr').hidden = true; SHOP = null;
-  ST = null; hideCineUI();
+  ST = null; $('#story').hidden = true; document.body.classList.remove('cine'); arena.classList.remove('cine');
   FOE = ENEMIES[0];
   startFight();
   S.ult = 0; S.shields = 0;
@@ -3958,18 +3360,17 @@ function tutStop() {
 }
 function toMenu() {
   if (HELP) showHelp(false);
-  cleanupActiveState();
+  if (S && S.tour) endTour();
+  $('#pauseScr').hidden = true; $('#chScr').hidden = true; $('#teacherScr').hidden = true;
   phase = 'menu'; MENU_BUF = ''; kb.value = '';
-  $('#startScr').hidden = false;
-  MSEL = 0;
-  renderMetaBar(); renderMenu(); updatePauseBtn(); kb.focus();
+  $('#startScr').hidden = false; renderMetaBar(); renderMenu(); kb.focus();
 }
 function tutFinish() {
   tutStop(); lsSet(TUT_KEY, '1'); $('#practiceNew').hidden = true; SFX.win();
-  showChoice({ title: '🎓 ฝึกครบแล้ว!', sub: 'พิมพ์คำ = ตี · กล่องแดง = กัน · Tab = ท่าไม้ตาย · Esc = หยุด — พิมพ์คำใต้การ์ดเพื่อเลือก', lobbyMenu: true, opts: [
-    { icon: '⚔', name: 'เริ่มเกมจริง', desc: 'ลุยแผนที่ 7 ชั้น จนถึงบอส', word: { th: 'เริ่ม', en: 'go' }, fn: () => startRun(false), end: 1 },
+  showChoice({ title: '🎓 ฝึกครบแล้ว!', sub: 'พิมพ์คำ = ตี · กล่องแดง = กัน · Tab = ท่าไม้ตาย · Esc = หยุด — พิมพ์คำใต้การ์ดเพื่อเลือก', opts: [
+    { icon: '⚔', name: 'เริ่มเกมจริง', desc: 'ลุยแผนที่ 7 ชั้น จนถึงบอส', word: { th: 'เริ่ม', en: 'go' }, fn: startRun, end: 1 },
     { icon: '🔁', name: 'ฝึกอีกรอบ', desc: 'ทวนทั้ง 4 ขั้นอีกครั้ง', word: { th: 'ซ้อม', en: 'again' }, fn: startPractice, end: 1 },
-    { icon: '🏠', name: 'กลับ Lobby', desc: 'ไปหน้าแรก', word: { th: 'ล็อบบี้', en: 'lobby' }, fn: toMenu, end: 1 }] });
+    { icon: '🏠', name: 'กลับเมนู', desc: 'ไปหน้าแรก', word: { th: 'เมนู', en: 'menu' }, fn: toMenu, end: 1 }] });
 }
 function tutQuit() { if (S && S.tut) { tutStop(); toMenu(); } }
 // กด "เริ่มเกม" ครั้งแรก (ยังไม่เคยฝึกครบ) → ถามก่อนว่าจะฝึกซ้อมไหม · เลือก "ไม่ต้องถามอีก" ได้
@@ -3978,7 +3379,7 @@ function startGame() {
   if (lsGet(TUT_KEY) || lsGet(ASK_KEY) || navigator.webdriver) return startRun();
   if (HELP) showHelp(false);
   $('#startScr').hidden = true; $('#resultScr').hidden = true;
-  showChoice({ title: '🎓 ฝึกซ้อมก่อนไหม?', sub: 'มือใหม่แนะนำให้ฝึก 4 ขั้นสั้นๆ ก่อน (ไม่มีใครตาย) — พิมพ์คำใต้การ์ดเพื่อเลือก', lobbyMenu: true, opts: [
+  showChoice({ title: '🎓 ฝึกซ้อมก่อนไหม?', sub: 'มือใหม่แนะนำให้ฝึก 4 ขั้นสั้นๆ ก่อน (ไม่มีใครตาย) — พิมพ์คำใต้การ์ดเพื่อเลือก', opts: [
     { icon: '🥋', name: 'ฝึกซ้อมก่อน', desc: 'โจมตี → คอมโบ → ป้องกัน → ท่าไม้ตาย แล้วค่อยเข้าเกมจริง', word: { th: 'ฝึก', en: 'train' }, fn: startPractice, end: 1 },
     { icon: '⚔', name: 'เล่นเลย', desc: 'ลุยแผนที่ 7 ชั้นทันที (ครั้งหน้าจะถามอีก)', word: { th: 'เริ่ม', en: 'go' }, fn: startRun, end: 1 },
     { icon: '🚫', name: 'เล่นเลย ไม่ต้องถามอีก', desc: 'ยังเข้าฝึกซ้อมได้จากเมนูหน้าแรก', word: { th: 'ลุย', en: 'skip' }, fn: () => { lsSet(ASK_KEY, '1'); startRun(); }, end: 1 }] });
@@ -4000,13 +3401,13 @@ const TOUR = [
   { sel: '#combo', title: 'คอมโบ', text: 'พิมพ์ถูกต่อเนื่อง ดาเมจคูณขึ้นเรื่อยๆ<br>พิมพ์ผิดหรือโดนตี คอมโบหลุด', demo() { S.combo = 5; } },
   { sel: '#stamBox', title: 'Stamina', text: 'พิมพ์ผิดเสีย Stamina ถ้าหมดจะ <b>เหนื่อย ดาเมจเหลือครึ่ง</b> จนกว่าจะฟื้น — ช้าแต่แม่นดีกว่า' },
   { sel: '#ultBtn', title: 'ท่าไม้ตาย', text: 'เกจเต็มเมื่อตีและกันได้ พอเรืองแสงให้กด <kbd>Tab</kbd> แล้วพิมพ์ประโยคให้จบทันเวลา', demo() { S.ult = 100; } },
-  { sel: '#tourBtn', title: 'ปุ่มช่วยเหลือ', text: '<kbd>Esc</kbd> หยุดเกม (เล่นต่อ / เล่นใหม่ / Lobby) · 🔊 ปิดเสียง · <b>?</b> เปิดคำแนะนำนี้อีกครั้ง' },
+  { sel: '#tourBtn', title: 'ปุ่มช่วยเหลือ', text: '<kbd>Esc</kbd> หยุดเกม · 🔊 ปิดเสียง · <b>?</b> เปิดคำแนะนำนี้อีกครั้ง' },
   { sel: null, title: 'พร้อมแล้ว!', text: () => (cfg.mode === 'en' ? 'ตั้งแป้นพิมพ์เป็น <b>ภาษาอังกฤษ</b>' : cfg.mode === 'th' ? 'ตั้งแป้นพิมพ์เป็น <b>ภาษาไทย</b>' : 'โหมดสองภาษา: สลับแป้นด้วย <kbd>~</kbd> หรือ <kbd>Alt+Shift</kbd>') + ' แล้วกด <b>เริ่ม</b> ได้เลย' }
 ];
 let tourI = 0, tourSnap = null;
 function startTour() {
   if (phase !== 'fight' || !S || !S.running || S.tour || S.tut || R.pvp) return;
-  if (PAUSED) setPause(false);
+  if (S.paused) setPause(false);
   S.tour = true; tourI = 0;
   tourSnap = { def: S.def, combo: S.combo, ult: S.ult, charge: S.enemy.charge, charging: E.classList.contains('charging') };
   S.buf = ''; kb.value = '';
@@ -4092,8 +3493,8 @@ function showBossSelect() {
     const el = b.bossMech === 'twins' ? '🔴 แพ้ 💧 · 🔵 แพ้ 🌪️' : `${ELEMENTS[b.elem].icon} แพ้ ${ELEMENTS[ELEMENTS[b.elem].weak].icon}`;
     return { icon: b.icon, name: b.name, desc: `${el} · ${trait(b)}`, word: BOSS_PICK_W[id], fn: () => startBossChallenge(id), end: 1 };
   });
-  opts.push({ icon: '🏠', name: 'กลับ Lobby', desc: 'กลับหน้าแรก', word: { th: 'ออก', en: 'back' }, fn: toMenu, end: 1 });
-  showChoice({ title: '👑 ท้าดวลบอส', sub: 'เลือกบอสที่อยากสู้ได้เลย (ชนะรับ +15 💎) — พิมพ์คำใต้การ์ดเพื่อเลือก', lobbyMenu: true, opts });
+  opts.push({ icon: '↩', name: 'กลับเมนู', desc: 'กลับหน้าแรก', word: { th: 'ออก', en: 'back' }, fn: toMenu, end: 1 });
+  showChoice({ title: '👑 ท้าดวลบอส', sub: 'เลือกบอสที่อยากสู้ได้เลย (ชนะรับ +15 💎) — พิมพ์คำใต้การ์ดเพื่อเลือก', opts });
   $('#chCards').style.display = 'grid';
   $('#chCards').style.gridTemplateColumns = 'repeat(auto-fit,minmax(220px,1fr))';
 }
@@ -4102,10 +3503,148 @@ function startBossChallenge(id) {
   const b = ENEMIES.find(e => e.id === id) || ENEMIES.find(e => e.boss);
   R = newRun(); R.bossMode = true; R.bossId = b.id; R.at = { t: 'boss', foe: b.id, layer: MAP_LAYERS - 1 }; R.trail = [R.at];
   $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#shopScr').hidden = true; $('#chScr').hidden = true; SHOP = null;
-  ST = null; hideCineUI();
+  ST = null; $('#story').hidden = true; document.body.classList.remove('cine'); arena.classList.remove('cine');
   FOE = { ...b };
   startFight();
 }
+
+/* ================= โหมดครู (ชุดคำศัพท์เอง + แชร์ลิงก์ห้องเรียน) ================= */
+const TEACHER_KEY = 'typegame.teacher.v1';
+const TEACHER_PRESETS = [
+  { name: '🍜 อาหารไทย', title: 'อาหารไทยยอดนิยม', words: 'ส้มตำ,ลาบ,ผัดไทย,ข้าวผัด,ต้มยำกุ้ง,ผัดกะเพรา,ก๋วยเตี๋ยว,แกงเขียวหวาน,มัสมั่นไก่,พะแนงหมู,ข้าวเหนียวมะม่วง,หอยทอดกรอบ,ต้มข่าไก่,ข้าวขาหมู,หมูปิ้งข้าวเหนียว' },
+  { name: '🏛️ จังหวัดไทย', title: 'ชื่อจังหวัดในประเทศไทย', words: 'น่าน,ตาก,เลย,แพร่,ตรัง,กระบี่,ภูเก็ต,ขอนแก่น,เชียงใหม่,เชียงราย,อยุธยา,สงขลา,ลำปาง,นครราชสีมา,สุราษฎร์ธานี,กรุงเทพมหานคร' },
+  { name: '📜 สุภาษิตไทย', title: 'สำนวนและสุภาษิตไทย', words: 'กบในกะลา,จับปลาสองมือ,น้ำขึ้นให้รีบตัก,ตนเป็นที่พึ่งแห่งตน,ช้าๆ ได้พร้าเล่มงาม,ใกล้เกลือกินด่าง,ขี่ช้างจับตั๊กแตน,น้ำลดตอผุด,รำไม่ดีโทษปี่โทษกลอง' },
+  { name: '📚 ศัพท์อังกฤษ', title: 'Basic English Vocabulary', words: 'sun,sky,star,book,code,spark,galaxy,forest,wonder,horizon,courage,victory,science,library,keyboard,adventure,champion,harmony' },
+  { name: '💻 โค้ด/คำสั่ง', title: 'Programmer Commands', words: 'cd,ls,git,npm,let,const,return,async,await,import,git push,npm run,docker ps,console.log,select * from,function main()' }
+];
+let teacherCfg = { title: '', raw: '', foe: 'bandit', diff: 'normal', safe: true };
+function loadTeacher() {
+  try { Object.assign(teacherCfg, JSON.parse(localStorage.getItem(TEACHER_KEY)) || {}); } catch (e) {}
+}
+function saveTeacher() { try { localStorage.setItem(TEACHER_KEY, JSON.stringify(teacherCfg)); } catch (e) {} }
+function parseTeacherWords(raw) {
+  const seen = new Set(), list = [];
+  for (const part of String(raw || '').split(/[\n,;]+/)) {
+    const t = part.trim().replace(/\s{2,}/g, ' ');
+    if (t && !seen.has(t)) { seen.add(t); list.push(t); }
+  }
+  if (!list.length) return null;
+  const sorted = [...list].sort((a, b) => [...a].length - [...b].length);
+  const n = sorted.length;
+  let s, m, l;
+  if (n < 3) { s = sorted; m = sorted; l = sorted; }
+  else {
+    const a = Math.max(1, Math.floor(n / 3)), b = Math.max(a + 1, Math.floor(2 * n / 3));
+    s = sorted.slice(0, a); m = sorted.slice(a, b); l = sorted.slice(b);
+  }
+  return { all: sorted, s, m, l, hasTh: sorted.some(w => [...w].some(isThai)), hasEn: sorted.some(w => /[a-zA-Z0-9]/.test(w)) };
+}
+function updateTeacherPreview() {
+  const p = parseTeacherWords($('#tWords').value);
+  if (!p) { $('#tCount').textContent = '0 คำ'; $('#tWarn').textContent = 'กรุณาใส่อย่างน้อย 1 คำ'; return; }
+  $('#tCount').textContent = `พบ ${p.all.length} คำ · ⚡ เร็ว ${p.s.length} · ⚔ กลาง ${p.m.length} · 🔥 แรง ${p.l.length}`;
+  $('#tWarn').textContent = '';
+}
+function initTeacherUI() {
+  loadTeacher();
+  $('#tPresets').innerHTML = TEACHER_PRESETS.map((p, i) => `<button type="button" data-p="${i}">${p.name}</button>`).join('');
+  $('#tPresets').querySelectorAll('button').forEach(b => b.onclick = () => {
+    const p = TEACHER_PRESETS[+b.dataset.p];
+    $('#tTitle').value = p.title;
+    $('#tWords').value = p.words.split(',').join('\n');
+    updateTeacherPreview();
+  });
+  $('#tFoe').innerHTML = ENEMIES.map(e => `<option value="${e.id}">${e.icon} ${e.name}${e.boss ? ' (บอส)' : ''}</option>`).join('');
+  $('#tWords').addEventListener('input', updateTeacherPreview);
+  $('#tStartBtn').onclick = startTeacherFight;
+  $('#tBackBtn').onclick = closeTeacher;
+  $('#tShareBtn').onclick = shareTeacherLink;
+}
+function showTeacher(presetData) {
+  if (HELP) showHelp(false);
+  phase = 'teacher';
+  ['#startScr', '#resultScr', '#metaScr', '#pickScr', '#chScr', '#shopScr', '#pvpScr'].forEach(q => $(q).hidden = true);
+  if (presetData) Object.assign(teacherCfg, presetData);
+  if (!teacherCfg.raw) {
+    teacherCfg.title = TEACHER_PRESETS[0].title;
+    teacherCfg.raw = TEACHER_PRESETS[0].words.split(',').join('\n');
+  }
+  $('#tTitle').value = teacherCfg.title || '';
+  $('#tWords').value = teacherCfg.raw || '';
+  $('#tFoe').value = ENEMIES.some(e => e.id === teacherCfg.foe) ? teacherCfg.foe : 'bandit';
+  $('#tDiff').value = DIFF[teacherCfg.diff] ? teacherCfg.diff : 'normal';
+  $('#tSafe').checked = !!teacherCfg.safe;
+  updateTeacherPreview();
+  $('#teacherScr').hidden = false;
+  $('#tWords').focus();
+}
+function closeTeacher() {
+  $('#teacherScr').hidden = true;
+  toMenu();
+}
+function syncTeacherFromForm() {
+  teacherCfg = {
+    title: $('#tTitle').value.trim(),
+    raw: $('#tWords').value,
+    foe: $('#tFoe').value,
+    diff: $('#tDiff').value,
+    safe: $('#tSafe').checked
+  };
+  saveTeacher();
+}
+function startTeacherFight() {
+  if (phase === 'teacher') syncTeacherFromForm();
+  const parsed = parseTeacherWords(teacherCfg.raw);
+  if (!parsed) { $('#tWarn').textContent = 'กรุณาใส่คำศัพท์อย่างน้อย 1 คำก่อนเริ่ม!'; SFX.err(); return; }
+  cfg.diff = DIFF[teacherCfg.diff] ? teacherCfg.diff : 'normal';
+  document.querySelectorAll('[data-group=diff] .opt').forEach(o => o.classList.toggle('sel', o.dataset.v === cfg.diff));
+  const base = ENEMIES.find(e => e.id === teacherCfg.foe) || ENEMIES[0];
+  R = newRun();
+  Object.assign(R, {
+    teacher: true, teacherTitle: teacherCfg.title || 'ชุดคำศัพท์เอง', teacherWords: parsed,
+    teacherCount: parsed.all.length, teacherSafe: !!teacherCfg.safe,
+    teacherHasTh: parsed.hasTh, teacherHasEn: parsed.hasEn,
+    at: { t: base.boss ? 'boss' : 'fight', foe: base.id, layer: 0 }, trail: []
+  });
+  R.trail.push(R.at);
+  $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#shopScr').hidden = true; $('#chScr').hidden = true; $('#teacherScr').hidden = true; SHOP = null;
+  ST = null; $('#story').hidden = true; document.body.classList.remove('cine'); arena.classList.remove('cine');
+  FOE = { ...base };
+  startFight();
+}
+function b64uEnc(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = ''; bytes.forEach(b => bin += String.fromCharCode(b));
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function b64uDec(s) {
+  s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '=';
+  const bin = atob(s), bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+function shareTeacherLink() {
+  syncTeacherFromForm();
+  const parsed = parseTeacherWords(teacherCfg.raw);
+  if (!parsed) { $('#tWarn').textContent = 'กรุณาใส่คำศัพท์ก่อนแชร์ลิงก์'; SFX.err(); return; }
+  const payload = { t: teacherCfg.title, w: parsed.all.join('\n'), f: teacherCfg.foe, d: teacherCfg.diff, s: teacherCfg.safe ? 1 : 0 };
+  const url = location.href.split('#')[0] + '#class=' + b64uEnc(JSON.stringify(payload));
+  (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject())
+    .then(() => toast('📋 คัดลอกลิงก์ห้องเรียนแล้ว! ส่งให้นักเรียนเปิดเล่นได้เลย'), () => { prompt('คัดลอกลิงก์นี้ส่งให้นักเรียน:', url); });
+}
+initTeacherUI();
+// เปิดลิงก์โหมดครู: index.html#class=<base64url>
+(() => {
+  const m = location.hash.match(/^#class=([A-Za-z0-9_-]+)$/);
+  if (!m) return;
+  try {
+    const d = JSON.parse(b64uDec(m[1]));
+    if (d && d.w) {
+      history.replaceState(null, '', location.href.split('#')[0]);
+      setTimeout(() => showTeacher({ title: d.t || '', raw: d.w, foe: d.f || 'bandit', diff: d.d || 'normal', safe: !!d.s }), 0);
+    }
+  } catch (e) {}
+})();
 
 /* ================= Menu ================= */
 document.querySelectorAll('.opts').forEach(g => g.addEventListener('click', e => {
@@ -4113,14 +3652,12 @@ document.querySelectorAll('.opts').forEach(g => g.addEventListener('click', e =>
   g.querySelectorAll('.opt').forEach(o => o.classList.toggle('sel', o === b));
   cfg[g.dataset.group] = b.dataset.v;
 }));
-$('#continueBtn').onclick = continueRun;
 $('#startBtn').onclick = startGame;
 $('#bossBtn').onclick = showBossSelect;
-$('#cutsceneBtn').onclick = showCutsceneMenu;
+$('#teacherBtn').onclick = () => showTeacher();
 $('#againBtn').onclick = again;
-$('#menuBtn').onclick = toMenu;
+$('#menuBtn').onclick = () => { phase = 'menu'; $('#resultScr').hidden = true; $('#startScr').hidden = false; renderMetaBar(); kb.focus(); };
 $('#story').onclick = () => phase === 'story' && storyAdvance();
-$('#cineSkip').onclick = e => { e.stopPropagation(); if (phase === 'story') storySkip(); };
 $('#pvpBtn').onclick = () => showPvp();
 $('#helpBtn').onclick = () => showHelp(true); $('#helpClose').onclick = () => showHelp(false);
 $('#metaBtn1').onclick = showMeta; $('#metaBtn2').onclick = showMeta;
@@ -4131,7 +3668,6 @@ R = newRun(); FOE = ENEMIES[0];
 FIG.E.id = FOE.sprite;
 $('#startPath').innerHTML = '<div class="legend" style="margin:0">🔨👻👹 ศัตรู · 💀 ศัตรูเก่ง · ❓ เหตุการณ์ · 🔥 จุดพัก · 🐱 ร้าน · 👑🪞👁️🔄👯 บอส — เลือกเส้นทางเองทุกชั้น</div>';
 S = freshState(); [0, 1, 2].forEach(newSlotWord); renderWords();
-updatePauseBtn();
 requestAnimationFrame(loop);
 </script>
 </body>
