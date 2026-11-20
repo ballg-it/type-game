@@ -1,12 +1,18 @@
-# HANDOFF — Type Game (สถานะ ณ 2026-11-20 เย็น — หลัง PR #8 + commit `a7892bc`, `784259f`)
+# HANDOFF — Type Game (สถานะ ณ 2026-11-21 — หลัง commit `b8137db`)
 
 ## ⚡ สถานะล่าสุด (อ่านก่อน)
-- **push แล้ว:** `a7892bc` บน `ccr-a67b83da-eggwh5` = แก้บั๊ก PvP Backspace/Esc (`pvBack`), `tests/menu-cdp.js` ปรับตามเมนูใหม่ + เช็ก PvP, `tools/ult_frames.py`
-- **push แล้ว:** `784259f` = คัตซีนท่าไม้ตาย 14 → **18 เฟรม** — `art/ult-01..18.jpg`, `index.html` (`ULT_SEQ`/`ULT_END_MS`=3100, CSS `.uc-focus`/`.uc-vig`/`cam-push`/`cam-macro`, step `focus`, เสียง `heart`), `tests/features-cdp.js`, `tools/ult_capture.js`, `tools/recv.js` — เทสต์ผ่าน `errors []` · GIF พรีวิว `art/ult-preview-*.gif`, `art/ult-capture-18f.gif` untracked ตั้งใจ (ไม่ commit)
-  - ถ้า `git push` ค้าง (หน้าต่าง credential ไม่โผล่) ใช้ `git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin pixel-game:ccr-a67b83da-eggwh5`
-- **ลำดับเฟรมตอนนี้:** 01 ย่อชาร์จ · **02 ออร่าพุ่ง (ใหม่)** · 03 ยกดาบ · 04 ซูมเชื่อม · 05 cut-in ตา · **06 มาโครตาเห็นปีศาจสะท้อนในรูม่านตา (ใหม่, ค้าง 460ms, focus 2)** · 07 ตาแฟลช+ชื่อท่า · **08 ซูมเอาต์ (ใหม่)** · 09 พุ่งออก · **10 สปรินต์ afterimage (ใหม่, ครอปเลื่อนกล้อง)** · 11 dash · 12 ง้าง · 13 ฟัน · 14–15 sakuga impact · 16 X-blast · 17 ลงพื้น+ดาเมจ · 18 settle
-- ผู้ใช้ขอ "เน้นช่วงซูมให้ดูมีอะไร" → ทำแล้ว (เฟรม 06 + เอฟเฟกต์โฟกัส) commit แล้ว — รอผู้ใช้ดู GIF `art/ult-capture-18f.gif` ว่าจะปรับต่อไหม
-- เครื่องมือ: `python tools/ult_frames.py insert AFTER img ...` (แปลง 1376×768 + เรียงเลข + พิมพ์ map เก่า→ใหม่; ต้องแก้ `ULT_SEQ` เอง) · `python tools/ult_frames.py gif out.gif` (ภาพล้วนตามจังหวะ) · `node tools/ult_capture.js out.gif` (อัดเกมจริงจาก headless Chrome พร้อมเอฟเฟกต์ ~11 ภาพ/วิ)
+**เป้าหมาย: เกมเสร็จเล่นได้ก่อนศุกร์ 2026-11-27** — หยุดเพิ่มฟีเจอร์/อาร์ต (คัตซีน, ภาพบอสใหม่, เฟรมใหม่ = หลังศุกร์) งานตอนนี้ = ความเสถียร + บาลานซ์
+- **เล่นออนไลน์ได้แล้ว:** https://ballg-it.github.io/type-game/ (รีโป public, Pages build จาก `ccr-a67b83da-eggwh5` อัตโนมัติทุก push ~1 นาที) · ⚠ อีเมล Gmail ของผู้ใช้อยู่ในประวัติ commit 36 อันที่เห็นได้สาธารณะ (แจ้งแล้ว ยังไม่ได้ทำอะไร)
+- **แผนก่อนศุกร์:** P0 ✅ ทั้งหมด (เทสต์จบรัน, ผู้ใช้เล่นจริงแล้ว "ส่วนใหญ่แก้แล้ว", แจกผ่าน Pages, PvP เน็ตจริง) · P1 ✅ (ปุ่มล้างข้อมูล, หน้าวิธีเล่น 12 ข้อ, บอสใหม่บนแป้นไทย, parry) · **เหลือ: ศุกร์ = รันเทสต์ครบ → ติด tag รุ่นเล่นได้ + README** · ผู้ใช้อาจเล่นแล้วบอกบาลานซ์ parry/บอสเพิ่ม
+- **ทำในเซสชัน 2026-11-21 (push ครบ):**
+  - `8bdf1a4` `tests/run-cdp.js` บอทเล่นจบรัน (ไม่ต้อง Playwright) + รีโหลดกลางรันแล้ว `ต่อ` + จับหน้าค้าง · `URL=https://ballg-it.github.io/type-game/` รันกับเว็บจริงได้
+  - `70b9f34` PvP heartbeat `hb` ทุก 1 วิ (`setInterval`), เงียบ > `PVP.timeout` 8 วิ = `pvDrop` ชนะโดยปริยาย — เดิมอีกฝั่งแครช/เน็ตหลุด = ค้างในไฟต์ตลอดไป · `tests/pvp-live-cdp.js` Chrome 2 ตัวดวลผ่าน PeerJS จริง
+  - `aa28aa5` ศาลเจ้า: ปุ่ม 🗑 `รีเซ็ต`/`wipe` พิมพ์ 2 ครั้งใน 5 วิ (`resetAllProgress`) · การ์ดวิธีเล่น +🎮 โหมดอื่น +💾 เซฟอัตโนมัติ
+  - `57c8921` บอสกระจกกลับคำไทย**ทีละพยางค์** (`mirrorItems`) ไม่ให้สระหน้าหลุด · `tests/boss-sim-cdp.js` บอทความเร็วคนสู้บอส · `9e489e8` HP กระจก 225 → 205
+  - `39cd124` + `b8137db` **parry/สวนกลับ:** ต้องเริ่มพิมพ์คำกันในช่วงทอง (เดิมพิมพ์รอแล้วกดตัวท้าย = สวนฟรี 100% เกมง่ายเกิน) ช่วงทอง 0.45 + 0.2 วิ/ตัว · `tests/parry-cdp.js` — รายละเอียด+ผลจำลองในหัวข้อ "ระบบ → ไฟต์" และ "ผลจำลองบอส"
+- **ชุดเทสต์บนเครื่องผู้ใช้ (รันก่อน push ทุกครั้ง, ต้องได้ `errors []`):** `node tests/menu-cdp.js` · `node tests/features-cdp.js` · `node tests/run-cdp.js th,en,bi 1` · `node tests/parry-cdp.js` · (ต้องมีเน็ต) `node tests/pvp-live-cdp.js [url]` · บาลานซ์: `STRAT=now|exploit|auto PAGE=<ไฟล์เก่า> node tests/boss-sim-cdp.js th 3 0.05 2 queen` (ไฟล์เก่า: `git show <commit>:index.html > index-old.html` แล้วลบทิ้งหลังใช้) — ระวัง HP ระหว่างไฟต์คือ `S.php` (`R.php` = นอกไฟต์)
+- ถ้า `git push` เงียบ/ค้าง (credential) ใช้ `git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin pixel-game:ccr-a67b83da-eggwh5` แล้วเช็ก `git status -sb` ว่าไม่ ahead
+- งานก่อนหน้า (2026-11-20): คัตซีนท่าไม้ตาย 18 เฟรม (`784259f`, เครื่องมือ `tools/ult_frames.py`, `tools/ult_capture.js`) — ผู้ใช้ยังไม่ได้ตอบเรื่อง GIF `art/ult-capture-18f.gif` (เกลาหลังศุกร์)
 
 ## ภาพรวม
 เกมฝึกพิมพ์ **ต่อสู้ 1:1 + Roguelike + เนื้อเรื่องเบาๆ** รองรับไทย (เกษมณี) / อังกฤษ / สองภาษา — ไอเดียทั้งหมดอยู่ใน `docs/IDEAS.md` (README = หน้ารีโป)
