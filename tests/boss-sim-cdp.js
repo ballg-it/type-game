@@ -1,5 +1,8 @@
 // Human-speed bot vs each boss (boss challenge), to compare fairness. Bot runs inside the page on a timer.
 // node tests/boss-sim-cdp.js [mode=th] [cps=3] [err=0.05] [trials=2] [bosses=queen,mirror,phantom,jester,twins]
+// env STRAT = how the bot defends: now (type the defense word at once, default) · exploit (pre-type all but the last
+// letter, finish in the gold window) · auto (wait for gold and parry if it can type the word in time, else type now)
+// env PAGE = page file to load (default ../index.html), e.g. an older copy to compare
 const { spawn } = require('child_process'); const os = require('os'), path = require('path'), fs = require('fs');
 const [mode = 'th', cps = '3', err = '0.05', trials = '2', bossArg = 'queen,mirror,phantom,jester,twins'] = process.argv.slice(2);
 const CH = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
@@ -8,7 +11,7 @@ const prof = path.join(os.tmpdir(), 'tg-boss-' + Date.now());
 const proc = spawn(CH, ['--headless=new', '--disable-gpu', '--allow-file-access-from-files', `--remote-debugging-port=${port}`, `--user-data-dir=${prof}`, '--window-size=1280,800', 'about:blank'], { stdio: 'ignore' });
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const BOT = `
-window.__bot = (cps, errP) => {
+window.__bot = (cps, errP, strat) => {
   const B = { t0: performance.now(), target: null, wait: 0, keys: 0, errs: 0, swapKeys: 0, blind: 0, hpLog: [] };
   const isTh = c => /[\\u0E00-\\u0E7F]/.test(c);
   const send = ch => { kb.value += ch; kb.dispatchEvent(new Event('input')); };
@@ -34,6 +37,11 @@ window.__bot = (cps, errP) => {
     const chars = [...B.target], done = [...S.buf].length;
     if (!B.target.startsWith(S.buf)) { clear(); return; }
     const ch = chars[done]; if (ch === undefined) return;
+    if (S.def && !S.ultMode && B.target === S.def.text) {
+      const rem = S.enemy.chargeMax - S.enemy.charge, win = counterWin();
+      if (strat === 'exploit' && done === chars.length - 1 && rem > win - 0.05) return;
+      if (strat === 'auto' && done === 0 && chars.length / cps <= win - 0.15 && rem > win - 0.1) return;
+    }
     const blindNow = !S.def && !S.ultMode && FOE.bossMech === 'stealth' && fadeOf(S.slots.findIndex(w => w && w.text === B.target)) < 0.3;
     if (Math.random() < errP * (blindNow ? 2 : 1)) { B.errs++; send(isTh(ch) ? 'ฯ' : 'q'); return; }
     let key = ch;
@@ -51,22 +59,22 @@ window.__bot = (cps, errP) => {
   const cmd = (method, params = {}) => new Promise(r => { const i = ++id; pend[i] = r; ws.send(JSON.stringify({ id: i, method, params })); });
   const ev = async e => { const r = await cmd('Runtime.evaluate', { expression: e, returnByValue: true, awaitPromise: true }); if (r.result.exceptionDetails) throw new Error(JSON.stringify(r.result.exceptionDetails).slice(0, 300)); return r.result.result.value; };
   await cmd('Runtime.enable'); await cmd('Page.enable');
-  await cmd('Page.navigate', { url: 'file:///' + path.resolve(__dirname, '../index.html').split(path.sep).join('/') }); await sleep(2500);
+  await cmd('Page.navigate', { url: 'file:///' + path.resolve(__dirname, process.env.PAGE || '../index.html').split(path.sep).join('/') }); await sleep(2500);
   await ev(`localStorage.setItem('typegame.tourDone','1'); localStorage.setItem('typegame.askPractice','1')`);
   const rows = [];
   for (const boss of bossArg.split(',')) for (let t = 0; t < +trials; t++) {
     await ev(`location.reload()`); await sleep(2500);
     await ev(`document.querySelector('[data-group=mode] [data-v=${mode}]').click(); startBossChallenge('${boss}'); window.__B = null`);
     await sleep(800);
-    await ev(BOT); await ev(`window.__B = __bot(${cps}, ${err}); 0`);
+    await ev(BOT); await ev(`window.__B = __bot(${cps}, ${err}, '${process.env.STRAT || 'now'}'); 0`);
     const t0 = Date.now(); let s;
     while (Date.now() - t0 < 240000) {
-      s = await ev(`({ run: S.running, php: Math.ceil(R.php), pmax: R.pmax, ehp: Math.ceil(S.ehp), emax: S.emax, enr: S.enraged, keys: __B.keys, errs: __B.errs, blind: __B.blind, swaps: __B.swapKeys, combo: S.maxCombo, blocks: S.stats.blocks })`);
+      s = await ev(`({ run: S.running, php: Math.ceil(R.php), pmax: R.pmax, ehp: Math.ceil(S.ehp), emax: S.emax, enr: S.enraged, keys: __B.keys, errs: __B.errs, blind: __B.blind, swaps: __B.swapKeys, combo: S.maxCombo, blocks: S.stats.blocks, counters: S.stats.counters })`);
       if (!s.run) break; await sleep(1000);
     }
     await ev(`clearInterval(__B.timer)`);
     const secs = Math.round((Date.now() - t0) / 1000);
-    const r = { boss, win: s.ehp <= 0, secs, hpLeft: `${s.php}/${s.pmax}`, bossLeft: `${s.ehp}/${s.emax}`, keys: s.keys, errs: s.errs, blindTicks: s.blind, swapKeys: s.swaps, blocks: s.blocks, timeout: s.run };
+    const r = { boss, win: s.ehp <= 0, secs, hpLeft: `${s.php}/${s.pmax}`, bossLeft: `${s.ehp}/${s.emax}`, keys: s.keys, errs: s.errs, blindTicks: s.blind, swapKeys: s.swaps, blocks: s.blocks, counters: s.counters, timeout: s.run };
     rows.push(r); console.log(JSON.stringify(r));
   }
   console.log('errors', JSON.stringify(errs));
