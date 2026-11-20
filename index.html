@@ -154,7 +154,23 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
   .title{font-size:40px}
   .center{width:120px}
   .hint{display:none}
+  /* มือถือ: ปุ่มมุมขวาบนกินที่ชื่อศัตรู → ดัน HUD ลงหนึ่งแถว */
+  #hud{padding-top:46px;gap:8px}
+  .hpbox.e .name{padding-right:0}
+  .hpbox .name{white-space:nowrap;font-size:14px}
+  .hpbox .name b,.hpbox .name>span{overflow:hidden;text-overflow:ellipsis}
+  .center{width:96px}
+  .wave{padding:2px 8px;font-size:12px;white-space:nowrap}
+  .center{width:auto;flex:none}
 }
+/* จอเตี้ย (มือถือตอนคีย์บอร์ดเด้งขึ้น / แนวนอน): ย่อฉากให้ช่องคำยังเห็นครบ */
+@media (max-height:560px){
+  #arena{min-height:150px}
+  #hud{padding-top:6px;padding-bottom:2px}
+  .hpbox .num{display:none}
+  #bottom{padding:2px 12px 4px}
+}
+@media (max-height:560px) and (max-width:700px){ #hud{padding-top:40px} }
 /* run */
 #banner{position:absolute;left:50%;top:32%;transform:translate(-50%,-50%);z-index:11;text-align:center;pointer-events:none;opacity:0;white-space:nowrap}
 #banner.show{animation:banner 2.4s ease-out forwards}
@@ -345,7 +361,7 @@ body.cine #story{cursor:default}
 @keyframes ucDmgPop{0%{opacity:0;transform:scale(.35) rotate(-6deg)}60%{opacity:1;transform:scale(1.14) rotate(2deg)}100%{opacity:1;transform:scale(1) rotate(-2deg)}}
 .uc-skip{position:absolute;right:18px;top:14px;z-index:6;font-size:12px;color:#e9d5ffcc;background:#090418bb;border:1px solid #c084fc66;border-radius:999px;padding:3px 12px}
 .uc-skip kbd{font-size:10px}
-#kb{position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0}
+#kb{position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0;font-size:16px}  /* <16px = iOS ซูมจอตอน focus */
 /* ---------- title screen ---------- */
 #startScr{position:fixed;display:block;padding:0;background:#0b0618;backdrop-filter:none;overflow:hidden}
 #startScr[hidden]{display:none}
@@ -2340,6 +2356,13 @@ document.addEventListener('keydown', e => {
   }
 });
 document.addEventListener('mousedown', e => { if (!e.target.closest('button,input,textarea,select,label')) setTimeout(() => kb.focus(), 0); });
+// มือถือ: iOS ไม่ย่อหน้าเว็บตอนคีย์บอร์ดเด้ง → ใช้ความสูงที่มองเห็นจริงแทน ช่องคำจะไม่ถูกคีย์บอร์ดบัง
+if (window.visualViewport) {
+  const fitVV = () => { document.documentElement.style.height = visualViewport.height + 'px'; document.body.style.height = visualViewport.height + 'px'; window.scrollTo(0, 0); };
+  visualViewport.addEventListener('resize', fitVV); fitVV();
+}
+// มือถือ (iOS): คีย์บอร์ดจะเด้งขึ้นก็ต่อเมื่อ focus ในจังหวะที่ผู้เล่นแตะจริง ไม่ใช่ใน setTimeout
+document.addEventListener('click', e => { if (!e.target.closest('button,input,textarea,select,label,a')) kb.focus(); });
 window.addEventListener('blur', () => { if (phase === 'fight' && S && S.running && !PAUSED && !ULT_CINE && !S.tour && !R.pvp) setPause(true); });
 
 /* ================= Pause + Save/Continue + Restart + Lobby ================= */
