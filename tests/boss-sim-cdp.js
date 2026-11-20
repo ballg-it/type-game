@@ -66,8 +66,11 @@ window.__bot = (cps, errP, strat) => {
   const rows = [];
   for (const boss of bossArg.split(',')) for (let t = 0; t < +trials; t++) {
     await ev(`location.reload()`); await sleep(2500);
-    await ev(`document.querySelector('[data-group=mode] [data-v=${mode}]').click(); startBossChallenge('${boss}'); window.__B = null`);
+    await ev(`document.querySelector('[data-group=mode] [data-v=${mode}]').click(); cfg.diff = '${process.env.DIFF || 'normal'}'; startBossChallenge('${boss}'); window.__B = null`);
     await sleep(800);
+    // env DIFF = easy|normal|hard (default normal)
+    // env UPS = upgrades to apply before the fight, e.g. UPS=atk,heavy,hpmax,leech,combo (like meeting the boss mid-run)
+    if (process.env.UPS) await ev(`${JSON.stringify(process.env.UPS.split(','))}.forEach(id => UPGRADES.find(u => u.id === id).apply(R.mod, R)); S.php = R.php; S.pmax = R.pmax; 0`);
     await ev(BOT); await ev(`window.__B = __bot(${cps}, ${err}, '${process.env.STRAT || 'now'}'); 0`);
     const t0 = Date.now(); let s;
     while (Date.now() - t0 < 240000) {

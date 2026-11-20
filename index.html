@@ -828,6 +828,8 @@ const DIFF = {
 };
 // สวนกลับ (parry): ต้อง "เริ่มพิมพ์" คำกันในช่วงทองท้ายแถบ แล้วพิมพ์ให้จบก่อนโดน — พิมพ์รอไว้ก่อนแล้วกดตัวสุดท้ายตอนทอง = แค่กัน
 // ช่วงทองยาวตามความยาวคำ (ไทย 3 ตัว ≈ 1.05 วิ, อังกฤษ 5 ตัว ≈ 1.45 วิ, เพดาน 60% ของแถบ) — คนพิมพ์ ~4 ตัว/วิ ขึ้นไปสวนได้ (รวมเวลาตอบสนอง)
+// ระดับยาก: บอสชาร์จเร็วขึ้น+เลือดมากขึ้น สำหรับคนพิมพ์เร็ว (2026-11-21: 5 ตัว/วิ ชนะบอสเลือดเต็มทุกตัวใน ~30 วิ) — ระดับปกติไม่แตะ เพราะ 3 ตัว/วิ แค่ชาร์จเร็วขึ้น 15% ก็แพ้ 6/6
+const BOSS_HARD = { charge: 0.85, hp: 1.3 };
 const COUNTER_WINDOW = 0.45, COUNTER_PER_CHAR = 0.2, COUNTER_CHIP = 0, COUNTER_NEXT = 2, COUNTER_ULT = 6;
 const KB_TH = {
   u: ['ๅ/-ภถุึคตจขช', 'ๆไำพะัีรนยบลฃ', 'ฟหกดเ้่าสวง', 'ผปแอิืทมใฝ'],
@@ -1425,7 +1427,7 @@ function newRun() {
   };
 }
 function freshState() {
-  let ehp = Math.round(FOE.hp * DIFF[cfg.diff].hp);
+  let ehp = Math.round(FOE.hp * DIFF[cfg.diff].hp * (FOE.boss && cfg.diff === 'hard' ? BOSS_HARD.hp : 1));
   let twins = null;
   if (FOE.bossMech === 'twins') {
     const h = Math.round(ehp / 2); ehp = h * 2;
@@ -1457,6 +1459,14 @@ const counterWin = () => Math.min(COUNTER_WINDOW + (S.def ? [...S.def.text].leng
 // เริ่มพิมพ์คำกันตอนไหน (เวลาที่เหลือของแถบชาร์จ) — null = ยังไม่เริ่ม / ลบจนว่างแล้ว
 const defEarly = () => S.defStart != null && S.defStart > counterWin() + 0.05;
 const idleTime = () => rand(...DIFF[cfg.diff].idle) * FOE.idle * (S.enraged ? 0.6 : 1);
+// บอสโกรธ (เลือด < ครึ่ง) ตีสองจังหวะ: หลังจบท่าหนึ่ง (กันได้/โดน) ชาร์จต่อทันทีสลับกัน — 5 ตัว/วิ เดิมชนะบอสเลือดเต็มทุกตัวใน ~30 วิ
+const nextIdle = () => {
+  if (!R.pvp && !S.tut && cfg.diff !== 'easy' && FOE && FOE.boss && S.enraged) {
+    S.chain = !S.chain;
+    if (S.chain) { fx('bad', '⚠ ตีซ้ำ!', E, 0, -60); return rand(0.5, 0.8); }
+  }
+  return idleTime();
+};
 function letterMult(w) {
   let m = 1;
   for (const [ch, k] of Object.entries(R.mod.letters)) if (w.text.includes(ch)) m *= k;
@@ -2494,7 +2504,7 @@ function block() {
   const rem = S.enemy.chargeMax - S.enemy.charge;
   const parry = rem <= counterWin() && S.defStart != null && !defEarly();   // ก่อนล้าง S.def (ช่วงทองยาวตามคำ)
   const defLen = S.def ? S.def.len || [...S.def.text].length : 3;
-  S.def = null; S.defStart = null; S.enemy.state = 'idle'; S.enemy.t = idleTime();
+  S.def = null; S.defStart = null; S.enemy.state = 'idle'; S.enemy.t = nextIdle();
   // กันได้ = คอมโบไม่หลุด แต่ไม่เพิ่ม (เดิม +1 ทุกครั้ง → รอกันอย่างเดียวคอมโบ ×3 ชนะได้โดยไม่ต้องตี)
   anim(P, 'shield', 460); play(FIG.P, 'block'); play(FIG.E, 'attack');
   if (parry) {
@@ -2518,7 +2528,7 @@ function block() {
 
 function enemyStartCharge() {
   const e = S.enemy;
-  e.state = 'charge'; e.charge = 0; e.chargeMax = R.pvp ? PVP.charge : DIFF[cfg.diff].charge * FOE.charge;
+  e.state = 'charge'; e.charge = 0; e.chargeMax = R.pvp ? PVP.charge : DIFF[cfg.diff].charge * FOE.charge * (FOE.boss && cfg.diff === 'hard' ? BOSS_HARD.charge : 1);
   if (R.pvp) S.pvDmg = S.pvQ.shift();
   const lang = pickLang();
   const defs = (FOE.def || DEF)[lang];
@@ -2533,7 +2543,7 @@ function enemyStartCharge() {
 
 function enemyHit() {
   const dmg = R.pvp ? S.pvDmg : Math.round(DIFF[cfg.diff].dmg * FOE.dmg);
-  S.def = null; S.enemy.state = 'idle'; S.enemy.t = idleTime();
+  S.def = null; S.enemy.state = 'idle'; S.enemy.t = nextIdle();
   if (R.pvp) pvSend({ t: 'land', dmg: S.shields > 0 ? 0 : dmg });
   E.classList.remove('charging');
   play(FIG.E, 'attack');
@@ -3276,7 +3286,7 @@ function showMap() {
     const lang = pickLang(), word = shuffle(MAP_WORDS[lang]).find(t => !used.has(t[0])); used.add(word[0]);
     const f = nd.foe && makeFoe(nd);
     return { nd, icon: nodeIcon(nd), name: nodeName(nd), word, lang,
-      desc: f ? `${NODE[nd.t].desc} · HP ${Math.round(f.hp * DIFF[cfg.diff].hp)} · ${trait(f)}` : NODE[nd.t].desc, fn: () => enterNode(nd) };
+      desc: f ? `${NODE[nd.t].desc} · HP ${Math.round(f.hp * DIFF[cfg.diff].hp * (f.boss && cfg.diff === 'hard' ? BOSS_HARD.hp : 1))} · ${trait(f)}` : NODE[nd.t].desc, fn: () => enterNode(nd) };
   });
   showChoice({ title: '🗺 เลือกเส้นทาง', sub: `ชั้น ${R.at.layer + 2} / ${MAP_LAYERS} · HP ${Math.ceil(R.php)} / ${R.pmax} · 🪙 ${R.coins}` + (R.shields ? ` · 🛡×${R.shields}` : ''),
     map: true, opts, keepOpen: true });
