@@ -44,6 +44,8 @@
 - shop: `showShop()` → `ออก` → `showMap()` · rest: `showRest()` · event: `showEvent()` (ทั้งสองใช้ `showChoice`)
 
 **ระบบ**
+- **โหมดฝึกซ้อม (`startPractice`, `TUT_STEPS`, `tutEvent`):** เมนูที่ 2 "ฝึกซ้อม" (พิมพ์ `ฝึก`/`train`, ป้าย "มือใหม่" `#practiceNew` หายเมื่อฝึกจบ — localStorage `typegame.tutDone`) · ไฟต์กับโจรค้อนคีย์ที่ไม่มีใครตาย (`R.practice`: ศัตรูเหลือ ≥1, ผู้เล่นเหลือ ≥1, ไม่เรียก `endFight`) · กล่องโค้ช `#coach` + กรอบทอง `.tut-focus` สอน 4 ขั้น: โจมตี → คอมโบ 3 คำ (ผิด = นับใหม่) → ป้องกัน (ศัตรูโจมตีเฉพาะขั้นนี้ `S.tut.enemyOn`, ชาร์จ 4 วิ, ไม่ทัน = ลองใหม่) → ท่าไม้ตาย (เกจเต็มให้, เวลา ×2, พลาด = คืนเกจ; ขั้นก่อนหน้าเกจตันที่ 90) · จบแล้ว `showChoice` 3 ทาง `เริ่ม`/`ซ้อม`/`เมนู` (การ์ดที่มี `end` ไม่ตกไป `showMap`) · ปุ่ม "ออกจากการฝึก" → `toMenu()`
+- **แนะนำหน้าจอ (`TOUR`, `startTour`):** ไฟต์จริงครั้งแรก (localStorage `typegame.tourDone`) หยุดเกม (`S.tour`: ไม่ `update`, ไม่รับพิมพ์, ไม่ auto-pause ตอน blur) แล้วไฮไลต์ 10 จุดด้วย spotlight (`#tourHole` เงาทึบรอบกรอบ + `#tourTip`) — HP เรา/ศัตรู, ชั้น, ช่องคำ, กล่องกัน/คอมโบ/เกจไม้ตาย (แสดงตัวอย่างชั่วคราวแล้วคืนค่า `tourSnap`), Stamina, ปุ่ม, ตั้งแป้น · Enter/→ ถัดไป ← ย้อน Esc ข้าม (คีย์จับที่ `window` capture ก่อน handler เกม) · ปุ่ม **?** `#tourBtn` ข้างปุ่มเสียง เปิดซ้ำระหว่างไฟต์ · ไม่เปิดเองเมื่อ `navigator.webdriver` (เทสต์ Playwright ไม่ค้าง) และไม่เปิดในโหมดฝึก/PvP
 - **ไฟต์:** 3 ช่องคำ (เร็ว/กลาง/แรง) `atkDmg()` = (3+ยาว×2.2)×คอมโบ×เหนื่อย×mod; ศัตรูชาร์จ → พิมพ์คำกัน, กันช่วงท้าย (`counterWin()`) = สวนกลับ; คอมโบ +0.1/คำ; **Tab** ท่าไม้ตาย; Stamina หมด ×0.5; `DIFF` ง่าย/ปกติ/ยาก
 - **เทียบคำไทย:** `clusters`/`match`/`expectedNext` — สลับลำดับวรรณยุกต์/สระบน-ล่างในกลุ่มได้; พิมพ์ผิดภาษาแป้น → เตือน ไม่นับผิด
 - **`ENEMIES`:** 🔨 โจรค้อนคีย์ (แถวบน, HP 110) · 👻 ภูตตัวเลข (เลขไทย/ตัวเลข, 120) · 👹 โอนิดาบแดง (Shift/ตัวใหญ่, 150) · 👑 ราชินีวรรณยุกต์ บอส (วรรณยุกต์, คำกันเอง `def`, HP<ครึ่ง = โกรธ, 230)
@@ -67,7 +69,7 @@
 - ท่าโดนตีของศัตรูใช้ `hurtE()` (ไม่ทับท่า `ko`); KO เล่นที่ 380ms หลังทุกเฟรมโดนตี
 - คำบนการ์ดใช้ตัวอักษรแรกไม่ซ้ำกันในหน้าเดียว (กันพิมพ์กำกวม)
 - overlay ที่ตั้ง `display` เอง (เช่น `#startScr{display:block}`) ต้องมี `[hidden]{display:none}` คู่กัน ไม่งั้น `hidden` ไม่ซ่อนและบังไฟต์ (เทสต์ที่เช็กแค่ `.hidden` จับไม่ได้ — เช็ก `offsetParent`/ภาพหน้าจอด้วย)
-- คำของเมนู/การ์ดในหน้าเดียวกันต้องขึ้นต้นต่างกันในแต่ละภาษา (อังกฤษ: go/shrine/duel/help)
+- คำของเมนู/การ์ดในหน้าเดียวกันต้องขึ้นต้นต่างกันในแต่ละภาษา (ไทย: เริ่ม/ฝึก/ศาล/ดวล/วิธีเล่น · อังกฤษ: go/train/shrine/duel/help)
 
 ## `sprites.js`
 `Px` บัฟเฟอร์พิกเซล · `U=2` · สไปรต์ 160×148 สะโพก (80,96) · 15 fps · `makeRig` + ท่า `PO` + `FIGHTER`/`ANIMS` · `renderChar(id, state, t, gt)` → `{px, pose}` · `CHARS`: `airin`, `oni`, `queen`, `cat`, `robo`, `bandit`, `ghost` · `drawBG()`, `drawGlyphs()`
@@ -78,7 +80,7 @@
 
 ## การทดสอบ
 `cd tests && node run.js th` (หรือ `en`/`bi`) — Playwright จำลองการพิมพ์เล่นจบรันบนแผนที่สุ่ม (ร้าน/เหตุการณ์/ฉาก/บอส); ไฟล์อื่น: `bugs.js` (บั๊กที่แก้แล้ว 3 ข้อ), `story.js`, `ending.js`, `ev.js` (เหตุการณ์+จุดพัก), `meta.js` (ศาลเจ้า+localStorage+ขนนก), `pvp.js [modeA] [modeB]` (2 หน้าต่อกันผ่าน Peer ปลอมบน BroadcastChannel + http server ในตัว: สร้าง/ผิดรหัส/Backspace/ไฟต์/รีแมตช์/หลุดกลางไฟต์) — ทุกตัวต้องได้ `errors []` (ภาพ .png ลงในโฟลเดอร์ที่รัน อย่า commit)
-**เครื่องผู้ใช้ไม่มี Playwright** (ชุดข้างบนรันใน container เก่า) → `node tests/menu-cdp.js` สั่ง Chrome ผ่าน DevTools protocol ตรง (Node 22+, 20 ข้อ: พิมพ์/ลูกศร/Esc/อังกฤษ/เริ่มรัน/ภาพปก, ต้องได้ `errors []`) · ถ่ายภาพหน้าจอ: `chrome --headless=new --allow-file-access-from-files --window-size=1280,800 --screenshot=out.png file:///D:/1234/index.html` (headless กว้างต่ำสุด 500px — ดูมือถือให้ครอบ iframe กว้าง 390) · preview pane ในแอปมักโหลด localhost ไม่ขึ้น (policy check) และ bash ต่อ preview server ไม่ได้ → ใช้ file:// แทน
+**เครื่องผู้ใช้ไม่มี Playwright** (ชุดข้างบนรันใน container เก่า) → `node tests/menu-cdp.js` สั่ง Chrome ผ่าน DevTools protocol ตรง (Node 22+, 25 ข้อ รวมโหมดฝึก+แนะนำหน้าจอ: พิมพ์/ลูกศร/Esc/อังกฤษ/เริ่มรัน/ภาพปก, ต้องได้ `errors []`) · ถ่ายภาพหน้าจอ: `chrome --headless=new --allow-file-access-from-files --window-size=1280,800 --screenshot=out.png file:///D:/1234/index.html` (headless กว้างต่ำสุด 500px — ดูมือถือให้ครอบ iframe กว้าง 390) · preview pane ในแอปมักโหลด localhost ไม่ขึ้น (policy check) และ bash ต่อ preview server ไม่ได้ → ใช้ file:// แทน
 **ยังไม่ได้ทดสอบ:** PvP ผ่านเน็ตจริง (container นี้ต่อ unpkg/peerjs ไม่ได้ — ต้องเปิดผ่าน http(s) หรือไฟล์ก็ได้แต่ต้องมีเน็ต; เครือข่ายบางที่ที่ NAT เข้มอาจต่อไม่ติดเพราะไม่มี TURN), คีย์บอร์ดไทยจริง (ห่วงเลขไทยที่ต้อง Shift), **บาลานซ์ตัวเลข** (รันยาว 4–6 ไฟต์+บอส, บอทพิมพ์แม่นได้ ~70–80🪙 ต่อร้าน, ซื้อศาลครบ ~840💎 ≈ 10–15 รัน)
 
 ## อาร์ตไอริน (AI Studio) — วิธีทำ + กับดัก
