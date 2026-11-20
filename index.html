@@ -2058,9 +2058,9 @@ function mistake() {
   S.combo = 0;
 }
 
-/* ---------- คัตซีนท่าไม้ตาย (Ultimate Cutscene 12 เฟรม) ---------- */
+/* ---------- คัตซีนท่าไม้ตาย (Ultimate Cutscene 14 เฟรม) ---------- */
 const ULT_NAMES = ['คมดาบอักษรผ่าฟากฟ้า', 'เพลงดาบแสงนีออน', 'พายุคีย์บอร์ดทลายฟ้า'];
-const ULT_FRAMES = Array.from({ length: 12 }, (_, i) => `art/ult-${String(i + 1).padStart(2, '0')}.jpg`);
+const ULT_FRAMES = Array.from({ length: 14 }, (_, i) => `art/ult-${String(i + 1).padStart(2, '0')}.jpg`);
 const ULT_IMGS = ULT_FRAMES.map((src, i) => {
   const im = document.createElement('img');
   im.className = 'uc-img'; im.src = src; im.alt = ''; im.dataset.f = String(i + 1);
@@ -2069,19 +2069,21 @@ const ULT_IMGS = ULT_FRAMES.map((src, i) => {
 });
 const ULT_SEQ = [
   { at: 0,    f: 0,  cam: 'zoom',   sfx: 'charge' },
-  { at: 230,  f: 1,  cam: 'zoom2',  sfx: 'draw'   },
-  { at: 400,  f: 2,  cam: 'cutin',  flash: 1, title: 1, sfx: 'glint' },
-  { at: 680,  f: 3,  cam: 'glint',  sfx: 'flare'  },
-  { at: 840,  f: 4,  cam: 'dash',   sfx: 'leap'   },
-  { at: 980,  f: 5,  cam: 'dash2',  sfx: 'dash'   },
-  { at: 1130, f: 6,  cam: 'dash2'                 },
-  { at: 1270, f: 7,  cam: 'slash',  beam: 1, shake: 1, flash: 1, sfx: 'slash' },
-  { at: 1460, f: 8,  cam: 'impact', shake: 2      },
-  { at: 1570, f: 9,  cam: 'burst',  flash: 2, sfx: 'boom' },
-  { at: 1730, f: 10, cam: 'land',   shake: 1, dmg: 1 },
-  { at: 2020, f: 11, cam: 'settle'                }
+  { at: 210,  f: 1,  cam: 'zoom2',  sfx: 'draw'   },
+  { at: 360,  f: 2,  cam: 'zoom2'                 },
+  { at: 500,  f: 3,  cam: 'cutin',  flash: 1, title: 1, sfx: 'glint' },
+  { at: 760,  f: 4,  cam: 'glint',  sfx: 'flare'  },
+  { at: 910,  f: 5,  cam: 'dash',   sfx: 'leap'   },
+  { at: 1040, f: 6,  cam: 'dash2',  sfx: 'dash'   },
+  { at: 1180, f: 7,  cam: 'dash2'                 },
+  { at: 1310, f: 8,  cam: 'slash',  beam: 1, shake: 1, flash: 1, sfx: 'slash' },
+  { at: 1490, f: 9,  cam: 'impact', shake: 2      },
+  { at: 1570, f: 10, cam: 'impact', shake: 2      },
+  { at: 1640, f: 11, cam: 'burst',  flash: 2, sfx: 'boom' },
+  { at: 1790, f: 12, cam: 'land',   shake: 1, dmg: 1 },
+  { at: 2070, f: 13, cam: 'settle'                }
 ];
-const ULT_END_MS = 2360;
+const ULT_END_MS = 2420;
 let ULT_CINE = null;
 function playUltSfx(k) {
   if (k === 'charge') tone(220, 0.22, 'sawtooth', 0.08, 620);
