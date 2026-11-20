@@ -54,7 +54,7 @@ let failed = 0;
   await sleep(2200);
   await ev(`localStorage.setItem('typegame.tourDone', '1')`);
 
-  // 1. Title screen + 8 visible menu items layout check (Teacher Mode removed)
+  // 1. Title screen + 7 visible menu items layout check (Teacher Mode & Cutscene Viewer removed)
   const menuInfo = await ev(`(() => {
     const items = [...document.querySelectorAll('#menuList .mi:not([hidden])')];
     const bar = document.querySelector('.ts-bar').getBoundingClientRect();
@@ -64,8 +64,8 @@ let failed = 0;
     const noTeacher = !document.getElementById('teacherBtn') && !document.getElementById('teacherScr');
     return { count: items.length, words, uniqueFirsts: firsts.size === words.length, noOverlap: last.bottom < bar.top + 4, noTeacher };
   })()`);
-  ok('title menu has 8 visible items, unique TH prefixes, no overlap & no Teacher Mode (' + menuInfo.words.join('/') + ')',
-     menuInfo.count === 8 && menuInfo.uniqueFirsts && menuInfo.noOverlap && menuInfo.noTeacher);
+  ok('title menu has 7 visible items, unique TH prefixes, no overlap & no Teacher Mode (' + menuInfo.words.join('/') + ')',
+     menuInfo.count === 7 && menuInfo.uniqueFirsts && menuInfo.noOverlap && menuInfo.noTeacher);
   await shot('title.png');
 
   // Check EN prefixes unique too
@@ -74,7 +74,7 @@ let failed = 0;
     const words = [...document.querySelectorAll('#menuList .mi:not([hidden]) .w')].map(e => e.textContent);
     return { words, unique: new Set(words.map(w => w[0])).size === words.length };
   })()`);
-  ok('title menu EN prefixes unique (' + enMenu.words.join('/') + ')', enMenu.unique && enMenu.words.length === 8);
+  ok('title menu EN prefixes unique (' + enMenu.words.join('/') + ')', enMenu.unique && enMenu.words.length === 7);
   await ev(`document.querySelector('[data-group=mode] [data-v=th]').click()`);
 
   // 2. Boss Challenge selector (type บอส)
@@ -211,71 +211,59 @@ let failed = 0;
   ok('bandit charge spawns spellCharge & attack spawns slash + groundSlam (live=' + banditFx.countAfterAttack + ')',
      banditFx.hasCharge && banditFx.countAfterAttack >= 2);
 
-  // 6. Cutscene System (Opening Cutscene, Midpoint Cutscene, Boss VS Cutscene, Cutscene Viewer)
-  await ev(`toMenu();`);
-  await sleep(200);
-  await ev(`startRun();`);
-  await sleep(350);
-  const openCine = await ev(`({
-    phase, kind: ST && ST.kind, cine: document.body.classList.contains('cine'),
-    topVis: !$('#cineTop').hidden, cardVis: !$('#cineCard').hidden,
-    title: $('#ccTitle').textContent, portVis: !$('#storyPort').hidden
-  })`);
-  ok('startRun plays Opening Cutscene with title card, letterbox & portrait (' + openCine.title + ')',
-     openCine.phase === 'story' && openCine.kind === 'opening' && openCine.cine && openCine.topVis && openCine.cardVis && openCine.portVis);
-  await shot('cutscene-opening-1.png');
-
-  // Advance to Queen vortex scene (line 1)
-  await ev(`storyAdvance(); storyAdvance();`);
-  await sleep(450);
-  await shot('cutscene-opening-2.png');
-  const queenScene = await ev(`({ who: ST && ST.lines[ST.i].who, fx: ST && ST.fx, mood: ST && ST.mood })`);
-  ok('Opening Cutscene advances to Queen vortex scene', queenScene.who === 'queen' && queenScene.fx === 'vortex');
-
-  // Skip Opening Cutscene -> Layer 1 Fight
-  await ev(`storySkip();`);
-  await sleep(350);
-  const afterSkip = await ev(`({ phase, run: S.running, cine: document.body.classList.contains('cine'), pauseBtnVis: !$('#pauseBtn').hidden })`);
-  ok('Skipping Opening Cutscene enters Layer 1 fight cleanly',
-     afterSkip.phase === 'fight' && afterSkip.run && !afterSkip.cine && afterSkip.pauseBtnVis);
-
-  // Trigger Act II Midpoint Cutscene at Layer 4
-  await ev(`S.running = false; enterNode(R.map[3][0]);`);
-  await sleep(350);
-  const midCine = await ev(`({ phase, kind: ST && ST.kind, title: $('#ccTitle').textContent })`);
-  ok('Entering Layer 4 triggers Act II Midpoint Cutscene (' + midCine.title + ')',
-     midCine.phase === 'story' && midCine.kind === 'mid');
-  await ev(`storySkip();`);
+  // 6. Ultimate Move Cutscene (12-frame fluid anime sequence)
+  await ev(`toMenu(); startRun();`);
   await sleep(300);
+  ok('startRun enters Layer 1 fight directly (story intro stashed)',
+     await ev(`phase === 'fight' && S.running && !document.body.classList.contains('cine')`));
 
-  // Trigger Act III Boss Cutscene with Boss VS Card
-  await ev(`S.running = false; enterNode(R.map[6][0]);`);
-  await sleep(400);
-  const bossCine = await ev(`({ phase, kind: ST && ST.kind, bossCard: $('#cineCard').classList.contains('boss'), title: $('#ccTitle').textContent })`);
-  ok('Entering Boss layer triggers Act III Boss VS Cutscene (' + bossCine.title + ')',
-     bossCine.phase === 'story' && bossCine.kind === 'boss' && bossCine.bossCard);
-  await shot('cutscene-boss.png');
-  await ev(`storySkip();`);
-  await sleep(200);
-  ok('Esc in Boss Cutscene jumps straight to stance choice', await ev(`phase === 'story' && !!(ST && ST.lines[ST.i].choice)`));
+  const waitFrame = async (minF, ms = 2500) => {
+    const t0 = Date.now();
+    while (Date.now() - t0 < ms) {
+      const f = await ev(`ULT_CINE ? ULT_CINE.frame : 99`);
+      if (f >= minF) return f;
+      await sleep(25);
+    }
+    return 0;
+  };
+  await ev(`S.ult = 100; S.ehp = S.emax = 500; tryUlt();`);
+  await sleep(100);
+  const ultTxt = await ev(`S.ultWord.text`);
+  const ehpBeforeUlt = await ev(`S.ehp`);
+  await type(ultTxt);
+  const f1 = await waitFrame(1, 500);
+  const loadInfo = await ev(`({ count: ULT_IMGS.length, loaded: ULT_IMGS.filter(im => im.complete && im.naturalWidth > 0).length })`);
+  ok('Ultimate triggers Frame 1 with all 12 frames loaded (' + loadInfo.loaded + '/' + loadInfo.count + ')',
+     f1 >= 1 && loadInfo.count === 12 && loadInfo.loaded === 12 && await ev(`!$('#ultCine').hidden && !!ULT_CINE`));
 
-  // Cutscene Viewer from Lobby
-  await ev(`toMenu();`);
-  await sleep(200);
-  await type('คัตซีน');
-  await sleep(250);
-  ok('Typing คัตซีน opens Cutscene Viewer from Lobby',
-     await ev(`phase === 'choice' && $('#chTitle').textContent.includes('คัตซีน') && CH.opts.length === 5`));
-  await type('เปิด');
-  await sleep(350);
-  ok('Cutscene Viewer plays preview cutscene and returns to viewer on skip',
-     await ev(`phase === 'story' && ST.preview === true`));
-  await ev(`storySkip();`);
-  await sleep(200);
-  ok('Skipping preview cutscene returns to Cutscene Viewer', await ev(`phase === 'choice' && $('#chTitle').textContent.includes('คัตซีน')`));
+  const f4 = await waitFrame(4, 1200);
+  ok('Ultimate plays through Eye Cut-in & Flare (frame ' + f4 + ')', f4 >= 4 && f4 <= 12);
+  const f9 = await waitFrame(9, 1400);
+  ok('Ultimate hits Sakuga Impact Frame (frame ' + f9 + ')', f9 >= 9 && f9 <= 12);
+  const f11 = await waitFrame(11, 1000);
+  const ultDmgTxt = await ev(`$('#ucDmg').textContent`);
+  ok('Ultimate reaches Landing & Aftermath with damage pop (frame ' + f11 + ', ' + ultDmgTxt + ')',
+     f11 >= 11 && ultDmgTxt.includes('-'));
+
+  await sleep(900);
+  const afterUlt = await ev(`({ hidden: $('#ultCine').hidden, ultCine: !!ULT_CINE, ehp: S.ehp })`);
+  ok('Ultimate cutscene exits cleanly and deals massive damage (' + ehpBeforeUlt + ' -> ' + afterUlt.ehp + ')',
+     afterUlt.hidden && !afterUlt.ultCine && afterUlt.ehp < ehpBeforeUlt);
+
+  // Test skip on click during Ultimate Cutscene
+  await ev(`S.ult = 100; tryUlt();`);
+  await sleep(100);
+  const ultTxt2 = await ev(`S.ultWord.text`);
+  const ehpBeforeUlt2 = await ev(`S.ehp`);
+  await type(ultTxt2);
+  await sleep(120);
+  await ev(`$('#ultCine').click();`);
+  await sleep(260);
+  ok('Clicking Ultimate cutscene skips immediately and applies damage',
+     await ev(`$('#ultCine').hidden && !ULT_CINE && S.ehp < ${ehpBeforeUlt2}`));
 
   // 7. Pause Menu (เล่นต่อ / เล่นใหม่ / กลับ Lobby) + Lobby Continue (เล่นต่อ)
-  await ev(`toMenu(); startRun(true);`);
+  await ev(`toMenu(); startRun();`);
   await sleep(350);
   await ev(`S.php = 73; S.ehp = 55; R.coins = 42; renderHUD();`);
   await ev(`setPause(true);`);
@@ -314,7 +302,7 @@ let failed = 0;
   })()`);
   ok('กลับ Lobby saves run and shows เล่นต่อ in Lobby with unique prefixes & no overlap (' + lobbyWithSave.tag + ')',
      lobbyWithSave.phase === 'menu' && lobbyWithSave.startVis && lobbyWithSave.contVis &&
-     lobbyWithSave.count === 9 && lobbyWithSave.uniqueFirsts && lobbyWithSave.noOverlap);
+     lobbyWithSave.count === 8 && lobbyWithSave.uniqueFirsts && lobbyWithSave.noOverlap);
   await shot('lobby-continue.png');
 
   // Continue from Lobby (type ต่อ) -> restores HP/enemy HP/coins!

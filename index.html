@@ -249,41 +249,12 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
 .legend{font-size:12px;color:var(--muted);text-align:center;margin:-4px 0 10px}
 @media (max-width:700px){ #chCards .upc{padding:8px 10px} #chCards .upc .ic{font-size:22px} #chCards .upc .ds{min-height:0;margin:2px 0 6px} #chCards .upc .w{font-size:22px} }
 .chsub2{text-align:center;font-size:14px;margin:0 0 10px;color:#e9d5ff}
-/* ---------- คัตซีน & เนื้อเรื่อง ---------- */
-#cineTop,#cineBot{position:absolute;left:0;right:0;z-index:11;background:#05020e;pointer-events:none}
-#cineTop{top:0;height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #a855f744;pointer-events:auto;animation:cineBarTop .35s ease-out}
-#cineBot{bottom:0;height:28px;border-top:1px solid #a855f733;animation:cineBarBot .35s ease-out}
-#cineTop[hidden],#cineBot[hidden]{display:none}
-#cineLabel{font-size:13px;font-weight:600;letter-spacing:1.4px;color:var(--violet2);text-transform:uppercase;text-shadow:0 0 10px #a855f788}
-#cineSkip{background:#221349cc;border:1px solid #c084fc66;color:#e9d5ff;border-radius:999px;padding:3px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s}
-#cineSkip:hover{background:#4c1d95;border-color:#f0abfc;color:#fff}
-#cineSkip kbd{font-size:10px;margin-left:3px}
-@keyframes cineBarTop{from{transform:translateY(-100%)}to{transform:none}}
-@keyframes cineBarBot{from{transform:translateY(100%)}to{transform:none}}
-
-#cineCard{position:absolute;left:50%;top:31%;transform:translate(-50%,-50%);z-index:11;text-align:center;pointer-events:none;width:min(680px,calc(100% - 32px));padding:18px 26px;
-  background:linear-gradient(90deg,transparent,#0b0520e8 16%,#0b0520e8 84%,transparent);border-top:2px solid var(--cc-col,#c084fc);border-bottom:2px solid var(--cc-col,#c084fc);
-  box-shadow:0 0 42px #7c3aed55;animation:cineCardIn .45s cubic-bezier(.2,.9,.3,1)}
-#cineCard[hidden]{display:none}
-#cineCard .cc-tag{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--cc-col,#c084fc);text-transform:uppercase;margin-bottom:4px}
-#cineCard .cc-title{font-size:clamp(28px,4.2vw,44px);font-weight:800;font-style:italic;line-height:1.1;color:#fff;text-shadow:0 0 22px var(--cc-col,#a855f7),0 3px 0 #000}
-#cineCard .cc-sub{font-size:15px;color:#e9d5ff;margin-top:6px;text-shadow:0 2px 0 #000}
-#cineCard.boss{background:linear-gradient(90deg,transparent,#2a0624ee 14%,#2a0624ee 86%,transparent);box-shadow:0 0 55px #ec489977}
-@keyframes cineCardIn{from{opacity:0;transform:translate(-50%,-50%) scale(.92);letter-spacing:6px}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
-
-#story{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);width:min(780px,calc(100% - 24px));z-index:12;background:linear-gradient(180deg,#160c32f5,#0d0720f8);border:2px solid var(--line);border-radius:16px;padding:12px 16px 10px;box-shadow:0 0 44px #6d28d977,inset 0 1px 0 #ffffff18;cursor:pointer;display:flex;gap:14px;align-items:flex-start}
+/* ---------- เนื้อเรื่องก่อนบอส ---------- */
+#story{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);width:min(760px,calc(100% - 24px));z-index:12;background:#120a28f2;border:2px solid var(--line);border-radius:14px;padding:12px 18px 10px;box-shadow:0 0 40px #6d28d966;cursor:pointer}
 #story[hidden]{display:none}
 #story.err .reply{animation:errShake .22s}
-.sp-port{flex:none;width:76px;height:76px;border-radius:12px;background:#0b0618;border:2px solid var(--line);overflow:hidden;position:relative;display:grid;place-items:center;box-shadow:0 0 16px #0008;transition:border-color .2s,box-shadow .2s}
-.sp-port canvas{width:100%;height:100%;display:block}
-.sp-port .sp-ic{font-size:34px;display:none}
-.sp-port.icon canvas{display:none}
-.sp-port.icon .sp-ic{display:block}
-.sp-port.talking{animation:portBob .32s ease-in-out infinite alternate}
-@keyframes portBob{from{transform:translateY(0)}to{transform:translateY(-2px)}}
-.sp-body{flex:1;min-width:0}
-#story .who{font-weight:700;font-size:15px;margin-bottom:3px;letter-spacing:.3px}
-#story .txt{font-size:19px;line-height:1.5;min-height:54px}
+#story .who{font-weight:700;font-size:15px;margin-bottom:4px}
+#story .txt{font-size:20px;line-height:1.5;min-height:60px}
 #story .reply .w{display:inline-block;font-size:26px;font-weight:600;background:#0006;border-radius:10px;padding:2px 14px;margin-top:4px}
 #story .reply .upcs{margin-top:6px}
 #story .reply .upc{padding:8px 10px}
@@ -295,14 +266,71 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
 #story .hint{font-size:12px;color:var(--muted);text-align:right;margin-top:4px}
 #story .hint kbd{font-size:11px}
 body.cine #words,body.cine #buf,body.cine #bottom,body.cine #legend,body.cine #combo{visibility:hidden}
-body.cine #story{cursor:pointer}
-@media (max-width:700px){
-  .sp-port{width:56px;height:56px}
-  #story{gap:10px;padding:10px 12px}
-  #story .txt{font-size:16px;min-height:44px}
-  #story .reply .upcs{flex-direction:row}
-  #cineCard{top:32%;padding:12px 14px}
-}
+body.cine #story{cursor:default}
+#arena.cine::before{content:'';position:absolute;left:0;right:0;top:0;height:9%;background:#000;z-index:11}
+@media (max-width:700px){ #story .txt{font-size:17px;min-height:48px} #story .reply .upcs{flex-direction:row} }
+
+/* ---------- คัตซีนท่าไม้ตาย (Ultimate Cutscene 12 เฟรม) ---------- */
+#ultCine{position:fixed;inset:0;z-index:55;background:#04010c;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:opacity .22s ease}
+#ultCine[hidden]{display:none}
+#ultCine.out{opacity:0;pointer-events:none}
+.uc-bar{flex:none;height:8.5vh;min-height:42px;background:#04010c;position:relative;z-index:6}
+.uc-bar.top{border-bottom:2px solid #22d3ee;box-shadow:0 4px 28px #22d3ee88;animation:ucBarTop .18s cubic-bezier(.15,.9,.2,1)}
+.uc-bar.bot{border-top:2px solid #e879f9;box-shadow:0 -4px 28px #e879f988;animation:ucBarBot .18s cubic-bezier(.15,.9,.2,1)}
+@keyframes ucBarTop{from{transform:translateY(-100%)}to{transform:none}}
+@keyframes ucBarBot{from{transform:translateY(100%)}to{transform:none}}
+.uc-stage{position:relative;flex:1;overflow:hidden;background:#090418}
+.uc-frames{position:absolute;inset:0;will-change:transform}
+.uc-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;pointer-events:none;filter:saturate(1.14) contrast(1.06)}
+.uc-img.on{opacity:1}
+.uc-frames.cam-zoom{animation:ucZoom .26s ease-out forwards}
+.uc-frames.cam-zoom2{animation:ucZoom2 .2s ease-out forwards}
+.uc-frames.cam-cutin{animation:ucCutin .32s cubic-bezier(.12,.88,.22,1) forwards}
+.uc-frames.cam-glint{animation:ucGlint .18s ease-out forwards}
+.uc-frames.cam-dash{animation:ucDash .16s ease-out forwards}
+.uc-frames.cam-dash2{animation:ucDash2 .18s ease-out forwards}
+.uc-frames.cam-slash{animation:ucSlash .22s cubic-bezier(.1,.92,.25,1) forwards}
+.uc-frames.cam-impact{transform:scale(1.08)}
+.uc-frames.cam-burst{animation:ucBurst .2s ease-out forwards}
+.uc-frames.cam-land{animation:ucLand .32s ease-out forwards}
+.uc-frames.cam-settle{animation:ucSettle .38s ease-out forwards}
+@keyframes ucZoom{from{transform:scale(1.08)}to{transform:scale(1.02)}}
+@keyframes ucZoom2{from{transform:scale(1.03)}to{transform:scale(1.11)}}
+@keyframes ucCutin{from{transform:scale(1.18) translateX(-4%)}to{transform:scale(1.04) translateX(0)}}
+@keyframes ucGlint{from{transform:scale(1.05)}to{transform:scale(1.1)}}
+@keyframes ucDash{from{transform:scale(1.09) translateX(-3%)}to{transform:scale(1.03) translateX(1.5%)}}
+@keyframes ucDash2{from{transform:scale(1.05) translateX(-2%)}to{transform:scale(1.09) translateX(2%)}}
+@keyframes ucSlash{from{transform:scale(1.18) rotate(-1.4deg)}to{transform:scale(1.03) rotate(0deg)}}
+@keyframes ucBurst{from{transform:scale(1.13)}to{transform:scale(1.04)}}
+@keyframes ucLand{from{transform:scale(1.1) translateY(-1.5%)}to{transform:scale(1.02) translateY(0)}}
+@keyframes ucSettle{from{transform:scale(1.02)}to{transform:scale(1)}}
+.uc-stage.shk1{animation:ucShake1 .28s ease-out}
+.uc-stage.shk2{animation:ucShake2 .22s ease-out}
+@keyframes ucShake1{0%,100%{transform:none}15%{transform:translate(-14px,7px)}35%{transform:translate(13px,-8px)}55%{transform:translate(-9px,5px)}75%{transform:translate(6px,-3px)}}
+@keyframes ucShake2{0%,100%{transform:none}20%{transform:translate(16px,-11px)}45%{transform:translate(-15px,9px)}70%{transform:translate(10px,-6px)}}
+.uc-scan{position:absolute;inset:0;z-index:2;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.13) 3px 4px),radial-gradient(ellipse at center,transparent 50%,rgba(5,2,18,.6) 100%)}
+.uc-beam{position:absolute;left:-20%;top:48%;width:140%;height:14px;z-index:4;pointer-events:none;opacity:0;transform:rotate(-16deg) scaleX(0);
+  background:linear-gradient(90deg,transparent,#22d3ee 20%,#fff 50%,#e879f9 80%,transparent);box-shadow:0 0 34px 10px #22d3ee,0 0 60px 18px #c026d3}
+.uc-beam.go{animation:ucBeam .32s ease-out forwards}
+@keyframes ucBeam{0%{opacity:1;transform:rotate(-16deg) scaleX(.15) scaleY(2.8)}35%{opacity:1;transform:rotate(-16deg) scaleX(1.1) scaleY(1.6)}100%{opacity:0;transform:rotate(-16deg) scaleX(1.2) scaleY(.1)}}
+.uc-flash{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0;background:radial-gradient(circle,#fff,#a5f3fc 55%,#c084fc)}
+.uc-flash.f1{animation:ucFlash1 .22s ease-out}
+.uc-flash.f2{animation:ucFlash2 .3s ease-out}
+@keyframes ucFlash1{from{opacity:.72}to{opacity:0}}
+@keyframes ucFlash2{from{opacity:.95}to{opacity:0}}
+.uc-title{position:absolute;left:4vw;bottom:6vh;z-index:5;pointer-events:none;padding:12px 28px 12px 22px;transform:skewX(-10deg);opacity:0;
+  background:linear-gradient(90deg,#090418ee,#2e1065dd 72%,transparent);border-left:5px solid #22d3ee;box-shadow:0 0 32px #7c3aed99}
+.uc-title.show{opacity:1;animation:ucTitleIn .26s cubic-bezier(.15,.9,.2,1) forwards}
+.uc-tag{font-size:clamp(12px,1.4vw,15px);font-weight:800;letter-spacing:3px;color:#67e8f9;text-shadow:0 0 12px #22d3ee}
+.uc-name{font-size:clamp(26px,4.2vw,52px);font-weight:800;font-style:italic;line-height:1.08;color:#fff;
+  text-shadow:0 3px 0 #4c1d95,0 0 24px #e879f9,0 0 10px #22d3ee}
+@keyframes ucTitleIn{from{opacity:0;transform:skewX(-10deg) translateX(-48px)}to{opacity:1;transform:skewX(-10deg) translateX(0)}}
+.uc-dmg{position:absolute;right:5vw;bottom:7vh;z-index:5;pointer-events:none;font-size:clamp(38px,6vw,78px);font-weight:800;font-style:italic;
+  color:#fde047;text-shadow:0 4px 0 #7c2d12,0 0 28px #f59e0b,0 0 48px #e879f9;opacity:0;transform:scale(.4)}
+.uc-dmg.show{animation:ucDmgPop .4s cubic-bezier(.15,1.25,.35,1) forwards}
+@keyframes ucDmgPop{0%{opacity:0;transform:scale(.35) rotate(-6deg)}60%{opacity:1;transform:scale(1.14) rotate(2deg)}100%{opacity:1;transform:scale(1) rotate(-2deg)}}
+.uc-skip{position:absolute;right:18px;top:14px;z-index:6;font-size:12px;color:#e9d5ffcc;background:#090418bb;border:1px solid #c084fc66;border-radius:999px;padding:3px 12px}
+.uc-skip kbd{font-size:10px}
 #kb{position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0}
 /* ---------- title screen ---------- */
 #startScr{position:fixed;display:block;padding:0;background:#0b0618;backdrop-filter:none;overflow:hidden}
@@ -539,25 +567,7 @@ body.cine #story{cursor:pointer}
     </div>
 
     <div id="banner"><div class="bn"></div><div class="bt"></div></div>
-    <div id="cineTop" hidden>
-      <span id="cineLabel">🎬 CUTSCENE</span>
-      <button id="cineSkip" type="button">⏭ ข้ามคัตซีน <kbd>Esc</kbd></button>
-    </div>
-    <div id="cineCard" hidden>
-      <div class="cc-tag" id="ccTag"></div>
-      <div class="cc-title" id="ccTitle"></div>
-      <div class="cc-sub" id="ccSub"></div>
-    </div>
-    <div id="cineBot" hidden></div>
-    <div id="story" hidden>
-      <div class="sp-port" id="storyPort"><canvas id="portCv" width="76" height="76"></canvas><span class="sp-ic" id="portIc"></span></div>
-      <div class="sp-body">
-        <div class="who"></div>
-        <div class="txt"></div>
-        <div class="reply"></div>
-        <div class="hint"></div>
-      </div>
-    </div>
+    <div id="story" hidden><div class="who"></div><div class="txt"></div><div class="reply"></div><div class="hint"></div></div>
     <div id="fx"></div>
     <div id="toast"></div>
   </div>
@@ -596,7 +606,6 @@ body.cine #story{cursor:pointer}
         <button class="mi" id="practiceBtn" data-m="practice"><span class="ar">▶</span><span class="nm">ฝึกซ้อม<span class="new" id="practiceNew">มือใหม่</span></span><span class="w"></span></button>
         <button class="mi" id="endlessBtn" data-m="endless"><span class="ar">▶</span><span class="nm">Endless ♾</span><span class="w"></span></button>
         <button class="mi" id="bossBtn" data-m="boss"><span class="ar">▶</span><span class="nm">ท้าดวลบอส 👑</span><span class="w"></span></button>
-        <button class="mi" id="cutsceneBtn" data-m="cutscene"><span class="ar">▶</span><span class="nm">คัตซีน 🎬</span><span class="w"></span></button>
         <button class="mi" id="metaBtn1" data-m="shrine"><span class="ar">▶</span><span class="nm">ศาลเจ้า</span><span class="w"></span></button>
         <button class="mi" id="pvpBtn" data-m="duel"><span class="ar">▶</span><span class="nm">ดวล PvP</span><span class="w"></span></button>
         <button class="mi" id="helpBtn" data-m="help"><span class="ar">▶</span><span class="nm">วิธีเล่น</span><span class="w"></span></button>
@@ -724,6 +733,23 @@ body.cine #story{cursor:pointer}
       <div class="upcs" id="pvCards"></div>
       <div class="sub" style="text-align:center;margin:14px 0 0" id="pvHint">พิมพ์คำในกรอบดำเพื่อเลือก (หรือคลิก)</div>
     </div>
+  </div>
+  <!-- คัตซีนท่าไม้ตาย (Ultimate Cutscene 12 เฟรม) -->
+  <div id="ultCine" hidden>
+    <div class="uc-bar top"></div>
+    <div class="uc-stage" id="ucStage">
+      <div class="uc-frames" id="ucFrames"></div>
+      <div class="uc-scan"></div>
+      <div class="uc-beam" id="ucBeam"></div>
+      <div class="uc-flash" id="ucFlash"></div>
+      <div class="uc-title" id="ucTitle">
+        <div class="uc-tag">✦ ULTIMATE BURST ✦</div>
+        <div class="uc-name" id="ucName">คมดาบอักษรผ่าฟากฟ้า</div>
+      </div>
+      <div class="uc-dmg" id="ucDmg"></div>
+      <div class="uc-skip">คลิกหรือกด <kbd>Esc</kbd> เพื่อข้าม</div>
+    </div>
+    <div class="uc-bar bot"></div>
   </div>
   <div id="flash"></div>
   <input id="kb" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="ช่องพิมพ์">
@@ -992,139 +1018,34 @@ function mapSVG(opts) {
     `<div class="legend">🔨👻👹 ศัตรู · 💀 ศัตรูเก่ง · ❓ เหตุการณ์ · 🔥 จุดพัก · 🐱 ร้าน · 👑🪞👁️🔄👯 บอส</div>`;
 }
 
-/* ---------- ระบบคัตซีน & เนื้อเรื่อง (4 องก์) ----------
-   บทของศัตรู/คีย์บอท/ผู้บรรยาย: กด Enter / Space (หรือคลิก) เพื่อไปต่อ · บทของไอริน: พิมพ์ประโยคเอง
-   Esc หรือปุ่ม "ข้ามคัตซีน": ข้ามไปที่ตัวเลือก หรือข้ามฉากเข้าเกมทันที */
+/* ---------- เนื้อเรื่องสั้นก่อนบอส ----------
+   บทของศัตรู/คีย์บอท: กด Enter (หรือคลิก) เพื่อไปต่อ · บทของไอริน: ต้องพิมพ์ประโยคเอง
+   ท้ายฉากเลือกท่าที (พิมพ์) ได้โบนัสต่างกัน · Esc = ข้ามไปที่ตัวเลือก */
 const SPEAKER = {
   queen:   ['👑 ราชินีวรรณยุกต์', '#f0abfc'],
   mirror:  ['🪞 จอมกระจกเงา', '#7dd3fc'],
   phantom: ['👁️ ภูตล่องหน', '#5eead4'],
   jester:  ['🔄 ตัวตลกสลับแป้น', '#bef264'],
   twins:   ['👯 แฝดอัคคี & วารี', '#fde047'],
-  bandit:  ['🔨 โจรค้อนคีย์', '#fbbf24'],
-  ghost:   ['👻 ภูตตัวเลข', '#67e8f9'],
-  oni:     ['👹 โอนิดาบแดง', '#f87171'],
   robo:    ['🤖 คีย์บอท', '#67e8f9'],
   me:      ['⌨ ไอริน (คุณ)', '#fbbf24'],
-  nar:     ['📜 บทบรรยาย', '#e9d5ff']
+  nar:     ['📜 บทส่งท้าย', '#e9d5ff']
 };
-const BOSS_SUB = {
-  queen:   'ผู้ขโมยเสียงสูงต่ำแห่งนครนีออน',
-  mirror:  'ภาพสะท้อนลวงตาแห่งห้องโถงกระจก',
-  phantom: 'เงาในสายหมอกที่ลบเลือนทุกถ้อยคำ',
-  jester:  'จอมป่วนผู้สลับสายแป้นพิมพ์กลางศึก',
-  twins:   'คู่พิฆาตสองธาตุ — อัคคีและวารี'
-};
-const SPEAKER_PITCH = { robo: 880, me: 620, nar: 420, bandit: 260, queen: 360, mirror: 480, phantom: 540, jester: 680, twins: 390 };
 /* ---------- ฉากจบหลังชนะบอส ---------- */
 const ENDINGS = {
   friend: { icon: '🤝', name: 'มิตรภาพ', desc: 'ราชินีกลายเป็นผู้ปกป้องวรรณยุกต์' },
   seal:   { icon: '🔒', name: 'ผู้พิทักษ์', desc: 'ผนึกราชินี แล้วไอรินเฝ้าวรรณยุกต์เอง' }
 };
-function hideCineUI() {
-  $('#story').hidden = true;
-  $('#cineTop').hidden = true;
-  $('#cineBot').hidden = true;
-  $('#cineCard').hidden = true;
-  $('#storyPort').classList.remove('talking');
-  document.body.classList.remove('cine');
-  arena.classList.remove('cine');
-}
 function clearStageFx() {
   if (typeof fxLive !== 'undefined') { fxLive.length = 0; fxCharge = null; fxECharge = null; }
   $('#fx').innerHTML = '';
   $('#banner').classList.remove('show');
   $('#toast').classList.remove('show');
 }
-function showCineUI(label) {
-  clearStageFx();
-  $('#cineLabel').textContent = label || '🎬 CUTSCENE';
-  $('#cineTop').hidden = false;
-  $('#cineBot').hidden = false;
-  $('#story').hidden = false;
-  $('#cineCard').hidden = true;
-  document.body.classList.add('cine');
-  arena.classList.add('cine');
-}
-function drawPortrait(who) {
-  const box = $('#storyPort'), cv = $('#portCv'), ic = $('#portIc');
-  const [, col] = SPEAKER[who] || [FOE.icon + ' ' + FOE.name, '#c084fc'];
-  box.style.borderColor = col;
-  box.style.boxShadow = `0 0 18px ${col}66, inset 0 0 16px ${col}33`;
-  if (who === 'nar') {
-    box.classList.add('icon'); ic.textContent = '📜'; return;
-  }
-  box.classList.remove('icon');
-  const ctx = cv.getContext('2d');
-  ctx.clearRect(0, 0, 76, 76);
-  const grd = ctx.createRadialGradient(38, 34, 4, 38, 42, 46);
-  grd.addColorStop(0, col + '44'); grd.addColorStop(1, '#090418');
-  ctx.fillStyle = grd; ctx.fillRect(0, 0, 76, 76);
-  if (who === 'robo') {
-    const rb = new Px(16, 12); rb.blit(ROBO.rows, 0, 0, ROBO.pal); rb.outline(OUT);
-    const tmp = rb.toCanvas(document.createElement('canvas'));
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(tmp, 6, 14, 64, 48);
-    return;
-  }
-  if (who === 'me') {
-    const im = airinArtOn && AIRIN_ART['idle-1'] && AIRIN_ART['idle-1'].naturalWidth ? AIRIN_ART['idle-1'] : null;
-    if (im) {
-      ctx.imageSmoothingEnabled = true;
-      const sx = im.naturalWidth * 0.24, sy = im.naturalHeight * 0.04, sw = im.naturalWidth * 0.52, sh = sw;
-      ctx.drawImage(im, sx, sy, sw, sh, 2, 2, 72, 72);
-    } else {
-      const sp = renderChar('airin', 'idle', 0, 0).px.toCanvas(document.createElement('canvas'));
-      ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(sp, 18, 2, 36, 36, 4, 4, 68, 68);
-    }
-    return;
-  }
-  const eim = ENEMY_ART[who] && ENEMY_ART[who].naturalWidth ? ENEMY_ART[who] : null;
-  if (eim) {
-    ctx.imageSmoothingEnabled = true;
-    const sw = Math.min(eim.naturalWidth, eim.naturalHeight * 0.72), sx = (eim.naturalWidth - sw) / 2, sy = eim.naturalHeight * 0.03;
-    ctx.drawImage(eim, sx, sy, sw, sw, 2, 2, 72, 72);
-  } else {
-    const sp = renderChar(CHARS[who] ? who : 'queen', 'idle', 0, 0).px.toCanvas(document.createElement('canvas'));
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(sp, 14, 2, 44, 44, 2, 2, 72, 72);
-  }
-}
-function openingScript() {
-  return [
-    { who: 'nar', mood: 'night', hideP: true, hideE: true,
-      card: { tag: 'ACT I · บทเปิดเรื่อง', title: 'ค่ำคืนที่เสียงหายไป', sub: 'นครนีออน — หอคอยแป้นพิมพ์ 7 ชั้น', color: '#c084fc' },
-      t: 'นครนีออนเคยสว่างไสวด้วยเสียงพิมพ์และถ้อยคำ... จนกระทั่งค่ำคืนหนึ่ง เสียงวรรณยุกต์ทุกตัวพลันหายไปจากเมือง' },
-    { who: 'queen', foeId: 'queen', hideP: true, hideE: false, eFromX: 258, eTargetX: 215, mood: 'vortex', fx: 'vortex', e: 'charge', flash: 'purple', shake: true, sfx: 'ult',
-      t: 'ไม้เอก ไม้โท ไม้ตรี ไม้จัตวา... ข้าจะยึดเสียงสูงต่ำทั้งหมดไว้แต่เพียงผู้เดียว! เมืองนี้จะต้องไร้เสียงตลอดกาล!' },
-    { who: 'robo', hideP: false, pFromX: -16, pTargetX: 96, hideE: true, mood: 'night', fx: null, p: 'idle', sfx: 'warn',
-      t: 'บี๊บ!! แจ้งเตือนฉุกเฉิน! ราชินีวรรณยุกต์ส่งสมุนยึดหอคอยครบทั้ง 7 ชั้นแล้ว... ไอริน มีแค่เธอที่ยังพิมพ์ได้!' },
-    { who: 'me', hideE: false, foeId: 'bandit', eFromX: 345, eTargetX: 228, mood: 'clash', p: 'charge', pfx: 'charge',
-      say: { th: 'คืนเสียงมา', en: 'take it back' } },
-    { who: 'bandit', mood: 'clash', p: 'attack', e: 'charge', flash: 'white', shake: true, sfx: 'counter', pfx: 'slash',
-      t: 'เฮ้ย! นักพิมพ์ตัวจ้อยคิดจะฝ่าด่านแรกขึ้นหอคอยเรอะ? ลองผ่านค้อนคีย์ของข้าไปก่อนเถอะ!' }
-  ];
-}
-function midScript(bossId) {
-  const b = ENEMIES.find(e => e.id === bossId) || ENEMIES.find(e => e.boss);
-  const taunt = {
-    queen:   'หึ... ฝ่ามาได้ถึงครึ่งหอคอยแล้วหรือ? วังวรรณยุกต์ของข้ารออยู่ชั้นบนสุด เข้ามาสิ!',
-    mirror:  'ภาพสะท้อนของเจ้าเริ่มสั่นไหวแล้วนะ นักพิมพ์... อีกไม่นานเราจะได้พบกันในห้องโถงกระจก',
-    phantom: 'หมอกกำลังหนาขึ้นเรื่อยๆ... คิดหรือว่าความจำของเจ้าจะพาไปถึงยอดหอคอยได้?',
-    jester:  'ฮิๆ เก่งเหมือนกันนี่นา! รีบขึ้นมาเลย ข้าเตรียมสลับสายคีย์บอร์ดรอไว้แล้ว!',
-    twins:   'สัมผัสได้ถึงความร้อนและสายน้ำไหม? อัคคีและวารีรอทดสอบเจ้าอยู่ที่ชั้นบน!'
-  }[b.id] || 'อีกไม่กี่ชั้นก็จะถึงยอดหอคอยแล้ว... เตรียมตัวให้พร้อม!';
-  return [
-    { who: 'nar', mood: 'ominous', hideP: false, hideE: true, pTargetX: 96,
-      card: { tag: 'ACT II · เขตชั้นใน', title: 'เงามืดเหนือหอคอย', sub: 'ครึ่งทางสู่ยอดหอคอยแป้นพิมพ์', color: '#f472b6' },
-      t: 'ไอรินก้าวเข้าสู่เขตชั้นในของหอคอยนีออน แสงไฟกะพริบถี่ขึ้น... คลื่นพลังของบอสแผ่ลงมาจากชั้นบนสุด' },
-    { who: 'robo', mood: 'ominous', hideE: true, p: 'block', sfx: 'warn',
-      t: `บี๊บ! ตรวจพบศัตรูระดับสูงและคำหลอกมากขึ้น! อีกไม่กี่ชั้นก็จะถึงห้องโถงของ${b.name}แล้วนะไอริน!` },
-    { who: b.id, foeId: b.id, hideE: false, eFromX: 340, eTargetX: 242, mood: 'vortex', fx: 'vortex', e: 'charge', flash: 'purple', shake: true, sfx: 'ult',
-      t: taunt },
-    { who: 'me', mood: 'clash', p: 'charge', pfx: 'charge', say: { th: 'ไม่ถอยหรอก', en: 'never yield' } }
-  ];
+function hideCineUI() {
+  $('#story').hidden = true;
+  document.body.classList.remove('cine');
+  arena.classList.remove('cine');
 }
 function endingScript() {
   const first = !META.wins, close = R.php < R.pmax * 0.25;
@@ -1137,26 +1058,24 @@ function endingScript() {
       twins:   'ทั้งอัคคีและวารี... พ่ายแพ้พร้อมกัน! จังหวะนิ้วของเจ้ารวดเร็วเกินคาด!'
     }[id];
     const L = [
-      { who: id, mood: 'ominous', e: 'hurt', shake: true, t: fall },
-      { who: 'robo', mood: 'dawn', fx: 'glyphs', flash: 'white', sfx: 'win', t: `บี๊บ! ปลดปล่อยพลังจาก${FOE.name}เรียบร้อย! ระบบแป้นพิมพ์กลับสู่สภาวะปกติแล้ว` }
+      { who: id, t: fall },
+      { who: 'robo', fx: 'glyphs', t: `บี๊บ! ปลดปล่อยพลังจาก${FOE.name}เรียบร้อย! ระบบแป้นพิมพ์กลับสู่สภาวะปกติแล้ว` }
     ];
     if (close) L.push({ who: 'robo', t: 'เลือดเหลือนิดเดียวเอง... แต่ผ่านมาได้อย่างเท่!' });
     L.push(
       { who: 'me', choice: [
         { icon: '🤝', name: 'จับมือ', desc: 'ชวนมาร่วมฝึกนักพิมพ์รุ่นใหม่', say: { th: 'ให้อภัย', en: 'forgive' }, ending: 'friend', then: [
           { who: id, t: 'หึ... ถ้าเจ้าว่าอย่างนั้น ครั้งหน้าข้าจะช่วยทดสอบนักพิมพ์คนอื่นแทนก็แล้วกัน' },
-          { who: 'nar', mood: 'dawn', p: 'win', card: { tag: 'EPILOGUE · จบบริบูรณ์', title: '🤝 แสงอรุณแห่งมิตรภาพ', sub: `ไอริน & ${FOE.name}`, color: '#fde047' },
-            t: `ไอรินและ${FOE.name}กลายเป็นคู่ซ้อมแห่งนครนีออน เสียงแป้นพิมพ์ดังก้องไปด้วยความหวัง` }] },
+          { who: 'nar', t: `ไอรินและ${FOE.name}กลายเป็นคู่ซ้อมแห่งนครนีออน เสียงแป้นพิมพ์ดังก้องไปด้วยความหวัง` }] },
         { icon: '🔒', name: 'ผนึก', desc: 'ผนึกพลังไว้ในแป้นพิมพ์', say: { th: 'ผนึก', en: 'seal' }, ending: 'seal', then: [
-          { who: 'robo', flash: 'purple', sfx: 'ult', t: 'กำลังผนึกข้อมูลบอสเข้าสู่คลัง... ๓... ๒... ๑... เรียบร้อย!' },
-          { who: 'nar', mood: 'dawn', p: 'win', card: { tag: 'EPILOGUE · จบบริบูรณ์', title: '🔒 ผู้พิทักษ์นครนีออน', sub: 'ความสงบสุขกลับคืนสู่แป้นพิมพ์', color: '#67e8f9' },
-            t: `ไอรินปราบ${FOE.name}และปกป้องแป้นพิมพ์แห่งนครนีออนไว้ได้อีกครั้ง` }] }] }
+          { who: 'robo', t: 'กำลังผนึกข้อมูลบอสเข้าสู่คลัง... ๓... ๒... ๑... เรียบร้อย!' },
+          { who: 'nar', t: `ไอรินปราบ${FOE.name}และปกป้องแป้นพิมพ์แห่งนครนีออนไว้ได้อีกครั้ง` }] }] }
     );
     return L;
   }
   const L = [
-    { who: 'queen', mood: 'ominous', e: 'hurt', shake: true, t: 'ไม่... ไม่จริง... นิ้วของเจ้าเร็วกว่าเสียงวรรณยุกต์ของข้าอีกหรือ...' },
-    { who: 'robo', mood: 'dawn', fx: 'glyphs', flash: 'white', sfx: 'win', t: 'บี๊บ! ตรวจพบวรรณยุกต์ไหลกลับคืนสู่นครนีออน! ไม้เอก ไม้โท ไม้ตรี ไม้จัตวา... ครบทุกตัว!' }
+    { who: 'queen', t: 'ไม่... ไม่จริง... นิ้วของเจ้าเร็วกว่าเสียงวรรณยุกต์ของข้าอีกหรือ...' },
+    { who: 'robo', fx: 'glyphs', t: 'บี๊บ! ตรวจพบวรรณยุกต์ไหลกลับคืนสู่นครนีออน! ไม้เอก ไม้โท ไม้ตรี ไม้จัตวา... ครบทุกตัว!' }
   ];
   if (R.revived) L.push({ who: 'robo', t: 'เกือบไปแล้วนะไอริน ดีที่มีขนนกฟีนิกซ์ติดตัวมาด้วย' });
   else if (close) L.push({ who: 'robo', t: 'เลือดเหลือนิดเดียวเอง... ระบบของผมเกือบช็อตแน่ะ!' });
@@ -1167,27 +1086,20 @@ function endingScript() {
       { icon: '🤝', name: 'ให้อภัย', desc: 'ยื่นมือให้ราชินี', say: { th: 'ให้อภัย', en: 'forgive' }, ending: 'friend', then: [
         { who: 'queen', e: 'hurt', t: '...เจ้ายังจะช่วยข้าอีกหรือ? หึ... นักพิมพ์ประหลาดจริงๆ' },
         { who: 'queen', t: 'ก็ได้ ข้าจะเฝ้าวรรณยุกต์พวกนี้ไว้เอง ไม่ให้ใครมาขโมยไปอีก' },
-        { who: 'nar', mood: 'dawn', p: 'win', card: { tag: 'EPILOGUE · ฉากจบมิตรภาพ', title: '🤝 แสงอรุณแห่งนครนีออน', sub: 'เสียงหัวเราะและเสียงวรรณยุกต์กลับคืนมา', color: '#fde047' },
-          t: 'นับแต่วันนั้น ราชินีกลายเป็นผู้ดูแลเสียงสูงต่ำของนครนีออน และทุกคืนจะมีเสียงหัวเราะดังมาจากวัง' }] },
+        { who: 'nar', t: 'นับแต่วันนั้น ราชินีกลายเป็นผู้ดูแลเสียงสูงต่ำของนครนีออน และทุกคืนจะมีเสียงหัวเราะดังมาจากวัง' }] },
       { icon: '🔒', name: 'ผนึก', desc: 'ผนึกราชินีไว้ในแป้นพิมพ์', say: { th: 'ผนึก', en: 'seal' }, ending: 'seal', then: [
-        { who: 'robo', flash: 'purple', sfx: 'ult', t: 'กำลังผนึก... ๓... ๒... ๑... บี๊บ! ผนึกลงแป้น Shift เรียบร้อย!' },
+        { who: 'robo', t: 'กำลังผนึก... ๓... ๒... ๑... บี๊บ! ผนึกลงแป้น Shift เรียบร้อย!' },
         { who: 'queen', t: 'จำไว้นะนักพิมพ์... ทุกครั้งที่เจ้ากด Shift ข้าจะเฝ้ามองอยู่...' },
-        { who: 'nar', mood: 'dawn', p: 'win', card: { tag: 'EPILOGUE · ฉากจบผู้พิทักษ์', title: '🔒 ผู้พิทักษ์แป้นพิมพ์', sub: 'ราชินีถูกผนึกไว้ในแป้น Shift', color: '#67e8f9' },
-          t: 'ไอรินกลายเป็นผู้พิทักษ์แป้นพิมพ์แห่งนครนีออน และคีย์บอทก็ไม่ยอมให้ใครแตะแป้น Shift อีกเลย' }] }] },
+        { who: 'nar', t: 'ไอรินกลายเป็นผู้พิทักษ์แป้นพิมพ์แห่งนครนีออน และคีย์บอทก็ไม่ยอมให้ใครแตะแป้น Shift อีกเลย' }] }] },
     { who: 'nar', t: first ? 'แต่ไกลออกไปในความมืด... แป้นพิมพ์อีกหลายแผงยังรอคอยนักพิมพ์ผู้กล้า' : 'การเดินทางของนักพิมพ์ยังไม่จบ... เสียงพิมพ์ดังขึ้นอีกครั้งที่ไหนสักแห่ง' }
   );
   return L;
 }
-function showEnding(preview) {
+function showEnding() {
   phase = 'story';
-  if (preview) {
-    R = newRun(); FOE = ENEMIES.find(e => e.id === 'queen'); S = freshState();
-    FIG.P.x = 96; FIG.E.id = FOE.sprite; FIG.E.x = 228; play(FIG.P, 'idle'); play(FIG.E, 'idle');
-    $('#eName').textContent = FOE.name; $('#eTag').textContent = 'EPILOGUE'; $('#wave').textContent = '🎬 บทส่งท้าย';
-  }
-  showCineUI('🎬 EPILOGUE · บทส่งท้าย');
-  ST = { kind: 'ending', lines: endingScript(), i: -1, buf: '', ending: null, end: true, preview: !!preview, mood: 'ominous', pTargetX: 96, eTargetX: 228, hideP: false, hideE: false };
-  kb.value = ''; kb.focus();
+  document.body.classList.add('cine'); arena.classList.add('cine');
+  ST = { lines: endingScript(), i: -1, buf: '', ending: null, end: true };
+  $('#story').hidden = false; kb.value = ''; kb.focus();
   updatePauseBtn();
   nextLine();
 }
@@ -1206,27 +1118,8 @@ function risingGlyphs(x, t) {
   }
   sctx.globalAlpha = 1;
 }
-// วรรณยุกต์สีทองถูกดูดเข้าหาบอสในวังวนสีม่วง (คัตซีนเปิดเรื่อง / กลางเรื่อง)
-function vortexGlyphs(cx, cy, t) {
-  sctx.save();
-  for (let r = 0; r < 3; r++) {
-    const rad = 28 + ((r * 34 - t * 48) % 102 + 102) % 102;
-    sctx.strokeStyle = `rgba(217,70,239,${(0.45 * (1 - rad / 135)).toFixed(2)})`;
-    sctx.lineWidth = 2;
-    sctx.beginPath(); sctx.ellipse(cx, cy, rad, rad * 0.55, 0, 0, Math.PI * 2); sctx.stroke();
-  }
-  for (let i = 0; i < 14; i++) {
-    const ph = (t * 0.38 + i / 14) % 1, inv = 1 - ph;
-    const ang = t * 2.4 + i * 0.9 + ph * 3.5;
-    const xx = cx + Math.cos(ang) * (16 + inv * 155), yy = cy + Math.sin(ang) * (10 + inv * 80);
-    sctx.globalAlpha = Math.min(1, ph * 4, inv * 3);
-    sctx.drawImage(glyphImg(i % MARKS.length), Math.round(xx) - 10, Math.round(yy) - 12, 20, 24);
-  }
-  sctx.restore();
-}
 function storyScript() {
   const again = META.wins > 0, low = R.php < R.pmax * 0.5, strong = R.ups.length >= 5;
-  const bossCard = { tag: 'WARNING // BOSS', title: `${FOE.icon} ${FOE.name}`, sub: BOSS_SUB[FOE.id] || trait(FOE), color: (SPEAKER[FOE.id] && SPEAKER[FOE.id][1]) || '#f0abfc', boss: true };
   if (FOE.id !== 'queen') {
     const id = FOE.id;
     const intro = {
@@ -1236,158 +1129,71 @@ function storyScript() {
       twins:   ['บี๊บ! ตรวจพบคลื่นความร้อนและคลื่นน้ำพร้อมกัน... ศัตรูมีสองตัว!', 'ข้าคืออัคคี! และข้าคือวารี! เลือกเป้าให้ถูกแล้วรับมือพวกเราสองคนพร้อมกันให้ได้!', 'อัคคีแพ้ 💧 น้ำ · วารีแพ้ 🌪️ ลม — ถ้าล้มตัวหนึ่ง อีกตัวจะโกรธนะ!']
     }[id];
     return [
-      { who: 'robo', mood: 'ominous', card: bossCard, sfx: 'warn', t: intro[0] },
-      { who: id, e: 'charge', mood: 'vortex', flash: 'purple', shake: true, pfx: 'burst', t: intro[1] },
-      { who: 'me', mood: 'clash', say: { th: 'พร้อมแล้ว', en: 'ready now' }, p: 'block' },
+      { who: 'robo', t: intro[0] },
+      { who: id, e: 'charge', t: intro[1] },
+      { who: 'me', say: { th: 'พร้อมแล้ว', en: 'ready now' }, p: 'block' },
       { who: 'robo', t: intro[2] },
       { who: 'me', choice: [
         { icon: '🔥', name: 'ใจกล้า', desc: 'เริ่มไฟต์ด้วยเกจท่าไม้ตาย +50%', say: { th: 'ลุยเลย', en: 'bring it' }, bonus: 'ult', p: 'attack',
-          then: [{ who: id, e: 'charge', shake: true, pfx: 'slash', t: 'น่าสนใจ! เข้ามาเลย!' }] },
+          then: [{ who: id, e: 'charge', t: 'น่าสนใจ! เข้ามาเลย!' }] },
         { icon: '🧊', name: 'ใจเย็น', desc: 'เริ่มไฟต์พร้อมโล่ 1 ครั้ง', say: { th: 'ตั้งการ์ด', en: 'stay calm' }, bonus: 'shield', p: 'block',
           then: [{ who: id, e: 'charge', t: 'ระวังตัวดีนี่... แต่จะกันได้นานแค่ไหนกัน?' }] }] }
     ];
   }
   return [
-    { who: 'robo', mood: 'ominous', card: bossCard, sfx: 'warn', t: 'บี๊บ! ตรวจพบคลื่นวรรณยุกต์ความเข้มสูง... ประตูข้างหน้าคือวังของราชินี!' },
-    { who: 'queen', e: 'charge', mood: 'vortex', flash: 'purple', shake: true, pfx: 'burst',
-      t: again ? 'เจ้าอีกแล้วหรือ นักพิมพ์... ครั้งก่อนข้าแค่ประมาท คราวนี้ไม่มีทางหรอก!'
-               : 'หึๆ... นักพิมพ์ตัวน้อย ฝ่าลูกน้องข้ามาจนถึงวังได้ด้วยหรือ' },
-    { who: 'queen', fx: 'vortex', t: 'ไม้เอก ไม้โท ไม้ตรี ไม้จัตวา... วรรณยุกต์ทุกตัวในนครนีออนเป็นของข้าแล้ว! คำทุกคำจะต้องไร้เสียงสูงต่ำตลอดไป' },
-    { who: 'me', mood: 'clash', fx: null, say: { th: 'คืนวรรณยุกต์มา', en: 'give them back' }, p: 'block' },
+    { who: 'robo', t: 'บี๊บ! ตรวจพบคลื่นวรรณยุกต์ความเข้มสูง... ประตูข้างหน้าคือวังของราชินี!' },
+    { who: 'queen', e: 'charge', t: again ? 'เจ้าอีกแล้วหรือ นักพิมพ์... ครั้งก่อนข้าแค่ประมาท คราวนี้ไม่มีทางหรอก!'
+                                         : 'หึๆ... นักพิมพ์ตัวน้อย ฝ่าลูกน้องข้ามาจนถึงวังได้ด้วยหรือ' },
+    { who: 'queen', t: 'ไม้เอก ไม้โท ไม้ตรี ไม้จัตวา... วรรณยุกต์ทุกตัวในนครนีออนเป็นของข้าแล้ว! คำทุกคำจะต้องไร้เสียงสูงต่ำตลอดไป' },
+    { who: 'me', say: { th: 'คืนวรรณยุกต์มา', en: 'give them back' }, p: 'block' },
     { who: 'queen', t: low ? 'เลือดเหลือแค่นั้น ยังกล้าสั่งข้าอีกหรือ? น่าขันจริงๆ!'
                      : strong ? 'อืม... เจ้าแข็งแกร่งขึ้นมากระหว่างทาง แต่ก็แค่นั้นแหละ'
                      : 'สั่งข้าหรือ? นิ้วแค่นั้นจะทำอะไรข้าได้' },
     { who: 'robo', t: 'ไอริน! ระวังนะ ถ้าเลือดนางเหลือครึ่ง นางจะโกรธแล้วโจมตีถี่ขึ้น!' },
     { who: 'me', choice: [
       { icon: '🔥', name: 'ใจกล้า', desc: 'เริ่มไฟต์ด้วยเกจท่าไม้ตาย +50%', say: { th: 'ลุยเลย', en: 'bring it' }, bonus: 'ult', p: 'attack',
-        then: [{ who: 'queen', e: 'charge', shake: true, pfx: 'slash', t: 'ฮะ! ใจกล้าดีนี่ มาดูกันว่าใครจะเหลือรอด!' }] },
+        then: [{ who: 'queen', e: 'charge', t: 'ฮะ! ใจกล้าดีนี่ มาดูกันว่าใครจะเหลือรอด!' }] },
       { icon: '🧊', name: 'ใจเย็น', desc: 'เริ่มไฟต์พร้อมโล่ 1 ครั้ง', say: { th: 'ตั้งการ์ด', en: 'stay calm' }, bonus: 'shield', p: 'block',
         then: [{ who: 'queen', e: 'charge', t: 'สุขุมดีนี่... แต่การ์ดนั่นจะทนได้สักกี่ที?' }] }] }
   ];
 }
 let ST = null;
 const storyLang = () => cfg.mode === 'en' ? 'en' : cfg.mode === 'bi' && Math.random() < .5 ? 'en' : 'th';
-function showOpeningCutscene(preview) {
+function showStory(nd) {
   phase = 'story';
-  if (preview) { R = newRun(); R.map = genMap(); }
-  FOE = ENEMIES.find(e => e.id === 'queen');
-  S = freshState(); [0, 1, 2].forEach(newSlotWord); renderWords();
-  FIG.P.x = 96; FIG.E.id = 'queen'; FIG.E.x = 340; play(FIG.P, 'idle'); play(FIG.E, 'idle');
-  $('#eName').textContent = 'นครนีออน'; $('#eTag').textContent = 'ACT I';
-  $('#wave').textContent = '🎬 บทเปิดเรื่อง';
-  showCineUI('🎬 ACT I · ค่ำคืนที่เสียงหายไป');
-  ST = { kind: 'opening', lines: openingScript(), i: -1, buf: '', preview: !!preview, mood: 'night', pTargetX: 96, eTargetX: 228, hideP: true, hideE: true };
-  kb.value = ''; kb.focus();
-  updatePauseBtn();
-  nextLine();
-}
-function showMidCutscene(nd, preview) {
-  phase = 'story';
-  if (preview) { R = newRun(); R.map = genMap(); }
-  const bnd = R.map && R.map[MAP_LAYERS - 1] && R.map[MAP_LAYERS - 1][0];
-  const bossId = (bnd && bnd.foe) || 'queen';
-  FOE = ENEMIES.find(e => e.id === bossId) || ENEMIES.find(e => e.boss);
-  S = freshState(); [0, 1, 2].forEach(newSlotWord); renderWords();
-  FIG.P.x = 96; FIG.E.id = FOE.sprite; FIG.E.x = 340; play(FIG.P, 'idle'); play(FIG.E, 'idle');
-  $('#eName').textContent = 'เขตชั้นใน'; $('#eTag').textContent = 'ACT II';
-  $('#wave').textContent = nd ? `ชั้น ${nd.layer + 1} / ${MAP_LAYERS}` : '🎬 เขตชั้นใน';
-  showCineUI('🎬 ACT II · เงามืดเหนือหอคอย');
-  ST = { kind: 'mid', nd, lines: midScript(bossId), i: -1, buf: '', preview: !!preview, mood: 'ominous', pTargetX: 96, eTargetX: 242, hideP: false, hideE: true };
-  kb.value = ''; kb.focus();
-  updatePauseBtn();
-  nextLine();
-}
-function showStory(nd, preview) {
-  phase = 'story';
-  if (preview) { R = newRun(); R.map = genMap(); nd = R.map[MAP_LAYERS - 1][0]; }
   FOE = makeFoe(nd); S = freshState(); [0, 1, 2].forEach(newSlotWord); renderWords();
-  FIG.P.x = 96; FIG.E.id = FOE.sprite; FIG.E.x = 360; play(FIG.P, 'idle'); play(FIG.E, 'idle');
+  FIG.E.id = FOE.sprite; FIG.E.x = 360; play(FIG.P, 'idle'); play(FIG.E, 'idle');
   $('#eName').textContent = FOE.name; $('#eTag').textContent = 'BOSS';
   $('#wave').textContent = `ชั้น ${nd.layer + 1} / ${MAP_LAYERS}`;
-  showCineUI(`🎬 ACT III · เผชิญหน้า${FOE.name}`);
-  ST = { kind: 'boss', nd, lines: storyScript(), i: -1, buf: '', bonus: null, preview: !!preview, mood: 'ominous', pTargetX: 96, eTargetX: 228, hideP: false, hideE: false };
-  if (!preview) saveRunSnapshot('bossStory');
-  kb.value = ''; kb.focus();
+  document.body.classList.add('cine'); arena.classList.add('cine');
+  ST = { nd, lines: storyScript(), i: -1, buf: '', bonus: null };
+  saveRunSnapshot('bossStory');
+  $('#story').hidden = false; kb.value = ''; kb.focus();
   updatePauseBtn();
   nextLine();
-}
-function showCutsceneMenu() {
-  if (HELP) showHelp(false);
-  $('#startScr').hidden = true; $('#resultScr').hidden = true;
-  showChoice({
-    title: '🎬 โรงฉายคัตซีน',
-    sub: 'เลือกฉากเนื้อเรื่องที่ต้องการรับชม — พิมพ์คำใต้การ์ด (หรือคลิก) · กด Esc กลับ Lobby',
-    lobbyMenu: true,
-    opts: [
-      { icon: '🌃', name: 'บทที่ 1: ค่ำคืนที่เสียงหายไป', desc: 'คัตซีนเปิดเรื่อง — ราชินีขโมยวรรณยุกต์ & ไอรินออกศึก', word: { th: 'เปิด', en: 'intro' }, fn: () => showOpeningCutscene(true), end: 1 },
-      { icon: '⚡', name: 'บทที่ 2: เงามืดเหนือหอคอย', desc: 'คัตซีนกลางทาง — เข้าสู่เขตชั้นในของหอคอยนีออน', word: { th: 'กลาง', en: 'mid' }, fn: () => showMidCutscene(null, true), end: 1 },
-      { icon: '👑', name: 'บทที่ 3: เผชิญหน้าบอส', desc: 'คัตซีนก่อนสู้บอส — ปะทะราชินีวรรณยุกต์', word: { th: 'บอส', en: 'boss' }, fn: () => showStory(null, true), end: 1 },
-      { icon: '🌅', name: 'บทส่งท้าย: แสงอรุณ', desc: 'คัตซีนฉากจบ — เลือกโชคชะตาของราชินี (2 แบบ)', word: { th: 'จบ', en: 'end' }, fn: () => showEnding(true), end: 1 },
-      { icon: '🏠', name: 'กลับ Lobby', desc: 'กลับหน้าแรก', word: { th: 'ออก', en: 'lobby' }, fn: toMenu, end: 1 }
-    ]
-  });
-  $('#chCards').style.display = 'grid';
-  $('#chCards').style.gridTemplateColumns = 'repeat(auto-fit,minmax(220px,1fr))';
 }
 function nextLine() {
   ST.i++; ST.buf = ''; kb.value = '';
   const L = ST.lines[ST.i];
   if (!L) return endStory();
-  ST.shown = 0; ST.full = !L.t; ST.lastBlip = 0;
-  if (L.foeId) FIG.E.id = L.foeId;
-  if (L.hideE !== undefined) ST.hideE = L.hideE;
-  if (L.hideP !== undefined) ST.hideP = L.hideP;
-  if (L.eFromX !== undefined) FIG.E.x = L.eFromX;
-  if (L.eTargetX !== undefined) ST.eTargetX = L.eTargetX;
-  if (L.pFromX !== undefined) FIG.P.x = L.pFromX;
-  if (L.pTargetX !== undefined) ST.pTargetX = L.pTargetX;
-  if (L.mood) ST.mood = L.mood;
-  if (L.fx !== undefined) { ST.fx = L.fx; ST.fxT = 0; }
-  const cardEl = $('#cineCard');
-  if (L.card) {
-    $('#ccTag').textContent = L.card.tag || '';
-    $('#ccTitle').textContent = L.card.title || '';
-    $('#ccSub').textContent = L.card.sub || '';
-    cardEl.style.setProperty('--cc-col', L.card.color || '#c084fc');
-    cardEl.classList.toggle('boss', !!L.card.boss);
-    cardEl.hidden = false;
-    cardEl.style.animation = 'none'; void cardEl.offsetWidth; cardEl.style.animation = '';
-  } else if (!L.keepCard) {
-    cardEl.hidden = true;
-  }
+  ST.shown = 0; ST.full = !L.t;
   const [name, col] = SPEAKER[L.who] || [FOE.icon + ' ' + FOE.name, '#f0abfc'];
   const who = $('#story .who'); who.textContent = name; who.style.color = col;
-  drawPortrait(L.who);
   if (L.e) { play(FIG.E, L.e); if (L.e === 'charge') setTimeout(() => phase === 'story' && FIG.E.st === L.e && play(FIG.E, 'idle'), 900); }
-  if (L.p) { play(FIG.P, L.p); if (L.p === 'attack') setTimeout(() => phase === 'story' && FIG.P.st === 'attack' && play(FIG.P, 'idle'), 550); }
-  if (L.flash) flash(L.flash);
-  if (L.shake) shake();
-  if (L.sfx === 'warn') SFX.warn();
-  else if (L.sfx === 'ult') SFX.ultStart();
-  else if (L.sfx === 'win') SFX.win();
-  else if (L.sfx === 'counter') SFX.counter();
-  else if (L.sfx === 'block') SFX.block();
-  else if (L.sfx === 'hit') SFX.hit(0.8);
-  else if (L.who !== 'me' && L.who !== 'nar') tone(SPEAKER_PITCH[L.who] || 520, 0.05, 'square', 0.04);
-  if (L.pfx && window.PFX) {
-    const ef = FX_ENEMY[FIG.E.id] || FX_ENEMY.queen;
-    if (L.pfx === 'slash') fxAt('slash', FIG.P.x * 2 + 54, { y: (GROUND * 2 - 74) / FXK, palette: FX_PURPLE, size: 1.5, scale: 1.5 });
-    else if (L.pfx === 'charge') fxAt('hitSparks', FIG.P.x * 2 + 12, { y: (GROUND * 2 - 64) / FXK, palette: FX_SPARK, size: 1.2 });
-    else if (L.pfx === 'burst') fxAt('hitSparks', FIG.E.x * 2, { y: (GROUND * 2 - 80) / FXK, palette: ef.sp, size: 1.5, count: 16 });
-  }
+  if (L.fx) { ST.fx = L.fx; ST.fxT = 0; SFX.win(); }
+  if (L.p) play(FIG.P, L.p);
   if (L.say) { const lang = storyLang(); L.w = makeWord(L.say[lang], lang, 'story'); }
   if (L.choice) L.choice.forEach(c => { const lang = storyLang(); c.w = makeWord(c.say[lang], lang, 'story'); });
-  lastStageF = -1;
+  if (L.who !== 'me' && L.who !== 'nar') tone(L.who === 'robo' ? 880 : 520, 0.05, 'square', 0.04);
   renderStory();
 }
 function renderStory() {
   const L = ST.lines[ST.i], txt = $('#story .txt'), rep = $('#story .reply'), hint = $('#story .hint');
   $('#story').classList.toggle('choice', !!L.choice);
-  $('#storyPort').classList.toggle('talking', L.t !== undefined && !ST.full);
   if (L.t !== undefined) {
     txt.textContent = [...L.t].slice(0, Math.floor(ST.shown)).join('');
     rep.innerHTML = '';
-    hint.innerHTML = (ST.full ? '<kbd>Enter</kbd> / <kbd>Space</kbd> ต่อไป' : '<kbd>Enter</kbd> แสดงทั้งหมด') + ' · <kbd>Esc</kbd> ข้าม';
+    hint.innerHTML = (ST.full ? '<kbd>Enter</kbd> ต่อไป' : '<kbd>Enter</kbd> แสดงทั้งหมด') + ' · <kbd>Esc</kbd> ข้าม';
   } else if (L.say) {
     txt.textContent = 'พิมพ์คำพูดของคุณ:';
     rep.innerHTML = `<span class="w">${wordHTML(L.w, ST.buf)}</span>`;
@@ -1404,25 +1210,14 @@ function renderStory() {
   }
 }
 function storyTick(dt) {
-  const eT = ST.eTargetX != null ? ST.eTargetX : 228;
-  const pT = ST.pTargetX != null ? ST.pTargetX : 96;
-  if (Math.abs(FIG.E.x - eT) > 0.5) FIG.E.x += Math.sign(eT - FIG.E.x) * Math.min(Math.abs(eT - FIG.E.x), 180 * dt);
-  if (Math.abs(FIG.P.x - pT) > 0.5) FIG.P.x += Math.sign(pT - FIG.P.x) * Math.min(Math.abs(pT - FIG.P.x), 180 * dt);
+  if (FIG.E.x > 228) FIG.E.x = Math.max(228, FIG.E.x - 160 * dt);   // ราชินีเดินเข้าฉาก
   if (ST.fx) ST.fxT += dt;
   const L = ST.lines[ST.i];
   if (L && L.t && !ST.full) {
     const was = Math.floor(ST.shown);
-    ST.shown += dt * 42;
-    const now = Math.floor(ST.shown);
+    ST.shown += dt * 38;
     if (ST.shown >= [...L.t].length) ST.full = true;
-    if (now !== was) {
-      if (now - (ST.lastBlip || 0) >= 3 && !ST.full) {
-        ST.lastBlip = now;
-        const f = SPEAKER_PITCH[L.who] || 480;
-        tone(f + ((now * 19) % 40) - 20, 0.025, 'triangle', 0.018);
-      }
-      renderStory();
-    }
+    if (Math.floor(ST.shown) !== was) renderStory();
   }
 }
 function storyAdvance() {
@@ -1432,11 +1227,9 @@ function storyAdvance() {
   nextLine();
 }
 function storySkip() {
-  if (!ST) return;
-  if (ST.preview) return endStory();
   const ci = ST.lines.findIndex(l => l.choice);
-  if (ci >= 0 && ST.i < ci) { ST.i = ci - 1; nextLine(); }
-  else endStory();
+  if (ST.i < ci) { ST.i = ci - 1; nextLine(); }
+  else storyAdvance();
 }
 function storyInput() {
   const L = ST.lines[ST.i];
@@ -1462,21 +1255,14 @@ function pickStory(c) {
   nextLine();
 }
 function endStory() {
-  const cur = ST;
-  ST = null;
   hideCineUI();
-  FIG.P.x = 96;
-  if (!cur) return;
-  if (cur.preview) return showCutsceneMenu();
-  if (cur.kind === 'opening') return enterNode(R.map[0][0]);
-  if (cur.kind === 'mid') return enterNode(cur.nd, true);
-  if (cur.end) {
-    const e = cur.ending || 'friend';
+  if (ST.end) {
+    const e = ST.ending || 'friend';
     R.ending = e; META.endings = Object.assign({}, META.endings, { [e]: (META.endings && META.endings[e] || 0) + 1 }); saveMeta();
-    return showResult(true);
+    ST = null; return showResult(true);
   }
   META.story = (META.story || 0) + 1; saveMeta();
-  R.storyBonus = cur.bonus;
+  R.storyBonus = ST.bonus; ST = null;
   startFight();
 }
 
@@ -2046,104 +1832,47 @@ function placeFighter(el, x2) {
   el.style.left = (ox + (x2 - 50) * k) + 'px'; el.style.top = (oy + (GROUND * 2 - 124) * k) + 'px';
   el.style.width = (100 * k) + 'px'; el.style.height = (116 * k) + 'px';
 }
-function drawCutsceneBackFX(mood) {
-  sctx.save();
-  sctx.setTransform(1, 0, 0, 1, 0, 0);
-  if (mood === 'night') {
-    sctx.fillStyle = 'rgba(7,4,26,0.38)'; sctx.fillRect(0, 0, 640, 360);
-    sctx.strokeStyle = 'rgba(167,139,250,0.28)'; sctx.lineWidth = 1;
-    for (let i = 0; i < 28; i++) {
-      const rx = ((i * 67 + gclock * 45) % 680) - 20;
-      const ry = ((i * 53 + gclock * 260) % 380) - 20;
-      sctx.beginPath(); sctx.moveTo(rx, ry); sctx.lineTo(rx - 5, ry + 18); sctx.stroke();
-    }
-  } else if (mood === 'ominous' || mood === 'vortex') {
-    sctx.fillStyle = 'rgba(34,4,46,0.42)'; sctx.fillRect(0, 0, 640, 360);
-    if (Math.sin(gclock * 7.3) > 0.96) { sctx.fillStyle = 'rgba(240,171,252,0.16)'; sctx.fillRect(0, 0, 640, 360); }
-    for (let i = 0; i < 16; i++) {
-      const ex = (i * 43 + Math.sin(gclock + i) * 18) % 640;
-      const ey = 320 - ((gclock * 38 + i * 29) % 280);
-      sctx.fillStyle = i % 2 ? 'rgba(232,121,249,0.55)' : 'rgba(244,63,94,0.45)';
-      sctx.fillRect(Math.round(ex), Math.round(ey), 3, 3);
-    }
-  } else if (mood === 'dawn') {
-    const grd = sctx.createLinearGradient(0, 0, 0, 340);
-    grd.addColorStop(0, 'rgba(251,191,36,0.22)'); grd.addColorStop(0.55, 'rgba(192,132,252,0.14)'); grd.addColorStop(1, 'rgba(15,8,34,0)');
-    sctx.fillStyle = grd; sctx.fillRect(0, 0, 640, 360);
-  }
-  sctx.restore();
-}
-function drawCutsceneFrontFX(mood, xO2) {
-  sctx.save();
-  sctx.setTransform(1, 0, 0, 1, 0, 0);
-  if (ST && ST.fx === 'vortex') vortexGlyphs(xO2, GROUND * 2 - 78, ST.fxT);
-  if (ST && ST.fx === 'glyphs') risingGlyphs(xO2, ST.fxT);
-  if (mood === 'clash') {
-    for (let i = 0; i < 12; i++) {
-      const ph = (gclock * 2.2 + i * 0.27) % 1;
-      const sx = 320 + Math.cos(i * 1.7 + gclock * 5) * (10 + ph * 64);
-      const sy = GROUND * 2 - 74 + Math.sin(i * 2.1 + gclock * 4) * (8 + ph * 42);
-      sctx.fillStyle = i % 2 ? `rgba(192,132,252,${(1 - ph).toFixed(2)})` : `rgba(251,191,36,${(1 - ph).toFixed(2)})`;
-      sctx.fillRect(Math.round(sx), Math.round(sy), 3, 3);
-    }
-  }
-  const vig = sctx.createRadialGradient(320, 180, 140, 320, 180, 370);
-  vig.addColorStop(0, 'rgba(0,0,0,0)'); vig.addColorStop(1, 'rgba(6,2,18,0.52)');
-  sctx.fillStyle = vig; sctx.fillRect(0, 0, 640, 360);
-  sctx.restore();
-}
 function drawStage() {
   const sf = airinArtOn ? 30 : FPS;   // painted frames move at 30 fps; pixel sprites still step at FPS
   const fr = Math.floor(gclock * sf);
   if (fr === lastStageF) return;
   lastStageF = fr; cvIdx = 0;
   const gt = Math.floor(gclock * FPS) / FPS, A = FIG.P, O = FIG.E;
-  const cine = phase === 'story' && ST;
-  const showP = !(cine && ST.hideP), showE = !(cine && ST.hideE);
   if (CHARS.twins) CHARS.twins.alive = S && S.twins ? S.twins.map(t => t.hp > 0 ? 1 : 0) : [1, 1];
   const art = airinArtOn && A.id === 'airin';   // painted keyframes replace Airin's pixel sprite
   sctx.imageSmoothingEnabled = false;
   sctx.setTransform(2, 0, 0, 2, 0, 0); sctx.drawImage(BG, 0, 0);
-  if (cine) drawCutsceneBackFX(ST.mood);
-  sctx.setTransform(2, 0, 0, 2, 0, 0);
   const RA = renderFig(A), RO = renderFig(O);
   if (S && S.enraged && O.st !== 'charge' && O.st !== 'ko') { const g = Math.floor(gclock * FPS) % 2 ? '#e879f9' : '#a855f7'; RO.px.outline(g); RO.px.outline(g + '66'); }
   const eart = !!enemyArt(O);   // painted enemy still replaces its pixel sprite
   const xA = art ? A.x - knock(A) : A.x + RA.pose.travel * 50 - knock(A), xO = eart ? O.x + knock(O) : O.x - RO.pose.travel * 50 + knock(O);
   // เงาใต้เท้า
-  const shXs = []; if (showP) shXs.push(xA); if (showE) shXs.push(xO);
-  for (const x of shXs) { sctx.fillStyle = '#140b30'; sctx.fillRect(Math.round(x) - 12, GROUND - 1, 26, 1); sctx.fillRect(Math.round(x) - 8, GROUND, 18, 1); }
+  for (const x of [xA, xO]) { sctx.fillStyle = '#140b30'; sctx.fillRect(Math.round(x) - 12, GROUND - 1, 26, 1); sctx.fillRect(Math.round(x) - 8, GROUND, 18, 1); }
   // ฝุ่นตอนพุ่ง
   const dust = (x, f, dir) => {
     if (f.st !== 'attack' || f.t < .13 || f.t > .45) return;
     const k = (f.t - .13) / .32;
     for (let i = 0; i < 4; i++) pset(x - dir * (6 + i * 4 + k * 8), GROUND - 1 - Math.round(k * 3 + (i % 2)), k > .6 ? '#6d4bd6' : '#a78bfa');
   };
-  if (showP) dust(xA, A, 1); if (showE) dust(xO, O, -1);
+  dust(xA, A, 1); dust(xO, O, -1);
   // คีย์บอทลอยตามไอริน
-  if (showP) {
-    const rb = new Px(16, 12); rb.blit(ROBO.rows, 0, 0, ROBO.pal); rb.outline(OUT);
-    sctx.drawImage(rb.toCanvas(tmpCv()), Math.round(A.x - 44 + Math.sin(gclock * 1.3) * 3 + RA.pose.travel * 10), 84 + Math.round(Math.sin(gclock * 2.4) * 2));
-  }
+  const rb = new Px(16, 12); rb.blit(ROBO.rows, 0, 0, ROBO.pal); rb.outline(OUT);
+  sctx.drawImage(rb.toCanvas(tmpCv()), Math.round(A.x - 44 + Math.sin(gclock * 1.3) * 3 + RA.pose.travel * 10), 84 + Math.round(Math.sin(gclock * 2.4) * 2));
   // ออร่าท่าไม้ตาย
-  if (showP && !art && A.st === 'ult') for (let i = 0; i < 22; i++) {
+  if (!art && A.st === 'ult') for (let i = 0; i < 22; i++) {
     const ph = (gclock * .8 + i * .37) % 1;
     pset(A.x - 18 + ((i * 37) % 36), GROUND - 4 - ph * 70, i % 2 ? '#e879f9' : '#c084fc');
   }
   // ตัวละครที่ความละเอียดเต็ม (640×360)
   sctx.setTransform(1, 0, 0, 1, 0, 0);
-  if (showE) {
-    if (eart) drawEnemyArt(O, xO * 2, S && S.enraged && O.st !== 'charge');
-    else blitSprite(RO.px, xO * 2, true, O.st === 'ko' ? O.t : 0);
-  }
-  if (showP) {
-    if (art) drawAirinArt(A, xA * 2); else blitSprite(RA.px, xA * 2, false, A.st === 'ko' ? A.t : 0);
-  }
-  if (cine) drawCutsceneFrontFX(ST.mood, xO * 2);
-  if (showE && !eart && O.id === 'queen' && O.st !== 'ko' && !(ST && ST.end)) drawGlyphs(sctx, xO * 2, GROUND * 2 - 89, gt, 62, 10);
-  if (showP && !art && A.st === 'attack' && A.t >= .18 && A.t < .45) slashArc(xA * 2 + 26, GROUND * 2 - 86, 46, -75, 70, 9, (A.t - .18) / .27, ARC.airin);
-  if (showE && !window.PFX && O.st === 'attack' && O.t >= .18 && O.t < .45) slashArc(xO * 2 - 24, GROUND * 2 - 92, 58, -110, 55, 11, (O.t - .18) / .27, ARC[O.id] || ARC.oni, true);
-  if (showP && !art && A.st === 'ult' && A.t > .3) for (let i = 0; i < 3; i++) {
+  if (eart) drawEnemyArt(O, xO * 2, S && S.enraged && O.st !== 'charge');
+  else blitSprite(RO.px, xO * 2, true, O.st === 'ko' ? O.t : 0);
+  if (art) drawAirinArt(A, xA * 2); else blitSprite(RA.px, xA * 2, false, A.st === 'ko' ? A.t : 0);
+  if (ST && ST.fx === 'glyphs') risingGlyphs(xO * 2, ST.fxT);
+  if (!eart && O.id === 'queen' && O.st !== 'ko' && !(ST && ST.end)) drawGlyphs(sctx, xO * 2, GROUND * 2 - 89, gt, 62, 10);
+  if (!art && A.st === 'attack' && A.t >= .18 && A.t < .45) slashArc(xA * 2 + 26, GROUND * 2 - 86, 46, -75, 70, 9, (A.t - .18) / .27, ARC.airin);
+  if (!window.PFX && O.st === 'attack' && O.t >= .18 && O.t < .45) slashArc(xO * 2 - 24, GROUND * 2 - 92, 58, -110, 55, 11, (O.t - .18) / .27, ARC[O.id] || ARC.oni, true);
+  if (!art && A.st === 'ult' && A.t > .3) for (let i = 0; i < 3; i++) {
     const y = GROUND * 2 - 20 - ((gclock * 140 + i * 47) % 160);
     for (let k = 0; k < 10; k++) pset(xA * 2 - 30 + i * 30 + Math.sin(y * .1 + i) * 3, y + k, k < 3 ? '#ffffff' : '#e879f9');
   }
@@ -2329,8 +2058,108 @@ function mistake() {
   S.combo = 0;
 }
 
+/* ---------- คัตซีนท่าไม้ตาย (Ultimate Cutscene 12 เฟรม) ---------- */
+const ULT_NAMES = ['คมดาบอักษรผ่าฟากฟ้า', 'เพลงดาบแสงนีออน', 'พายุคีย์บอร์ดทลายฟ้า'];
+const ULT_FRAMES = Array.from({ length: 12 }, (_, i) => `art/ult-${String(i + 1).padStart(2, '0')}.jpg`);
+const ULT_IMGS = ULT_FRAMES.map((src, i) => {
+  const im = document.createElement('img');
+  im.className = 'uc-img'; im.src = src; im.alt = ''; im.dataset.f = String(i + 1);
+  $('#ucFrames').appendChild(im);
+  return im;
+});
+const ULT_SEQ = [
+  { at: 0,    f: 0,  cam: 'zoom',   sfx: 'charge' },
+  { at: 230,  f: 1,  cam: 'zoom2',  sfx: 'draw'   },
+  { at: 400,  f: 2,  cam: 'cutin',  flash: 1, title: 1, sfx: 'glint' },
+  { at: 680,  f: 3,  cam: 'glint',  sfx: 'flare'  },
+  { at: 840,  f: 4,  cam: 'dash',   sfx: 'leap'   },
+  { at: 980,  f: 5,  cam: 'dash2',  sfx: 'dash'   },
+  { at: 1130, f: 6,  cam: 'dash2'                 },
+  { at: 1270, f: 7,  cam: 'slash',  beam: 1, shake: 1, flash: 1, sfx: 'slash' },
+  { at: 1460, f: 8,  cam: 'impact', shake: 2      },
+  { at: 1570, f: 9,  cam: 'burst',  flash: 2, sfx: 'boom' },
+  { at: 1730, f: 10, cam: 'land',   shake: 1, dmg: 1 },
+  { at: 2020, f: 11, cam: 'settle'                }
+];
+const ULT_END_MS = 2360;
+let ULT_CINE = null;
+function playUltSfx(k) {
+  if (k === 'charge') tone(220, 0.22, 'sawtooth', 0.08, 620);
+  else if (k === 'draw') tone(520, 0.14, 'triangle', 0.08, 1280);
+  else if (k === 'glint') { tone(760, 0.14, 'triangle', 0.09, 1680); }
+  else if (k === 'flare') tone(1180, 0.12, 'sine', 0.08, 2200);
+  else if (k === 'leap') { noise(0.14, 0.25, 1100); tone(180, 0.14, 'sine', 0.22, 80); }
+  else if (k === 'dash') { noise(0.16, 0.28, 2000); tone(420, 0.14, 'sawtooth', 0.07, 1020); }
+  else if (k === 'slash') SFX.ultHit();
+  else if (k === 'boom') { noise(0.32, 0.45, 850); tone(95, 0.42, 'sine', 0.44, 30); }
+}
+function applyUltStep(step) {
+  ULT_IMGS.forEach((im, idx) => im.classList.toggle('on', idx === step.f));
+  const fr = $('#ucFrames');
+  fr.className = 'uc-frames';
+  void fr.offsetWidth;
+  if (step.cam) fr.classList.add('cam-' + step.cam);
+  if (step.flash) {
+    const fl = $('#ucFlash'); fl.className = 'uc-flash'; void fl.offsetWidth; fl.classList.add('f' + step.flash);
+  }
+  if (step.beam) {
+    const bm = $('#ucBeam'); bm.className = 'uc-beam'; void bm.offsetWidth; bm.classList.add('go');
+  }
+  if (step.shake) {
+    const st = $('#ucStage'); st.className = 'uc-stage'; void st.offsetWidth; st.classList.add('shk' + step.shake);
+  }
+  if (step.title) $('#ucTitle').classList.add('show');
+  if (step.dmg) $('#ucDmg').classList.add('show');
+  if (step.sfx) playUltSfx(step.sfx);
+  if (ULT_CINE) ULT_CINE.frame = step.f + 1;
+}
+function playUltCutscene(dmg, onImpact) {
+  cancelUltCine();
+  const el = $('#ultCine');
+  $('#ucName').textContent = pick(ULT_NAMES);
+  $('#ucDmg').textContent = '💥 -' + dmg;
+  $('#ucTitle').className = 'uc-title';
+  $('#ucDmg').className = 'uc-dmg';
+  $('#ucBeam').className = 'uc-beam';
+  $('#ucFlash').className = 'uc-flash';
+  $('#ucStage').className = 'uc-stage';
+  if (S) S.ultCine = true;
+  el.hidden = false;
+  el.className = '';
+  const timers = [];
+  ULT_CINE = { timers, onImpact, done: false, frame: 1 };
+  updatePauseBtn();
+  for (const step of ULT_SEQ) {
+    if (step.at === 0) applyUltStep(step);
+    else timers.push(setTimeout(() => { if (ULT_CINE && !ULT_CINE.done) applyUltStep(step); }, step.at));
+  }
+  timers.push(setTimeout(() => finishUltCine(), ULT_END_MS));
+}
+function finishUltCine() {
+  if (!ULT_CINE || ULT_CINE.done) return;
+  const cur = ULT_CINE;
+  cur.done = true;
+  cur.timers.forEach(clearTimeout);
+  ULT_CINE = null;
+  const el = $('#ultCine');
+  el.classList.add('out');
+  if (S) S.ultCine = false;
+  setTimeout(() => { if (!ULT_CINE) { el.hidden = true; el.className = ''; } }, 210);
+  updatePauseBtn();
+  if (cur.onImpact) cur.onImpact();
+  kb.focus();
+}
+function cancelUltCine() {
+  if (!ULT_CINE) return;
+  ULT_CINE.timers.forEach(clearTimeout);
+  ULT_CINE = null;
+  const el = $('#ultCine');
+  el.hidden = true; el.className = '';
+  if (S) S.ultCine = false;
+}
+
 function tryUlt() {
-  if (!S.running || S.paused || S.ultMode || S.ult < 100) return;
+  if (!S.running || S.paused || S.ultMode || S.ultCine || S.ult < 100) return;
   S.ultMode = true; S.ult = 0;
   if (R.pvp) pvSend({ t: 'ult' });   // PvP: ท่าหนักที่ค้างอยู่ยังไม่หาย (หยุดนับระหว่างร่าย)
   else { S.def = null; S.enemy.state = 'idle'; S.enemy.t = idleTime(); E.classList.remove('charging'); }
@@ -2348,10 +2177,13 @@ function ultHit() {
   const dmg = Math.round((30 + S.ultWord.len * 1.6) * comboMult());
   addCombo(); S.stats.words++;
   endUlt();
-  play(FIG.P, 'attack'); airinUltAt = gclock; flash('white'); SFX.ultHit();
-  setTimeout(() => { hurtE(); spark(E, 'huge'); fx('big', 'ท่าไม้ตาย! -' + dmg, E, 0, -20); shake(); hitstop(220); }, HIT_DELAY);
-  dealDamage(dmg, 'ult', 1);
-  tutEvent('ult');
+  playUltCutscene(dmg, () => {
+    if (!S || !S.running) return;
+    play(FIG.P, 'attack'); airinUltAt = gclock; flash('white');
+    setTimeout(() => { hurtE(); spark(E, 'huge'); fx('big', 'ท่าไม้ตาย! -' + dmg, E, 0, -20); shake(); hitstop(220); }, HIT_DELAY);
+    dealDamage(dmg, 'ult', 1);
+    tutEvent('ult');
+  });
 }
 function ultFail() { if (R.pvp) pvSend({ t: 'ultx' }); endUlt(); play(FIG.P, 'idle'); fx('bad', 'ท่าไม้ตายพลาด!', P, 0, -40); SFX.err(); tutEvent('ultFail'); }
 
@@ -2380,6 +2212,7 @@ kb.addEventListener('compositionend', () => { composing = false; onInput(); });
 kb.addEventListener('input', () => { if (!composing) onInput(); });
 
 function onInput() {
+  if (ULT_CINE) { kb.value = ''; return; }
   if (PAUSED) return pauseInput();
   if (phase === 'pick') return pickInput();
   if (phase === 'shop') return shopInput();
@@ -2390,7 +2223,7 @@ function onInput() {
   if (phase === 'busy') { kb.value = ''; return; }
   if (phase === 'menu' || phase === 'result') return menuInput();
   if (phase === 'shopExit') { kb.value = ''; return; }
-  if (!S || !S.running || S.paused || S.tour) { kb.value = ''; return; }
+  if (!S || !S.running || S.paused || S.tour || S.ultCine) { kb.value = ''; return; }
   let v = kb.value.replace(/[`~_]/g, '');
   const allowSpace = S.ultMode || candidates().some(w => w.text.includes(' '));
   v = allowSpace ? v.replace(/^\s+/, '').replace(/\s{2,}/g, ' ') : v.replace(/\s+/g, '');
@@ -2430,6 +2263,10 @@ function onInput() {
 
 document.addEventListener('keydown', e => {
   if (document.activeElement && document.activeElement !== kb && /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) return;
+  if (ULT_CINE) {
+    if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); finishUltCine(); }
+    return;
+  }
   if (PAUSED) {
     if (e.key === 'Tab') { e.preventDefault(); return; }
     if (e.key === 'Escape') { e.preventDefault(); setPause(false); return; }
@@ -2441,7 +2278,6 @@ document.addEventListener('keydown', e => {
   if (phase === 'story') {
     if (e.key === 'Escape') { e.preventDefault(); storySkip(); }
     else if (e.key === 'Enter') { e.preventDefault(); storyAdvance(); }
-    else if (e.key === ' ' && ST && ST.lines[ST.i] && ST.lines[ST.i].t !== undefined) { e.preventDefault(); storyAdvance(); }
     return;
   }
   if (phase === 'pvp') { if (e.key === 'Backspace' && !kb.value) pvBack(); return; }
@@ -2458,7 +2294,7 @@ document.addEventListener('keydown', e => {
   }
 });
 document.addEventListener('mousedown', e => { if (!e.target.closest('button,input,textarea,select,label')) setTimeout(() => kb.focus(), 0); });
-window.addEventListener('blur', () => { if (phase === 'fight' && S && S.running && !PAUSED && !S.tour && !R.pvp) setPause(true); });
+window.addEventListener('blur', () => { if (phase === 'fight' && S && S.running && !PAUSED && !ULT_CINE && !S.tour && !R.pvp) setPause(true); });
 
 /* ================= Pause + Save/Continue + Restart + Lobby ================= */
 const SAVE_KEY = 'typegame.save.v1';
@@ -2469,7 +2305,7 @@ const PAUSE_ITEMS = [
   { id: 'lobby',   w: { th: 'ล็อบบี้', en: 'lobby'  }, fn: () => goLobby() }
 ];
 function canPause() {
-  if (!R || R.pvp || (S && S.tour)) return false;
+  if (!R || R.pvp || ULT_CINE || (S && S.tour)) return false;
   if (phase === 'fight') return !!(S && S.running);
   if (phase === 'pick' || phase === 'shop') return true;
   if (phase === 'choice') return !(CH && CH.lobbyMenu);
@@ -2543,6 +2379,7 @@ function setPause(p) {
   kb.focus();
 }
 function cleanupActiveState() {
+  cancelUltCine();
   PAUSED = false; PAUSE_BUF = '';
   if (S) {
     if (S.tour) endTour();
@@ -2835,7 +2672,7 @@ function loop(ts) {
   const dt = Math.min(0.05, (ts - last) / 1000 || 0); last = ts;
   const paused = PAUSED || (S && S.paused), frozen = S && S.freeze > 0;
   if (frozen && !paused) S.freeze -= dt * 1000;
-  else if (S && S.running && !paused && !S.tour) update(dt);
+  else if (S && S.running && !paused && !S.tour && !ULT_CINE) update(dt);
   if (!paused && !frozen) stageTick(dt);
   if (SHOP && (phase === 'shop' || phase === 'shopExit')) drawShopCat(dt);
   if (ST && phase === 'story') storyTick(dt);
@@ -2854,7 +2691,7 @@ function banner(title, sub) {
   anim(b, 'show', 2500);
 }
 
-function startRun(skipIntro) {
+function startRun() {
   clearSavedRun();
   R = newRun();
   if (HELP) showHelp(false);
@@ -2862,19 +2699,14 @@ function startRun(skipIntro) {
   $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#shopScr').hidden = true; $('#chScr').hidden = true; SHOP = null;
   R.map = genMap();
   ST = null; R.ending = null; hideCineUI();
-  if (!skipIntro) return showOpeningCutscene(false);
   enterNode(R.map[0][0]);
 }
 
 /* ---------- เดินบนแผนที่ ---------- */
-function enterNode(nd, skipMid) {
+function enterNode(nd) {
   R.at = nd;
   if (R.trail[R.trail.length - 1] !== nd) R.trail.push(nd);
   $('#chScr').hidden = true; $('#pickScr').hidden = true; $('#shopScr').hidden = true;
-  if (!skipMid && nd.layer === 3 && !R.midCutsceneDone && !R.endless && !R.practice && !R.bossMode && !R.pvp) {
-    R.midCutsceneDone = true;
-    return showMidCutscene(nd, false);
-  }
   if (nd.t === 'boss') return showStory(nd);
   if (nd.foe) { FOE = makeFoe(nd); return startFight(); }
   if (nd.t === 'shop') return showShop();
@@ -3386,7 +3218,6 @@ const MENU = () => {
     { id: 'practice', w: { th: 'ฝึก', en: 'train' }, fn: startPractice, in: ['menu'] },
     { id: 'endless', w: { th: 'ไม่จบ', en: 'endless' }, fn: startEndless, in: ['menu'] },
     { id: 'boss', w: { th: 'บอส', en: 'boss' }, fn: showBossSelect, in: ['menu'] },
-    { id: 'cutscene', w: { th: 'คัตซีน', en: 'cutscene' }, fn: showCutsceneMenu, in: ['menu'] },
     { id: 'shrine', w: META_OPEN, fn: showMeta, in: ['menu', 'result'] },
     { id: 'duel', w: PVP_OPEN, fn: () => showPvp(), in: ['menu', 'result'] },
     { id: 'help', w: { th: 'วิธีเล่น', en: 'help' }, fn: () => showHelp(true), in: ['menu'] },
@@ -4116,11 +3947,10 @@ document.querySelectorAll('.opts').forEach(g => g.addEventListener('click', e =>
 $('#continueBtn').onclick = continueRun;
 $('#startBtn').onclick = startGame;
 $('#bossBtn').onclick = showBossSelect;
-$('#cutsceneBtn').onclick = showCutsceneMenu;
 $('#againBtn').onclick = again;
 $('#menuBtn').onclick = toMenu;
 $('#story').onclick = () => phase === 'story' && storyAdvance();
-$('#cineSkip').onclick = e => { e.stopPropagation(); if (phase === 'story') storySkip(); };
+$('#ultCine').onclick = () => finishUltCine();
 $('#pvpBtn').onclick = () => showPvp();
 $('#helpBtn').onclick = () => showHelp(true); $('#helpClose').onclick = () => showHelp(false);
 $('#metaBtn1').onclick = showMeta; $('#metaBtn2').onclick = showMeta;
