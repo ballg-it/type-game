@@ -2,6 +2,7 @@
 // node tests/boss-sim-cdp.js [mode=th] [cps=3] [err=0.05] [trials=2] [bosses=queen,mirror,phantom,jester,twins]
 // env STRAT = how the bot defends: now (type the defense word at once, default) · exploit (pre-type all but the last
 // letter, finish in the gold window) · auto (wait for gold and parry if it can type the word in time, else type now)
+// turtle (never attack: only block/counter at the gold window + ult) - if this wins, counter is too strong
 // env PAGE = page file to load (default ../index.html), e.g. an older copy to compare
 const { spawn } = require('child_process'); const os = require('os'), path = require('path'), fs = require('fs');
 const [mode = 'th', cps = '3', err = '0.05', trials = '2', bossArg = 'queen,mirror,phantom,jester,twins'] = process.argv.slice(2);
@@ -24,6 +25,7 @@ window.__bot = (cps, errP, strat) => {
     let tgt = S.ultMode ? S.ultWord : S.def;
     if (tgt) { if (B.target !== tgt.text) { B.target = tgt.text; B.wait = 2; if (S.buf) { clear(); } return; } }
     else {
+      if (strat === 'turtle') { if (S.buf) clear(); return; }   // turtle = never attack, only defend/counter (+ ult)
       const still = S.slots.find(w => w && w.text === B.target);
       if (!still) {
         // pick a new slot word: visible (stealth) and not a trap; mirror words take longer to read
@@ -40,7 +42,7 @@ window.__bot = (cps, errP, strat) => {
     if (S.def && !S.ultMode && B.target === S.def.text) {
       const rem = S.enemy.chargeMax - S.enemy.charge, win = counterWin();
       if (strat === 'exploit' && done === chars.length - 1 && rem > win - 0.05) return;
-      if (strat === 'auto' && done === 0 && chars.length / cps <= win - 0.15 && rem > win - 0.1) return;
+      if ((strat === 'auto' || strat === 'turtle') && done === 0 && chars.length / cps <= win - 0.15 && rem > win - 0.1) return;
     }
     const blindNow = !S.def && !S.ultMode && FOE.bossMech === 'stealth' && fadeOf(S.slots.findIndex(w => w && w.text === B.target)) < 0.3;
     if (Math.random() < errP * (blindNow ? 2 : 1)) { B.errs++; send(isTh(ch) ? 'ฯ' : 'q'); return; }
