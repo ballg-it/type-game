@@ -642,7 +642,7 @@ body.cine #story{cursor:default}
       <div class="hc-head"><div class="title" style="font-size:34px">วิธีเล่น</div><button class="mi" id="helpClose" data-m="back"><span class="nm">←</span><span class="w"></span><kbd>Esc</kbd></button></div>
       <div class="hgrid">
         <div class="hi"><b>⚔ โจมตี</b>พิมพ์คำไหนก็ได้จาก 3 ช่อง คำสั้นออกเร็ว คำยาวตีแรง</div>
-        <div class="hi"><b>🛡 ป้องกัน</b>ศัตรูชาร์จ → พิมพ์คำในกล่องแดงให้ทัน กันในช่วงทองสุดท้าย = <b class="g">สวนกลับ ×2</b></div>
+        <div class="hi"><b>🛡 ป้องกัน</b>ศัตรูชาร์จ → พิมพ์คำในกล่องแดงให้ทัน <b>เริ่มพิมพ์</b>ตอนแถบเป็นสีทองแล้วจบทัน = <b class="g">สวนกลับ ×2</b></div>
         <div class="hi"><b>🔥 คอมโบ</b>พิมพ์ถูกต่อเนื่องดาเมจคูณขึ้น ผิดตัวเดียวคอมโบหลุด</div>
         <div class="hi"><b>✨ ท่าไม้ตาย</b>เกจเต็มกด <kbd>Tab</kbd> แล้วพิมพ์ประโยคให้จบทันเวลา</div>
         <div class="hi"><b>🌈 ธาตุ</b>🔥 ชนะ 🌪️ · 🌪️ ชนะ 💧 · 💧 ชนะ 🔥 — พิมพ์คำธาตุที่ศัตรูแพ้ทางได้ดาเมจ <b class="g">×1.5</b></div>
@@ -806,7 +806,9 @@ const DIFF = {
   normal: { idle: [3.5, 6], charge: 2.5, dmg: 12, ult: 1.0,  hp: 1,    label: 'ปกติ' },
   hard:   { idle: [2.2, 4], charge: 1.9, dmg: 16, ult: 0.85, hp: 1.15, label: 'ยาก' }
 };
-const COUNTER_WINDOW = 0.35;   // วินาทีสุดท้ายของการชาร์จที่นับเป็นสวนกลับ
+// สวนกลับ (parry): ต้อง "เริ่มพิมพ์" คำกันในช่วงทองท้ายแถบ แล้วพิมพ์ให้จบก่อนโดน — พิมพ์รอไว้ก่อนแล้วกดตัวสุดท้ายตอนทอง = แค่กัน
+// ช่วงทองยาวตามความยาวคำ (ไทย 3 ตัว ≈ 0.7 วิ, อังกฤษ 5 ตัว ≈ 1 วิ) จึงต้องพิมพ์ไว ~4–5 ตัว/วิ
+const COUNTER_WINDOW = 0.25, COUNTER_PER_CHAR = 0.15;
 const KB_TH = {
   u: ['ๅ/-ภถุึคตจขช', 'ๆไำพะัีรนยบลฃ', 'ฟหกดเ้่าสวง', 'ผปแอิืทมใฝ'],
   s: ['+๑๒๓๔ู฿๕๖๗๘๙', '๐"ฎฑธํ๊ณฯญฐ,ฅ', 'ฤฆฏโฌ็๋ษศซ.', '()ฉฮฺ์?ฒฬฦ']
@@ -1430,7 +1432,10 @@ const rand = (a, b) => a + Math.random() * (b - a);
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 const pickLang = () => cfg.mode === 'bi' ? (Math.random() < 0.5 ? 'th' : 'en') : cfg.mode;
 const comboMult = () => 1 + Math.min(S.combo, R.mod.comboCap) * 0.1;
-const counterWin = () => COUNTER_WINDOW + R.mod.counterWin;
+const counterWin = () => Math.min(COUNTER_WINDOW + (S.def ? [...S.def.text].length * COUNTER_PER_CHAR : 0) + R.mod.counterWin,
+  S.enemy.chargeMax * 0.6);
+// เริ่มพิมพ์คำกันตอนไหน (เวลาที่เหลือของแถบชาร์จ) — null = ยังไม่เริ่ม / ลบจนว่างแล้ว
+const defEarly = () => S.defStart != null && S.defStart > counterWin() + 0.05;
 const idleTime = () => rand(...DIFF[cfg.diff].idle) * FOE.idle * (S.enraged ? 0.6 : 1);
 function letterMult(w) {
   let m = 1;
@@ -2002,10 +2007,11 @@ function attack(i) {
 
 function block() {
   const rem = S.enemy.chargeMax - S.enemy.charge;
-  S.def = null; S.enemy.state = 'idle'; S.enemy.t = idleTime();
+  const parry = rem <= counterWin() && S.defStart != null && !defEarly();   // ก่อนล้าง S.def (ช่วงทองยาวตามคำ)
+  S.def = null; S.defStart = null; S.enemy.state = 'idle'; S.enemy.t = idleTime();
   addCombo();
   anim(P, 'shield', 460); play(FIG.P, 'block'); play(FIG.E, 'attack');
-  if (rem <= counterWin()) {
+  if (parry) {
     S.stats.counters++;
     const dmg = Math.round(26 * comboMult() * (S.tired ? 0.5 : 1) * R.mod.counterMult);
     SFX.counter();
@@ -2019,7 +2025,7 @@ function block() {
     SFX.block(); spark(P, 'blue'); fx('msg', 'BLOCK', P, 40, -20); hitstop(60);
     addUlt(6);
   }
-  tutEvent(rem <= counterWin() ? 'counter' : 'block');
+  tutEvent(parry ? 'counter' : 'block');
 }
 
 function enemyStartCharge() {
@@ -2029,7 +2035,7 @@ function enemyStartCharge() {
   const lang = pickLang();
   const defs = (FOE.def || DEF)[lang];
   let t; do { t = pick(defs); } while (S.slots.some(w => w && w.c[0].b === t[0]) && Math.random() < 0.9);
-  S.def = makeWord(t, lang, 'def');
+  S.def = makeWord(t, lang, 'def'); S.defStart = null;
   S.buf = ''; kb.value = '';
   E.classList.add('charging'); play(FIG.E, 'charge');
   SFX.warn();
@@ -2269,6 +2275,10 @@ function onInput() {
   if (v === '' || ok.length) {
     const added = [...v].length - [...S.buf].length;
     S.buf = v; kb.value = v;
+    if (S.def) {   // จับเวลาเริ่มพิมพ์คำกัน (ลบจนว่าง = เริ่มนับใหม่ได้)
+      if (!v || !match(v, S.def).ok) S.defStart = null;
+      else if (S.defStart == null) S.defStart = S.enemy.chargeMax - S.enemy.charge;
+    }
     if (added > 0) { S.stats.correct += added; S.stamina = Math.max(0, S.stamina - 1.1 * added * R.mod.stamCost); SFX.tick(); }
     const done = ok.find(w => match(v, w).full);
     if (done) fire(done); else renderWords();
@@ -2674,8 +2684,9 @@ function renderHUD() {
     const e = S.enemy, rem = e.chargeMax - e.charge;
     $('#defBar').style.width = Math.min(100, e.charge / e.chargeMax * 100) + '%';
     $('#defWin').style.width = Math.min(100, counterWin() / e.chargeMax * 100) + '%';
-    $('#defBox').classList.toggle('counter', rem <= counterWin());
-    $('#defBox .lbl').textContent = rem <= counterWin() ? '⚡ ตอนนี้! สวนกลับได้ ×2' : R.pvp ? `คู่แข่งปล่อยท่าหนัก ${S.pvDmg}! พิมพ์เพื่อกัน` : 'ศัตรูกำลังชาร์จ! พิมพ์เพื่อป้องกัน';
+    const gold = rem <= counterWin(), early = defEarly();
+    $('#defBox').classList.toggle('counter', gold && !early);
+    $('#defBox .lbl').textContent = gold && early ? 'เริ่มพิมพ์ก่อนช่วงทอง = กันได้ แต่ไม่สวนกลับ' : gold ? '⚡ เริ่มพิมพ์ตอนนี้ให้จบทัน = สวนกลับ ×2' : R.pvp ? `คู่แข่งปล่อยท่าหนัก ${S.pvDmg}! พิมพ์เพื่อกัน` : 'ศัตรูกำลังชาร์จ! พิมพ์เพื่อป้องกัน';
   }
   if (S.ultMode) $('#ultTimeBar').style.width = (S.ultTime / S.ultMax * 100) + '%';
   arena.classList.toggle('frozen', S.freeze > 0);
@@ -3436,7 +3447,7 @@ function pvRender(rebuild) {
   $('#pvSub').textContent = st === 'over' ? PV.last.sub : 'สู้กับเพื่อนแบบเรียลไทม์ · ต่างคนต่างเลือกภาษาที่พิมพ์ได้ · ไม่มีอัปเกรด เลือด ' + PVP.hp + ' เท่ากัน';
   let body = '';
   if (st === 'home') body = `<ul class="rules"><li><b>ตีเบา/กลาง:</b> โดนทันที (ไม่ทำคอมโบอีกฝั่งหลุด)</li>` +
-    `<li><b>คำแรง 🔥 = ท่าหนัก ×${PVP.heavy}:</b> ส่งไปให้คู่แข่งพิมพ์กันภายใน ${PVP.charge} วิ — กันช่วงท้ายจะสวนกลับ · โดนเต็มๆ คอมโบหลุด</li>` +
+    `<li><b>คำแรง 🔥 = ท่าหนัก ×${PVP.heavy}:</b> ส่งไปให้คู่แข่งพิมพ์กันภายใน ${PVP.charge} วิ — เริ่มพิมพ์ในช่วงทองท้ายแถบแล้วจบทัน = สวนกลับ · โดนเต็มๆ คอมโบหลุด</li>` +
     `<li><b>ท่าไม้ตาย</b> <kbd>Tab</kbd> กันไม่ได้ · พิมพ์ผิดคอมโบหลุดเหมือนเดิม · ไม่มีปุ่มหยุดเกม</li></ul>`;
   if (st === 'wait') body = `<div class="sub" style="text-align:center;margin:0">รหัสห้อง — บอกเพื่อนให้พิมพ์ (ไทยหรืออังกฤษก็ได้)</div><div class="pvcode">` +
     PV.code.map(i => `<div>${PV_CODE[i][0]} ${PV_CODE[i][1]}<small>${PV_CODE[i][2]}</small></div>`).join('') + `</div>` +
@@ -3807,7 +3818,7 @@ const TUT_STEPS = [
   { id: 'combo', focus: ['#words', '#combo'],
     text: '<b>คอมโบ:</b> พิมพ์ถูกต่อกันอีก <b>3 คำ</b> โดยไม่ผิดเลย ดาเมจจะคูณขึ้นเรื่อยๆ<br>พิมพ์ผิดตัวเดียว คอมโบหลุดนับใหม่' },
   { id: 'defend', focus: ['#words'],
-    text: '<b>ป้องกัน:</b> เดี๋ยวศัตรูจะชาร์จ! พิมพ์คำใน <b>กล่องสีแดง</b> ให้ทันก่อนแถบเต็ม<br>ถ้ากันในช่วง <b>สีทอง</b> ท้ายแถบ จะสวนกลับ ×2' },
+    text: '<b>ป้องกัน:</b> เดี๋ยวศัตรูจะชาร์จ! พิมพ์คำใน <b>กล่องสีแดง</b> ให้ทันก่อนแถบเต็ม<br>ถ้า<b>เริ่มพิมพ์</b>ตอนแถบเป็น <b>สีทอง</b> แล้วพิมพ์จบทัน จะสวนกลับ ×2 (พิมพ์รอไว้ก่อน = แค่กัน)' },
   { id: 'ult', focus: ['#ultBtn'],
     text: '<b>ท่าไม้ตาย:</b> เกจเต็มแล้ว! กด <kbd>Tab</kbd> แล้วพิมพ์ประโยคให้จบก่อนหมดเวลา<br>(ตอนฝึกให้เวลาเพิ่ม 2 เท่า)' }
 ];
@@ -3856,7 +3867,7 @@ function tutEvent(ev) {
   }
   else if (T.id === 'defend') {
     if (ev === 'charge') { setFocus(['#defBox']); coach('พิมพ์คำในกล่องแดง!'); }
-    else if (ev === 'block') tutPass('กันได้! (ครั้งหน้าลองกันตอนแถบเป็นสีทอง จะสวนกลับ)');
+    else if (ev === 'block') tutPass('กันได้! (ครั้งหน้าลองรอแถบเป็นสีทองแล้วค่อยเริ่มพิมพ์ให้ไว จะสวนกลับ)');
     else if (ev === 'counter') tutPass('สวนกลับ! สุดยอด ×2');
     else if (ev === 'hurt') { setFocus(['#words']); coach('ไม่ทัน! ลองอีกครั้ง — พิมพ์คำในกล่องแดงทันทีที่มันขึ้น'); tutCharge(1.5); }
   }
@@ -3910,7 +3921,7 @@ const TOUR = [
   { sel: '.hpbox.e', title: 'ศัตรู', text: 'แถบแดงขวาบน ตีให้หมดเพื่อชนะ · ศัตรูแต่ละตัวเน้นแป้นต่างกัน (ดูป้ายตอนเริ่มไฟต์)' },
   { sel: '#wave', title: 'ชั้นที่อยู่', text: 'แผนที่มี 7 ชั้น ชนะแล้วเลือกทางต่อเองโดยพิมพ์คำ — ชั้นสุดท้ายคือบอส' },
   { sel: '#words', title: 'ช่องคำโจมตี', text: 'มี 3 ช่อง <b>พิมพ์คำในช่องไหนก็ได้</b> ไม่ต้องกด Enter พิมพ์ครบคำ = ตีทันที<br>⚡ เร็ว = คำสั้น · 🔥 แรง = คำยาว ดาเมจแสดงใต้คำ' },
-  { sel: '#defBox', title: 'กล่องป้องกัน', text: 'เมื่อศัตรูชาร์จ กล่องแดงจะเด้งขึ้น <b>รีบพิมพ์คำในกล่องนี้</b> ก่อนแถบเต็ม<br>กันตอนแถบถึงช่วง <b>สีทอง</b> = สวนกลับ ×2',
+  { sel: '#defBox', title: 'กล่องป้องกัน', text: 'เมื่อศัตรูชาร์จ กล่องแดงจะเด้งขึ้น <b>รีบพิมพ์คำในกล่องนี้</b> ก่อนแถบเต็ม<br><b>เริ่มพิมพ์</b>ตอนแถบถึงช่วง <b>สีทอง</b> แล้วจบทัน = สวนกลับ ×2',
     demo() { const l = cfg.mode === 'en' ? 'en' : 'th'; S.def = makeWord(DEF[l][0], l, 'def'); S.enemy.charge = S.enemy.chargeMax * .62; E.classList.add('charging'); } },
   { sel: '#combo', title: 'คอมโบ', text: 'พิมพ์ถูกต่อเนื่อง ดาเมจคูณขึ้นเรื่อยๆ<br>พิมพ์ผิดหรือโดนตี คอมโบหลุด', demo() { S.combo = 5; } },
   { sel: '#stamBox', title: 'Stamina', text: 'พิมพ์ผิดเสีย Stamina ถ้าหมดจะ <b>เหนื่อย ดาเมจเหลือครึ่ง</b> จนกว่าจะฟื้น — ช้าแต่แม่นดีกว่า' },
