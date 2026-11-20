@@ -34,7 +34,7 @@ let failed = 0;
   const type = t => ev(`(()=>{const kb=document.getElementById('kb');for(const ch of ${JSON.stringify(t)}){kb.value+=ch;kb.dispatchEvent(new Event('input'))}})()`);
   const key = k => ev(`document.dispatchEvent(new KeyboardEvent('keydown',{key:${JSON.stringify(k)},bubbles:true,cancelable:true}))`);
   const ok = (name, c) => { console.log(c ? 'PASS' : 'FAIL', name); if (!c) failed++; };
-  const url = 'file:///' + path.resolve(__dirname, '../index.html').replace(/\\/g, '/');
+  const url = process.env.URL || 'file:///' + path.resolve(__dirname, '../index.html').replace(/\\/g, '/');
   await cmd('Runtime.enable'); await cmd('Page.enable');
   await cmd('Page.navigate', { url }); await sleep(2200);
   await ev(`localStorage.setItem('typegame.tourDone','1'); localStorage.setItem('typegame.askPractice','1'); localStorage.setItem('typegame.tutDone','1')`);

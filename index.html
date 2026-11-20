@@ -3353,7 +3353,7 @@ function heatmap(L, miss) {
 
 /* ================= PvP: ดวลออนไลน์ (PeerJS, เครื่องต่อเครื่อง) ================= */
 // แต่ละฝั่งเป็นเจ้าของเลือดตัวเอง: ตีเบา/กลาง = ดาเมจทันที · คำแรง = "ท่าหนัก" ส่งไปให้อีกฝั่งพิมพ์กัน (กันท้าย = สวนกลับ)
-const PVP = { hp: 500, charge: 2.4, heavy: 1.4, comboCap: 10, ultGain: 0.6, prefix: 'typegame-duel-v1-', lib: ['https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js'] };
+const PVP = { hp: 500, charge: 2.4, heavy: 1.4, comboCap: 10, ultGain: 0.6, prefix: 'typegame-duel-v1-', timeout: 8000, lib: ['https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js'] };
 const PVP_OPEN = { th: 'ดวล', en: 'duel' };
 const PV_CODE = [['🐘','ช้าง','elephant'],['🐴','ม้า','horse'],['🐟','ปลา','fish'],['🐦','กา','raven'],['🐻','หมี','bear'],['🦉','นกฮูก','owl'],
   ['🦁','สิงโต','lion'],['🦒','ยีราฟ','giraffe'],['🐒','ลิง','monkey'],['🐍','งู','snake'],['🐄','วัว','cow'],['🦘','จิงโจ้','kangaroo'],
@@ -3505,6 +3505,7 @@ function pvJoin(code) {
 function pvBind(c) {
   PV.conn = c;
   c.on('open', () => {
+    PV.lastRx = Date.now();
     pvSend({ t: 'hi', mode: cfg.mode, v: 1 });
     if (PV.role === 'host') pvGo(); else pvStep('connecting', 'เข้าห้องแล้ว! รอเริ่ม…');
   });
@@ -3520,6 +3521,13 @@ function pvDrop() {
     else pvFail('การเชื่อมต่อหลุด');
   }
 }
+// Heartbeat: a crashed tab, closed laptop or dropped network never sends 'close', so the other side would wait
+// forever. Timers (not requestAnimationFrame) keep running in background tabs, so switching tabs is not a forfeit.
+setInterval(() => {
+  if (!PV.conn) return;
+  pvSend({ t: 'hb' });
+  if (PV.lastRx && Date.now() - PV.lastRx > PVP.timeout) { const c = PV.conn; pvDrop(); try { c.close(); } catch (e) {} }
+}, 1000);
 function pvLeave() {
   pvSend({ t: 'bye' }); pvReset(); PV.step = 'home';
   $('#pvpScr').hidden = true;
@@ -3532,6 +3540,8 @@ const MODE_TXT = { th: '🇹🇭 ไทย', en: '🇬🇧 อังกฤษ', 
 /* ---------- ข้อความจากคู่แข่ง ---------- */
 function pvMsg(m) {
   if (!m || typeof m !== 'object') return;
+  PV.lastRx = Date.now();
+  if (m.t === 'hb') return;
   const live = S && R.pvp && S.pvLive;
   switch (m.t) {
     case 'hi':
