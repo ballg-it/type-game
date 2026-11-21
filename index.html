@@ -2740,15 +2740,63 @@ const FX_ELEM = {
   wind:  { pal: ['#052e16', '#14532d', '#16a34a', '#4ade80', '#86efac', '#dcfce7', '#ffffff'], sp: ['#dcfce7', '#86efac', '#4ade80', '#15803d'] }
 };
 const FX_ENEMY = {
+  // move: how the attack looks, matched to each enemy's art. slash = blade/hammer (default), cards = ghost throws
+  // number talismans, orbs = queen's fan flick + tone-mark medallions, shards = mirror's crystal staff,
+  // keys = jester throws juggled keycaps, twin = ice dagger then fire sword
   bandit:  { pal: ['#3b1606', '#78350f', '#b45309', '#f59e0b', '#fcd34d', '#fef3c7', '#ffffff'], sp: ['#fef3c7', '#fcd34d', '#f59e0b', '#b45309'], slam: 1 },
-  ghost:   { pal: ['#083344', '#155e75', '#0891b2', '#06b6d4', '#67e8f9', '#cffafe', '#ffffff'], sp: ['#cffafe', '#67e8f9', '#22d3ee', '#0e7490'] },
+  ghost:   { pal: ['#083344', '#155e75', '#0891b2', '#06b6d4', '#67e8f9', '#cffafe', '#ffffff'], sp: ['#cffafe', '#67e8f9', '#22d3ee', '#0e7490'], move: 'cards' },
   oni:     { pal: ['#2a050b', '#7f1d1d', '#b91c1c', '#ef4444', '#fca5a5', '#fee2e2', '#ffffff'], sp: ['#fee2e2', '#fca5a5', '#ef4444', '#991b1b'] },
-  queen:   { pal: ['#3b0764', '#701a75', '#a21caf', '#d946ef', '#f0abfc', '#fae8ff', '#ffffff'], sp: ['#fae8ff', '#f0abfc', '#e879f9', '#a21caf'] },
-  mirror:  { pal: ['#0f172a', '#1e3a5f', '#0284c7', '#38bdf8', '#bae6fd', '#f0f9ff', '#ffffff'], sp: ['#f0f9ff', '#bae6fd', '#7dd3fc', '#0284c7'] },
-  phantom: { pal: ['#042f2e', '#115e59', '#0d9488', '#14b8a6', '#5eead4', '#ccfbf1', '#ffffff'], sp: ['#ccfbf1', '#5eead4', '#2dd4bf', '#0f766e'] },
-  jester:  { pal: ['#1a2e05', '#365314', '#4d7c0f', '#84cc16', '#bef264', '#ecfccb', '#ffffff'], sp: ['#ecfccb', '#bef264', '#a3e635', '#4d7c0f'] },
-  twins:   { pal: ['#431407', '#9a3412', '#ea580c', '#fb923c', '#fde047', '#fef9c3', '#ffffff'], sp: ['#fef08a', '#fb923c', '#38bdf8', '#dc2626'] }
+  queen:   { pal: ['#3b0764', '#701a75', '#a21caf', '#d946ef', '#f0abfc', '#fae8ff', '#ffffff'], sp: ['#fae8ff', '#f0abfc', '#e879f9', '#a21caf'], move: 'orbs' },
+  mirror:  { pal: ['#0f172a', '#1e3a5f', '#0284c7', '#38bdf8', '#bae6fd', '#f0f9ff', '#ffffff'], sp: ['#f0f9ff', '#bae6fd', '#7dd3fc', '#0284c7'], move: 'shards' },
+  phantom: { pal: ['#042f2e', '#115e59', '#0d9488', '#14b8a6', '#5eead4', '#ccfbf1', '#ffffff'], sp: ['#ccfbf1', '#5eead4', '#2dd4bf', '#0f766e'], big: 1 },
+  jester:  { pal: ['#2e1065', '#5b21b6', '#7c3aed', '#f59e0b', '#fcd34d', '#fef3c7', '#ffffff'], sp: ['#fef3c7', '#fcd34d', '#f472b6', '#7c3aed'], move: 'keys' },
+  twins:   { pal: ['#431407', '#9a3412', '#ea580c', '#fb923c', '#fde047', '#fef9c3', '#ffffff'], sp: ['#fef08a', '#fb923c', '#38bdf8', '#dc2626'], move: 'twin' }
 };
+// Thrown projectiles (ghost cards, queen orbs, mirror shards, jester keycaps), drawn on the stage in 3 px cells to
+// match the pixelfx layer. Launched at the throw frame, they land on Airin at the hit frame (~HIT_DELAY).
+const fxShots = [];
+const SHOT_LOOK = {
+  cards:  { n: 3, c: ['#fdf2f8', '#f9a8d4', '#22d3ee'] },
+  orbs:   { n: 3, c: ['#fbbf24', '#e879f9', '#fae8ff'] },
+  shards: { n: 4, c: ['#ffffff', '#bae6fd', '#38bdf8'] },
+  keys:   { n: 3, c: ['#fde047', '#f472b6', '#f5f5f4', '#a78bfa'], arc: 1 }
+};
+function throwShots(kind, xO2, xA2) {
+  const L = SHOT_LOOK[kind], y0 = GROUND * 2 - (kind === 'keys' ? 104 : 88);
+  for (let i = 0; i < L.n; i++) fxShots.push({ k: kind, i, t: -i * .035, d: .14 - i * .012,
+    x0: xO2 - 26, y0: y0 + (i - 1) * 10, x1: xA2 + 14, y1: GROUND * 2 - 70 + (i - 1) * 8 });
+}
+function drawShots(dt, A, xA2, ep) {
+  const cell = (x, y, c) => { sctx.fillStyle = c; sctx.fillRect(Math.round(x / FXK) * FXK, Math.round(y / FXK) * FXK, FXK, FXK); };
+  for (let j = fxShots.length - 1; j >= 0; j--) {
+    const s = fxShots[j]; s.t += dt;
+    if (s.t < 0) continue;
+    const L = SHOT_LOOK[s.k], q = Math.min(1, s.t / s.d);
+    if (q >= 1) {   // landed: spark on Airin unless she's guarding (shieldBlock already plays)
+      if (A.st !== 'block') fxAt('hitSpark', xA2 + 6, { flip: true, palette: ep.pal, height: 22 });
+      fxShots.splice(j, 1); continue;
+    }
+    const lift = L.arc ? 46 * Math.sin(Math.PI * q) : 0;
+    const x = s.x0 + (s.x1 - s.x0) * q, y = s.y0 + (s.y1 - s.y0) * q - lift, c = L.c;
+    const spin = Math.floor(s.t * 40 + s.i) % 2;
+    for (let k = 1; k <= 3; k++) cell(x + k * 7, y - (L.arc ? 46 * Math.PI * Math.cos(Math.PI * q) * k * 7 / (s.x0 - s.x1) : 0), k === 1 ? c[1] : c[2]);   // trail
+    if (s.k === 'cards') {   // spinning talisman: wide face / thin edge
+      const w = spin ? 1 : 2;
+      for (let a = -w; a <= w; a++) for (let b = -2; b <= 2; b++) cell(x + a * FXK, y + b * FXK, a === 0 && b === 0 ? c[1] : c[0]);
+    } else if (s.k === 'orbs') {   // gold medallion, magenta tone mark inside
+      for (let a = -2; a <= 2; a++) for (let b = -2; b <= 2; b++) {
+        const r = Math.abs(a) + Math.abs(b); if (r > 3) continue;
+        cell(x + a * FXK, y + b * FXK, r >= 2 ? c[0] : b === -1 || (a === 0 && b === 0) ? c[1] : c[2]);
+      }
+    } else if (s.k === 'shards') {   // ice crystal pointing at Airin
+      for (let a = -3; a <= 3; a++) { const h = a > 1 ? 0 : 1; for (let b = -h; b <= h; b++) cell(x + a * FXK, y + b * FXK, b === 0 && a < 1 ? c[0] : c[1]); }
+      cell(x - 4 * FXK, y, c[0]);
+    } else {   // keycap: 4x4 cap, one colour per key, tumbling (dark side flips)
+      const col = c[s.i % c.length];
+      for (let a = -2; a <= 1; a++) for (let b = -2; b <= 1; b++) cell(x + a * FXK, y + b * FXK, (spin ? b === 1 : a === 1) ? '#44403c' : col);
+    }
+  }
+}
 const fxLive = []; let fxFrame = null, fxCv = null, fxImg = null, fxClock = 0, fxCharge = null, fxECharge = null;
 const fxSeen = { at: -1, st: '', ult: -9 }, fxSeenE = { at: -1, st: '' };
 function fxAt(name, x2, o = {}) {
@@ -2790,8 +2838,17 @@ function stageFx(A, O, xA2, xO2, art) {
   const newE = O.st !== fxSeenE.st || O.t < fxSeenE.at, wasE = newE ? -1 : fxSeenE.at;
   const pastE = (k) => wasE < k && O.t >= k;
   if (O.st === 'attack') {
-    if (pastE(.1)) {
-      fxAt('swordSlash', xO2 - 12, { flip: true, palette: ep.pal, sparks: ep.sp, radius: FOE && FOE.boss ? 48 : 42 });
+    const mv = ep.move || 'slash';
+    if (mv === 'twin') {   // twins: Varee's ice dagger first, then Akkhi's fire sword
+      if (pastE(.06)) fxAt('swordSlash', xO2 - 4, { flip: true, palette: FX_ELEM.water.pal, sparks: FX_ELEM.water.sp, radius: 36 });
+      if (pastE(.13)) fxAt('swordSlash', xO2 - 18, { flip: true, palette: FX_ELEM.fire.pal, sparks: FX_ELEM.fire.sp, radius: 46 });
+    } else if (mv !== 'slash') {
+      if (pastE(.05)) {
+        throwShots(mv, xO2, xA2);
+        if (mv === 'orbs') fxAt('swordSlash', xO2 - 14, { flip: true, palette: ep.pal, sparks: ep.sp, radius: 26 });   // fan flick
+      }
+    } else if (pastE(.1)) {
+      fxAt('swordSlash', xO2 - 12, { flip: true, palette: ep.pal, sparks: ep.sp, radius: ep.big ? 54 : FOE && FOE.boss ? 48 : 42 });
       if (ep.slam) fxAt('groundSlam', xO2 - 36, { palette: ep.pal, stone: '#451a03', reach: 44 }).maxT = .85;
     }
     if (pastE(.18) && FOE && FOE.boss && S && S.enraged && A.st !== 'block') {
@@ -2801,6 +2858,7 @@ function stageFx(A, O, xA2, xO2, art) {
   if (O.st === 'charge' && !fxECharge) fxECharge = fxAt('spellCharge', xO2 + 4, { flip: true, palette: ep.pal });
   if (O.st !== 'charge' && fxECharge) { fxECharge.stop(); fxECharge = null; }
   fxSeenE.st = O.st; fxSeenE.at = O.t;
+  if (fxShots.length) drawShots(dt, A, xA2, ep);
 
   if (!fxLive.length) return;
   if (!fxFrame) {

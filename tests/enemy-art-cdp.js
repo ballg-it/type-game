@@ -31,6 +31,12 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     ok(foe + ' art loaded and drawn', await ev(`!!enemyArt(FIG.E) && phase === 'fight'`));
     await shot(foe + '-idle.png');
     await ev(`play(FIG.E, 'charge')`); await sleep(250); await shot(foe + '-charge.png');
+    // attack effect matches the move: ranged foes throw projectiles, melee foes slash
+    // (shots fly only ~0.15 s, so the page samples fxShots itself while the move plays)
+    await ev(`window.__mx = 0; play(FIG.E, 'attack'); (function f(n) { window.__mx = Math.max(window.__mx, fxShots.length); if (n) setTimeout(f, 20, n - 1); })(15); true`);
+    await sleep(110); await shot(foe + '-attack.png'); await sleep(500);
+    const ranged = ['ghost', 'queen', 'mirror', 'jester'].includes(foe);
+    ok(foe + ' attack fx = ' + (ranged ? 'projectiles' : 'slash'), await ev(`(window.__mx > 0) === ${ranged}`));
     await ev(`play(FIG.E, 'hurt')`); await sleep(40); await shot(foe + '-hurt.png');
     if (foe === 'queen') { await ev(`S.enraged = true; play(FIG.E, 'idle')`); await sleep(200); await shot('queen-enraged.png'); }
     await ev(`play(FIG.E, 'ko')`); await sleep(350); await shot(foe + '-ko.png');
