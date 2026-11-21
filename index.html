@@ -359,8 +359,10 @@ body.cine #game{background:#000}
 @keyframes ucBarBot{from{transform:translateY(100%)}to{transform:none}}
 .uc-stage{position:relative;flex:1;overflow:hidden;background:#090418}
 .uc-frames{position:absolute;inset:0;will-change:transform}
-.uc-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;pointer-events:none;filter:saturate(1.14) contrast(1.06)}
-.uc-img.on{opacity:1}
+.uc-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;z-index:1;pointer-events:none;filter:saturate(1.14) contrast(1.06);transition:opacity .06s linear}
+.uc-img.prev{opacity:1;z-index:0;transition:none}
+.uc-img.on{opacity:1;z-index:2}
+.uc-stage.cut .uc-img{transition:none}
 .uc-frames.cam-zoom{animation:ucZoom .26s ease-out forwards}
 .uc-frames.cam-zoom2{animation:ucZoom2 .2s ease-out forwards}
 .uc-frames.cam-cutin{animation:ucCutin .32s cubic-bezier(.12,.88,.22,1) forwards}
@@ -370,8 +372,17 @@ body.cine #game{background:#000}
 .uc-frames.cam-slash{animation:ucSlash .22s cubic-bezier(.1,.92,.25,1) forwards}
 .uc-frames.cam-impact{transform:scale(1.08)}
 .uc-frames.cam-burst{animation:ucBurst .2s ease-out forwards}
+.uc-frames.cam-sande{animation:ucSande .22s cubic-bezier(.1,.9,.2,1) forwards}
+.uc-frames.cam-surround{animation:ucSurround .22s cubic-bezier(.15,.85,.25,1) forwards}
+.uc-frames.cam-blitz{animation:ucBlitz .18s cubic-bezier(.1,.92,.25,1) forwards}
+.uc-frames.cam-grin{animation:ucGrin .22s cubic-bezier(.12,.9,.2,1) forwards}
+.uc-frames.cam-ascend{animation:ucAscend .24s cubic-bezier(.15,.85,.25,1) forwards}
+.uc-frames.cam-overcharge{animation:ucOvercharge .28s ease-out forwards}
+.uc-frames.cam-claymore{animation:ucClaymore .34s cubic-bezier(.12,.82,.2,1) forwards}
+.uc-frames.cam-slam{animation:ucSlam .14s cubic-bezier(.1,.95,.2,1) forwards}
+.uc-frames.cam-shockwave{animation:ucShockwave .28s ease-out forwards}
 .uc-frames.cam-land{animation:ucLand .32s ease-out forwards}
-.uc-frames.cam-settle{animation:ucSettle .38s ease-out forwards}
+.uc-frames.cam-settle{animation:ucSettle .45s ease-out forwards}
 @keyframes ucZoom{from{transform:scale(1.08)}to{transform:scale(1.02)}}
 @keyframes ucZoom2{from{transform:scale(1.03)}to{transform:scale(1.11)}}
 .uc-frames.cam-push{animation:ucPush .14s cubic-bezier(.3,0,.2,1) forwards}
@@ -394,8 +405,17 @@ body.cine #game{background:#000}
 @keyframes ucDash2{from{transform:scale(1.05) translateX(-2%)}to{transform:scale(1.09) translateX(2%)}}
 @keyframes ucSlash{from{transform:scale(1.18) rotate(-1.4deg)}to{transform:scale(1.03) rotate(0deg)}}
 @keyframes ucBurst{from{transform:scale(1.13)}to{transform:scale(1.04)}}
-@keyframes ucLand{from{transform:scale(1.1) translateY(-1.5%)}to{transform:scale(1.02) translateY(0)}}
-@keyframes ucSettle{from{transform:scale(1.02)}to{transform:scale(1)}}
+@keyframes ucSande{0%{transform:scale(1.2) translateX(-2.5%);filter:saturate(1.35) contrast(1.12)}100%{transform:scale(1.03) translateX(0)}}
+@keyframes ucSurround{from{transform:scale(1.18) rotate(1.4deg)}to{transform:scale(1.03) rotate(0deg)}}
+@keyframes ucBlitz{from{transform:scale(1.18) translate(-2%,1.5%) rotate(-2deg)}to{transform:scale(1.04) translate(1.2%,-1%) rotate(.4deg)}}
+@keyframes ucGrin{from{transform:scale(1.24) translateX(3%)}to{transform:scale(1.06) translateX(0)}}
+@keyframes ucAscend{from{transform:scale(1.15) translateY(3.2%)}to{transform:scale(1.04) translateY(-2.2%)}}
+@keyframes ucOvercharge{from{transform:scale(1.02)}to{transform:scale(1.13)}}
+@keyframes ucClaymore{from{transform:scale(1.17) translateY(-2%)}to{transform:scale(1.0) translateY(0)}}
+@keyframes ucSlam{0%{transform:scale(1.22) translateY(-3%)}100%{transform:scale(1.07) translateY(2%)}}
+@keyframes ucShockwave{from{transform:scale(1.18)}to{transform:scale(1.02)}}
+@keyframes ucLand{from{transform:scale(1.12) translateY(-2%)}to{transform:scale(1.02) translateY(0)}}
+@keyframes ucSettle{from{transform:scale(1.04)}to{transform:scale(1)}}
 .uc-stage.shk1{animation:ucShake1 .28s ease-out}
 .uc-stage.shk2{animation:ucShake2 .22s ease-out}
 @keyframes ucShake1{0%,100%{transform:none}15%{transform:translate(-14px,7px)}35%{transform:translate(13px,-8px)}55%{transform:translate(-9px,5px)}75%{transform:translate(6px,-3px)}}
@@ -405,6 +425,15 @@ body.cine #game{background:#000}
   background:linear-gradient(90deg,transparent,#22d3ee 20%,#fff 50%,#e879f9 80%,transparent);box-shadow:0 0 34px 10px #22d3ee,0 0 60px 18px #c026d3}
 .uc-beam.go{animation:ucBeam .32s ease-out forwards}
 @keyframes ucBeam{0%{opacity:1;transform:rotate(-16deg) scaleX(.15) scaleY(2.8)}35%{opacity:1;transform:rotate(-16deg) scaleX(1.1) scaleY(1.6)}100%{opacity:0;transform:rotate(-16deg) scaleX(1.2) scaleY(.1)}}
+.uc-vbeam{position:absolute;left:50%;top:0;width:16vw;height:110%;z-index:4;pointer-events:none;opacity:0;transform:translate(-50%,-100%) scaleX(.35);
+  background:linear-gradient(90deg,transparent,#e879f9 14%,#22d3ee 32%,#fff 50%,#22d3ee 68%,#e879f9 86%,transparent);
+  box-shadow:0 0 48px 18px #22d3ee,0 0 90px 28px #c026d3}
+.uc-vbeam.go{animation:ucVbeam .38s cubic-bezier(.08,.92,.2,1) forwards}
+@keyframes ucVbeam{0%{opacity:1;transform:translate(-50%,-90%) scaleX(.4)}24%{opacity:1;transform:translate(-50%,0) scaleX(1.45)}60%{opacity:.95;transform:translate(-50%,0) scaleX(1.1)}100%{opacity:0;transform:translate(-50%,0) scaleX(.08)}}
+.uc-ring{position:absolute;left:50%;top:74%;width:120vw;height:36vh;z-index:4;pointer-events:none;opacity:0;border-radius:50%;
+  border:8px solid #67e8f9;box-shadow:0 0 36px 10px #22d3ee,inset 0 0 28px 6px #e879f9;transform:translate(-50%,-50%) scale(.15)}
+.uc-ring.go{animation:ucRing .42s cubic-bezier(.1,.85,.25,1) forwards}
+@keyframes ucRing{0%{opacity:1;transform:translate(-50%,-50%) scale(.12)}55%{opacity:.92;transform:translate(-50%,-50%) scale(1.02)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.45)}}
 .uc-flash{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0;background:radial-gradient(circle,#fff,#a5f3fc 55%,#c084fc)}
 .uc-flash.f1{animation:ucFlash1 .22s ease-out}
 .uc-flash.f2{animation:ucFlash2 .3s ease-out}
@@ -1137,7 +1166,7 @@ body.hud5 #bottom .hint{grid-column:3;justify-self:end;font-size:11px}
       <div class="sub" style="text-align:center;margin:14px 0 0" id="pvHint">พิมพ์คำในกรอบดำเพื่อเลือก (หรือคลิก)</div>
     </div>
   </div>
-  <!-- คัตซีนท่าไม้ตาย (Ultimate Cutscene 18 เฟรม) -->
+  <!-- คัตซีนท่าไม้ตาย (Ultimate Cutscene 32 เฟรม) -->
   <div id="ultCine" hidden>
     <div class="uc-bar top"></div>
     <div class="uc-stage" id="ucStage">
@@ -1146,6 +1175,8 @@ body.hud5 #bottom .hint{grid-column:3;justify-self:end;font-size:11px}
       <div class="uc-vig"></div>
       <div class="uc-scan"></div>
       <div class="uc-beam" id="ucBeam"></div>
+      <div class="uc-vbeam" id="ucVbeam"></div>
+      <div class="uc-ring" id="ucRing"></div>
       <div class="uc-flash" id="ucFlash"></div>
       <div class="uc-title" id="ucTitle">
         <div class="uc-tag">✦ ULTIMATE BURST ✦</div>
@@ -3173,9 +3204,9 @@ function mistake() {
   S.combo = 0;
 }
 
-/* ---------- คัตซีนท่าไม้ตาย (Ultimate Cutscene 18 เฟรม) ---------- */
+/* ---------- คัตซีนท่าไม้ตาย (Ultimate Cutscene 32 เฟรม) ---------- */
 const ULT_NAMES = ['คมดาบอักษรผ่าฟากฟ้า', 'เพลงดาบแสงนีออน', 'พายุคีย์บอร์ดทลายฟ้า'];
-const ULT_FRAMES = Array.from({ length: 18 }, (_, i) => `art/ult-${String(i + 1).padStart(2, '0')}.jpg`);
+const ULT_FRAMES = Array.from({ length: 32 }, (_, i) => `art/ult-${String(i + 1).padStart(2, '0')}.jpg`);
 const ULT_IMGS = ULT_FRAMES.map((src, i) => {
   const im = document.createElement('img');
   im.className = 'uc-img'; im.src = src; im.alt = ''; im.dataset.f = String(i + 1);
@@ -3183,26 +3214,40 @@ const ULT_IMGS = ULT_FRAMES.map((src, i) => {
   return im;
 });
 const ULT_SEQ = [
-  { at: 0,    f: 0,  cam: 'zoom',   sfx: 'charge' },
-  { at: 120,  f: 1,  cam: 'zoom2'                 },   // in-between: ออร่าพุ่งตอนเริ่มลุก
-  { at: 230,  f: 2,  cam: 'zoom2',  sfx: 'draw'   },
-  { at: 380,  f: 3,  cam: 'push',   focus: 1      },   // ซูมดันเข้า: เส้นสปีดพุ่งเข้าหาตา
-  { at: 520,  f: 4,  cam: 'cutin',  flash: 1, focus: 1, sfx: 'glint' },
-  { at: 780,  f: 5,  cam: 'macro',  focus: 2, sfx: 'heart' },   // มาโครซูมตา: เห็นศัตรูสะท้อนในรูม่านตา (ค้างจังหวะ)
-  { at: 1240, f: 6,  cam: 'glint',  flash: 1, title: 1, sfx: 'flare' },
-  { at: 1390, f: 7,  cam: 'zoom'                  },   // in-between: ซูมเอาต์จาก cut-in กลับท่าเตรียมพุ่ง
-  { at: 1500, f: 8,  cam: 'dash',   sfx: 'leap'   },
-  { at: 1620, f: 9,  cam: 'dash2'                 },   // in-between: สปรินต์ทิ้ง afterimage
-  { at: 1720, f: 10, cam: 'dash2',  sfx: 'dash'   },
-  { at: 1860, f: 11, cam: 'dash2'                 },
-  { at: 1990, f: 12, cam: 'slash',  beam: 1, shake: 1, flash: 1, sfx: 'slash' },
-  { at: 2170, f: 13, cam: 'impact', shake: 2      },
-  { at: 2250, f: 14, cam: 'impact', shake: 2      },
-  { at: 2320, f: 15, cam: 'burst',  flash: 2, sfx: 'boom' },
-  { at: 2470, f: 16, cam: 'land',   shake: 1, dmg: 1 },
-  { at: 2750, f: 17, cam: 'settle'                }
+  { at: 0,    f: 0,  cam: 'zoom',       sfx: 'charge' },
+  { at: 120,  f: 1,  cam: 'zoom2'                     },   // in-between: ออร่าพุ่งตอนเริ่มลุก
+  { at: 230,  f: 2,  cam: 'zoom2',      sfx: 'draw'   },
+  { at: 380,  f: 3,  cam: 'push',       focus: 1      },   // ซูมดันเข้า: เส้นสปีดพุ่งเข้าหาตา
+  { at: 520,  f: 4,  cam: 'cutin',      flash: 1, focus: 1, sfx: 'glint' },
+  { at: 780,  f: 5,  cam: 'macro',      focus: 2, sfx: 'heart' },   // มาโครซูมตา: เห็นศัตรูสะท้อนในรูม่านตา (ค้างจังหวะ)
+  { at: 1240, f: 6,  cam: 'glint',      flash: 1, title: 1, sfx: 'flare' },
+  { at: 1380, f: 7,  cam: 'sande',      focus: 1, sfx: 'sande'      },   // Sandevistan Ignition: แยกร่างสีรุ้งพุ่งความเร็วแสง
+  { at: 1500, f: 8,  cam: 'dash2',      focus: 2                    },   // in-between: เร่งสปีด RGB แยกสี Sandevistan
+  { at: 1610, f: 9,  cam: 'dash2',      focus: 1                    },   // in-between: แตก 3 เส้นแสงพุ่งกระจายทั่วถนน
+  { at: 1730, f: 10, cam: 'surround',   flash: 1, sfx: 'dash'       },   // แยกร่าง 5 ร่างล้อมเป้ามุมสูง
+  { at: 1870, f: 11, cam: 'push',       flash: 1, focus: 2          },   // in-between: 5 ดาบพุ่งบรรจบกลางวงระเบิดแสง
+  { at: 1990, f: 12, cam: 'dash',       beam: 1, sfx: 'blitz'       },   // in-between: พุ่งฟาดคลื่นดาบกวาดต่อเนื่อง
+  { at: 2110, f: 13, cam: 'blitz',      beam: 1, shake: 1, sfx: 'blitz' }, // ฟันไขว้มุมเอียงกลางอากาศ
+  { at: 2230, f: 14, cam: 'slash',      flash: 1, shake: 1          },   // in-between: แสงฟันไขว้ X-Flare แยกสี RGB
+  { at: 2350, f: 15, cam: 'grin',       focus: 2, flash: 1, sfx: 'slash' }, // โคลสอัพหน้ายิ้มสะใจตวัดดาบ
+  { at: 2500, f: 16, cam: 'push',       focus: 2                    },   // in-between: สปีดวิปซูมใกล้ตาเรืองแสง
+  { at: 2620, f: 17, cam: 'ascend',     sfx: 'ascend'               },   // พุ่งเกลียวขึ้นฟ้าเหนือตึกนีออน
+  { at: 2770, f: 18, cam: 'ascend',     focus: 1                    },   // in-between: ทะยานผ่านยอดตึกตรงสู่พระจันทร์
+  { at: 2910, f: 19, cam: 'overcharge', focus: 1, sfx: 'overcharge' },   // ลอยกลางพระจันทร์ชาร์จสายฟ้าเข้าดาบ
+  { at: 3060, f: 20, cam: 'overcharge', flash: 1, focus: 2          },   // in-between: แฟลร์พลาสมาปะทุที่ด้ามดาบ
+  { at: 3190, f: 21, cam: 'burst',      flash: 1, sfx: 'claymore'   },   // in-between: พลาสมาพุ่งระเบิดขยายออกจากใบดาบ
+  { at: 3340, f: 22, cam: 'claymore',   focus: 1                    },   // ขยายเป็นดาบเลเซอร์ยักษ์สูงเท่าตึก
+  { at: 3530, f: 23, cam: 'overcharge', flash: 1, focus: 2          },   // in-between: ดาบยักษ์ชาร์จพลาสมาเต็มพิกัดก่อนฟาด
+  { at: 3660, f: 24, cam: 'slash',      shake: 1, sfx: 'dash'       },   // in-between: เหวี่ยงดาบยักษ์โค้งฟาดดิ่งลงสู่ประตูโทริอิ!
+  { at: 3790, f: 25, cam: 'slam',       cut: 1, vbeam: 1, shake: 2, flash: 2, sfx: 'slam' }, // Impact Frame 1 ขาว-ดำ-นีออน ฟาดผ่าเมือง
+  { at: 3870, f: 26, cam: 'slam',       cut: 1, shake: 2            },   // Impact Frame 2 สลับสีเนกาทีฟ 80ms สไตล์อนิเมะ!
+  { at: 3950, f: 27, cam: 'shockwave',  ring: 1, shake: 2, dmg: 1, sfx: 'boom' }, // เสาแสงระเบิด + คลื่นช็อกเวฟนีออน
+  { at: 4130, f: 28, cam: 'burst',      shake: 1                    },   // in-between: คลื่นช็อกเวฟขยายสูงสุด
+  { at: 4310, f: 29, cam: 'land',       shake: 1, sfx: 'leap'       },   // ลงพื้นคุกเข่าข้างเดียวท่ามกลางควันนีออน
+  { at: 4510, f: 30, cam: 'zoom'                                    },   // in-between: ควันนีออนจางลงเตรียมลุกยืน
+  { at: 4670, f: 31, cam: 'settle'                                  }    // ท่าจบพาดดาบบนบ่า + น้องแมวหุ่นยนต์
 ];
-const ULT_END_MS = 3100;
+const ULT_END_MS = 5240;
 let ULT_CINE = null;
 function playUltSfx(k) {
   if (k === 'charge') tone(220, 0.22, 'sawtooth', 0.08, 620);
@@ -3212,11 +3257,23 @@ function playUltSfx(k) {
   else if (k === 'leap') { noise(0.14, 0.25, 1100); tone(180, 0.14, 'sine', 0.22, 80); }
   else if (k === 'dash') { noise(0.16, 0.28, 2000); tone(420, 0.14, 'sawtooth', 0.07, 1020); }
   else if (k === 'heart') { tone(62, 0.16, 'sine', 0.5, 40); setTimeout(() => tone(55, 0.2, 'sine', 0.42, 34), 170); tone(1900, 0.3, 'sine', 0.035, 2600); }
+  else if (k === 'sande') { tone(1400, 0.22, 'sine', 0.12, 260); tone(920, 0.18, 'triangle', 0.09, 1980); noise(0.12, 0.2, 2600); }
+  else if (k === 'blitz') { noise(0.12, 0.3, 2400); tone(880, 0.1, 'sawtooth', 0.08, 240); setTimeout(() => { noise(0.1, 0.26, 2800); tone(1120, 0.09, 'sawtooth', 0.08, 320); }, 75); }
+  else if (k === 'ascend') { noise(0.22, 0.26, 1600); tone(240, 0.24, 'sawtooth', 0.09, 1320); }
+  else if (k === 'overcharge') { tone(140, 0.3, 'sawtooth', 0.1, 680); tone(440, 0.28, 'sine', 0.08, 1760); }
+  else if (k === 'claymore') { tone(110, 0.34, 'sawtooth', 0.16, 520); tone(660, 0.26, 'triangle', 0.11, 1980); noise(0.18, 0.24, 1400); }
+  else if (k === 'slam') { noise(0.18, 0.5, 1600); tone(120, 0.2, 'sawtooth', 0.35, 28); SFX.ultHit(); }
   else if (k === 'slash') SFX.ultHit();
-  else if (k === 'boom') { noise(0.32, 0.45, 850); tone(95, 0.42, 'sine', 0.44, 30); }
+  else if (k === 'boom') { noise(0.38, 0.48, 820); tone(95, 0.46, 'sine', 0.46, 28); }
 }
 function applyUltStep(step) {
-  ULT_IMGS.forEach((im, idx) => im.classList.toggle('on', idx === step.f));
+  const st = $('#ucStage');
+  st.classList.toggle('cut', !!step.cut);
+  const prevIdx = ULT_CINE ? ULT_CINE.prev : -1;
+  ULT_IMGS.forEach((im, idx) => {
+    im.classList.toggle('prev', idx === prevIdx && idx !== step.f);
+    im.classList.toggle('on', idx === step.f);
+  });
   const fr = $('#ucFrames');
   fr.className = 'uc-frames';
   void fr.offsetWidth;
@@ -3227,7 +3284,12 @@ function applyUltStep(step) {
   if (step.beam) {
     const bm = $('#ucBeam'); bm.className = 'uc-beam'; void bm.offsetWidth; bm.classList.add('go');
   }
-  const st = $('#ucStage');
+  if (step.vbeam) {
+    const vb = $('#ucVbeam'); vb.className = 'uc-vbeam'; void vb.offsetWidth; vb.classList.add('go');
+  }
+  if (step.ring) {
+    const rg = $('#ucRing'); rg.className = 'uc-ring'; void rg.offsetWidth; rg.classList.add('go');
+  }
   st.classList.remove('focus', 'focus2');
   if (step.focus) st.classList.add(step.focus === 2 ? 'focus2' : 'focus');
   if (step.shake) {
@@ -3236,7 +3298,7 @@ function applyUltStep(step) {
   if (step.title) $('#ucTitle').classList.add('show');
   if (step.dmg) $('#ucDmg').classList.add('show');
   if (step.sfx) playUltSfx(step.sfx);
-  if (ULT_CINE) ULT_CINE.frame = step.f + 1;
+  if (ULT_CINE) { ULT_CINE.prev = step.f; ULT_CINE.frame = step.f + 1; }
 }
 function playUltCutscene(dmg, onImpact) {
   cancelUltCine();
@@ -3246,13 +3308,16 @@ function playUltCutscene(dmg, onImpact) {
   $('#ucTitle').className = 'uc-title';
   $('#ucDmg').className = 'uc-dmg';
   $('#ucBeam').className = 'uc-beam';
+  $('#ucVbeam').className = 'uc-vbeam';
+  $('#ucRing').className = 'uc-ring';
   $('#ucFlash').className = 'uc-flash';
   $('#ucStage').className = 'uc-stage';
+  ULT_IMGS.forEach(im => im.classList.remove('on', 'prev'));
   if (S) S.ultCine = true;
   el.hidden = false;
   el.className = '';
   const timers = [];
-  ULT_CINE = { timers, onImpact, done: false, frame: 1 };
+  ULT_CINE = { timers, onImpact, done: false, frame: 1, prev: -1 };
   updatePauseBtn();
   for (const step of ULT_SEQ) {
     if (step.at === 0) applyUltStep(step);
