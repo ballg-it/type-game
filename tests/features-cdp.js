@@ -213,7 +213,7 @@ let failed = 0;
   ok('bandit charge spawns spellCharge & attack spawns slash + groundSlam (live=' + banditFx.countAfterAttack + ')',
      banditFx.hasCharge && banditFx.countAfterAttack >= 2);
 
-  // 6. Ultimate Move Cutscene (12-frame fluid anime sequence)
+  // 6. Ultimate Move Cutscene (32-frame Sandevistan Overdrive: impact = frames 26–27, landing = 30, closes at ULT_END_MS)
   await ev(`toMenu(); startRun();`);
   await sleep(300);
   ok('startRun enters Layer 1 fight directly (story intro stashed)',
@@ -235,21 +235,23 @@ let failed = 0;
   await type(ultTxt);
   const f1 = await waitFrame(1, 500);
   const loadInfo = await ev(`({ count: ULT_IMGS.length, loaded: ULT_IMGS.filter(im => im.complete && im.naturalWidth > 0).length })`);
-  ok('Ultimate triggers Frame 1 with all 18 frames loaded (' + loadInfo.loaded + '/' + loadInfo.count + ')',
-     f1 >= 1 && loadInfo.count === 18 && loadInfo.loaded === 18 && await ev(`!$('#ultCine').hidden && !!ULT_CINE`));
+  const NF = await ev(`ULT_FRAMES.length`);
+  ok('Ultimate triggers Frame 1 with all ' + NF + ' frames loaded (' + loadInfo.loaded + '/' + loadInfo.count + ')',
+     f1 >= 1 && NF === 32 && loadInfo.count === NF && loadInfo.loaded === NF && await ev(`!$('#ultCine').hidden && !!ULT_CINE`));
 
   await waitFrame(6, 1300);
   const focusSeen = await ev(`$('#ucStage').classList.contains('focus2')`);
   const f5 = await waitFrame(7, 1800);
-  ok('Ultimate plays through Zoom-in, Eye Cut-in, Eye Macro & Flare (frame ' + f5 + ', focus FX ' + focusSeen + ')', f5 >= 7 && f5 <= 18 && focusSeen);
-  const f10 = await waitFrame(14, 1800);
-  ok('Ultimate hits 2-Frame Sakuga Impact Flash (frame ' + f10 + ')', f10 >= 14 && f10 <= 18);
-  const f13 = await waitFrame(17, 1000);
+  ok('Ultimate plays through Zoom-in, Eye Cut-in, Eye Macro & Flare (frame ' + f5 + ', focus FX ' + focusSeen + ')', f5 >= 7 && f5 <= NF && focusSeen);
+  const f10 = await waitFrame(26, 3500);
+  ok('Ultimate hits 2-Frame Sakuga Impact Flash (frame ' + f10 + ')', f10 >= 26 && f10 <= NF);
+  const f13 = await waitFrame(30, 1500);
   const ultDmgTxt = await ev(`$('#ucDmg').textContent`);
   ok('Ultimate reaches Landing & Aftermath with damage pop (frame ' + f13 + ', ' + ultDmgTxt + ')',
-     f13 >= 17 && ultDmgTxt.includes('-'));
+     f13 >= 30 && ultDmgTxt.includes('-'));
 
-  await sleep(900);
+  for (let t0 = Date.now(); Date.now() - t0 < 3000 && await ev(`!!ULT_CINE`);) await sleep(50);   // รอคัตซีนปิดเอง (ULT_END_MS)
+  await sleep(300);   // เฟดออก 210ms
   const afterUlt = await ev(`({ hidden: $('#ultCine').hidden, ultCine: !!ULT_CINE, ehp: S.ehp })`);
   ok('Ultimate cutscene exits cleanly and deals massive damage (' + ehpBeforeUlt + ' -> ' + afterUlt.ehp + ')',
      afterUlt.hidden && !afterUlt.ultCine && afterUlt.ehp < ehpBeforeUlt);
