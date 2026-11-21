@@ -21,7 +21,7 @@ button{font-family:inherit}
 .hpbox{flex:1;min-width:0}
 .hpbox .name{font-weight:600;font-size:15px;display:flex;justify-content:space-between}
 .hpbox .name span{color:var(--muted);font-weight:400}
-.hpbox.e .name{flex-direction:row-reverse;padding-right:126px}
+.hpbox.e .name{flex-direction:row-reverse;padding-right:166px}
 .bar{height:16px;background:#0006;border:2px solid #ffffff22;border-radius:8px;overflow:hidden;position:relative}
 .bar i{display:block;height:100%;width:100%;transition:width .18s}
 #phpBar{background:linear-gradient(90deg,#16a34a,#4ade80)}
@@ -50,6 +50,8 @@ button{font-family:inherit}
 
 #legend{position:absolute;top:10px;right:12px;background:#140c2ecc;border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-size:13px;line-height:1.7;z-index:4}
 #legend b{color:var(--good)}
+#legend{transition:opacity .15s}
+#arena:has(#defBox:not([hidden])) #legend{opacity:0;pointer-events:none}
 
 /* enemy defense prompt */
 #defBox{position:absolute;right:8%;top:8%;z-index:8;background:#2a0a14ee;border:2px solid #ef4444;border-radius:12px;padding:8px 16px;min-width:230px;text-align:center;box-shadow:0 0 24px #ef444466}
@@ -139,6 +141,8 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
 .rules{font-size:14px;color:#d8d0f5;line-height:1.75;margin:0;padding-left:20px}
 .go{margin-top:18px;width:100%;font-size:20px;font-weight:600;padding:12px;border-radius:12px;border:0;color:#fff;cursor:pointer;background:linear-gradient(90deg,#7c3aed,#c026d3);box-shadow:0 0 24px #a855f788}
 .row2{display:flex;gap:10px}
+/* หน้าสรุปผลยาวเกินจอ: ปุ่มเล่นใหม่/กลับ Lobby ติดขอบล่างเสมอ ไม่ต้องเลื่อนหา */
+#resultScr .row2{position:sticky;bottom:-16px;z-index:2;background:linear-gradient(#150d3000,#150d30 30%);margin:0 -26px -22px;padding:18px 26px 22px;border-radius:0 0 16px 16px}
 .row2 .go.alt{background:#2a1d5c;box-shadow:none}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:14px 0}
 .stat{background:#1f1545;border-radius:12px;padding:10px;text-align:center}
@@ -287,6 +291,9 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
 body.cine #words,body.cine #buf,body.cine #bottom,body.cine #legend,body.cine #combo{visibility:hidden}
 body.cine #story{cursor:default}
 #arena.cine::before{content:'';position:absolute;left:0;right:0;top:0;height:9%;background:#000;z-index:11}
+/* ฉากเนื้อเรื่อง: พื้นที่ช่องคำที่ซ่อนอยู่ใต้ฉากให้ดำเหมือนแถบบน = letterbox สองข้างเท่ากัน ไม่ใช่ช่องว่างสีม่วง */
+#game{transition:background .3s}
+body.cine #game{background:#000}
 @media (max-width:700px){ #story .txt{font-size:17px;min-height:48px} #story .reply .upcs{flex-direction:row} }
 
 /* ---------- คัตซีนท่าไม้ตาย (Ultimate Cutscene 18 เฟรม) ---------- */
@@ -662,7 +669,7 @@ body.cine #story{cursor:default}
       <div class="hc-head"><div class="title" style="font-size:34px">วิธีเล่น</div><button class="mi" id="helpClose" data-m="back"><span class="nm">←</span><span class="w"></span><kbd>Esc</kbd></button></div>
       <div class="hgrid">
         <div class="hi"><b>⚔ โจมตี</b>พิมพ์คำไหนก็ได้จาก 3 ช่อง คำสั้นออกเร็ว คำยาวตีแรง</div>
-        <div class="hi"><b>🛡 ป้องกัน</b>ศัตรูชาร์จ → พิมพ์คำในกล่องแดงให้ทัน <b>เริ่มพิมพ์</b>ตอนแถบเป็นสีทองแล้วจบทัน = <b class="g">สวนกลับ</b> คำโจมตีถัดไปแรง ×2</div>
+        <div class="hi"><b>🛡️ ป้องกัน</b>ศัตรูชาร์จ → พิมพ์คำในกล่องแดงให้ทัน <b>เริ่มพิมพ์</b>ตอนแถบเป็นสีทองแล้วจบทัน = <b class="g">สวนกลับ</b> คำโจมตีถัดไปแรง ×2</div>
         <div class="hi"><b>🔥 คอมโบ</b>พิมพ์ถูกต่อเนื่องดาเมจคูณขึ้น ผิดตัวเดียวคอมโบหลุด</div>
         <div class="hi"><b>✨ ท่าไม้ตาย</b>เกจเต็มกด <kbd>Tab</kbd> แล้วพิมพ์ประโยคให้จบทันเวลา</div>
         <div class="hi"><b>🌈 ธาตุ</b>🔥 ชนะ 🌪️ · 🌪️ ชนะ 💧 · 💧 ชนะ 🔥 — พิมพ์คำธาตุที่ศัตรูแพ้ทางได้ดาเมจ <b class="g">×1.5</b></div>
@@ -943,7 +950,7 @@ const UPGRADES = [
   { id: 'heavy',   icon: '🔥', name: 'คำยาวเดือด',   desc: 'คำในช่อง "แรง" ดาเมจ +40%', apply: m => m.heavy += 0.4 },
   { id: 'elem',    icon: '🌈', name: 'เจ้าแห่งธาตุ', desc: 'โจมตีธาตุแพ้ทางแรงขึ้นเป็น ×2 (เดิม ×1.5)', once: true, apply: m => m.elemMult = 2 },
   { id: 'forgive', icon: '🧘', name: 'ใจนิ่ง',       desc: 'พิมพ์ผิดครั้งแรกในแต่ละคำ คอมโบไม่หลุด', once: true, apply: m => m.forgive = true },
-  { id: 'shield',  icon: '🛡', name: 'โล่คอมโบ',     desc: 'ทุกคอมโบ 10 ได้โล่ กันการโจมตีได้ 1 ครั้ง', once: true, apply: m => m.shieldEvery = 10 },
+  { id: 'shield',  icon: '🛡️', name: 'โล่คอมโบ',     desc: 'ทุกคอมโบ 10 ได้โล่ กันการโจมตีได้ 1 ครั้ง', once: true, apply: m => m.shieldEvery = 10 },
   { id: 'hpmax',   icon: '❤', name: 'เลือดเหล็ก',    desc: 'HP สูงสุด +25 และฟื้น 25', apply: (m, R) => { R.pmax += 25; R.php += 25; } },
   { id: 'heal',    icon: '🍵', name: 'ชาสมุนไพร',    desc: 'ฟื้น HP 50% ของเลือดสูงสุด', cond: R => R.php < R.pmax * 0.8, apply: (m, R) => { R.php = Math.min(R.pmax, R.php + R.pmax * 0.5); } },
   { id: 'counter', icon: '⚡', name: 'สวนกลับทอง',   desc: 'ช่วงสวนกลับยาวขึ้น 0.2 วิ · หลังสวนกลับ คำต่อไป ×2.5 (เดิม ×2)', apply: m => { m.counterWin += 0.2; m.counterMult += 0.5; } },
@@ -1323,10 +1330,10 @@ const EVENTS = [
       cond: () => R.php > R.pmax * 0.2, fn: () => { R.php -= Math.round(R.pmax * 0.15); const u = randomUp(); applyUp(u); return `ได้ ${u.icon} ${u.name}`; } }, PASS] }),
   () => ({ title: '🐈 แมวจรจัด', sub: 'แมวผอมๆ ร้องเหมียวๆ เดินตามไม่ยอมไป', opts: [
     { icon: '🐟', name: 'ให้อาหาร', desc: 'จ่าย 15 🪙 · ได้โล่ 1 ครั้ง + ฟื้น HP 10', word: { th: 'ให้อาหาร', en: 'feed' },
-      cond: () => R.coins >= 15, fn: () => { R.coins -= 15; R.shields++; R.php = Math.min(R.pmax, R.php + 10); return 'แมวมอบโล่ให้ 🛡 +1'; } }, PASS] }),
+      cond: () => R.coins >= 15, fn: () => { R.coins -= 15; R.shields++; R.php = Math.min(R.pmax, R.php + 10); return 'แมวมอบโล่ให้ 🛡️ +1'; } }, PASS] }),
   () => ({ title: '♨ บ่อน้ำพุร้อน', sub: 'ไอน้ำอุ่นๆ ลอยขึ้นมาจากซอกหิน', opts: [
     { icon: '🛁', name: 'แช่น้ำ', desc: 'ฟื้น HP 25%', word: { th: 'แช่', en: 'soak' },
-      fn: () => { const h = Math.min(R.pmax - R.php, Math.round(R.pmax * .25)); R.php += h; return `ฟื้น HP +${h}`; } },
+      fn: () => { const h = Math.min(R.pmax - R.php, Math.round(R.pmax * .25)); R.php += h; return h > 0 ? `ฟื้น HP +${h}` : 'HP เต็มอยู่แล้ว ♨'; } },
     { icon: '💪', name: 'ฝึกใต้น้ำตก', desc: 'HP สูงสุด +8 (ไม่ฟื้นเลือด)', word: { th: 'ฝึก', en: 'train' },
       fn: () => { R.pmax += 8; return 'HP สูงสุด +8'; } }, PASS] })
 ];
@@ -2574,7 +2581,7 @@ function addUlt(n) {
 }
 function addCombo() {
   S.combo++; S.maxCombo = Math.max(S.maxCombo, S.combo);
-  if (R.mod.shieldEvery && S.combo % R.mod.shieldEvery === 0) { S.shields++; fx('msg', '+🛡 โล่', P, 40, -50); }
+  if (R.mod.shieldEvery && S.combo % R.mod.shieldEvery === 0) { S.shields++; fx('msg', '+🛡️ โล่', P, 40, -50); }
 }
 
 function trapHit(i) {
@@ -3275,7 +3282,7 @@ function renderHUD() {
   $('#stamBox').classList.toggle('tired', S.tired);
   $('#tired').textContent = S.tired ? 'เหนื่อย! ดาเมจ ×0.5' : '';
   $('#ultBar').style.width = S.ult + '%';
-  $('#pTag').textContent = (S.shields ? '🛡×' + S.shields : '') + (R.revive ? ' 🪽' : '');
+  $('#pTag').textContent = (S.shields ? '🛡️×' + S.shields : '') + (R.revive ? ' 🪽' : '');
   $('#ultBtn').classList.toggle('ready', S.ult >= 100 && !S.ultMode);
   $('#combo').innerHTML = S.combo >= 2 ? `COMBO ${S.combo}<small>ดาเมจ ×${comboMult().toFixed(1)}</small>` : '';
   // แสดงธาตุ + จุดอ่อนศัตรู (ปิดในฝึกซ้อมและ PvP)
@@ -3409,14 +3416,14 @@ function showMap() {
     return { nd, icon: nodeIcon(nd), name: nodeName(nd), word, lang,
       desc: f ? `${NODE[nd.t].desc} · HP ${Math.round(f.hp * DIFF[cfg.diff].hp * (f.boss && cfg.diff === 'hard' ? BOSS_HARD.hp : 1))} · ${trait(f)}` : NODE[nd.t].desc, fn: () => enterNode(nd) };
   });
-  showChoice({ title: '🗺 เลือกเส้นทาง', sub: `ชั้น ${R.at.layer + 2} / ${MAP_LAYERS} · HP ${Math.ceil(R.php)} / ${R.pmax} · 🪙 ${R.coins}` + (R.shields ? ` · 🛡×${R.shields}` : ''),
+  showChoice({ title: '🗺 เลือกเส้นทาง', sub: `ชั้น ${R.at.layer + 2} / ${MAP_LAYERS} · HP ${Math.ceil(R.php)} / ${R.pmax} · 🪙 ${R.coins}` + (R.shields ? ` · 🛡️×${R.shields}` : ''),
     map: true, opts, keepOpen: true });
   saveRunSnapshot('map');
 }
 function showRest() {
   const h = Math.min(R.pmax - R.php, Math.round(R.pmax * 0.35));
   showChoice({ title: '🔥 จุดพัก', sub: `กองไฟอุ่นๆ ใต้ประตูโทริอิ · HP ${Math.ceil(R.php)} / ${R.pmax}`, opts: [
-    { icon: '😴', name: 'พักผ่อน', desc: `ฟื้น HP 35% (+${h})`, word: { th: 'พัก', en: 'rest' }, fn: () => { R.php += h; toast(`ฟื้น HP +${h}`); } },
+    { icon: '😴', name: 'พักผ่อน', desc: h > 0 ? `ฟื้น HP 35% (+${h})` : 'HP เต็มอยู่แล้ว', word: { th: 'พัก', en: 'rest' }, fn: () => { R.php += h; toast(h > 0 ? `ฟื้น HP +${h}` : 'HP เต็มอยู่แล้ว 😴'); } },
     { icon: '🥋', name: 'ฝึกซ้อม', desc: 'เลือกอัปเกรด 1 ใน 3 (ไม่ฟื้นเลือด)', word: { th: 'ฝึก', en: 'train' }, fn: () => 'pick' }] });
   saveRunSnapshot('rest');
 }
