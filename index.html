@@ -3619,7 +3619,7 @@ function mistake() {
 
 /* ---------- คัตซีนท่าไม้ตาย (Ultimate Cutscene 32 เฟรม) ---------- */
 const ULT_NAMES = ['คมดาบอักษรผ่าฟากฟ้า', 'เพลงดาบแสงนีออน', 'พายุคีย์บอร์ดทลายฟ้า'];
-const ULT_FRAMES = Array.from({ length: 37 }, (_, i) => `art/ult-${String(i + 1).padStart(2, '0')}.jpg`);
+const ULT_FRAMES = Array.from({ length: 39 }, (_, i) => `art/ult-${String(i + 1).padStart(2, '0')}.jpg`);
 const ULT_IMGS = ULT_FRAMES.map((src, i) => {
   const im = document.createElement('img');
   im.className = 'uc-img'; im.src = src; im.alt = ''; im.dataset.f = String(i + 1);
@@ -3638,34 +3638,36 @@ const ULT_SEQ = [
   { at: 1430, f: 8,  cam: 'dash2',      focus: 1          },   // AI in-between: ร่างเงา Sandevistan 2 ร่างแรกเริ่มแยก
   { at: 1520, f: 9,   cam: 'sande',      focus: 1, sfx: 'sande'      },   // Sandevistan Ignition: แยกร่างสีรุ้งพุ่งความเร็วแสง
   { at: 1640, f: 10,  cam: 'dash2',      focus: 2                    },   // AI in-between: เร่งสปีด RGB แยกสี Sandevistan
-  { at: 1750, f: 11,  cam: 'dash2',      focus: 1                    },   // in-between: แตก 3 เส้นแสงพุ่งกระจายทั่วถนน
-  { at: 1870, f: 12, cam: 'surround',   flash: 1, sfx: 'dash'       },   // แยกร่าง 5 ร่างล้อมเป้ามุมสูง
-  { at: 2010, f: 13, cam: 'push',       flash: 1, focus: 2          },   // AI in-between: 5 ดาบพุ่งบรรจบกลางวงระเบิดแสง
-  { at: 2130, f: 14, cam: 'dash',       beam: 1, sfx: 'blitz'       },   // in-between: พุ่งฟาดคลื่นดาบกวาดต่อเนื่อง
-  { at: 2250, f: 15, cam: 'blitz',      beam: 1, shake: 1, sfx: 'blitz' }, // ฟันไขว้มุมเอียงกลางอากาศ
-  { at: 2370, f: 16, cam: 'slash',      flash: 1, shake: 1          },   // AI in-between: แสงฟันไขว้ X-Flare แยกสี RGB
-  { at: 2490, f: 17, cam: 'grin',       focus: 2, flash: 1, sfx: 'slash' }, // โคลสอัพหน้ายิ้มสะใจตวัดดาบ
-  { at: 2640, f: 18, cam: 'push',       focus: 2                    },   // AI in-between: สปีดวิปซูมใกล้ตาเรืองแสง
-  { at: 2760, f: 19, cam: 'ascend',     shake: 1, focus: 1  },   // AI in-between: ถีบพื้นแตกหมุนตัวกระโดด วงสายฟ้าเริ่มก่อตัว
-  { at: 2880, f: 20, cam: 'ascend',     sfx: 'ascend'               },   // พุ่งเกลียวขึ้นฟ้าเหนือตึกนีออน
-  { at: 3030, f: 21, cam: 'ascend',     focus: 1                    },   // in-between: ทะยานผ่านยอดตึกตรงสู่พระจันทร์
-  { at: 3170, f: 22, cam: 'overcharge', focus: 1, sfx: 'overcharge' },   // ลอยกลางพระจันทร์ชาร์จสายฟ้าเข้าดาบ
-  { at: 3320, f: 23, cam: 'overcharge', flash: 1, focus: 2          },   // AI in-between: แฟลร์พลาสมาปะทุที่ด้ามดาบ
-  { at: 3450, f: 24, cam: 'burst',      flash: 1, sfx: 'claymore'   },   // in-between: พลาสมาพุ่งระเบิดขยายออกจากใบดาบ
-  { at: 3600, f: 25, cam: 'claymore',   focus: 1                    },   // ขยายเป็นดาบเลเซอร์ยักษ์สูงเท่าตึก
-  { at: 3790, f: 26, cam: 'overcharge', flash: 1, focus: 2          },   // AI in-between: ดาบยักษ์ชาร์จพลาสมาเต็มพิกัดก่อนฟาด
-  { at: 3920, f: 27, cam: 'slash',      shake: 1, sfx: 'dash'       },   // in-between: เหวี่ยงดาบยักษ์โค้งฟาดดิ่งลงสู่ประตูโทริอิ!
-  { at: 4050, f: 28, cam: 'slam',       cut: 1, vbeam: 1, shake: 2, flash: 2, sfx: 'slam' }, // Impact Frame 1 ขาว-ดำ-นีออน ฟาดผ่าเมือง
-  { at: 4130, f: 29, cam: 'slam',       cut: 1, shake: 2            },   // Impact Frame 2 สลับสีเนกาทีฟ 80ms สไตล์อนิเมะ!
-  { at: 4210, f: 30, cam: 'shockwave',  ring: 1, shake: 2, dmg: 1, sfx: 'boom' }, // เสาแสงระเบิด + คลื่นช็อกเวฟนีออน
-  { at: 4390, f: 31, cam: 'burst',      shake: 1                    },   // AI in-between: คลื่นช็อกเวฟขยายสูงสุด
-  { at: 4530, f: 32, cam: 'zoom',       focus: 1          },   // AI in-between: เสาแสงสลายเป็นควัน ไอริณทิ้งตัวลงมา
-  { at: 4670, f: 33, cam: 'land',       shake: 1, sfx: 'leap'       },   // ลงพื้นคุกเข่าข้างเดียวท่ามกลางควันนีออน
-  { at: 4870, f: 34, cam: 'zoom'                                    },   // AI in-between: ลุกจากท่าคุกเข่า เหวี่ยงดาบโค้งขึ้น แมวหุ่นยนต์พุ่งเข้าจากขวา
-  { at: 5030, f: 35, cam: 'settle'                          },   // AI in-between: ลุกยืน ดาบตกลงบ่า แมวหุ่นยนต์บินเข้ามา
-  { at: 5190, f: 36, cam: 'settle'                                  }    // ท่าจบพาดดาบบนบ่า + น้องแมวหุ่นยนต์
+  { at: 1730, f: 11, cam: 'dash2',      focus: 1, shake: 1    },   // AI in-between: ถีบพื้นพุ่งขึ้นฟ้า ร่างเงาสีรุ้งลอกออกเป็นเส้นแสง
+  { at: 1820, f: 12, cam: 'dash2',      focus: 1          },   // AI in-between: กลางอากาศ เริ่มแตกเป็น 3 ร่างตามเส้นแสง
+  { at: 1910, f: 13,  cam: 'dash2',      focus: 1                    },   // in-between: แตก 3 เส้นแสงพุ่งกระจายทั่วถนน
+  { at: 2030, f: 14, cam: 'surround',   flash: 1, sfx: 'dash'       },   // แยกร่าง 5 ร่างล้อมเป้ามุมสูง
+  { at: 2170, f: 15, cam: 'push',       flash: 1, focus: 2          },   // AI in-between: 5 ดาบพุ่งบรรจบกลางวงระเบิดแสง
+  { at: 2290, f: 16, cam: 'dash',       beam: 1, sfx: 'blitz'       },   // in-between: พุ่งฟาดคลื่นดาบกวาดต่อเนื่อง
+  { at: 2410, f: 17, cam: 'blitz',      beam: 1, shake: 1, sfx: 'blitz' }, // ฟันไขว้มุมเอียงกลางอากาศ
+  { at: 2530, f: 18, cam: 'slash',      flash: 1, shake: 1          },   // AI in-between: แสงฟันไขว้ X-Flare แยกสี RGB
+  { at: 2650, f: 19, cam: 'grin',       focus: 2, flash: 1, sfx: 'slash' }, // โคลสอัพหน้ายิ้มสะใจตวัดดาบ
+  { at: 2800, f: 20, cam: 'push',       focus: 2                    },   // AI in-between: สปีดวิปซูมใกล้ตาเรืองแสง
+  { at: 2920, f: 21, cam: 'ascend',     shake: 1, focus: 1  },   // AI in-between: ถีบพื้นแตกหมุนตัวกระโดด วงสายฟ้าเริ่มก่อตัว
+  { at: 3040, f: 22, cam: 'ascend',     sfx: 'ascend'               },   // พุ่งเกลียวขึ้นฟ้าเหนือตึกนีออน
+  { at: 3190, f: 23, cam: 'ascend',     focus: 1                    },   // in-between: ทะยานผ่านยอดตึกตรงสู่พระจันทร์
+  { at: 3330, f: 24, cam: 'overcharge', focus: 1, sfx: 'overcharge' },   // ลอยกลางพระจันทร์ชาร์จสายฟ้าเข้าดาบ
+  { at: 3480, f: 25, cam: 'overcharge', flash: 1, focus: 2          },   // AI in-between: แฟลร์พลาสมาปะทุที่ด้ามดาบ
+  { at: 3610, f: 26, cam: 'burst',      flash: 1, sfx: 'claymore'   },   // in-between: พลาสมาพุ่งระเบิดขยายออกจากใบดาบ
+  { at: 3760, f: 27, cam: 'claymore',   focus: 1                    },   // ขยายเป็นดาบเลเซอร์ยักษ์สูงเท่าตึก
+  { at: 3950, f: 28, cam: 'overcharge', flash: 1, focus: 2          },   // AI in-between: ดาบยักษ์ชาร์จพลาสมาเต็มพิกัดก่อนฟาด
+  { at: 4080, f: 29, cam: 'slash',      shake: 1, sfx: 'dash'       },   // in-between: เหวี่ยงดาบยักษ์โค้งฟาดดิ่งลงสู่ประตูโทริอิ!
+  { at: 4210, f: 30, cam: 'slam',       cut: 1, vbeam: 1, shake: 2, flash: 2, sfx: 'slam' }, // Impact Frame 1 ขาว-ดำ-นีออน ฟาดผ่าเมือง
+  { at: 4290, f: 31, cam: 'slam',       cut: 1, shake: 2            },   // Impact Frame 2 สลับสีเนกาทีฟ 80ms สไตล์อนิเมะ!
+  { at: 4370, f: 32, cam: 'shockwave',  ring: 1, shake: 2, dmg: 1, sfx: 'boom' }, // เสาแสงระเบิด + คลื่นช็อกเวฟนีออน
+  { at: 4550, f: 33, cam: 'burst',      shake: 1                    },   // AI in-between: คลื่นช็อกเวฟขยายสูงสุด
+  { at: 4690, f: 34, cam: 'zoom',       focus: 1          },   // AI in-between: เสาแสงสลายเป็นควัน ไอริณทิ้งตัวลงมา
+  { at: 4830, f: 35, cam: 'land',       shake: 1, sfx: 'leap'       },   // ลงพื้นคุกเข่าข้างเดียวท่ามกลางควันนีออน
+  { at: 5030, f: 36, cam: 'zoom'                                    },   // AI in-between: ลุกจากท่าคุกเข่า เหวี่ยงดาบโค้งขึ้น แมวหุ่นยนต์พุ่งเข้าจากขวา
+  { at: 5190, f: 37, cam: 'settle'                          },   // AI in-between: ลุกยืน ดาบตกลงบ่า แมวหุ่นยนต์บินเข้ามา
+  { at: 5350, f: 38, cam: 'settle'                                  }    // ท่าจบพาดดาบบนบ่า + น้องแมวหุ่นยนต์
 ];
-const ULT_END_MS = 5760;
+const ULT_END_MS = 5920;
 let ULT_CINE = null;
 function playUltSfx(k) {
   if (k === 'charge') tone(220, 0.22, 'sawtooth', 0.08, 620);

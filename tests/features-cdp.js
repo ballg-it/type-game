@@ -237,18 +237,18 @@ let failed = 0;
   const loadInfo = await ev(`({ count: ULT_IMGS.length, loaded: ULT_IMGS.filter(im => im.complete && im.naturalWidth > 0).length })`);
   const NF = await ev(`ULT_FRAMES.length`);
   ok('Ultimate triggers Frame 1 with all ' + NF + ' frames loaded (' + loadInfo.loaded + '/' + loadInfo.count + ')',
-     f1 >= 1 && NF === 37 && loadInfo.count === NF && loadInfo.loaded === NF && await ev(`!$('#ultCine').hidden && !!ULT_CINE`));
+     f1 >= 1 && NF === 39 && loadInfo.count === NF && loadInfo.loaded === NF && await ev(`!$('#ultCine').hidden && !!ULT_CINE`));
 
   await waitFrame(6, 1300);
   const focusSeen = await ev(`$('#ucStage').classList.contains('focus2')`);
   const f5 = await waitFrame(7, 1800);
   ok('Ultimate plays through Zoom-in, Eye Cut-in, Eye Macro & Flare (frame ' + f5 + ', focus FX ' + focusSeen + ')', f5 >= 7 && f5 <= NF && focusSeen);
-  const f10 = await waitFrame(29, 3500);
-  ok('Ultimate hits 2-Frame Sakuga Impact Flash (frame ' + f10 + ')', f10 >= 29 && f10 <= NF);
-  const f13 = await waitFrame(34, 1500);
+  const f10 = await waitFrame(31, 3500);
+  ok('Ultimate hits 2-Frame Sakuga Impact Flash (frame ' + f10 + ')', f10 >= 31 && f10 <= NF);
+  const f13 = await waitFrame(36, 1500);
   const ultDmgTxt = await ev(`$('#ucDmg').textContent`);
   ok('Ultimate reaches Landing & Aftermath with damage pop (frame ' + f13 + ', ' + ultDmgTxt + ')',
-     f13 >= 34 && ultDmgTxt.includes('-'));
+     f13 >= 36 && ultDmgTxt.includes('-'));
 
   for (let t0 = Date.now(); Date.now() - t0 < 3000 && await ev(`!!ULT_CINE`);) await sleep(50);   // รอคัตซีนปิดเอง (ULT_END_MS)
   await sleep(300);   // เฟดออก 210ms
