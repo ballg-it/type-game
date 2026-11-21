@@ -761,6 +761,9 @@ body.hud5 #arena{--hudH:112px}
 body.hud5 .port{--box:80;background:var(--cy);clip-path:polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%);filter:none}
 body.hud5 .port.e{background:var(--rd);clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))}
 body.hud5 .port i{inset:2px;background-color:#120a2e;clip-path:inherit}
+/* รูปหน้าในกรอบ: art/portraits/*.png เจนเฉพาะช่องนี้ (AI Studio → snap ตารางพิกเซลจริง) */
+body.hud5 .port.p i{background-image:url(art/portraits/airin.png)}
+body.hud5 .port.p i,.port i.pimg{background-size:cover;background-position:center;image-rendering:auto}
 body.hud5 .hpbox{position:relative;gap:6px;padding-top:4px}
 body.hud5 .hpbox .name{font-family:var(--pxf);font-size:17px;letter-spacing:1.5px;color:#e8f6ff;text-shadow:0 0 8px #38e8ffaa,0 2px 0 #000}
 body.hud5 .hpbox.e .name{text-shadow:0 0 8px #ff2d55aa,0 2px 0 #000}
@@ -3803,17 +3806,16 @@ function renderWords() {
 
 $('#ultBtn').onclick = () => { if (S && S.running && S.ult >= 100 && !S.ultMode) { tryUlt(); kb.focus(); } };
 
-// รูปหน้าศัตรูมุมขวาบน: ครอปหัวจากภาพ art/enemies/<sprite>.png (ตำแหน่งหัวเป็นสัดส่วนของภาพ) · ไม่มีภาพ = ใช้ไอคอน
-const PORTRAIT = { bandit: [89, 128, .38, .2], oni: [101, 140, .45, .23], ghost: [110, 132, .55, .17], queen: [118, 154, .48, .32],
-  mirror: [111, 152, .42, .17], phantom: [111, 144, .40, .18], jester: [112, 146, .43, .3], twins: [139, 138, .51, .23] };
+// รูปหน้าศัตรูมุมขวาบน: art/portraits/<sprite>.png (เจนจาก AI Studio แล้ว snap ตารางพิกเซลจริง 149×149) · ไม่มีภาพ (เช่น PvP) = ใช้ไอคอน
+const PORTRAITS = new Set(['bandit', 'oni', 'ghost', 'queen', 'mirror', 'phantom', 'jester', 'twins']);
 let portKey = null, lastPhp = null;
 function setPortrait() {
   const pi = $('#ePort i'), key = R && R.pvp ? 'pvp' : (FOE && (FOE.sprite || FOE.id)) || '';
   if (key !== portKey) {
-    portKey = key; const P = PORTRAIT[key];
-    pi.style.backgroundImage = P ? `url(art/enemies/${key}.png)` : '';
-    if (P) ['--w', '--h', '--hx', '--hy'].forEach((v, i) => pi.style.setProperty(v, P[i]));
-    pi.textContent = P ? '' : (FOE && FOE.icon) || '👹';
+    portKey = key; const has = PORTRAITS.has(key);
+    pi.style.backgroundImage = has ? `url(art/portraits/${key}.png)` : '';
+    pi.classList.toggle('pimg', has);
+    pi.textContent = has ? '' : (FOE && FOE.icon) || '👹';
   }
   if (lastPhp != null && S.php < lastPhp) { const pp = $('#pPort'); pp.classList.remove('hit'); void pp.offsetWidth; pp.classList.add('hit'); }
   lastPhp = S.php;
