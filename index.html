@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover,interactive-widget=resizes-content">
 <title>Type Game — ต้นแบบไฟต์</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;800&family=Silkscreen:wght@400;700&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
@@ -11,10 +11,10 @@
   --bg0:#0b0718; --panel:#1b1236ee; --line:#3b2a77; --violet:#8b5cf6; --violet2:#c084fc;
   --text:#efe9ff; --muted:#a99cd0; --good:#4ade80; --bad:#f87171; --gold:#fbbf24; --cyan:#67e8f9;
 }
-*{box-sizing:border-box}
-html,body{margin:0;height:100%;background:var(--bg0);color:var(--text);font-family:Kanit,"Leelawadee UI",Tahoma,sans-serif;overflow:hidden}
-button{font-family:inherit}
-#game{position:relative;width:100%;height:100%;max-width:1280px;margin:0 auto;display:flex;flex-direction:column}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg0);color:var(--text);font-family:Kanit,"Leelawadee UI",Tahoma,sans-serif;overflow:hidden;overscroll-behavior:none;touch-action:manipulation}
+button{font-family:inherit;touch-action:manipulation}
+#game{position:relative;width:100%;height:100%;max-width:1280px;margin:0 auto;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
 
 /* ---------- HUD ---------- */
 /* HUD → ดูบล็อก "HUD v2" ท้าย <style> */
@@ -92,11 +92,11 @@ kbd{font-family:inherit;border:1px solid #ffffff44;border-bottom-width:3px;borde
 @keyframes flashRed{from{opacity:1;box-shadow:inset 0 0 160px #ef4444}to{opacity:0}}
 @keyframes flashWhite{from{opacity:.8;background:#fff}to{opacity:0;background:#fff}}
 @keyframes flashPurple{from{opacity:.72;background:radial-gradient(circle,#e879f9,#7c3aed 65%,#1e0b3a)}to{opacity:0;background:#7c3aed}}
-#toast{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);background:#7f1d1dee;border:1px solid var(--bad);border-radius:10px;padding:6px 14px;font-size:15px;z-index:15;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+#toast{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);background:#7f1d1dee;border:1px solid var(--bad);border-radius:10px;padding:6px 14px;font-size:15px;z-index:15;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;max-width:calc(100% - 20px);overflow:hidden;text-overflow:ellipsis}
 #toast.show{opacity:1}
 
 /* overlays */
-.overlay{position:absolute;inset:0;z-index:50;background:#08041acc;backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.overlay{position:absolute;inset:0;z-index:50;background:#08041acc;backdrop-filter:blur(4px);display:flex;align-items:flex-start;justify-content:center;padding:16px;overflow:auto;-webkit-overflow-scrolling:touch}
 .overlay[hidden]{display:none}
 .card{background:#150d30f5;border:2px solid var(--line);border-radius:18px;padding:22px 26px;max-width:860px;width:100%;box-shadow:0 0 60px #6d28d955;margin:auto}
 .title{font-size:54px;font-weight:800;line-height:1;background:linear-gradient(90deg,#fff,#c084fc,#f472b6);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic}
@@ -116,6 +116,7 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
 .stat{background:#1f1545;border-radius:12px;padding:10px;text-align:center}
 .stat b{display:block;font-size:28px;color:var(--gold)}
 .stat span{font-size:13px;color:var(--muted)}
+#resKb{max-width:100%;overflow-x:auto}
 .kb{display:flex;flex-direction:column;gap:4px;margin-top:6px}
 .kbrow{display:flex;gap:4px}
 .key{width:46px;height:46px;border-radius:7px;background:#241a4d;border:1px solid #ffffff18;position:relative;display:flex;align-items:center;justify-content:center;font-size:18px}
@@ -124,11 +125,18 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
 .topmiss{font-size:14px;color:#d8d0f5;margin-top:8px}
 @media (max-width:700px){
   #legend{display:none}
-  .key{width:26px;height:34px;font-size:13px}
-  .title{font-size:40px}
+  .overlay{padding:10px}
+  .card{padding:16px 14px;border-radius:14px}
+  #resultScr .row2{margin:0 -14px -16px;padding:12px 14px 16px;flex-wrap:wrap;gap:8px}
+  #resultScr .row2 .go{margin-top:0;font-size:15px;padding:10px 8px;flex:1 1 30%;min-width:96px}
+  .kbrow{gap:2px}
+  .key{flex:1;min-width:20px;width:auto;height:32px;font-size:12px}
+  .key small,.key i{font-size:9px}
+  .title{font-size:34px}
+  #toast{font-size:13px;padding:5px 10px;white-space:normal;text-align:center}
 }
 /* จอเตี้ย (มือถือตอนคีย์บอร์ดเด้งขึ้น / แนวนอน): ย่อฉากให้ช่องคำยังเห็นครบ */
-@media (max-height:560px){ #arena{min-height:150px} }
+@media (max-height:560px){ #arena{min-height:0} }
 /* run */
 #banner{position:absolute;left:50%;top:32%;transform:translate(-50%,-50%);z-index:11;text-align:center;pointer-events:none;opacity:0;white-space:nowrap}
 #banner.show{animation:banner 2.4s ease-out forwards}
@@ -451,7 +459,7 @@ body.cine #game{background:#000}
 @keyframes ucDmgPop{0%{opacity:0;transform:scale(.35) rotate(-6deg)}60%{opacity:1;transform:scale(1.14) rotate(2deg)}100%{opacity:1;transform:scale(1) rotate(-2deg)}}
 .uc-skip{position:absolute;right:18px;top:14px;z-index:6;font-size:12px;color:#e9d5ffcc;background:#090418bb;border:1px solid #c084fc66;border-radius:999px;padding:3px 12px}
 .uc-skip kbd{font-size:10px}
-#kb{position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0;font-size:16px}  /* <16px = iOS ซูมจอตอน focus */
+#kb{position:fixed;left:0;bottom:0;width:1px;height:1px;opacity:.001;border:0;padding:0;font-size:16px;pointer-events:none;caret-color:transparent}  /* <16px = iOS ซูมจอตอน focus */
 /* ---------- title screen ---------- */
 #startScr{position:fixed;display:block;padding:0;background:#0b0618;backdrop-filter:none;overflow:hidden}
 #startScr[hidden]{display:none}
@@ -924,21 +932,49 @@ body.hud5 #liveStats b{color:#fff;font-weight:700}
 body.hud5 #liveStats i{font-style:normal;color:#6b5cff;margin:0 12px}
 body.hud5 #bottom .hint{grid-column:3;justify-self:end;font-size:11px}
 
+/* ---- ระบบมือถือ / สัมผัส (ปุ่มเปิดแป้นพิมพ์ + ย่อฉากตอนคีย์บอร์ดเด้ง) ---- */
+body.hud5 #kbBtn,#kbBtn{display:none;position:absolute;right:22px;top:5px;z-index:5;align-items:center;gap:4px;padding:3px 10px;
+  border:0;background:#1a1250ee;color:var(--cy);font-family:Kanit,sans-serif;font-size:12px;font-weight:600;cursor:pointer;
+  box-shadow:inset 0 0 0 1px var(--cy),0 0 10px #38e8ff55;
+  clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px)}
+#kbBtn:active{transform:scale(.95)}
+body.is-touch #kbBtn{display:inline-flex}
+body.is-touch.kb-on #kbBtn{background:#0c0826cc;color:var(--muted);box-shadow:inset 0 0 0 1px #6b5cff66}
+body.is-touch:not(.kb-on) #kbBtn{animation:kbPulse 1.4s ease-in-out infinite}
+@keyframes kbPulse{50%{box-shadow:inset 0 0 0 2px var(--cy),0 0 16px #38e8ffaa;color:#fff}}
+body.is-touch #console{cursor:pointer}
+body.is-touch:not(.kb-on) #buf:empty::after{content:"⌨ แตะเพื่อเปิดแป้นพิมพ์";color:var(--cy);text-shadow:0 0 8px #38e8ff66}
+body.is-touch .ult kbd,body.is-touch #tourTip kbd,body.is-touch .uc-skip kbd,body.is-touch #againBtn kbd,body.is-touch #helpClose kbd,body.is-touch .ts-hint kbd{display:none}
+body.is-touch .ult.ready::after{content:"แตะ!";font-family:Kanit,sans-serif;font-size:12px;font-weight:700;padding:1px 8px;background:var(--mg);color:#fff;box-shadow:0 0 10px var(--mg)}
+body.is-touch .mi{min-height:40px}
+.st-skip{margin-left:8px;padding:1px 9px;border:1px solid #c084fc66;border-radius:999px;background:#2a1d5ccc;color:#e9d5ff;font-size:11px;cursor:pointer;font-family:inherit}
+.st-skip:active{transform:scale(.95)}
+
 @media (max-width:900px){ body.hud5 #liveStats{font-size:13px} body.hud5 #liveStats i{margin:0 6px} }
 @media (max-width:700px){
-  body.hud5 #hud{padding:50px 12px 16px;gap:10px}
-  body.hud5 #arena{--hudH:118px}
-  body.hud5:has(#twinsHud:not([hidden])) #arena{--hudH:212px}
-  body.hud5 #ultBox{padding:16px 22px 14px}
+  #mute,#bgmBtn,#tourBtn,#pauseBtn{top:6px;width:30px;height:26px;font-size:12px}
+  #mute{right:10px} #bgmBtn{right:44px} #tourBtn{right:78px} #pauseBtn{right:112px}
+  body.hud5 #hud{padding:38px 10px 12px;gap:8px}
+  body.hud5 #arena{--hudH:104px}
+  body.hud5:has(#twinsHud:not([hidden])) #arena{--hudH:192px}
+  body.hud5 #defBox{width:min(94%,440px);padding:8px 14px 8px 54px;top:calc(var(--hudH) + 6px)}
+  body.hud5 #arena.hasMech #defBox{top:calc(var(--hudH) + 40px)}
+  body.hud5 #defBox::before{left:12px;width:32px;height:38px}
+  body.hud5 #defBox .lbl{font-size:11px}
+  body.hud5 #defBox .lbl::before{font-size:15px}
+  body.hud5 #defBox .w{font-size:26px;line-height:1.15}
+  body.hud5 #ultBox{padding:14px 18px 12px}
   body.hud5 #ultBox .hd{gap:8px;flex-wrap:wrap}
   body.hud5 #ultBox .tg{font-size:15px;padding:1px 12px}
   body.hud5 #ultBox .lbl{display:none}
-  body.hud5 #ultBox .w{font-size:26px}
+  body.hud5 #ultBox .w{font-size:24px;margin:6px 0 8px}
   body.hud5 #mechBar{white-space:normal;font-size:11px;gap:6px;line-height:1.3}
   body.hud5 #mechBar .tg{font-size:11px;padding:4px 12px 4px 8px;white-space:nowrap}
   body.hud5 #mechBar .ct{white-space:nowrap;font-size:11px;padding:0 5px}
   body.hud5 #mechBar kbd{min-width:16px;padding:0 3px;margin:0 2px;font-size:11px}
   body.hud5 #mechBar .tg::before{display:none}
+  #coach{left:8px;right:8px;max-width:none;padding:8px 11px;font-size:13px;line-height:1.4}
+  #coach .cp{margin-top:3px;font-size:12px;min-height:16px}
   body.hud5 .hpbox .name{font-size:13px;flex-wrap:wrap;row-gap:2px}
   body.hud5 .hpbox .name b{max-width:100%}
   body.hud5 .hpbox .num{position:static;font-size:11px;line-height:1.2}
@@ -946,24 +982,66 @@ body.hud5 #bottom .hint{grid-column:3;justify-self:end;font-size:11px}
   body.hud5 .hpbox>.bar{height:14px}
   body.hud5 .center{min-width:0}
   body.hud5 .center::before,body.hud5 .center::after{display:none}
-  body.hud5 .wave{font-size:12px;padding:4px 14px}
-  body.hud5 #combo{font-size:17px}
-  body.hud5 #console{grid-template-columns:1fr;margin:8px 10px 0}
-  body.hud5 #buf{grid-row:1;flex-direction:row;align-items:center;gap:10px;padding:8px 14px 0 22px;border:0}
-  body.hud5 #buf b{font-size:24px}
-  body.hud5 #buf:empty::after{font-size:15px}
-  body.hud5 #words{grid-column:1;grid-row:2;padding:4px 6px 8px}
-  body.hud5 .slot,body.hud5 .slot:has(.elem:empty){grid-template-areas:"elem tier" "tag tag" "w w" "dmg dmg";padding:4px 6px 6px}
+  body.hud5 .wave{font-size:12px;padding:3px 12px}
+  body.hud5 #combo{font-size:17px;margin-top:4px;min-height:20px}
+  body.hud5 #console{grid-template-columns:1fr;margin:6px 8px 0}
+  body.hud5 #buf{grid-row:1;flex-direction:row;align-items:center;gap:8px;padding:6px 82px 0 18px;border:0;min-height:28px}
+  body.hud5 #buf::before{font-size:12px}
+  body.hud5 #buf b{font-size:22px}
+  body.hud5 #buf:empty::after{font-size:14px}
+  body.hud5 #words{grid-column:1;grid-row:2;padding:4px 4px 6px}
+  body.hud5 .slot,body.hud5 .slot:has(.elem:empty){grid-template-areas:"elem tier" "tag tag" "w w" "dmg dmg";padding:4px 5px 5px}
   body.hud5 .slot:first-child{border-left:0}
   body.hud5 .slot .elem small{display:none}
+  body.hud5 .slot .elem i{width:20px;height:20px;background-size:18px 18px}
   body.hud5 .slot .tier{font-size:10px}
   body.hud5 .slot .tier::after{display:none}
   body.hud5 .slot .tag{grid-area:tag}
-  body.hud5 .slot .w{font-size:21px;line-height:32px;min-height:32px}
+  body.hud5 .slot .w{font-size:clamp(16px,5vw,21px);line-height:30px;min-height:30px;overflow-wrap:anywhere}
   body.hud5 .slot .dmg{font-size:10px}
-  body.hud5 #bottom{grid-template-columns:1fr;gap:4px;padding-bottom:8px}
+  body.hud5 #bottom{grid-template-columns:1fr;gap:4px;padding:0 8px 6px}
   body.hud5 #liveStats{grid-column:1;justify-self:center;font-size:12px;order:2}
-  body.hud5 .ult{height:36px}
+  body.hud5 .ult{height:34px;padding:0 10px 0 16px}
+  body.hud5 .ult .lbl{font-size:13px}
+}
+/* มือถือตอนคีย์บอร์ดเด้งขึ้น (ความสูงจอเหลือน้อย): ย่อส่วนเกินให้เห็นทั้งตัวละคร ช่องคำ PARRY และท่าไม้ตายครบ */
+@media (max-width:700px) and (max-height:540px){
+  body.hud5 #hud{padding:36px 8px 6px;gap:6px}
+  body.hud5 #arena{--hudH:86px}
+  body.hud5 #floorPips{display:none}
+  body.hud5 .hpbox{gap:3px;padding-top:0}
+  body.hud5 .hpbox>.bar{height:11px}
+  body.hud5 .stam .bar{height:8px}
+  body.hud5 #combo{font-size:14px;margin-top:2px;min-height:16px}
+  body.hud5 #defBox{padding:6px 12px 6px 46px;top:calc(var(--hudH) + 2px)}
+  body.hud5 #defBox::before{left:10px;width:26px;height:32px}
+  body.hud5 #defBox .w{font-size:21px}
+  body.hud5 #ultBox{padding:10px 14px;top:54%}
+  body.hud5 #ultBox .w{font-size:20px;margin:4px 0 6px}
+  #coach{padding:5px 9px;font-size:12px;line-height:1.3}
+  #coach .ch{font-size:11px}
+  #coach .cp{display:none}
+  body.hud5 #console{margin:4px 6px 0}
+  body.hud5 #buf{padding:4px 76px 0 14px;min-height:24px}
+  body.hud5 #buf b{font-size:18px}
+  body.hud5 #buf:empty::after{font-size:13px}
+  body.hud5 #kbBtn{top:4px;right:20px;padding:2px 8px;font-size:11px}
+  body.hud5 #words{padding:2px 4px 4px}
+  body.hud5 .slot,body.hud5 .slot:has(.elem:empty){padding:2px 4px 4px}
+  body.hud5 .slot .w{line-height:26px;min-height:26px}
+  body.hud5 #bottom{padding:0 6px 4px;gap:0}
+  body.hud5 #liveStats{display:none}
+  body.hud5 .ult{height:30px}
+}
+/* มือถือจอเตี้ย (เช่น แนวนอน หรือคีย์บอร์ดเปิดที่หน้าเมนู): ไม่ให้เมนูทับแถบตั้งค่าด้านล่าง */
+@media (max-width:760px) and (max-height:660px){
+  #startScr{overflow-y:auto;-webkit-overflow-scrolling:touch}
+  #startScr .ts-main{position:relative;left:auto;top:auto;width:auto;margin:12px 16px 8px}
+  #startScr .logo{margin-bottom:8px}
+  #startScr .logo .l1,#startScr .logo .l2{font-size:clamp(38px,9vw,54px)}
+  #startScr .mi{padding:3px 12px;min-height:34px;font-size:15px}
+  #startScr .ts-stats{position:relative;top:auto;bottom:auto;left:auto;right:auto;margin:6px 16px}
+  #startScr .ts-bar{position:relative;left:auto;right:auto;bottom:auto;margin:6px 16px 16px}
 }
 
 /* ================= UI v5 — กรอบพิกเซลนีออนสำหรับทุกหน้าจอ (เข้าชุด HUD v5 + แผนที่ + ร้าน) ================= */
@@ -1228,6 +1306,7 @@ body.hud5 #tourTip .tb .nx{border-color:#f0abfc}
     <div class="slot pix" id="s2"><span class="elem"></span><span class="tag"></span><div class="tier">🔥 แรง</div><div class="w"></div><div class="dmg"></div></div>
   </div>
   <div id="buf"></div>
+  <button type="button" id="kbBtn" aria-label="เปิด/ปิดแป้นพิมพ์">⌨ พิมพ์</button>
   </div>
 
   <div id="bottom">
@@ -1421,7 +1500,7 @@ body.hud5 #tourTip .tb .nx{border-color:#f0abfc}
     <div class="uc-bar bot"></div>
   </div>
   <div id="flash"></div>
-  <input id="kb" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="ช่องพิมพ์">
+  <input id="kb" type="text" inputmode="text" enterkeyhint="done" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" data-gramm="false" aria-label="ช่องพิมพ์">
 </div>
 
 <script src="sprites.js"></script>
@@ -1957,11 +2036,13 @@ function renderStory() {
   if (L.t !== undefined) {
     txt.textContent = [...L.t].slice(0, Math.floor(ST.shown)).join('');
     rep.innerHTML = '';
-    hint.innerHTML = (ST.full ? '<kbd>Enter</kbd> ต่อไป' : '<kbd>Enter</kbd> แสดงทั้งหมด') + ' · <kbd>Esc</kbd> ข้าม';
+    hint.innerHTML = IS_TOUCH
+      ? (ST.full ? 'แตะเพื่อไปต่อ' : 'แตะเพื่อแสดงทั้งหมด') + '<button type="button" class="st-skip">ข้าม ⏭</button>'
+      : (ST.full ? '<kbd>Enter</kbd> ต่อไป' : '<kbd>Enter</kbd> แสดงทั้งหมด') + ' · <kbd>Esc</kbd> ข้าม';
   } else if (L.say) {
     txt.textContent = 'พิมพ์คำพูดของคุณ:';
     rep.innerHTML = `<span class="w">${wordHTML(L.w, ST.buf)}</span>`;
-    hint.innerHTML = '<kbd>Esc</kbd> ข้าม';
+    hint.innerHTML = IS_TOUCH ? 'แตะเพื่อเปิดแป้นพิมพ์ <button type="button" class="st-skip">ข้าม ⏭</button>' : '<kbd>Esc</kbd> ข้าม';
   } else {
     txt.textContent = 'คุณจะตอบว่า...';
     rep.innerHTML = '<div class="upcs">' + L.choice.map((c, i) => {
@@ -1970,8 +2051,10 @@ function renderStory() {
         `<div class="ds">${esc(c.desc)}</div><div class="w">${wordHTML(c.w, ST.buf)}</div></button>`;
     }).join('') + '</div>';
     rep.querySelectorAll('.upc').forEach(b => b.onclick = e => { e.stopPropagation(); pickStory(L.choice[+b.dataset.i]); });
-    hint.innerHTML = 'พิมพ์คำในกรอบเพื่อเลือก (หรือคลิก)';
+    hint.innerHTML = IS_TOUCH ? 'แตะตัวเลือก หรือพิมพ์คำในกรอบ' : 'พิมพ์คำในกรอบเพื่อเลือก (หรือคลิก)';
   }
+  const sk = hint.querySelector('.st-skip');
+  if (sk) sk.onclick = e => { e.stopPropagation(); storySkip(); };
 }
 function storyTick(dt) {
   if (FIG.E.x > 228) FIG.E.x = Math.max(228, FIG.E.x - 160 * dt);   // ราชินีเดินเข้าฉาก
@@ -2104,6 +2187,32 @@ function makeWord(text, lang, kind) {
 /* ================= State ================= */
 const $ = s => document.querySelector(s);
 const kb = $('#kb'), arena = $('#arena');
+const IS_TOUCH = matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window && navigator.maxTouchPoints > 0);
+document.body.classList.toggle('is-touch', IS_TOUCH);
+function setKb(val) {
+  if (kb.value !== val) {
+    kb.value = val;
+    try { kb.setSelectionRange(val.length, val.length); } catch {}
+  }
+}
+function syncKbBtn() {
+  const on = document.activeElement === kb;
+  document.body.classList.toggle('kb-on', on);
+  const btn = $('#kbBtn');
+  if (btn) btn.textContent = on ? '⌨ ซ่อน' : '⌨ พิมพ์';
+}
+function focusKB(force = false) {
+  if (IS_TOUCH && !force) {
+    const typingStory = phase === 'story' && typeof ST !== 'undefined' && ST && ST.lines[ST.i] && ST.lines[ST.i].say;
+    if (phase !== 'fight' && !typingStory) return;
+  }
+  try { kb.focus({ preventScroll: true }); } catch { kb.focus(); }
+  syncKbBtn();
+}
+function blurKB() {
+  if (IS_TOUCH && document.activeElement === kb) kb.blur();
+  syncKbBtn();
+}
 const cfg = { mode: 'th', diff: 'normal' };
 let S, R, FOE = ENEMIES[0], phase = 'menu', PK = null, SHOP = null;   // phase: menu | fight | pick | shop | result
 const HEAL_BETWEEN = 0.15;   // ฟื้นเลือดหลังชนะแต่ละไฟต์ (สัดส่วนของ HP สูงสุด)
@@ -3708,10 +3817,13 @@ function fire(w) {
 let composing = false;
 kb.addEventListener('compositionstart', () => composing = true);
 kb.addEventListener('compositionend', () => { composing = false; onInput(); });
-kb.addEventListener('input', () => { if (!composing) onInput(); });
+// มือถือ (Android Gboard): คงสถานะ composing ตลอดทั้งคำจนกว่าจะกด Space → ต้องอ่าน input ทันทีไม่ต้องรอ compositionend
+kb.addEventListener('input', () => onInput());
+kb.addEventListener('focus', syncKbBtn);
+kb.addEventListener('blur', syncKbBtn);
 
 function onInput() {
-  if (ULT_CINE) { kb.value = ''; return; }
+  if (ULT_CINE) { setKb(''); return; }
   if (PAUSED) return pauseInput();
   if (phase === 'pick') return pickInput();
   if (phase === 'shop') return shopInput();
@@ -3719,23 +3831,30 @@ function onInput() {
   if (phase === 'choice') return chInput();
   if (phase === 'story') return storyInput();
   if (phase === 'pvp') return pvInput();
-  if (phase === 'busy') { kb.value = ''; return; }
+  if (phase === 'busy') { setKb(''); return; }
   if (phase === 'menu' || phase === 'result') return menuInput();
-  if (phase === 'shopExit') { kb.value = ''; return; }
-  if (!S || !S.running || S.paused || S.tour || S.ultCine) { kb.value = ''; return; }
+  if (phase === 'shopExit') { setKb(''); return; }
+  if (!S || !S.running || S.paused || S.tour || S.ultCine) { setKb(''); return; }
   let v = kb.value.replace(/[`~_]/g, '');
   const allowSpace = S.ultMode || candidates().some(w => w.text.includes(' '));
   v = allowSpace ? v.replace(/^\s+/, '').replace(/\s{2,}/g, ' ') : v.replace(/\s+/g, '');
-  if (v === S.buf) { kb.value = v; return; }
+  if (v === S.buf) { setKb(v); return; }
   // บอสสลับแป้น: แปลงเฉพาะตัวอักษรที่เพิ่งพิมพ์เพิ่มเข้ามา
   if (S.keySwap && !S.ultMode && v.startsWith(S.buf) && v.length > S.buf.length) {
     const tail = [...v.slice(S.buf.length)].map(ch => S.keySwap.map[ch] || ch).join('');
     v = S.buf + tail;
   }
-  const ok = validFor(v);
+  let ok = validFor(v);
+  // กัน Gboard บน Android ส่งคำเก่าซ้ำหลังล้างช่อง: ถ้าเพิ่งเริ่มคำใหม่และตัวสุดท้ายตรงกับคำเป้าหมาย ให้รับตัวล่าสุดแทน
+  if (!ok.length && composing && S.buf === '' && [...v].length > 1) {
+    let last = [...v].at(-1);
+    if (S.keySwap && !S.ultMode) last = S.keySwap.map[last] || last;
+    const okLast = validFor(last);
+    if (okLast.length) { v = last; ok = okLast; setKb(v); }
+  }
   if (v === '' || ok.length) {
     const added = [...v].length - [...S.buf].length;
-    S.buf = v; kb.value = v;
+    S.buf = v; setKb(v);
     if (S.def) {   // จับเวลาเริ่มพิมพ์คำกัน (ลบจนว่าง = เริ่มนับใหม่ได้)
       if (!v || !match(v, S.def).ok) S.defStart = null;
       else if (S.defStart == null) S.defStart = S.enemy.chargeMax - S.enemy.charge;
@@ -3748,13 +3867,14 @@ function onInput() {
   // ผิด: ปฏิเสธตัวที่พิมพ์ผิด
   const prevOk = validFor(S.buf);
   const added = v.startsWith(S.buf) ? [...v.slice(S.buf.length)] : [];
-  kb.value = S.buf;
+  setKb(S.buf);
   const ch = added[added.length - 1];
   if (ch) {
     const exp = prevOk.map(w => expectedNext(S.buf, w)).filter(Boolean);
     const expThai = exp.length && exp.every(isThai), expLatin = exp.length && exp.every(e => !isThai(e));
     if ((/[a-zA-Z]/.test(ch) && expThai) || (isThai(ch) && expLatin)) {
-      toast(expThai ? 'แป้นยังเป็นภาษาอังกฤษ — สลับเป็นไทย (~ หรือ Alt+Shift)' : 'แป้นยังเป็นภาษาไทย — สลับเป็นอังกฤษ (~ หรือ Alt+Shift)');
+      const sw = IS_TOUCH ? 'แตะปุ่ม 🌐 บนแป้นเพื่อสลับภาษา' : '~ หรือ Alt+Shift';
+      toast(expThai ? `แป้นยังเป็นภาษาอังกฤษ — สลับเป็นไทย (${sw})` : `แป้นยังเป็นภาษาไทย — สลับเป็นอังกฤษ (${sw})`);
       tone(300, 0.06, 'square', 0.05);
       return;   // ไม่นับเป็นพิมพ์ผิด
     }
@@ -3800,15 +3920,49 @@ document.addEventListener('keydown', e => {
     if (phase === 'result') { e.preventDefault(); again(); return; }
   }
 });
-document.addEventListener('mousedown', e => { if (!e.target.closest('button,input,textarea,select,label')) setTimeout(() => kb.focus(), 0); });
-// มือถือ: iOS ไม่ย่อหน้าเว็บตอนคีย์บอร์ดเด้ง → ใช้ความสูงที่มองเห็นจริงแทน ช่องคำจะไม่ถูกคีย์บอร์ดบัง
-if (window.visualViewport) {
-  const fitVV = () => { document.documentElement.style.height = visualViewport.height + 'px'; document.body.style.height = visualViewport.height + 'px'; window.scrollTo(0, 0); };
-  visualViewport.addEventListener('resize', fitVV); fitVV();
+document.addEventListener('mousedown', e => { if (!IS_TOUCH && !e.target.closest('button,input,textarea,select,label')) setTimeout(() => focusKB(), 0); });
+// มือถือ: ปุ่มเปิด/ปิดแป้นพิมพ์ + แตะแผงคำสั่งเพื่อเปิดแป้นพิมพ์ทันทีในจังหวะแตะ (iOS ต้อง focus แบบ synchronous)
+const kbBtn = $('#kbBtn');
+if (kbBtn) {
+  kbBtn.addEventListener('pointerdown', e => e.preventDefault());
+  kbBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (document.activeElement === kb) kb.blur();
+    else focusKB(true);
+    syncKbBtn();
+  });
 }
-// มือถือ (iOS): คีย์บอร์ดจะเด้งขึ้นก็ต่อเมื่อ focus ในจังหวะที่ผู้เล่นแตะจริง ไม่ใช่ใน setTimeout
-document.addEventListener('click', e => { if (!e.target.closest('button,input,textarea,select,label,a')) kb.focus(); });
+$('#console').addEventListener('click', e => {
+  if (e.target.closest('#kbBtn')) return;
+  if (phase === 'fight' && S && S.running && !PAUSED) focusKB(true);
+});
+// มือถือ: iOS ไม่ย่อหน้าเว็บตอนคีย์บอร์ดเด้ง และอาจเลื่อนจอหนี → ล็อกความสูงตาม visualViewport + รีเซ็ต scroll
+if (window.visualViewport) {
+  let baseVH = visualViewport.height, lastW = visualViewport.width;
+  const fitVV = () => {
+    const vv = visualViewport;
+    if (Math.abs(vv.width - lastW) > 40) { lastW = vv.width; baseVH = vv.height; }
+    else if (vv.height > baseVH) baseVH = vv.height;
+    document.documentElement.style.height = vv.height + 'px';
+    document.body.style.height = vv.height + 'px';
+    document.body.classList.toggle('kbd-open', IS_TOUCH && (baseVH - vv.height > 110));
+    window.scrollTo(0, 0);
+  };
+  visualViewport.addEventListener('resize', fitVV);
+  visualViewport.addEventListener('scroll', () => window.scrollTo(0, 0));
+  window.addEventListener('orientationchange', () => setTimeout(fitVV, 200));
+  fitVV();
+}
+// มือถือ (iOS): คีย์บอร์ดจะเด้งขึ้นก็ต่อเมื่อ focus ในจังหวะที่ผู้เล่นแตะจริง (เฉพาะตอนสู้หรือพิมพ์เนื้อเรื่อง ไม่เด้งกวนหน้าเมนู/ร้าน/แผนที่)
+document.addEventListener('click', e => {
+  if (e.target.closest('button,input,textarea,select,label,a')) return;
+  focusKB();
+});
 window.addEventListener('blur', () => { if (phase === 'fight' && S && S.running && !PAUSED && !ULT_CINE && !S.tour && !R.pvp) setPause(true); });
+if (IS_TOUCH) {
+  const th = $('.ts-hint'); if (th) th.textContent = 'แตะเมนูเพื่อเลือก · หรือพิมพ์คำสีม่วง';
+  const us = $('.uc-skip'); if (us) us.textContent = 'แตะเพื่อข้าม';
+}
 
 /* ================= Pause + Save/Continue + Restart + Lobby ================= */
 const SAVE_KEY = 'typegame.save.v1';
@@ -4110,7 +4264,7 @@ function renderWords() {
   $('#buf').innerHTML = S.buf ? 'กำลังพิมพ์<b>' + esc(S.buf) + '</b>' : '';
 }
 
-$('#ultBtn').onclick = () => { if (S && S.running && S.ult >= 100 && !S.ultMode) { tryUlt(); kb.focus(); } };
+$('#ultBtn').onclick = () => { if (S && S.running && S.ult >= 100 && !S.ultMode) { tryUlt(); focusKB(true); } };
 
 // รูปหน้าศัตรูมุมขวาบน: art/portraits/<sprite>.png (เจนจาก AI Studio แล้ว snap ตารางพิกเซลจริง 149×149) · ไม่มีภาพ (เช่น PvP) = ใช้ไอคอน
 const PORTRAITS = new Set(['bandit', 'oni', 'ghost', 'queen', 'mirror', 'phantom', 'jester', 'twins']);
@@ -4382,7 +4536,7 @@ function showChoice({ title, sub, opts, map, lobbyMenu }) {
   });
   $('#pickScr').hidden = true; $('#shopScr').hidden = true; $('#chScr').hidden = false;
   updatePauseBtn();
-  kb.value = ''; renderChoice(); kb.focus();
+  kb.value = ''; renderChoice(); blurKB(); focusKB();
 }
 function renderChoice() {
   if (CH.map) CH.opts.forEach(o => {
@@ -4441,10 +4595,10 @@ function startFight() {
   $('#pickScr').hidden = true; $('#ultBox').hidden = true; $('#pauseScr').hidden = true;
   updatePauseBtn();
   saveRunSnapshot('fight');
-  kb.value = ''; kb.focus(); ac();
+  kb.value = ''; focusKB(true); ac();
   renderWords();
   banner(FOE.icon + ' ' + FOE.name, trait(FOE));
-  if (R.trail.length === 1) toast(cfg.mode === 'en' ? 'พร้อม! ตั้งแป้นเป็นภาษาอังกฤษ' : cfg.mode === 'th' ? 'พร้อม! ตั้งแป้นเป็นภาษาไทย' : 'พร้อม! สลับแป้นด้วย ~ หรือ Alt+Shift');
+  if (R.trail.length === 1) toast(cfg.mode === 'en' ? 'พร้อม! ตั้งแป้นเป็นภาษาอังกฤษ' : cfg.mode === 'th' ? 'พร้อม! ตั้งแป้นเป็นภาษาไทย' : IS_TOUCH ? 'พร้อม! สลับภาษาด้วยปุ่ม 🌐 บนแป้น' : 'พร้อม! สลับแป้นด้วย ~ หรือ Alt+Shift');
   if (!R.practice && !R.bossMode && !navigator.webdriver && !lsGet(TOUR_KEY)) startTour();   // ไฟต์จริงครั้งแรก → แนะนำหน้าจอ
 }
 
@@ -4510,7 +4664,7 @@ function showPick(training) {
   $('#pickCards').querySelectorAll('.upc').forEach(b => b.onclick = () => choose(PK.cards[+b.dataset.i]));
   $('#pickOwned').innerHTML = R.ups.length ? 'มีอยู่แล้ว: ' + R.ups.map(esc).join(' · ') : '';
   kb.value = ''; renderPick();
-  $('#pickScr').hidden = false; kb.focus();
+  $('#pickScr').hidden = false; blurKB(); focusKB();
 }
 function renderPick() {
   $('#pickCards').querySelectorAll('.upc').forEach((el, i) => {
@@ -4565,7 +4719,7 @@ function showShop() {
   $('#pickScr').hidden = true; $('#shopScr').hidden = false;
   updatePauseBtn();
   saveRunSnapshot('shop');
-  kb.value = ''; renderShop(true); kb.focus();
+  kb.value = ''; renderShop(true); blurKB(); focusKB();
 }
 const shopOpts = () => [...SHOP.items.filter(i => !i.sold), SHOP.roll, SHOP.leave];
 function renderShop(rebuild) {
@@ -4740,7 +4894,7 @@ function showResult(win) {
     const top = Object.entries(st.miss).sort((a, b) => b[1] - a[1]).slice(0, 6);
     $('#resTop').innerHTML = top.length ? 'พลาดบ่อยที่สุด: ' + top.map(([c, n]) => `<b>${esc(dispChar(c))}</b> (${n})`).join(' · ') : 'ไม่พลาดเลย เยี่ยมมาก! 🎉';
     $('#resultScr').hidden = false;
-    kb.value = ''; MENU_BUF = ''; kb.focus();
+    kb.value = ''; MENU_BUF = ''; blurKB(); focusKB();
     return;
   }
   $('#resTitle').textContent = win ? 'พิชิตรัน!' : 'แพ้...'; $('#againBtn').innerHTML = '🔄 เล่นใหม่ <kbd>Enter</kbd>';
@@ -4767,7 +4921,7 @@ function showResult(win) {
     ? 'พลาดบ่อยที่สุด: ' + top.map(([c, n]) => `<b>${esc(dispChar(c))}</b> (${n})`).join(' · ')
     : 'ไม่พลาดเลย เยี่ยมมาก! 🎉';
   $('#resultScr').hidden = false;
-  kb.value = ''; MENU_BUF = ''; kb.focus();
+  kb.value = ''; MENU_BUF = ''; blurKB(); focusKB();
 }
 
 /* ---------- ศาลเจ้า (พิมพ์เพื่ออัปเกรดถาวร) ---------- */
@@ -4797,7 +4951,7 @@ function showMeta() {
   $('#metaAct [data-a=exit]').onclick = () => metaDo(MT.exit);
   $('#metaAct [data-a=reset]').onclick = () => metaDo(MT.reset);
   $('#startScr').hidden = true; $('#resultScr').hidden = true; $('#metaScr').hidden = false;
-  kb.value = ''; renderMeta(); kb.focus();
+  kb.value = ''; renderMeta(); blurKB(); focusKB();
 }
 const metaOpen = () => MT.opts.filter(o => lv(o.p.id) < o.p.max).concat(MT.exit, MT.reset);
 function renderMeta() {
@@ -5462,7 +5616,7 @@ function toMenu() {
   phase = 'menu'; MENU_BUF = ''; kb.value = '';
   $('#startScr').hidden = false;
   MSEL = 0;
-  renderMetaBar(); renderMenu(); updatePauseBtn(); kb.focus();
+  renderMetaBar(); renderMenu(); updatePauseBtn(); blurKB(); focusKB();
 }
 function tutFinish() {
   tutStop(); lsSet(TUT_KEY, '1'); $('#practiceNew').hidden = true; SFX.win();
@@ -5495,8 +5649,8 @@ const TOUR = [  // สั้นไว้ 5 ขั้น: คนลองเล�
   { sel: '#words', title: 'พิมพ์คำ = โจมตี', text: 'มี 3 ช่อง <b>พิมพ์คำในช่องไหนก็ได้</b> ไม่ต้องกด Enter พิมพ์ครบคำ = ตีทันที<br>⚡ คำสั้นตีเร็ว · 🔥 คำยาวตีแรง · พิมพ์ถูกต่อกันได้คอมโบ' },
   { sel: '#defBox', title: 'กล่องป้องกัน', text: 'เมื่อศัตรูชาร์จ กล่องแดงจะเด้งขึ้น <b>รีบพิมพ์คำในกล่องนี้</b> ก่อนแถบเต็ม<br><b>เริ่มพิมพ์</b>ตอนแถบถึงช่วง <b>สีทอง</b> แล้วจบทัน = สวนกลับ คำโจมตีถัดไปแรง ×2',
     demo() { const l = cfg.mode === 'en' ? 'en' : 'th'; S.def = makeWord(DEF[l][0], l, 'def'); S.enemy.charge = S.enemy.chargeMax * .62; E.classList.add('charging'); } },
-  { sel: '#ultBtn', title: 'ท่าไม้ตาย', text: 'เกจเต็มเมื่อตีและกันได้ พอเรืองแสงให้กด <kbd>Tab</kbd> แล้วพิมพ์ประโยคให้จบทันเวลา', demo() { S.ult = 100; } },
-  { sel: null, title: 'พร้อมแล้ว!', text: () => (cfg.mode === 'en' ? 'ตั้งแป้นพิมพ์เป็น <b>ภาษาอังกฤษ</b>' : cfg.mode === 'th' ? 'ตั้งแป้นพิมพ์เป็น <b>ภาษาไทย</b>' : 'โหมดสองภาษา: สลับแป้นด้วย <kbd>~</kbd> หรือ <kbd>Alt+Shift</kbd>') + ' แล้วกด <b>เริ่ม</b> ได้เลย<br><kbd>Esc</kbd> หยุดเกม · ปุ่ม <b>?</b> มุมขวาบนเปิดคำแนะนำนี้อีกครั้ง' }
+  { sel: '#ultBtn', title: 'ท่าไม้ตาย', text: () => IS_TOUCH ? 'เกจเต็มเมื่อตีและกันได้ พอเรืองแสงให้ <b>แตะแถบท่าไม้ตาย</b> แล้วพิมพ์ประโยคให้จบทันเวลา' : 'เกจเต็มเมื่อตีและกันได้ พอเรืองแสงให้กด <kbd>Tab</kbd> แล้วพิมพ์ประโยคให้จบทันเวลา', demo() { S.ult = 100; } },
+  { sel: null, title: 'พร้อมแล้ว!', text: () => (cfg.mode === 'en' ? 'ตั้งแป้นพิมพ์เป็น <b>ภาษาอังกฤษ</b>' : cfg.mode === 'th' ? 'ตั้งแป้นพิมพ์เป็น <b>ภาษาไทย</b>' : IS_TOUCH ? 'โหมดสองภาษา: สลับภาษาด้วยปุ่ม <b>🌐</b> บนแป้นพิมพ์' : 'โหมดสองภาษา: สลับแป้นด้วย <kbd>~</kbd> หรือ <kbd>Alt+Shift</kbd>') + ' แล้วกด <b>เริ่ม</b> ได้เลย<br>' + (IS_TOUCH ? 'ปุ่ม <b>⏸</b> หยุดเกม · ปุ่ม <b>⌨</b> เปิด/ปิดแป้นพิมพ์' : '<kbd>Esc</kbd> หยุดเกม · ปุ่ม <b>?</b> มุมขวาบนเปิดคำแนะนำนี้อีกครั้ง') }
 ];
 let tourI = 0, tourSnap = null;
 function startTour() {
@@ -5504,7 +5658,7 @@ function startTour() {
   if (PAUSED) setPause(false);
   S.tour = true; tourI = 0;
   tourSnap = { def: S.def, combo: S.combo, ult: S.ult, charge: S.enemy.charge, charging: E.classList.contains('charging') };
-  S.buf = ''; kb.value = '';
+  S.buf = ''; kb.value = ''; blurKB();
   $('#tourBlock').hidden = $('#tourHole').hidden = $('#tourTip').hidden = false;
   $('#tourDots').innerHTML = TOUR.map(() => '<i></i>').join('');
   showTourStep();
@@ -5555,7 +5709,7 @@ function endTour() {
   $('#tourBlock').hidden = $('#tourHole').hidden = $('#tourTip').hidden = true;
   lsSet(TOUR_KEY, '1');
   if (!S.stats.correct && !S.stats.words && !S.stats.errors) S.stats.start = performance.now();   // ไม่นับเวลาที่อ่านคำแนะนำ
-  renderWords(); kb.focus();
+  renderWords(); focusKB(true);
 }
 $('#tourNext').onclick = () => tourGo(1);
 $('#tourBack').onclick = () => tourGo(-1);
@@ -5613,13 +5767,18 @@ $('#startBtn').onclick = startGame;
 $('#bossBtn').onclick = showBossSelect;
 $('#againBtn').onclick = again;
 $('#menuBtn').onclick = toMenu;
-$('#story').onclick = () => phase === 'story' && storyAdvance();
+$('#story').onclick = () => {
+  if (phase !== 'story') return;
+  const L = ST && ST.lines[ST.i];
+  if (L && L.say) focusKB(true);
+  else storyAdvance();
+};
 $('#ultCine').onclick = () => finishUltCine();
 $('#pvpBtn').onclick = () => showPvp();
 $('#helpBtn').onclick = () => showHelp(true); $('#helpClose').onclick = () => showHelp(false);
 $('#metaBtn1').onclick = showMeta; $('#metaBtn2').onclick = showMeta;
 document.querySelector('[data-group=mode]').addEventListener('click', () => { MENU_BUF = ''; kb.value = ''; renderMetaBar(); });
-renderMetaBar(); kb.focus();
+renderMetaBar(); focusKB();
 
 R = newRun(); FOE = ENEMIES[0];
 FIG.E.id = FOE.sprite;
