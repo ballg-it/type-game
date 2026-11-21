@@ -276,76 +276,120 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
 .lv i.on{background:#67e8f9;box-shadow:0 0 6px #67e8f9}
 .upc.max .pr{color:var(--good)}
 .gain{font-size:16px;text-align:center;margin:4px 0 10px;color:#cffafe}
-/* แผนที่ (สไตล์พิกเซล RPG เข้าชุดกับร้าน): สีตามชนิดจุด (--k) */
-.t-fight{--k:#a78bfa}.t-elite{--k:#f87171}.t-event{--k:#38bdf8}.t-rest{--k:#fb923c}.t-shop{--k:#f472b6}.t-boss{--k:#fbbf24}
-#chScr.map{background:linear-gradient(#08041ad0,#08041ae8),url(art/bg-street.jpg) center bottom/cover;image-rendering:pixelated;backdrop-filter:none}
-#chScr.map .card{border-radius:0;border:3px solid #8b6bd8;background:linear-gradient(180deg,#1c1242f8,#120a2ef8);box-shadow:0 0 0 3px #0b0718,0 0 0 6px #c9a24a,0 0 0 9px #0b0718,9px 9px 0 9px #0008;padding:14px 18px 12px;position:relative}
-#chScr.map .title{font-size:30px!important;font-style:normal;letter-spacing:.5px;background:none;color:#fde68a;text-shadow:0 3px 0 #7c2d12,0 0 18px #f59e0b66;display:inline-block}
-#chScr.map #chSub{display:none}
-.maphud{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 10px}
-.maphud>span{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;background:#0d0722;border:2px solid #3b2d6e;box-shadow:inset 0 -3px 0 #00000066,2px 2px 0 #0008;font-size:15px}
-.maphud em{font-family:Silkscreen,Kanit,monospace;font-style:normal;font-size:15px;color:#fff}
-.maphud i{font-family:Silkscreen,Kanit,monospace;font-style:normal;font-size:11px;color:var(--muted)}
-.maphud b{font-weight:600;font-size:13px;color:#c4b5fd}
-.maphud .hf{border-color:#8b6bd8}
-.maphud .hh{color:#f87171}
-.maphud .hbar{width:110px;height:12px;background:#2a0f1a;border:2px solid #000;position:relative}
-.maphud .hbar span{position:absolute;inset:0 auto 0 0;background:linear-gradient(#fb7185 0 40%,#e11d48 40%);box-shadow:inset 0 -2px 0 #9f1239}
-.maphud .hbar:after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 10px,#0008 10px 12px)}
-.maphud .hh.low .hbar span{animation:blink 1s steps(2) infinite}
-.maphud .hc{color:#fbbf24;border-color:#a16207}
-.mapbox{position:relative;border:3px solid #000;outline:2px solid #3b2d6e;background:linear-gradient(#0c0620cc,#0c0620ee),url(art/bg-street.jpg) center 70%/cover;image-rendering:pixelated;padding:4px 8px 8px;margin:0 0 14px;box-shadow:inset 0 0 40px #000c}
-.mapbox:before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(#ffffff06 1px,transparent 1px) 0 0/16px 16px,linear-gradient(90deg,#ffffff06 1px,transparent 1px) 0 0/16px 16px}
-.mapsvg{width:100%;height:auto;display:block;margin:0 auto;max-width:780px;overflow:visible;position:relative}
-.mapsvg .colhl{fill:#fbbf2410;stroke:#fbbf2455;stroke-width:2;stroke-dasharray:6 4;shape-rendering:crispEdges}
-.mapsvg .lnum{font-family:Silkscreen,monospace;font-size:11px;fill:#4c3f80}
-.mapsvg .lnum.done{fill:#4ade80aa}
-.mapsvg .lnum.on{fill:#fde68a;font-size:13px}
-.mapsvg .ed{stroke:#3b2d6e;stroke-width:4;stroke-dasharray:4 6;shape-rendering:crispEdges}
-.mapsvg .ed.old{opacity:.3}
-.mapsvg .ed.go{stroke:#fde68a;stroke-dasharray:6 4;animation:march .6s steps(5) infinite}
-.mapsvg .ed.past{stroke:#4ade80;stroke-dasharray:none;stroke-width:5}
-@keyframes march{to{stroke-dashoffset:-10}}
-.mapsvg .nd rect{shape-rendering:crispEdges}
-.mapsvg .sh{fill:#000a}
-.mapsvg .tl{fill:color-mix(in srgb,var(--k) 22%,#140c30);stroke:color-mix(in srgb,var(--k) 60%,#2d2160);stroke-width:3}
-.mapsvg .hi{fill:#ffffff22}
-.mapsvg .past .tl{fill:#123a26;stroke:#4ade80}
-.mapsvg .cur .tl{fill:#3a2a0a;stroke:#fbbf24}
-.mapsvg .can .tl{fill:color-mix(in srgb,var(--k) 38%,#1f1545);stroke:#fff;filter:drop-shadow(0 0 6px var(--k))}
-.mapsvg .can.lock .tl{stroke:#fbbf24;fill:#5a3f0a;filter:drop-shadow(0 0 10px #fbbf24)}
-.mapsvg .t-boss .tl{stroke:#fbbf24;fill:#3b0d22;filter:drop-shadow(0 0 10px #e11d4888)}
-.mapsvg .dim{opacity:.35}
-.mapsvg text{text-anchor:middle;dominant-baseline:central}
-.mapsvg .ico{font-size:19px}
-.mapsvg .ico.big{font-size:26px}
-.mapsvg .bimg{image-rendering:auto}
-.mapsvg .btag{font-family:Silkscreen,monospace;font-size:12px;font-weight:700;fill:#fca5a5;paint-order:stroke;stroke:#000;stroke-width:3px}
-.mapsvg .arr{fill:#fde68a;stroke:#000;stroke-width:1.5;animation:bob .5s steps(2) infinite alternate}
-.mapsvg .lock .arr{fill:#fbbf24}
-.mapsvg .me{filter:drop-shadow(2px 2px 0 #000);animation:bob .6s steps(2) infinite alternate}
-@keyframes bob{to{transform:translateY(-3px)}}
-.legend{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;font-size:12px;color:var(--muted);margin:2px 0 0;position:relative}
-.legend span{display:inline-flex;align-items:center;gap:5px}
-.legend i{width:8px;height:8px;background:var(--k);box-shadow:1px 1px 0 #000}
-/* การ์ดเลือกทาง: ปุ่มพิกเซลแบบร้าน · ภาพศัตรูซ้าย · ช่องคำแบบปุ่มคีย์ */
-#chScr.map .upcs{gap:14px}
-#chScr.map .upc{display:grid;grid-template-columns:72px 1fr;grid-template-areas:"ic nm" "ic ds" "w w";gap:4px 12px;text-align:left;padding:10px 12px 12px;border-radius:0;border:3px solid #4c3a92;background:linear-gradient(180deg,color-mix(in srgb,var(--k,#8b5cf6) 16%,#241a4e),#1a1240);box-shadow:inset 0 3px 0 #ffffff14,inset 0 -3px 0 #0006,4px 4px 0 #0009;transition:transform .08s,opacity .1s}
-#chScr.map .upc:hover{transform:translateY(-2px)}
-#chScr.map .upc .ic{grid-area:ic;width:72px;height:72px;display:grid;place-items:center;font-size:34px;overflow:hidden;background:radial-gradient(circle at 50% 70%,color-mix(in srgb,var(--k,#8b5cf6) 45%,transparent),#0d0722 75%);border:3px solid #000;outline:2px solid color-mix(in srgb,var(--k,#8b5cf6) 70%,#000)}
-#chScr.map .upc .ic img{width:100%;height:100%;object-fit:contain;object-position:50% 100%;transform:scale(1.25) translateY(8%);filter:drop-shadow(0 0 4px #000)}
-#chScr.map .upc .nm{grid-area:nm;align-self:end;font-size:19px;text-shadow:0 2px 0 #000}
-#chScr.map .upc .ds{grid-area:ds;min-height:0;margin:0}
-#chScr.map .upc .w{grid-area:w;margin-top:8px;text-align:center;border-radius:0;background:#0b0718;border:2px solid #000;box-shadow:inset 0 -4px 0 #ffffff10,0 3px 0 #3b2d6e;font-size:28px}
-#chScr.map .upc.lock{border-color:#fbbf24;transform:translateY(-3px);box-shadow:inset 0 3px 0 #ffffff22,inset 0 -3px 0 #0006,4px 4px 0 #0009,0 0 22px #fbbf2466}
-#chScr.map .upc.lock .w{box-shadow:inset 0 -4px 0 #ffffff10,0 3px 0 #fbbf24}
-#chScr.map .card>.sub:last-child{font-size:13px}
-.tags{display:flex;flex-wrap:wrap;gap:4px}
-.tags span{font-size:12px;line-height:1.6;padding:0 7px;background:#0d0722aa;border:1px solid #ffffff1a;color:#d8d0f5}
-.tags .k{background:color-mix(in srgb,var(--k,#8b5cf6) 45%,#000);border-color:var(--k,#8b5cf6);color:#fff;font-weight:600}
-.tags .hp{color:#fca5a5;border-color:#f8717155;font-weight:600}
-@media (max-width:560px){ .mapsvg .lnum{display:none} .mapbox{padding:2px 2px 6px} .legend{gap:2px 10px;font-size:11px} .maphud{gap:4px;flex-wrap:nowrap} .maphud>span{padding:2px 6px;gap:4px;font-size:13px} .maphud em{font-size:13px} .maphud i{display:none} .maphud .hbar{width:44px;height:10px} #chScr.map .title{font-size:24px!important} #chScr.map .card{padding:12px 12px 10px} #chScr.map .upc{grid-template-columns:56px 1fr} #chScr.map .upc .ic{width:56px;height:56px;font-size:26px} }
-@media (max-width:700px){ #chCards .upc{padding:8px 10px} #chCards .upc .ic{font-size:22px} #chCards .upc .ds{min-height:0;margin:2px 0 6px} #chCards .upc .w{font-size:22px} }
+.mapsvg{width:100%;height:auto;display:block;margin:0 auto}
+.mapsvg .ed{fill:none;stroke:#3b2d6e;stroke-width:2;stroke-dasharray:4 4;transition:stroke .15s,stroke-width .15s,opacity .15s}
+.mapsvg .ed.dim{opacity:.22}
+.mapsvg .ed.go{stroke:#c084fc;stroke-dasharray:6 4;stroke-width:2.5;animation:mapFlow 1.2s linear infinite}
+.mapsvg .ed.go.hl,.mapsvg .ed.go.lock{stroke:#fbbf24;stroke-dasharray:none;stroke-width:3.5;filter:drop-shadow(0 0 5px #fbbf2499)}
+.mapsvg .ed.go.off{opacity:.25;animation:none}
+.mapsvg .ed.past{stroke:#4ade80;stroke-dasharray:none;stroke-width:3;filter:drop-shadow(0 0 4px #4ade8066)}
+@keyframes mapFlow{to{stroke-dashoffset:-20}}
+.mapsvg .fl-line{stroke:#ffffff10;stroke-width:1;stroke-dasharray:2 4}
+.mapsvg .fl-lbl{font-size:10px;fill:#8c7eb8;font-weight:600;text-anchor:middle;letter-spacing:.4px}
+.mapsvg .fl-lbl.cur{fill:#fbbf24}
+.mapsvg .fl-lbl.nxt{fill:#e9d5ff}
+.mapsvg .fl-lbl.boss{fill:#fca5a5}
+.mapsvg .nd{transition:opacity .15s}
+.mapsvg .nd.dim{opacity:.26}
+.mapsvg .nd.off{opacity:.32}
+.mapsvg .nd.can{cursor:pointer}
+.mapsvg .nd .ring{fill:#181036;stroke:#4c3a92;stroke-width:2;transition:stroke .15s,fill .15s,filter .15s}
+.mapsvg .nd.t-elite .ring{fill:#2a1026;stroke:#f43f5e}
+.mapsvg .nd.t-rest .ring{fill:#26180f;stroke:#f59e0b}
+.mapsvg .nd.t-shop .ring{fill:#291a10;stroke:#eab308}
+.mapsvg .nd.t-event .ring{fill:#0f2234;stroke:#38bdf8}
+.mapsvg .nd.t-boss .ring{fill:#2a0f2e;stroke:#fbbf24;stroke-width:2.5}
+.mapsvg .nd.past .ring{fill:#113624;stroke:#4ade80;stroke-width:2.5}
+.mapsvg .nd.cur .ring{fill:#2c1f10;stroke:#fbbf24;stroke-width:3}
+.mapsvg .nd.cur .halo{fill:none;stroke:#fbbf24;stroke-width:2;opacity:.7;animation:mapPulse 1.6s ease-in-out infinite}
+@keyframes mapPulse{0%,100%{opacity:.85;stroke-width:2}50%{opacity:.2;stroke-width:4.5}}
+.mapsvg .nd.can .ring{stroke:#c084fc;stroke-width:2.8;filter:drop-shadow(0 0 6px #a855f7aa)}
+.mapsvg .nd.can.hl .ring,.mapsvg .nd.can.lock .ring{stroke:#fbbf24;fill:#342264;stroke-width:3.2;filter:drop-shadow(0 0 9px #fbbf24cc)}
+.mapsvg .nd .art{image-rendering:pixelated;pointer-events:none}
+.mapsvg .nd .tag-cur{font-size:10px;fill:#fef08a;font-weight:700;text-anchor:middle}
+.mapsvg .nd .w-pill{fill:#0a0618ee;stroke:#7c5cd6;stroke-width:1.4;transition:stroke .15s,fill .15s}
+.mapsvg .nd.can.hl .w-pill,.mapsvg .nd.can.lock .w-pill{fill:#2b1d0aee;stroke:#fbbf24}
+.mapsvg .nd .lbl{font-size:11.5px;fill:#f3e8ff;font-weight:700;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.mapsvg .nd.can.hl .lbl,.mapsvg .nd.can.lock .lbl{fill:#fde047}
+.mapsvg .nd .pip-done{fill:#4ade80;stroke:#0b0718;stroke-width:1.5}
+.mapsvg .nd .pip-elite{fill:#f43f5e;stroke:#0b0718;stroke-width:1.2}
+.legend{font-size:12px;color:var(--muted);text-align:center;margin:-4px 0 10px}
+/* ---------- หน้าเลือกเส้นทาง (Pixel-RPG Map Chamber) ---------- */
+#chScr.map-mode{background:#08041a url(art/bg-street.jpg) center/cover no-repeat;backdrop-filter:none;padding:14px}
+#chScr.map-mode:before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 40%,#140933b8 0%,#08041ae6 100%);pointer-events:none}
+#chScr.map-mode .card{position:relative;max-width:960px;padding:14px 18px 14px;border-radius:0;
+  background:linear-gradient(180deg,#1a103ef2 0%,#120a2ef6 100%);
+  border:3px solid #8b6bd8;
+  box-shadow:0 0 0 3px #0b0718,0 0 0 6px #c9a24a,0 0 0 9px #0b0718,9px 9px 0 9px #0009}
+#chScr.map-mode .ch-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 10px;padding-bottom:8px;border-bottom:2px solid #3d2c78}
+#chScr.map-mode .ch-hd-l{display:flex;align-items:center;gap:10px}
+#chScr.map-mode .map-ic{width:34px;height:34px;display:grid;place-items:center;background:#35246e;border:3px solid #c9a24a;box-shadow:3px 3px 0 #0008;flex:none}
+#chScr.map-mode #chTitle{font-size:25px!important;line-height:1.1;font-style:normal;background:none;-webkit-background-clip:border-box;background-clip:border-box;color:#fff;text-shadow:0 2px 0 #0009;letter-spacing:.5px}
+#chScr.map-mode #chSub{margin:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ms-pill{display:inline-flex;align-items:center;gap:6px;background:#0b061acc;border:2px solid #4c3a92;padding:3px 10px;font-size:13px;font-weight:600;color:#efe9ff;box-shadow:2px 2px 0 #0007;font-variant-numeric:tabular-nums}
+.ms-pill.floor{border-color:#c9a24a;color:#fde68a}
+.ms-pill.coin{border-color:#c9a24a;color:#fbbf24}
+.ms-pill.shield{border-color:#38bdf8;color:#7dd3fc}
+.ms-pill.hp.low{border-color:#ef4444;color:#fca5a5}
+.ms-hpbar{width:54px;height:8px;background:#0009;border:1px solid #ffffff26;overflow:hidden;display:inline-block}
+.ms-hpbar i{display:block;height:100%;background:linear-gradient(90deg,#16a34a,#4ade80)}
+.ms-pill.hp.low .ms-hpbar i{background:linear-gradient(90deg,#dc2626,#fb923c)}
+.map-board{background:radial-gradient(ellipse at 50% 45%,#1d1444 0%,#0d0720 100%);border:2px solid #4c3a92;box-shadow:inset 0 2px 16px #000a,3px 3px 0 #0007;padding:6px 10px 0;margin-bottom:12px}
+.map-leg{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;padding:6px 8px;border-top:1px solid #ffffff12;font-size:11.5px;color:#b8acd8}
+.map-leg span{display:inline-flex;align-items:center;gap:5px}
+.map-leg i{width:9px;height:9px;display:inline-block;border:1.5px solid #0008}
+#chScr.map-mode #chCards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+#chScr.map-mode #chCards .upc{display:flex;flex-direction:column;gap:8px;text-align:left;padding:11px 12px 10px;border-radius:0;
+  background:linear-gradient(180deg,#261b54 0%,#1c1340 100%);
+  border:3px solid #4c3a92;
+  box-shadow:inset 0 2px 0 #3f3080,inset 0 -3px 0 #130c2e,4px 4px 0 #0008;
+  transition:transform .12s,border-color .12s,box-shadow .12s,opacity .12s}
+#chScr.map-mode #chCards .upc.t-elite{border-color:#be123c}
+#chScr.map-mode #chCards .upc.t-rest{border-color:#b45309}
+#chScr.map-mode #chCards .upc.t-shop{border-color:#ca8a04}
+#chScr.map-mode #chCards .upc.t-event{border-color:#0284c7}
+#chScr.map-mode #chCards .upc.t-boss{border-color:#eab308}
+#chScr.map-mode #chCards .upc:hover,#chScr.map-mode #chCards .upc.hl{transform:translateY(-2px);border-color:#c084fc;box-shadow:inset 0 2px 0 #5b45b0,inset 0 -3px 0 #130c2e,4px 6px 0 #0009,0 0 18px #a855f755}
+#chScr.map-mode #chCards .upc.lock{transform:translateY(-2px);border-color:#fbbf24;background:linear-gradient(180deg,#30215e 0%,#211546 100%);box-shadow:inset 0 2px 0 #6b4e9e,inset 0 -3px 0 #130c2e,4px 6px 0 #0009,0 0 22px #fbbf2466}
+#chScr.map-mode #chCards .upc.off{opacity:.32;transform:none}
+.mc-body{display:flex;align-items:center;gap:12px;min-height:76px}
+.mc-art{width:76px;height:76px;flex:none;display:grid;place-items:center;position:relative;overflow:hidden;
+  background:radial-gradient(circle at 50% 62%,#352472 0%,#120a2c 76%);
+  border:2px solid #5c48a8;box-shadow:inset 0 0 12px #0009}
+.t-elite .mc-art{background:radial-gradient(circle at 50% 62%,#5b1230 0%,#18081e 76%);border-color:#f43f5e}
+.t-rest .mc-art{background:radial-gradient(circle at 50% 62%,#5c2c0c 0%,#1a0d08 76%);border-color:#f59e0b}
+.t-shop .mc-art{background:radial-gradient(circle at 50% 62%,#573b0d 0%,#1a1108 76%);border-color:#eab308}
+.t-event .mc-art{background:radial-gradient(circle at 50% 62%,#0e3858 0%,#081426 76%);border-color:#38bdf8}
+.t-boss .mc-art{background:radial-gradient(circle at 50% 62%,#5c1d4c 0%,#180824 76%);border-color:#fbbf24}
+.mc-art img{width:68px;height:68px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 3px 0 #000a)}
+.mc-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.mc-tags{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.mc-tag{font-size:11px;font-weight:700;padding:1px 7px;background:#0c0720cc;border:1px solid #5e4aa8;color:#d8d0f5;line-height:1.4}
+.mc-tag.t-elite{border-color:#f43f5e;color:#fda4af;background:#3a0c1ecc}
+.mc-tag.t-rest{border-color:#f59e0b;color:#fde68a;background:#361c08cc}
+.mc-tag.t-shop{border-color:#eab308;color:#fef08a;background:#362508cc}
+.mc-tag.t-event{border-color:#38bdf8;color:#bae6fd;background:#0a2538cc}
+.mc-tag.t-boss{border-color:#fbbf24;color:#fef08a;background:#3a1834cc}
+.mc-tag.hp{border-color:#ef444466;color:#fecaca}
+.mc-tag.elem{border-color:currentColor;background:#090516cc}
+#chScr.map-mode #chCards .upc .nm{font-size:18px;font-weight:700;line-height:1.2;color:#fff;text-shadow:0 1px 0 #0008}
+#chScr.map-mode #chCards .upc .ds{min-height:0;margin:0;font-size:12.5px;line-height:1.35;color:#cbc1eb}
+.mc-foot{display:flex;align-items:center;gap:8px;background:#0a0618dd;border:2px solid #3b2d6e;padding:4px 10px}
+#chScr.map-mode #chCards .upc.lock .mc-foot,#chScr.map-mode #chCards .upc:hover .mc-foot,#chScr.map-mode #chCards .upc.hl .mc-foot{border-color:#fbbf2488}
+.mc-key{font-size:11px;color:#8f82ba;font-weight:600;letter-spacing:.3px;flex:none}
+#chScr.map-mode #chCards .upc .w{flex:1;background:transparent;border-radius:0;padding:0;font-size:24px;line-height:1.25;text-align:center}
+#chScr.map-mode #chHint{margin:10px 0 0!important;font-size:12px;color:#a99cd0}
+@media (max-width:700px){
+  #chCards .upc{padding:8px 10px} #chCards .upc .ic{font-size:22px} #chCards .upc .ds{min-height:0;margin:2px 0 6px} #chCards .upc .w{font-size:22px}
+  #chScr.map-mode{padding:8px}
+  #chScr.map-mode .card{padding:10px 10px 10px}
+  #chScr.map-mode #chTitle{font-size:20px!important}
+  #chScr.map-mode #chCards{grid-template-columns:1fr;gap:8px}
+  .mc-body{min-height:58px;gap:10px}
+  .mc-art{width:58px;height:58px}
+  .mc-art img{width:52px;height:52px}
+  .map-leg{gap:8px;font-size:10.5px}
+}
 .chsub2{text-align:center;font-size:14px;margin:0 0 10px;color:#e9d5ff}
 /* ---------- เนื้อเรื่องก่อนบอส ---------- */
 #story{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);width:min(760px,calc(100% - 24px));z-index:12;background:#120a28f2;border:2px solid var(--line);border-radius:14px;padding:12px 18px 10px;box-shadow:0 0 40px #6d28d966;cursor:pointer}
@@ -775,11 +819,23 @@ body.cine #game{background:#000}
   <!-- choice: แผนที่ / จุดพัก / เหตุการณ์ (พิมพ์เพื่อเลือก) -->
   <div class="overlay" id="chScr" hidden>
     <div class="card">
-      <div class="title" style="font-size:40px" id="chTitle"></div>
-      <div class="sub" id="chSub"></div>
+      <div class="ch-hd">
+        <div class="ch-hd-l">
+          <span class="map-ic" id="chMapIc" hidden aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="#fde68a" stroke-width="2"/>
+              <polygon points="12,5 15,12 12,11 9,12" fill="#fbbf24"/>
+              <polygon points="12,19 9,12 12,13 15,12" fill="#c084fc"/>
+              <circle cx="12" cy="12" r="1.5" fill="#fff"/>
+            </svg>
+          </span>
+          <div class="title" style="font-size:40px" id="chTitle"></div>
+        </div>
+        <div class="sub" id="chSub"></div>
+      </div>
       <div id="chTop"></div>
       <div class="upcs" id="chCards"></div>
-      <div class="sub" style="text-align:center;margin:14px 0 0">พิมพ์คำในกรอบดำเพื่อเลือก (หรือคลิก)</div>
+      <div class="sub" id="chHint" style="text-align:center;margin:14px 0 0">พิมพ์คำในกรอบดำเพื่อเลือก (หรือคลิก)</div>
     </div>
   </div>
 
@@ -1127,41 +1183,82 @@ function trailHTML() {
   if (!R.trail.length || R.trail[R.trail.length - 1].t !== 'boss') t.push(`<span class="node">${bnd ? nodeIcon(bnd) : '👑'} ชั้น ${MAP_LAYERS}</span>`);
   return t.join('<i>›</i>');
 }
-function mapHUD() {
-  const pct = Math.max(0, Math.min(100, R.php / R.pmax * 100)), low = pct < 30 ? ' low' : '';
-  return `<div class="maphud"><span class="hf"><b>ชั้น</b><em>${R.at.layer + 2}</em><i>/${MAP_LAYERS}</i></span>` +
-    `<span class="hh${low}">❤<span class="hbar"><span style="width:${pct}%"></span></span><em>${Math.ceil(R.php)}</em><i>/${R.pmax}</i></span>` +
-    `<span class="hc">🪙<em>${R.coins}</em></span>` + (R.shields ? `<span class="hs">🛡️<em>×${R.shields}</em></span>` : '') + '</div>';
+function cardArtHTML(nd) {
+  if (nd.foe) return `<img src="art/enemies/${nd.foe}.png" alt="${esc(nodeName(nd))}">`;
+  if (nd.t === 'shop') return `<img src="art/shop-miaomi.png" alt="ร้านเหมียวมิ">`;
+  if (nd.t === 'rest') return `<svg width="46" height="46" viewBox="0 0 32 32" fill="none" aria-hidden="true">` +
+    `<path d="M16 4c2 4 6 6 6 12a6 6 0 1 1-12 0c0-3 2-6 4-8 0 2 1 3 2 3 0-3 0-5 0-7z" fill="#f97316"/>` +
+    `<path d="M16 11c2 2 3.5 3.5 3.5 6.5a3.5 3.5 0 1 1-7 0c0-2 1.5-4 3.5-6.5z" fill="#fde047"/>` +
+    `<rect x="7" y="23" width="18" height="3" rx="1" fill="#78350f" transform="rotate(-8 16 24.5)"/>` +
+    `<rect x="7" y="23" width="18" height="3" rx="1" fill="#92400e" transform="rotate(8 16 24.5)"/></svg>`;
+  return `<svg width="44" height="44" viewBox="0 0 32 32" fill="none" aria-hidden="true">` +
+    `<polygon points="16,3 28,16 16,29 4,16" fill="#0c2a42" stroke="#38bdf8" stroke-width="2"/>` +
+    `<text x="16" y="18" text-anchor="middle" dominant-baseline="central" fill="#e0f2fe" font-size="16" font-weight="800">?</text></svg>`;
+}
+function mapNodeArtSVG(nd, cx, cy, r) {
+  const s = r * 1.62;
+  if (nd.foe) return `<image class="art" href="art/enemies/${nd.foe}.png" x="${(cx - s / 2).toFixed(1)}" y="${(cy - s / 2).toFixed(1)}" width="${s.toFixed(1)}" height="${s.toFixed(1)}" preserveAspectRatio="xMidYMid meet"/>`;
+  if (nd.t === 'shop') return `<image class="art" href="art/shop-miaomi.png" x="${(cx - s / 2).toFixed(1)}" y="${(cy - s / 2).toFixed(1)}" width="${s.toFixed(1)}" height="${s.toFixed(1)}" preserveAspectRatio="xMidYMid meet"/>`;
+  if (nd.t === 'rest') return `<g transform="translate(${cx - 11},${cy - 11}) scale(.7)">` +
+    `<path d="M16 4c2 4 6 6 6 12a6 6 0 1 1-12 0c0-3 2-6 4-8 0 2 1 3 2 3 0-3 0-5 0-7z" fill="#f97316"/>` +
+    `<path d="M16 11c2 2 3.5 3.5 3.5 6.5a3.5 3.5 0 1 1-7 0c0-2 1.5-4 3.5-6.5z" fill="#fde047"/>` +
+    `<rect x="7" y="23" width="18" height="3" rx="1" fill="#92400e"/></g>`;
+  return `<text x="${cx}" y="${cy + 1}" text-anchor="middle" dominant-baseline="central" fill="#7dd3fc" font-size="16" font-weight="800">?</text>`;
 }
 function mapSVG(opts) {
-  const W = 760, H = 252, X = i => 44 + i * (W - 92) / (MAP_LAYERS - 1), Y = nd => 40 + nd.y * 200;
-  const past = new Set(R.trail), at = R.at, can = new Map(opts.map(o => [o.nd, o]));
-  const nx = at.layer + 1;
-  let ed = '', nodes = '', cols = '', top = '';
-  if (nx < MAP_LAYERS) cols += `<rect class="colhl" x="${X(nx) - 32}" y="2" width="64" height="${H - 26}"/>`;
-  for (let i = 0; i < MAP_LAYERS; i++)
-    cols += `<text class="lnum${i === nx ? ' on' : i <= at.layer ? ' done' : ''}" x="${X(i)}" y="${H - 8}">${i === MAP_LAYERS - 1 ? 'BOSS' : i + 1}</text>`;
+  const W = 820, H = 244, padX = 56;
+  const X = i => padX + i * (W - padX * 2) / (MAP_LAYERS - 1);
+  const Y = nd => 32 + nd.y * (H - 64);
+  const past = new Set(R.trail), at = R.at, can = new Map(opts.map((o, idx) => [o.nd, { o, idx }]));
+  // หาจุดที่ยังเดินไปถึงได้จากจุดปัจจุบัน เพื่อหรี่เส้นทางที่ข้ามไปแล้ว
+  const reach = new Set([at]);
+  for (let i = at.layer; i < R.map.length - 1; i++) {
+    R.map[i].forEach(a => { if (reach.has(a)) a.next.forEach(c => reach.add(R.map[i + 1][c])); });
+  }
+  let cols = '', ed = '', nodes = '', defs = '';
+  for (let i = 0; i < MAP_LAYERS; i++) {
+    const x = X(i), cls = i === at.layer ? 'cur' : i === at.layer + 1 ? 'nxt' : i === MAP_LAYERS - 1 ? 'boss' : '';
+    cols += `<line class="fl-line" x1="${x}" y1="22" x2="${x}" y2="${H - 8}"/>` +
+      `<text class="fl-lbl ${cls}" x="${x}" y="14">${i === MAP_LAYERS - 1 ? 'บอส' : 'ชั้น ' + (i + 1)}</text>`;
+  }
   R.map.forEach((row, i) => row.forEach(a => a.next.forEach(c => {
-    const b = R.map[i + 1][c];
-    const cls = past.has(a) && past.has(b) ? 'past' : a === at && can.has(b) ? 'go' : b.layer <= at.layer ? 'old' : '';
-    ed += `<line class="ed ${cls}" x1="${X(i)}" y1="${Y(a)}" x2="${X(i + 1)}" y2="${Y(b)}"/>`;
+    const b = R.map[i + 1][c], x1 = X(i), y1 = Y(a), x2 = X(i + 1), y2 = Y(b), mx = (x1 + x2) / 2;
+    const isPast = past.has(a) && past.has(b), isGo = a === at && can.has(b), isDim = !isPast && !reach.has(a);
+    const cls = isPast ? 'past' : isGo ? 'go' : isDim ? 'dim' : '';
+    const extra = isGo ? ` data-to="${b.layer}-${b.col}"` : '';
+    ed += `<path class="ed ${cls}"${extra} d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}"/>`;
   })));
   R.map.forEach((row, i) => row.forEach(nd => {
-    const o = can.get(nd), cls = nd === at ? 'cur' : past.has(nd) ? 'past' : o ? 'can' : (nd.layer <= at.layer ? 'dim' : '');
-    const boss = nd.t === 'boss', z = boss ? 58 : 38, x = X(i), y = Y(nd), h = z / 2;
-    const face = boss && nd.foe ? `<image class="bimg" href="art/enemies/${nd.foe}.png" x="${x - h + 3}" y="${y - h + 2}" width="${z - 6}" height="${z - 4}" preserveAspectRatio="xMidYMax meet"/>`
-      : `<text class="ico${boss ? ' big' : ''}" x="${x}" y="${y + 1}">${nodeIcon(nd)}</text>`;
-    nodes += `<g class="nd t-${nd.t} ${cls}" data-id="${nd.layer}-${nd.col}">` +
-      `<rect class="sh" x="${x - h + 3}" y="${y - h + 4}" width="${z}" height="${z}"/>` +
-      `<rect class="tl" x="${x - h}" y="${y - h}" width="${z}" height="${z}"/>` +
-      `<rect class="hi" x="${x - h + 4}" y="${y - h + 3}" width="${z - 8}" height="3"/>${face}` +
-      (boss ? `<text class="btag" x="${x}" y="${y - h - 9}">BOSS</text>` : '') +
-      (o ? `<path class="arr" d="M${x - 7} ${y - h - 14}h14l-7 8z"/>` : '') + '</g>';
-    if (nd === at) top = `<image class="me" href="art/poses/airin-idle-1.png" x="${x - 32}" y="${y - h - 50}" width="64" height="56"/>`;
+    const hit = can.get(nd), o = hit && hit.o, cx = X(i), cy = Y(nd);
+    const r = nd.t === 'boss' ? 24 : (hit || nd === at) ? 20 : 17;
+    const state = nd === at ? 'cur' : past.has(nd) ? 'past' : hit ? 'can' : (!reach.has(nd) ? 'dim' : '');
+    const id = `${nd.layer}-${nd.col}`, cid = `mc-${id}`;
+    defs += `<clipPath id="${cid}"><circle cx="${cx}" cy="${cy}" r="${r - 2.5}"/></clipPath>`;
+    let label = '';
+    if (o) {
+      const pw = Math.max(46, [...o.w.text].length * 9 + 18);
+      label = `<rect class="w-pill" x="${cx - pw / 2}" y="${cy + r + 3}" width="${pw}" height="18" rx="2"/>` +
+        `<text class="lbl" x="${cx}" y="${cy + r + 12}">${esc(o.w.text)}</text>`;
+    }
+    const curTag = nd === at ? `<circle class="halo" cx="${cx}" cy="${cy}" r="${r + 4}"/><text class="tag-cur" x="${cx}" y="${cy - r - 6}">คุณ</text>` : '';
+    const pip = past.has(nd) && nd !== at
+      ? `<circle class="pip-done" cx="${cx + r - 3}" cy="${cy - r + 3}" r="5.5"/><text x="${cx + r - 3}" y="${cy - r + 3.5}" text-anchor="middle" dominant-baseline="central" fill="#052e16" font-size="8.5" font-weight="800">✓</text>`
+      : nd.t === 'elite'
+      ? `<circle class="pip-elite" cx="${cx + r - 3}" cy="${cy - r + 3}" r="5.5"/><text x="${cx + r - 3}" y="${cy - r + 3.5}" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="8.5" font-weight="800">★</text>`
+      : '';
+    nodes += `<g class="nd t-${nd.t} ${state}" data-id="${id}"${hit ? ` data-opt="${hit.idx}"` : ''}>` +
+      `${curTag}<circle class="ring" cx="${cx}" cy="${cy}" r="${r}"/>` +
+      `<g clip-path="url(#${cid})">${mapNodeArtSVG(nd, cx, cy, r)}</g>${pip}${label}</g>`;
   }));
-  const kinds = [['⚔', 'ศัตรู', 'fight'], ['💀', 'ศัตรูเก่ง', 'elite'], ['❓', 'เหตุการณ์', 'event'], ['🔥', 'จุดพัก', 'rest'], ['🐱', 'ร้าน', 'shop'], ['👑', 'บอส', 'boss']];
-  return mapHUD() + `<div class="mapbox"><svg class="mapsvg" viewBox="0 0 ${W} ${H}">${cols}${ed}${nodes}${top}</svg>` +
-    `<div class="legend">${kinds.map(([ic, nm, t]) => `<span class="t-${t}"><i></i>${ic} ${nm}</span>`).join('')}</div></div>`;
+  return `<div class="map-board"><svg class="mapsvg" viewBox="0 0 ${W} ${H}"><defs>${defs}</defs>${cols}${ed}${nodes}</svg>` +
+    `<div class="map-leg">` +
+    `<span><i style="background:#6d55c7"></i>ศัตรู</span>` +
+    `<span><i style="background:#f43f5e"></i>ศัตรูเก่ง ★</span>` +
+    `<span><i style="background:#38bdf8"></i>เหตุการณ์</span>` +
+    `<span><i style="background:#f59e0b"></i>จุดพัก</span>` +
+    `<span><i style="background:#eab308"></i>ร้านเหมียวมิ</span>` +
+    `<span><i style="background:#fbbf24;box-shadow:0 0 6px #fbbf24"></i>บอส</span>` +
+    `</div></div>`;
 }
 
 /* ---------- เนื้อเรื่องสั้นก่อนบอส ----------
@@ -3543,12 +3640,12 @@ function showMap() {
   const opts = R.at.next.map(c => R.map[R.at.layer + 1][c]).map(nd => {
     const lang = pickLang(), word = shuffle(MAP_WORDS[lang]).find(t => !used.has(t[0])); used.add(word[0]);
     const f = nd.foe && makeFoe(nd);
-    const hp = f && Math.round(f.hp * DIFF[cfg.diff].hp * (f.boss && cfg.diff === 'hard' ? BOSS_HARD.hp : 1));
-    return { nd, icon: nodeIcon(nd), name: nodeName(nd), word, lang, kind: nd.t, art: nd.foe || null,
-      tags: f ? [[NODE[nd.t].name, 'k'], [`❤ ${hp}`, 'hp'], [trait(f), '']] : [[NODE[nd.t].name, 'k'], [NODE[nd.t].desc, '']],
-      desc: f ? `${NODE[nd.t].desc} · HP ${Math.round(f.hp * DIFF[cfg.diff].hp * (f.boss && cfg.diff === 'hard' ? BOSS_HARD.hp : 1))} · ${trait(f)}` : NODE[nd.t].desc, fn: () => enterNode(nd) };
+    const hp = f ? Math.round(f.hp * DIFF[cfg.diff].hp * (f.boss && cfg.diff === 'hard' ? BOSS_HARD.hp : 1)) : 0;
+    const tr = f ? trait(f) : NODE[nd.t].desc;
+    return { nd, icon: nodeIcon(nd), name: nodeName(nd), word, lang, hp, elem: f && f.elem || null, traitText: tr,
+      desc: f ? `${NODE[nd.t].desc} · HP ${hp} · ${tr}` : NODE[nd.t].desc, fn: () => enterNode(nd) };
   });
-  showChoice({ title: '🗺 เลือกเส้นทาง', sub: `ชั้น ${R.at.layer + 2} / ${MAP_LAYERS} · HP ${Math.ceil(R.php)} / ${R.pmax} · 🪙 ${R.coins}` + (R.shields ? ` · 🛡️×${R.shields}` : ''),
+  showChoice({ title: 'เลือกเส้นทาง', sub: `ชั้น ${R.at.layer + 2} / ${MAP_LAYERS} · HP ${Math.ceil(R.php)} / ${R.pmax} · 🪙 ${R.coins}` + (R.shields ? ` · 🛡️×${R.shields}` : ''),
     map: true, opts, keepOpen: true });
   saveRunSnapshot('map');
 }
@@ -3567,6 +3664,26 @@ function showEvent() {
 }
 // หน้าตัวเลือกกลาง: พิมพ์คำบนการ์ดเพื่อเลือก
 let CH = null;
+function mapCardHTML(o, i) {
+  const nd = o.nd, typeLbl = nd.t === 'elite' ? 'ศัตรูเก่ง · เหรียญ ×2' : nd.t === 'fight' ? 'ไฟต์ปกติ' : NODE[nd.t].name;
+  const el = o.elem && ELEMENTS[o.elem];
+  const tags = `<span class="mc-tag t-${nd.t}">${esc(typeLbl)}</span>` +
+    (o.hp ? `<span class="mc-tag hp">HP ${o.hp}</span>` : '') +
+    (el ? `<span class="mc-tag elem" style="color:${el.col}">${el.icon} ${el.name}</span>` : '');
+  return `<button class="upc t-${nd.t}${o.off ? ' sold' : ''}" data-i="${i}">` +
+    `<div class="mc-body"><div class="mc-art">${cardArtHTML(nd)}</div>` +
+    `<div class="mc-info"><div class="mc-tags">${tags}</div><div class="nm">${esc(o.name)}</div><div class="ds">${esc(o.traitText || o.desc)}</div></div></div>` +
+    `<div class="mc-foot"><span class="mc-key">พิมพ์</span><div class="w"></div></div></button>`;
+}
+function setMapHover(idx, on) {
+  if (!CH || !CH.map) return;
+  const o = CH.opts[idx]; if (!o) return;
+  const id = `${o.nd.layer}-${o.nd.col}`;
+  const card = $(`#chCards .upc[data-i="${idx}"]`), node = $(`#chTop g[data-id="${id}"]`), edge = $(`#chTop path[data-to="${id}"]`);
+  card && card.classList.toggle('hl', on);
+  node && node.classList.toggle('hl', on);
+  edge && edge.classList.toggle('hl', on);
+}
 function showChoice({ title, sub, opts, map, lobbyMenu }) {
   phase = 'choice';
   const used = new Set();
@@ -3576,20 +3693,52 @@ function showChoice({ title, sub, opts, map, lobbyMenu }) {
     used.add(word[0]);
     return { ...o, off: o.cond && !o.cond(), w: makeWord(word, lang, 'choice') };
   }) };
-  $('#chTitle').textContent = title; $('#chSub').textContent = sub;
+  $('#chScr').classList.toggle('map-mode', !!map);
+  $('#chMapIc').hidden = !map;
+  $('#chTitle').textContent = title;
+  if (map) {
+    const pct = Math.max(0, Math.min(100, Math.round(R.php / R.pmax * 100))), low = pct <= 35;
+    $('#chSub').innerHTML =
+      `<span class="ms-pill floor">ชั้น ${R.at.layer + 2} / ${MAP_LAYERS}</span>` +
+      `<span class="ms-pill hp${low ? ' low' : ''}"><span class="ms-hpbar"><i style="width:${pct}%"></i></span>HP ${Math.ceil(R.php)} / ${R.pmax}</span>` +
+      `<span class="ms-pill coin">🪙 ${R.coins}</span>` +
+      (R.shields ? `<span class="ms-pill shield">🛡️ ×${R.shields}</span>` : '');
+  } else {
+    $('#chSub').textContent = sub;
+  }
+  $('#chHint').textContent = map ? 'พิมพ์คำในกรอบเพื่อเลือก · หรือคลิกการ์ด / จุดบนแผนที่' : 'พิมพ์คำในกรอบดำเพื่อเลือก (หรือคลิก)';
+  $('#chTop').innerHTML = map ? mapSVG(CH.opts) : '';
+  if (map) {
+    $('#chTop').querySelectorAll('g.can[data-opt]').forEach(g => {
+      const idx = +g.dataset.opt;
+      g.onclick = () => chDo(CH.opts[idx]);
+      g.onmouseenter = () => setMapHover(idx, true);
+      g.onmouseleave = () => setMapHover(idx, false);
+    });
+  }
   $('#chCards').style.display = ''; $('#chCards').style.gridTemplateColumns = '';
-  $('#chScr').classList.toggle('map', !!map);
-  $('#chCards').innerHTML = CH.opts.map((o, i) => `<button class="upc${o.off ? ' sold' : ''}${o.kind ? ' t-' + o.kind : ''}" data-i="${i}"><div class="ic">${o.art ? `<img src="art/enemies/${o.art}.png" alt="" onerror="this.replaceWith('${o.icon}')">` : o.icon}</div><div class="nm">${esc(o.name)}</div>` +
-    (o.tags ? `<div class="ds tags">${o.tags.filter(([t]) => t !== o.name).map(([t, c]) => `<span class="${c}">${esc(t)}</span>`).join('')}</div>` : `<div class="ds">${esc(o.desc)}</div>`) +
-    `<div class="w"></div></button>`).join('');
-  $('#chCards').querySelectorAll('.upc').forEach(b => b.onclick = () => chDo(CH.opts[+b.dataset.i]));
+  $('#chCards').innerHTML = CH.opts.map((o, i) => map ? mapCardHTML(o, i)
+    : `<button class="upc${o.off ? ' sold' : ''}" data-i="${i}"><div class="ic">${o.icon}</div><div class="nm">${esc(o.name)}</div><div class="ds">${esc(o.desc)}</div><div class="w"></div></button>`).join('');
+  $('#chCards').querySelectorAll('.upc').forEach(b => {
+    const idx = +b.dataset.i;
+    b.onclick = () => chDo(CH.opts[idx]);
+    if (map) {
+      b.onmouseenter = () => setMapHover(idx, true);
+      b.onmouseleave = () => setMapHover(idx, false);
+    }
+  });
   $('#pickScr').hidden = true; $('#shopScr').hidden = true; $('#chScr').hidden = false;
   updatePauseBtn();
   kb.value = ''; renderChoice(); kb.focus();
 }
 function renderChoice() {
-  $('#chTop').innerHTML = CH.map ? mapSVG(CH.opts) : '';
-  if (CH.map) CH.opts.forEach(o => { const g = $(`#chTop g[data-id="${o.nd.layer}-${o.nd.col}"]`); g && g.classList.toggle('lock', CH.buf !== '' && match(CH.buf, o.w).ok); });
+  if (CH.map) CH.opts.forEach(o => {
+    const id = `${o.nd.layer}-${o.nd.col}`, m = match(CH.buf, o.w);
+    const lock = CH.buf !== '' && m.ok, off = CH.buf !== '' && !m.ok;
+    const g = $(`#chTop g[data-id="${id}"]`), ed = $(`#chTop path[data-to="${id}"]`);
+    if (g) { g.classList.toggle('lock', lock); g.classList.toggle('off', off); }
+    if (ed) { ed.classList.toggle('lock', lock); ed.classList.toggle('off', off); }
+  });
   $('#chCards').querySelectorAll('.upc').forEach((el, i) => {
     const o = CH.opts[i], m = match(CH.buf, o.w);
     el.querySelector('.w').innerHTML = wordHTML(o.w, o.off ? '' : CH.buf);
