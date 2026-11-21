@@ -276,19 +276,75 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
 .lv i.on{background:#67e8f9;box-shadow:0 0 6px #67e8f9}
 .upc.max .pr{color:var(--good)}
 .gain{font-size:16px;text-align:center;margin:4px 0 10px;color:#cffafe}
-.mapsvg{width:100%;height:auto;display:block;margin:0 auto 12px;max-width:760px}
-.mapsvg .ed{stroke:#3b2d6e;stroke-width:2;stroke-dasharray:4 4}
-.mapsvg .ed.go{stroke:#a78bfa;stroke-dasharray:none;stroke-width:2.5}
-.mapsvg .ed.past{stroke:#4ade80;stroke-dasharray:none;stroke-width:3}
-.mapsvg circle{fill:#1f1545;stroke:#3b2d6e;stroke-width:2}
-.mapsvg .past circle{fill:#14532d;stroke:#4ade80}
-.mapsvg .cur circle{stroke:#fbbf24;stroke-width:3}
-.mapsvg .can circle{stroke:#c084fc;stroke-width:3;filter:drop-shadow(0 0 5px #a855f7)}
-.mapsvg .can.lock circle{stroke:#fbbf24;fill:#3b2d6e}
-.mapsvg .dim{opacity:.45}
-.mapsvg text{font-size:17px;text-anchor:middle;dominant-baseline:central}
-.mapsvg .lbl{font-size:12px;fill:#e9d5ff;font-weight:600}
-.legend{font-size:12px;color:var(--muted);text-align:center;margin:-4px 0 10px}
+/* แผนที่ (สไตล์พิกเซล RPG เข้าชุดกับร้าน): สีตามชนิดจุด (--k) */
+.t-fight{--k:#a78bfa}.t-elite{--k:#f87171}.t-event{--k:#38bdf8}.t-rest{--k:#fb923c}.t-shop{--k:#f472b6}.t-boss{--k:#fbbf24}
+#chScr.map{background:linear-gradient(#08041ad0,#08041ae8),url(art/bg-street.jpg) center bottom/cover;image-rendering:pixelated;backdrop-filter:none}
+#chScr.map .card{border-radius:0;border:3px solid #8b6bd8;background:linear-gradient(180deg,#1c1242f8,#120a2ef8);box-shadow:0 0 0 3px #0b0718,0 0 0 6px #c9a24a,0 0 0 9px #0b0718,9px 9px 0 9px #0008;padding:14px 18px 12px;position:relative}
+#chScr.map .title{font-size:30px!important;font-style:normal;letter-spacing:.5px;background:none;color:#fde68a;text-shadow:0 3px 0 #7c2d12,0 0 18px #f59e0b66;display:inline-block}
+#chScr.map #chSub{display:none}
+.maphud{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 10px}
+.maphud>span{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;background:#0d0722;border:2px solid #3b2d6e;box-shadow:inset 0 -3px 0 #00000066,2px 2px 0 #0008;font-size:15px}
+.maphud em{font-family:Silkscreen,Kanit,monospace;font-style:normal;font-size:15px;color:#fff}
+.maphud i{font-family:Silkscreen,Kanit,monospace;font-style:normal;font-size:11px;color:var(--muted)}
+.maphud b{font-weight:600;font-size:13px;color:#c4b5fd}
+.maphud .hf{border-color:#8b6bd8}
+.maphud .hh{color:#f87171}
+.maphud .hbar{width:110px;height:12px;background:#2a0f1a;border:2px solid #000;position:relative}
+.maphud .hbar span{position:absolute;inset:0 auto 0 0;background:linear-gradient(#fb7185 0 40%,#e11d48 40%);box-shadow:inset 0 -2px 0 #9f1239}
+.maphud .hbar:after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 10px,#0008 10px 12px)}
+.maphud .hh.low .hbar span{animation:blink 1s steps(2) infinite}
+.maphud .hc{color:#fbbf24;border-color:#a16207}
+.mapbox{position:relative;border:3px solid #000;outline:2px solid #3b2d6e;background:linear-gradient(#0c0620cc,#0c0620ee),url(art/bg-street.jpg) center 70%/cover;image-rendering:pixelated;padding:4px 8px 8px;margin:0 0 14px;box-shadow:inset 0 0 40px #000c}
+.mapbox:before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(#ffffff06 1px,transparent 1px) 0 0/16px 16px,linear-gradient(90deg,#ffffff06 1px,transparent 1px) 0 0/16px 16px}
+.mapsvg{width:100%;height:auto;display:block;margin:0 auto;max-width:780px;overflow:visible;position:relative}
+.mapsvg .colhl{fill:#fbbf2410;stroke:#fbbf2455;stroke-width:2;stroke-dasharray:6 4;shape-rendering:crispEdges}
+.mapsvg .lnum{font-family:Silkscreen,monospace;font-size:11px;fill:#4c3f80}
+.mapsvg .lnum.done{fill:#4ade80aa}
+.mapsvg .lnum.on{fill:#fde68a;font-size:13px}
+.mapsvg .ed{stroke:#3b2d6e;stroke-width:4;stroke-dasharray:4 6;shape-rendering:crispEdges}
+.mapsvg .ed.old{opacity:.3}
+.mapsvg .ed.go{stroke:#fde68a;stroke-dasharray:6 4;animation:march .6s steps(5) infinite}
+.mapsvg .ed.past{stroke:#4ade80;stroke-dasharray:none;stroke-width:5}
+@keyframes march{to{stroke-dashoffset:-10}}
+.mapsvg .nd rect{shape-rendering:crispEdges}
+.mapsvg .sh{fill:#000a}
+.mapsvg .tl{fill:color-mix(in srgb,var(--k) 22%,#140c30);stroke:color-mix(in srgb,var(--k) 60%,#2d2160);stroke-width:3}
+.mapsvg .hi{fill:#ffffff22}
+.mapsvg .past .tl{fill:#123a26;stroke:#4ade80}
+.mapsvg .cur .tl{fill:#3a2a0a;stroke:#fbbf24}
+.mapsvg .can .tl{fill:color-mix(in srgb,var(--k) 38%,#1f1545);stroke:#fff;filter:drop-shadow(0 0 6px var(--k))}
+.mapsvg .can.lock .tl{stroke:#fbbf24;fill:#5a3f0a;filter:drop-shadow(0 0 10px #fbbf24)}
+.mapsvg .t-boss .tl{stroke:#fbbf24;fill:#3b0d22;filter:drop-shadow(0 0 10px #e11d4888)}
+.mapsvg .dim{opacity:.35}
+.mapsvg text{text-anchor:middle;dominant-baseline:central}
+.mapsvg .ico{font-size:19px}
+.mapsvg .ico.big{font-size:26px}
+.mapsvg .bimg{image-rendering:auto}
+.mapsvg .btag{font-family:Silkscreen,monospace;font-size:12px;font-weight:700;fill:#fca5a5;paint-order:stroke;stroke:#000;stroke-width:3px}
+.mapsvg .arr{fill:#fde68a;stroke:#000;stroke-width:1.5;animation:bob .5s steps(2) infinite alternate}
+.mapsvg .lock .arr{fill:#fbbf24}
+.mapsvg .me{filter:drop-shadow(2px 2px 0 #000);animation:bob .6s steps(2) infinite alternate}
+@keyframes bob{to{transform:translateY(-3px)}}
+.legend{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;font-size:12px;color:var(--muted);margin:2px 0 0;position:relative}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:8px;height:8px;background:var(--k);box-shadow:1px 1px 0 #000}
+/* การ์ดเลือกทาง: ปุ่มพิกเซลแบบร้าน · ภาพศัตรูซ้าย · ช่องคำแบบปุ่มคีย์ */
+#chScr.map .upcs{gap:14px}
+#chScr.map .upc{display:grid;grid-template-columns:72px 1fr;grid-template-areas:"ic nm" "ic ds" "w w";gap:4px 12px;text-align:left;padding:10px 12px 12px;border-radius:0;border:3px solid #4c3a92;background:linear-gradient(180deg,color-mix(in srgb,var(--k,#8b5cf6) 16%,#241a4e),#1a1240);box-shadow:inset 0 3px 0 #ffffff14,inset 0 -3px 0 #0006,4px 4px 0 #0009;transition:transform .08s,opacity .1s}
+#chScr.map .upc:hover{transform:translateY(-2px)}
+#chScr.map .upc .ic{grid-area:ic;width:72px;height:72px;display:grid;place-items:center;font-size:34px;overflow:hidden;background:radial-gradient(circle at 50% 70%,color-mix(in srgb,var(--k,#8b5cf6) 45%,transparent),#0d0722 75%);border:3px solid #000;outline:2px solid color-mix(in srgb,var(--k,#8b5cf6) 70%,#000)}
+#chScr.map .upc .ic img{width:100%;height:100%;object-fit:contain;object-position:50% 100%;transform:scale(1.25) translateY(8%);filter:drop-shadow(0 0 4px #000)}
+#chScr.map .upc .nm{grid-area:nm;align-self:end;font-size:19px;text-shadow:0 2px 0 #000}
+#chScr.map .upc .ds{grid-area:ds;min-height:0;margin:0}
+#chScr.map .upc .w{grid-area:w;margin-top:8px;text-align:center;border-radius:0;background:#0b0718;border:2px solid #000;box-shadow:inset 0 -4px 0 #ffffff10,0 3px 0 #3b2d6e;font-size:28px}
+#chScr.map .upc.lock{border-color:#fbbf24;transform:translateY(-3px);box-shadow:inset 0 3px 0 #ffffff22,inset 0 -3px 0 #0006,4px 4px 0 #0009,0 0 22px #fbbf2466}
+#chScr.map .upc.lock .w{box-shadow:inset 0 -4px 0 #ffffff10,0 3px 0 #fbbf24}
+#chScr.map .card>.sub:last-child{font-size:13px}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tags span{font-size:12px;line-height:1.6;padding:0 7px;background:#0d0722aa;border:1px solid #ffffff1a;color:#d8d0f5}
+.tags .k{background:color-mix(in srgb,var(--k,#8b5cf6) 45%,#000);border-color:var(--k,#8b5cf6);color:#fff;font-weight:600}
+.tags .hp{color:#fca5a5;border-color:#f8717155;font-weight:600}
+@media (max-width:560px){ .mapsvg .lnum{display:none} .mapbox{padding:2px 2px 6px} .legend{gap:2px 10px;font-size:11px} .maphud{gap:4px;flex-wrap:nowrap} .maphud>span{padding:2px 6px;gap:4px;font-size:13px} .maphud em{font-size:13px} .maphud i{display:none} .maphud .hbar{width:44px;height:10px} #chScr.map .title{font-size:24px!important} #chScr.map .card{padding:12px 12px 10px} #chScr.map .upc{grid-template-columns:56px 1fr} #chScr.map .upc .ic{width:56px;height:56px;font-size:26px} }
 @media (max-width:700px){ #chCards .upc{padding:8px 10px} #chCards .upc .ic{font-size:22px} #chCards .upc .ds{min-height:0;margin:2px 0 6px} #chCards .upc .w{font-size:22px} }
 .chsub2{text-align:center;font-size:14px;margin:0 0 10px;color:#e9d5ff}
 /* ---------- เนื้อเรื่องก่อนบอส ---------- */
@@ -1071,23 +1127,41 @@ function trailHTML() {
   if (!R.trail.length || R.trail[R.trail.length - 1].t !== 'boss') t.push(`<span class="node">${bnd ? nodeIcon(bnd) : '👑'} ชั้น ${MAP_LAYERS}</span>`);
   return t.join('<i>›</i>');
 }
+function mapHUD() {
+  const pct = Math.max(0, Math.min(100, R.php / R.pmax * 100)), low = pct < 30 ? ' low' : '';
+  return `<div class="maphud"><span class="hf"><b>ชั้น</b><em>${R.at.layer + 2}</em><i>/${MAP_LAYERS}</i></span>` +
+    `<span class="hh${low}">❤<span class="hbar"><span style="width:${pct}%"></span></span><em>${Math.ceil(R.php)}</em><i>/${R.pmax}</i></span>` +
+    `<span class="hc">🪙<em>${R.coins}</em></span>` + (R.shields ? `<span class="hs">🛡️<em>×${R.shields}</em></span>` : '') + '</div>';
+}
 function mapSVG(opts) {
-  const W = 720, H = 210, X = i => 40 + i * (W - 80) / (MAP_LAYERS - 1), Y = nd => 22 + nd.y * (H - 60);
+  const W = 760, H = 252, X = i => 44 + i * (W - 92) / (MAP_LAYERS - 1), Y = nd => 40 + nd.y * 200;
   const past = new Set(R.trail), at = R.at, can = new Map(opts.map(o => [o.nd, o]));
-  let ed = '', nodes = '';
+  const nx = at.layer + 1;
+  let ed = '', nodes = '', cols = '', top = '';
+  if (nx < MAP_LAYERS) cols += `<rect class="colhl" x="${X(nx) - 32}" y="2" width="64" height="${H - 26}"/>`;
+  for (let i = 0; i < MAP_LAYERS; i++)
+    cols += `<text class="lnum${i === nx ? ' on' : i <= at.layer ? ' done' : ''}" x="${X(i)}" y="${H - 8}">${i === MAP_LAYERS - 1 ? 'BOSS' : i + 1}</text>`;
   R.map.forEach((row, i) => row.forEach(a => a.next.forEach(c => {
     const b = R.map[i + 1][c];
-    const cls = past.has(a) && past.has(b) ? 'past' : a === at && can.has(b) ? 'go' : '';
+    const cls = past.has(a) && past.has(b) ? 'past' : a === at && can.has(b) ? 'go' : b.layer <= at.layer ? 'old' : '';
     ed += `<line class="ed ${cls}" x1="${X(i)}" y1="${Y(a)}" x2="${X(i + 1)}" y2="${Y(b)}"/>`;
   })));
   R.map.forEach((row, i) => row.forEach(nd => {
     const o = can.get(nd), cls = nd === at ? 'cur' : past.has(nd) ? 'past' : o ? 'can' : (nd.layer <= at.layer ? 'dim' : '');
-    nodes += `<g class="${cls}" data-id="${nd.layer}-${nd.col}"><circle cx="${X(i)}" cy="${Y(nd)}" r="${nd.t === 'boss' ? 22 : 17}"/>` +
-      `<text x="${X(i)}" y="${Y(nd)}">${nodeIcon(nd)}</text>` +
-      (o ? `<text class="lbl" x="${X(i)}" y="${Y(nd) + 31}">${esc(o.w.text)}</text>` : '') + '</g>';
+    const boss = nd.t === 'boss', z = boss ? 58 : 38, x = X(i), y = Y(nd), h = z / 2;
+    const face = boss && nd.foe ? `<image class="bimg" href="art/enemies/${nd.foe}.png" x="${x - h + 3}" y="${y - h + 2}" width="${z - 6}" height="${z - 4}" preserveAspectRatio="xMidYMax meet"/>`
+      : `<text class="ico${boss ? ' big' : ''}" x="${x}" y="${y + 1}">${nodeIcon(nd)}</text>`;
+    nodes += `<g class="nd t-${nd.t} ${cls}" data-id="${nd.layer}-${nd.col}">` +
+      `<rect class="sh" x="${x - h + 3}" y="${y - h + 4}" width="${z}" height="${z}"/>` +
+      `<rect class="tl" x="${x - h}" y="${y - h}" width="${z}" height="${z}"/>` +
+      `<rect class="hi" x="${x - h + 4}" y="${y - h + 3}" width="${z - 8}" height="3"/>${face}` +
+      (boss ? `<text class="btag" x="${x}" y="${y - h - 9}">BOSS</text>` : '') +
+      (o ? `<path class="arr" d="M${x - 7} ${y - h - 14}h14l-7 8z"/>` : '') + '</g>';
+    if (nd === at) top = `<image class="me" href="art/poses/airin-idle-1.png" x="${x - 32}" y="${y - h - 50}" width="64" height="56"/>`;
   }));
-  return `<svg class="mapsvg" viewBox="0 0 ${W} ${H}">${ed}${nodes}</svg>` +
-    `<div class="legend">🔨👻👹 ศัตรู · 💀 ศัตรูเก่ง · ❓ เหตุการณ์ · 🔥 จุดพัก · 🐱 ร้าน · 👑🪞👁️🔄👯 บอส</div>`;
+  const kinds = [['⚔', 'ศัตรู', 'fight'], ['💀', 'ศัตรูเก่ง', 'elite'], ['❓', 'เหตุการณ์', 'event'], ['🔥', 'จุดพัก', 'rest'], ['🐱', 'ร้าน', 'shop'], ['👑', 'บอส', 'boss']];
+  return mapHUD() + `<div class="mapbox"><svg class="mapsvg" viewBox="0 0 ${W} ${H}">${cols}${ed}${nodes}${top}</svg>` +
+    `<div class="legend">${kinds.map(([ic, nm, t]) => `<span class="t-${t}"><i></i>${ic} ${nm}</span>`).join('')}</div></div>`;
 }
 
 /* ---------- เนื้อเรื่องสั้นก่อนบอส ----------
@@ -3469,7 +3543,9 @@ function showMap() {
   const opts = R.at.next.map(c => R.map[R.at.layer + 1][c]).map(nd => {
     const lang = pickLang(), word = shuffle(MAP_WORDS[lang]).find(t => !used.has(t[0])); used.add(word[0]);
     const f = nd.foe && makeFoe(nd);
-    return { nd, icon: nodeIcon(nd), name: nodeName(nd), word, lang,
+    const hp = f && Math.round(f.hp * DIFF[cfg.diff].hp * (f.boss && cfg.diff === 'hard' ? BOSS_HARD.hp : 1));
+    return { nd, icon: nodeIcon(nd), name: nodeName(nd), word, lang, kind: nd.t, art: nd.foe || null,
+      tags: f ? [[NODE[nd.t].name, 'k'], [`❤ ${hp}`, 'hp'], [trait(f), '']] : [[NODE[nd.t].name, 'k'], [NODE[nd.t].desc, '']],
       desc: f ? `${NODE[nd.t].desc} · HP ${Math.round(f.hp * DIFF[cfg.diff].hp * (f.boss && cfg.diff === 'hard' ? BOSS_HARD.hp : 1))} · ${trait(f)}` : NODE[nd.t].desc, fn: () => enterNode(nd) };
   });
   showChoice({ title: '🗺 เลือกเส้นทาง', sub: `ชั้น ${R.at.layer + 2} / ${MAP_LAYERS} · HP ${Math.ceil(R.php)} / ${R.pmax} · 🪙 ${R.coins}` + (R.shields ? ` · 🛡️×${R.shields}` : ''),
@@ -3502,8 +3578,10 @@ function showChoice({ title, sub, opts, map, lobbyMenu }) {
   }) };
   $('#chTitle').textContent = title; $('#chSub').textContent = sub;
   $('#chCards').style.display = ''; $('#chCards').style.gridTemplateColumns = '';
-  $('#chCards').innerHTML = CH.opts.map((o, i) => `<button class="upc${o.off ? ' sold' : ''}" data-i="${i}"><div class="ic">${o.icon}</div><div class="nm">${esc(o.name)}</div>` +
-    `<div class="ds">${esc(o.desc)}</div><div class="w"></div></button>`).join('');
+  $('#chScr').classList.toggle('map', !!map);
+  $('#chCards').innerHTML = CH.opts.map((o, i) => `<button class="upc${o.off ? ' sold' : ''}${o.kind ? ' t-' + o.kind : ''}" data-i="${i}"><div class="ic">${o.art ? `<img src="art/enemies/${o.art}.png" alt="" onerror="this.replaceWith('${o.icon}')">` : o.icon}</div><div class="nm">${esc(o.name)}</div>` +
+    (o.tags ? `<div class="ds tags">${o.tags.filter(([t]) => t !== o.name).map(([t, c]) => `<span class="${c}">${esc(t)}</span>`).join('')}</div>` : `<div class="ds">${esc(o.desc)}</div>`) +
+    `<div class="w"></div></button>`).join('');
   $('#chCards').querySelectorAll('.upc').forEach(b => b.onclick = () => chDo(CH.opts[+b.dataset.i]));
   $('#pickScr').hidden = true; $('#shopScr').hidden = true; $('#chScr').hidden = false;
   updatePauseBtn();
