@@ -19,27 +19,34 @@ button{font-family:inherit}
 /* ---------- HUD ---------- */
 #hud{display:flex;align-items:flex-start;gap:16px;padding:12px 16px 6px}
 .hpbox{flex:1;min-width:0}
-.hpbox .name{font-weight:600;font-size:15px;display:flex;justify-content:space-between}
-.hpbox .name span{color:var(--muted);font-weight:400}
-.hpbox.e .name{flex-direction:row-reverse;padding-right:166px}
-.bar{height:16px;background:#0006;border:2px solid #ffffff22;border-radius:8px;overflow:hidden;position:relative}
-.bar i{display:block;height:100%;width:100%;transition:width .18s}
+.hpbox .name{font-weight:600;font-size:15px;display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:3px}
+.hpbox .name span{color:var(--muted);font-weight:400;font-size:13px}
+.hpbox.e .name{flex-direction:row-reverse;padding-right:170px}
+.bar{height:16px;background:#090516cc;border:2px solid #ffffff24;border-radius:9px;overflow:hidden;position:relative;box-shadow:inset 0 2px 4px #0008}
+.bar u{position:absolute;top:0;bottom:0;left:0;display:block;width:100%;background:#fde68aaa;transition:width .55s ease-out .12s;pointer-events:none}
+#ehpLag{left:auto;right:0}
+.bar i{position:relative;z-index:1;display:block;height:100%;width:100%;transition:width .16s ease-out}
 #phpBar{background:linear-gradient(90deg,#16a34a,#4ade80)}
+.hpbox.p.low #phpBar{background:linear-gradient(90deg,#dc2626,#fb923c);animation:lowHp .7s infinite alternate}
+.hpbox.p.low .num{color:var(--bad);font-weight:600}
+@keyframes lowHp{from{filter:brightness(1)}to{filter:brightness(1.35)}}
 #ehpBar{background:linear-gradient(90deg,#f87171,#dc2626);margin-left:auto}
-.hpbox .num{font-size:13px;color:var(--muted);margin-top:2px}
+.hpbox .num{font-size:12px;color:var(--muted);margin-top:3px;font-variant-numeric:tabular-nums}
 .hpbox.e .num{text-align:right}
-.center{width:220px;text-align:center}
-.wave{display:inline-block;border:2px solid var(--violet);border-radius:10px;padding:2px 16px;font-weight:600;background:#140c2ecc}
-#combo{margin-top:6px;font-weight:800;font-size:22px;color:var(--gold);text-shadow:0 0 12px #f59e0b88;min-height:30px}
-#combo small{display:block;font-size:12px;color:var(--muted);font-weight:400;text-shadow:none}
-#mute,#bgmBtn{position:absolute;top:10px;background:#0b0618aa;border:1px solid #ffffff28;color:var(--text);border-radius:8px;padding:2px 8px;cursor:pointer;z-index:52;transition:opacity .15s,border-color .15s,background .15s}
-#mute{right:12px}
-#bgmBtn{right:52px}
+.center{width:200px;text-align:center}
+.wave{display:inline-block;border:2px solid var(--violet);border-radius:999px;padding:2px 16px;font-weight:600;font-size:14px;background:#140c2ee6;box-shadow:0 0 14px #8b5cf633}
+#combo{margin-top:4px;font-weight:800;font-size:21px;line-height:1.1;color:var(--gold);text-shadow:0 0 12px #f59e0b88;min-height:36px}
+#combo.pop{animation:comboPop .18s ease-out}
+@keyframes comboPop{from{transform:scale(1.22)}to{transform:scale(1)}}
+#combo small{display:block;font-size:11px;color:var(--muted);font-weight:400;text-shadow:none}
+#mute,#bgmBtn,#tourBtn,#pauseBtn{position:absolute;top:10px;height:28px;min-width:34px;display:inline-flex;align-items:center;justify-content:center;background:#0e0820cc;backdrop-filter:blur(4px);border:1px solid #ffffff26;color:var(--text);border-radius:8px;padding:0 8px;cursor:pointer;font-size:14px;font-weight:600;font-family:inherit;transition:opacity .15s,border-color .15s,background .15s,transform .1s}
+#mute{right:12px;z-index:52}
+#bgmBtn{right:52px;z-index:52}
 #bgmBtn.off,#mute.off{opacity:.45}
 
 /* ---------- Arena ---------- */
-#arena{position:relative;flex:1;min-height:300px;overflow:hidden;border-top:1px solid #ffffff10;border-bottom:1px solid #ffffff10;
-  background:#0b0618}
+#arena{position:relative;flex:1;min-height:300px;overflow:hidden;border-top:1px solid #ffffff12;border-bottom:1px solid #ffffff12;
+  background:#0b0718}
 #arena.shake{animation:shake .28s}
 #arena.frozen *,#arena.frozen{animation-play-state:paused!important}
 @keyframes shake{0%,100%{transform:none}20%{transform:translate(-8px,3px)}40%{transform:translate(7px,-4px)}60%{transform:translate(-5px,2px)}80%{transform:translate(4px,-1px)}}
@@ -48,20 +55,23 @@ button{font-family:inherit}
 #player.shield::after{content:"";position:absolute;inset:20% -10% 10% 30%;border-radius:50%;border:4px solid var(--cyan);box-shadow:0 0 20px var(--cyan),inset 0 0 20px #67e8f966;animation:shieldFade .45s forwards}
 @keyframes shieldFade{from{opacity:1;transform:scale(.8)}to{opacity:0;transform:scale(1.15)}}
 
-#legend{position:absolute;top:10px;right:12px;background:#140c2ecc;border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-size:13px;line-height:1.7;z-index:4}
+#legend{position:absolute;top:10px;right:12px;background:#120a2acc;backdrop-filter:blur(4px);border:1px solid #ffffff1a;border-radius:10px;padding:5px 11px;font-size:12px;line-height:1.65;color:#d8d0f5;opacity:.78;z-index:4;transition:opacity .18s;pointer-events:none}
 #legend b{color:var(--good)}
-#legend{transition:opacity .15s}
-#arena:has(#defBox:not([hidden])) #legend{opacity:0;pointer-events:none}
+#arena.hasDef #legend,#arena:has(#defBox:not([hidden])) #legend{opacity:0;pointer-events:none}
 
 /* enemy defense prompt */
-#defBox{position:absolute;right:8%;top:8%;z-index:8;background:#2a0a14ee;border:2px solid #ef4444;border-radius:12px;padding:8px 16px;min-width:230px;text-align:center;box-shadow:0 0 24px #ef444466}
-#defBox .lbl{font-size:13px;color:#fecaca}
-#defBox .w{font-size:34px;font-weight:600}
-#defBox .cbar{height:10px;border-radius:5px;background:#0007;overflow:hidden;position:relative;margin-top:4px}
-#defBox .cbar i{position:absolute;left:0;top:0;bottom:0;background:#ef4444}
-#defBox .cbar .win{position:absolute;top:0;bottom:0;right:0;background:#fbbf2466;border-left:2px solid var(--gold)}
-#defBox.counter{border-color:var(--gold);box-shadow:0 0 30px #fbbf24aa}
-#defBox.counter .lbl{color:var(--gold)}
+#defBox{position:absolute;left:50%;top:11%;transform:translateX(-50%);z-index:10;background:#240814f2;backdrop-filter:blur(6px);border:2px solid #ef4444;border-radius:14px;padding:8px 20px 10px;min-width:260px;max-width:90%;text-align:center;box-shadow:0 8px 32px #0009,0 0 24px #ef444466;transition:border-color .12s,box-shadow .12s,transform .12s}
+#arena.hasMech #defBox{top:52px}
+#defBox .lbl{font-size:13px;font-weight:600;color:#fecaca}
+#defBox .w{font-size:36px;font-weight:700;line-height:1.25;margin:2px 0 4px}
+#defBox .cbar{height:11px;border-radius:6px;background:#0008;border:1px solid #ffffff1a;overflow:hidden;position:relative;margin-top:4px}
+#defBox .cbar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#dc2626,#f87171);z-index:1}
+#defBox .cbar .win{position:absolute;top:0;bottom:0;right:0;background:#fbbf2466;border-left:2px solid #fde047;z-index:2;pointer-events:none}
+#defBox.counter{border-color:#fde047;background:#2b1b08f2;box-shadow:0 8px 32px #0009,0 0 34px #fbbf24bb;transform:translateX(-50%) scale(1.03)}
+#defBox.counter .lbl{color:#fde047}
+#defBox.counter .cbar i{background:linear-gradient(90deg,#f59e0b,#fde047)}
+#defBox.early{border-color:#fb923c;box-shadow:0 8px 28px #0008,0 0 18px #fb923c55}
+#defBox.early .lbl{color:#fed7aa}
 
 /* ult */
 #ultBox{position:absolute;left:50%;top:50%;transform:translate(-50%,-55%);z-index:12;width:min(92%,900px);text-align:center;background:#12082bf2;border:2px solid var(--violet2);border-radius:16px;padding:16px 20px;box-shadow:0 0 50px #a855f7aa}
@@ -73,33 +83,42 @@ button{font-family:inherit}
 /* words & highlight */
 .w .done{color:var(--good)}
 .w .part{color:#bbf7d0}
-.w .next{background:#8b5cf655;border-radius:4px;box-shadow:0 2px 0 var(--violet2)}
-#words{display:flex;gap:12px;padding:12px 16px 4px}
+.w .next{color:#fff;background:#a855f755;border-radius:5px;padding:0 2px;box-shadow:0 2px 0 #e879f9}
+.slot.off .w .next{background:none;box-shadow:none;color:inherit}
+#words{display:flex;gap:12px;padding:10px 16px 4px}
 #words.err{animation:errShake .22s}
 @keyframes errShake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-.slot{flex:1;min-width:0;background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:8px 12px;text-align:center;position:relative;transition:opacity .1s,border-color .1s}
+.slot{flex:1;min-width:0;background:linear-gradient(180deg,#211642ee,#150d2ff5);border:2px solid var(--line);border-radius:14px;padding:9px 12px 8px;text-align:center;position:relative;transition:opacity .12s,border-color .12s,transform .12s,box-shadow .12s}
 .slot .tier{font-size:12px;color:var(--muted)}
-.slot .w{font-size:32px;font-weight:600;min-height:50px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.slot .dmg{font-size:12px;color:var(--gold)}
-.slot .tag{position:absolute;top:6px;right:8px;font-size:11px;padding:0 6px;border-radius:6px;background:#2d1f5e;color:var(--muted)}
-.slot.off{opacity:.3}
-.slot.lock{border-color:var(--violet2);box-shadow:0 0 18px #8b5cf688}
-.slot.pop{animation:pop .25s}
-@keyframes pop{from{transform:scale(.85);opacity:.2}}
-#buf{text-align:center;font-size:13px;color:var(--muted);min-height:20px}
-#buf b{color:var(--text);font-size:16px}
+.slot .w{font-size:32px;font-weight:600;min-height:48px;line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slot .dmg{font-size:12px;color:var(--gold);font-variant-numeric:tabular-nums}
+.slot .tag{position:absolute;top:6px;right:8px;font-size:11px;padding:1px 6px;border-radius:6px;background:#2d1f5eee;color:#d8d0f5}
+.slot.off{opacity:.28}
+.slot.lock{border-color:#e879f9;background:linear-gradient(180deg,#2c1c59f5,#1c1140f8);box-shadow:0 6px 22px #8b5cf666,inset 0 0 18px #a855f722;transform:translateY(-3px)}
+#words.cbuff .slot:not(.trap){border-color:#fbbf24aa;box-shadow:inset 0 0 18px #fbbf2426,0 0 14px #fbbf2433}
+#words.cbuff .slot.lock:not(.trap){border-color:#fde047;box-shadow:0 6px 24px #fbbf2477,inset 0 0 22px #fbbf2438}
+.slot.pop{animation:pop .22s}
+@keyframes pop{from{transform:scale(.92);opacity:.35}}
+#buf{text-align:center;font-size:13px;color:var(--muted);min-height:22px;display:flex;align-items:center;justify-content:center}
+#buf b{color:#fff;font-size:15px;background:#2b1b59;border:1px solid #a855f766;border-radius:7px;padding:0 8px;margin-left:6px}
 
 /* bottom */
-#bottom{display:flex;align-items:center;gap:16px;padding:6px 16px 14px}
-.stam{flex:1;max-width:340px;font-size:13px}
+#bottom{display:flex;align-items:center;gap:14px;padding:6px 16px 12px}
+.stam{flex:1;max-width:300px;font-size:12px;background:var(--panel);border:1px solid #ffffff16;border-radius:12px;padding:6px 12px}
+.stam-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;color:var(--muted)}
+.stam .bar{height:10px;border-width:1px}
 #stBar{background:linear-gradient(90deg,#7c3aed,#a78bfa)}
+.stam.tired{border-color:#f8717188}
 .stam.tired #stBar{background:#f87171}
-#tired{color:var(--bad);font-weight:600;margin-left:6px}
-.hint{flex:1;text-align:center;font-size:13px;color:var(--muted)}
-.ult{display:flex;align-items:center;gap:10px;border:2px solid var(--line);border-radius:12px;padding:6px 12px;background:var(--panel);min-width:260px}
-.ult .bar{flex:1;height:12px}
+#tired{color:var(--bad);font-weight:600}
+.hint{flex:1;text-align:center;font-size:12px;color:var(--muted)}
+.ult{display:flex;align-items:center;gap:10px;border:2px solid var(--line);border-radius:12px;padding:7px 12px;background:var(--panel);min-width:270px;font-size:13px;font-weight:600;transition:border-color .15s,box-shadow .15s,transform .1s}
+.ult .bar{flex:1;height:11px;border-width:1px}
+.ult small{font-size:12px;color:var(--muted);min-width:34px;text-align:right;font-variant-numeric:tabular-nums}
 #ultBar{background:linear-gradient(90deg,#a855f7,#f472b6)}
-.ult.ready{border-color:var(--violet2);box-shadow:0 0 20px #c084fcaa;animation:pulse2 .8s infinite alternate}
+.ult.ready{cursor:pointer;border-color:#f0abfc;background:linear-gradient(90deg,#2e165cee,#3b1566ee);box-shadow:0 0 22px #c084fcaa;animation:pulse2 .8s infinite alternate}
+.ult.ready:hover{transform:translateY(-1px)}
+.ult.ready small{color:#fde047}
 @keyframes pulse2{to{box-shadow:0 0 34px #f0abfcdd}}
 kbd{font-family:inherit;border:1px solid #ffffff44;border-bottom-width:3px;border-radius:6px;padding:0 6px;font-size:12px;background:#ffffff10}
 
@@ -497,12 +516,12 @@ body.cine #game{background:#000}
 #tourTip .dots{display:flex;gap:4px;margin-top:8px}
 #tourTip .dots i{width:7px;height:7px;border-radius:50%;background:#ffffff26}
 #tourTip .dots i.on{background:var(--gold)}
-#tourBtn{position:absolute;top:10px;right:92px;background:#0005;border:1px solid #ffffff22;color:var(--text);border-radius:8px;padding:2px 9px;cursor:pointer;z-index:30;font-weight:600;font-family:inherit}
-#pauseBtn{position:absolute;top:10px;right:132px;background:#0005;border:1px solid #ffffff22;color:var(--text);border-radius:8px;padding:2px 8px;cursor:pointer;z-index:30;font-weight:600;font-family:inherit}
+#tourBtn{right:92px;z-index:30}
+#pauseBtn{right:132px;z-index:30}
 #pauseBtn[hidden]{display:none}
 #pauseBtn:hover,#tourBtn:hover,#mute:hover,#bgmBtn:hover{border-color:var(--violet2);background:#24144ecc}
 /* ---------- ธาตุ / คำหลอก / กลไกบอสใหม่ ---------- */
-.slot .elem{position:absolute;top:6px;left:8px;font-size:12px;padding:0 6px;border-radius:6px;background:#0005;font-weight:600}
+.slot .elem{position:absolute;top:6px;left:8px;font-size:12px;padding:1px 6px;border-radius:6px;background:#0006;font-weight:600}
 .slot.el-fire{border-color:#fb923c66}
 .slot.el-water{border-color:#38bdf866}
 .slot.el-wind{border-color:#4ade8066}
@@ -567,7 +586,7 @@ body.cine #game{background:#000}
   <div id="hud">
     <div class="hpbox p">
       <div class="name">นักพิมพ์ <span id="pTag"></span></div>
-      <div class="bar"><i id="phpBar"></i></div>
+      <div class="bar"><u id="phpLag"></u><i id="phpBar"></i></div>
       <div class="num" id="phpNum">100 / 100</div>
     </div>
     <div class="center">
@@ -576,7 +595,7 @@ body.cine #game{background:#000}
     </div>
     <div class="hpbox e">
       <div class="name"><b id="eName" style="font-weight:600">โอนิดาบแดง</b> <span id="eTag">Lv.1</span></div>
-      <div class="bar"><i id="ehpBar"></i></div>
+      <div class="bar"><u id="ehpLag"></u><i id="ehpBar"></i></div>
       <div class="num" id="ehpNum">160 / 160</div>
       <div id="twinsHud" hidden></div>
     </div>
@@ -625,9 +644,9 @@ body.cine #game{background:#000}
   <div id="buf"></div>
 
   <div id="bottom">
-    <div class="stam" id="stamBox">Stamina <span id="tired"></span><div class="bar"><i id="stBar"></i></div></div>
+    <div class="stam" id="stamBox"><div class="stam-hd"><span>Stamina</span><span id="tired"></span></div><div class="bar"><i id="stBar"></i></div></div>
     <div class="hint"><kbd>Tab</kbd> ท่าไม้ตาย · <kbd>Esc</kbd> หยุดเกม · พิมพ์คำไหนก็ได้ใน 3 ช่อง</div>
-    <div class="ult" id="ultBtn"><span>ท่าไม้ตาย</span><div class="bar"><i id="ultBar"></i></div><kbd>Tab</kbd></div>
+    <div class="ult" id="ultBtn" title="กด Tab หรือคลิกเพื่อใช้ท่าไม้ตาย"><span>ท่าไม้ตาย</span><div class="bar"><i id="ultBar"></i></div><small id="ultPct">0%</small><kbd>Tab</kbd></div>
   </div>
 
   <!-- start / title screen -->
@@ -2581,6 +2600,7 @@ function addUlt(n) {
 }
 function addCombo() {
   S.combo++; S.maxCombo = Math.max(S.maxCombo, S.combo);
+  if (S.combo >= 2) anim($('#combo'), 'pop', 200);
   if (R.mod.shieldEvery && S.combo % R.mod.shieldEvery === 0) { S.shields++; fx('msg', '+🛡️ โล่', P, 40, -50); }
 }
 
@@ -3267,21 +3287,28 @@ function renderWords() {
     el.classList.toggle('off', S.ultMode || (S.buf !== '' && !m.ok) || (i === 2 && pvBusy()));
     el.classList.toggle('lock', !S.ultMode && S.buf !== '' && m.ok);
   });
+  $('#words').classList.toggle('cbuff', !!S.cBuff);
   $('#defBox').hidden = !S.def;
+  arena.classList.toggle('hasDef', !!S.def);
   if (S.def) $('#defWord').innerHTML = wordHTML(S.def);
   if (S.ultMode) $('#ultWord').innerHTML = wordHTML(S.ultWord);
-  $('#buf').innerHTML = S.buf ? 'กำลังพิมพ์: <b>' + esc(S.buf) + '</b>' : '';
+  $('#buf').innerHTML = S.buf ? 'กำลังพิมพ์<b>' + esc(S.buf) + '</b>' : '';
 }
 
+$('#ultBtn').onclick = () => { if (S && S.running && S.ult >= 100 && !S.ultMode) { tryUlt(); kb.focus(); } };
+
 function renderHUD() {
-  $('#phpBar').style.width = (S.php / S.pmax * 100) + '%';
-  $('#ehpBar').style.width = (S.ehp / S.emax * 100) + '%';
+  const phpPct = (S.php / S.pmax * 100) + '%', ehpPct = (S.ehp / S.emax * 100) + '%';
+  $('#phpBar').style.width = phpPct; $('#phpLag').style.width = phpPct;
+  $('#ehpBar').style.width = ehpPct; $('#ehpLag').style.width = ehpPct;
+  $('.hpbox.p').classList.toggle('low', S.php / S.pmax <= 0.3);
   $('#phpNum').textContent = Math.ceil(S.php) + ' / ' + S.pmax;
   $('#ehpNum').textContent = Math.ceil(S.ehp) + ' / ' + S.emax;
   $('#stBar').style.width = S.stamina + '%';
   $('#stamBox').classList.toggle('tired', S.tired);
   $('#tired').textContent = S.tired ? 'เหนื่อย! ดาเมจ ×0.5' : '';
   $('#ultBar').style.width = S.ult + '%';
+  $('#ultPct').textContent = S.ult >= 100 ? 'พร้อม!' : Math.floor(S.ult) + '%';
   $('#pTag').textContent = (S.shields ? '🛡️×' + S.shields : '') + (R.revive ? ' 🪽' : '');
   $('#ultBtn').classList.toggle('ready', S.ult >= 100 && !S.ultMode);
   $('#combo').innerHTML = S.combo >= 2 ? `COMBO ${S.combo}<small>ดาเมจ ×${comboMult().toFixed(1)}</small>` : '';
@@ -3302,7 +3329,9 @@ function renderHUD() {
   } else th.hidden = true;
   // แถบสถานะกลไกบอสใหม่
   const mb = $('#mechBar');
-  if (S.running && FOE.bossMech) {
+  const hasMech = !!(S.running && FOE.bossMech);
+  arena.classList.toggle('hasMech', hasMech);
+  if (hasMech) {
     mb.hidden = false;
     mb.className = FOE.bossMech;
     if (FOE.bossMech === 'swap' && S.keySwap) {
@@ -3319,6 +3348,7 @@ function renderHUD() {
     $('#defWin').style.width = Math.min(100, counterWin() / e.chargeMax * 100) + '%';
     const gold = rem <= counterWin(), early = defEarly();
     $('#defBox').classList.toggle('counter', gold && !early);
+    $('#defBox').classList.toggle('early', gold && early);
     $('#defBox .lbl').textContent = gold && early ? 'เริ่มพิมพ์ก่อนช่วงทอง = กันได้ แต่ไม่สวนกลับ' : gold ? '⚡ เริ่มพิมพ์ตอนนี้ให้จบทัน = สวนกลับ (คำต่อไป ×2)' : R.pvp ? `คู่แข่งปล่อยท่าหนัก ${S.pvDmg}! พิมพ์เพื่อกัน` : 'ศัตรูกำลังชาร์จ! พิมพ์เพื่อป้องกัน';
   }
   if (S.ultMode) $('#ultTimeBar').style.width = (S.ultTime / S.ultMax * 100) + '%';
