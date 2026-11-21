@@ -828,10 +828,50 @@ body.hud5 #defBox.counter{transform:translateX(-50%);
     linear-gradient(90deg,#3a2a0700,#3a2a07ee 14%,#3a2a07ee 86%,#3a2a0700)}
 body.hud5 #defBox.counter::before{background:linear-gradient(#fff4b3,#ffd84a 60%,#a16207);filter:drop-shadow(0 0 10px #ffd84a)}
 body.hud5 #defBox.counter .lbl::before{content:"COUNTER!  ";color:#ffd84a;text-shadow:0 0 10px #f59e0b}
-body.hud5 #ultBox{border:0;border-radius:0;background:#14082ef2;box-shadow:inset 0 0 0 2px var(--mg),0 0 40px #ff3fd877;
-  clip-path:polygon(20px 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%,0 20px)}
-body.hud5 #ultBox .lbl{font-family:var(--pxf);color:#ff9cf0;text-shadow:0 0 8px var(--mg)}
-body.hud5 #mechBar,body.hud5 #toast{border-radius:0}
+/* ---- ULTIMATE: แผงโอเวอร์ไดรฟ์ชมพูนีออน (ภาษาเดียวกับ PARRY!: แถบลายบน/ล่าง + ป้ายเอียง + แถบเวลาแบ่งช่อง) ---- */
+body.hud5 #ultBox{width:min(760px,92%);border:0;border-radius:0;padding:22px 34px 20px;box-shadow:none;filter:drop-shadow(0 0 22px #ff3fd877);
+  background:repeating-linear-gradient(-55deg,var(--mg) 0 12px,transparent 12px 24px) top/100% 6px no-repeat,
+    repeating-linear-gradient(-55deg,var(--mg) 0 12px,transparent 12px 24px) bottom/100% 6px no-repeat,
+    radial-gradient(120% 90% at 50% 0,#4a0f5af0,transparent 70%),
+    linear-gradient(90deg,#1a072ef0,#2a0a3ef8 50%,#1a072ef0);
+  clip-path:polygon(22px 0,calc(100% - 22px) 0,100% 22px,100% calc(100% - 22px),calc(100% - 22px) 100%,22px 100%,0 calc(100% - 22px),0 22px)}
+body.hud5 #ultBox::before,body.hud5 #ultBox::after{content:"";position:absolute;top:50%;width:14px;height:44%;transform:translateY(-50%);
+  background:linear-gradient(var(--mg),#ff9cf0,var(--mg));clip-path:polygon(0 0,100% 12%,100% 88%,0 100%);opacity:.85}
+body.hud5 #ultBox::before{left:8px}
+body.hud5 #ultBox::after{right:8px;transform:translateY(-50%) scaleX(-1)}
+body.hud5 #ultBox .hd{display:flex;align-items:center;justify-content:center;gap:14px}
+body.hud5 #ultBox .tg{font-family:var(--pxf);font-weight:700;font-style:italic;font-size:22px;letter-spacing:2px;color:#fff;padding:2px 18px;
+  background:linear-gradient(90deg,#ff3fd8,#a855f7);clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);text-shadow:0 2px 0 #6b0f5e}
+body.hud5 #ultBox .lbl{font-family:var(--pxf);font-size:15px;letter-spacing:2px;color:#ff9cf0;text-shadow:0 0 8px var(--mg)}
+body.hud5 #ultBox #ultSec{font-family:var(--pxf);font-style:normal;font-size:16px;min-width:52px;color:#c9f6ff;text-shadow:0 0 8px var(--cy);
+  padding:1px 8px;box-shadow:inset 0 0 0 1px #38e8ff88}
+body.hud5 #ultBox .w{font-size:38px;font-weight:800;margin:10px 0 12px;color:#fff;text-shadow:0 0 14px #ff3fd8,0 3px 0 #000}
+body.hud5 #ultBox .tbar{height:12px;border-radius:0;background:#0009;box-shadow:inset 0 0 0 1px #ff3fd888;
+  clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+body.hud5 #ultBox .tbar i{background:linear-gradient(90deg,#a855f7,#ff3fd8 60%,#ffb3f2);
+  -webkit-mask:repeating-linear-gradient(90deg,#000 0 14px,transparent 14px 17px);mask:repeating-linear-gradient(90deg,#000 0 14px,transparent 14px 17px)}
+body.hud5 #ultBox.low .tbar i{background:linear-gradient(90deg,#ff2d55,#ff8a3d);animation:ultLow .4s steps(2) infinite}
+body.hud5 #ultBox.low #ultSec{color:#ffd0d9;box-shadow:inset 0 0 0 1px #ff2d55;text-shadow:0 0 8px var(--rd)}
+@keyframes ultLow{50%{opacity:.45}}
+
+/* ---- แถบกลไกบอส: ป้ายชื่อกลไก + ไอคอน + คำอธิบาย + ตัวนับ (สีต่อกลไกผ่าน --mc) ---- */
+body.hud5 #mechBar{--mc:#a855f7;display:flex;align-items:center;gap:10px;width:max-content;max-width:calc(100% - 24px);padding:0 14px 0 0;border:0;border-radius:0;
+  background:linear-gradient(90deg,#0c0826f2,#140a2ef2);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--mc) 70%,transparent),0 0 18px color-mix(in srgb,var(--mc) 45%,transparent);
+  clip-path:polygon(0 0,calc(100% - 12px) 0,100% 50%,calc(100% - 12px) 100%,0 100%);font-size:13px;font-weight:500;color:#eef}
+body.hud5 #mechBar.swap{--mc:#a3e635}
+body.hud5 #mechBar.mirror{--mc:#38e8ff}
+body.hud5 #mechBar.stealth{--mc:#2dd4bf}
+body.hud5 #mechBar.twins{--mc:#fbbf24}
+body.hud5 #mechBar .tg{align-self:stretch;display:flex;align-items:center;gap:6px;padding:5px 16px 5px 12px;font-family:var(--pxf);font-weight:700;font-size:14px;letter-spacing:1.5px;color:#0c0826;
+  background:repeating-linear-gradient(-55deg,#0003 0 5px,transparent 5px 10px),var(--mc);clip-path:polygon(0 0,100% 0,calc(100% - 10px) 100%,0 100%)}
+body.hud5 #mechBar .tg::before{content:"BOSS";font-size:10px;letter-spacing:1px;padding:0 4px;background:#0c0826;color:var(--mc)}
+body.hud5 #mechBar .ic{font-size:16px;filter:drop-shadow(0 0 4px var(--mc))}
+body.hud5 #mechBar .tx{overflow:hidden;text-overflow:ellipsis}
+body.hud5 #mechBar kbd{display:inline-block;min-width:20px;padding:0 5px;margin:0 3px;font:600 13px Kanit,sans-serif;text-align:center;color:#0c0826;background:var(--mc);box-shadow:0 2px 0 #0008}
+body.hud5 #mechBar .ct{font-family:var(--pxf);font-style:normal;font-size:13px;padding:1px 8px;color:var(--mc);box-shadow:inset 0 0 0 1px var(--mc)}
+body.hud5 #mechBar.rage{animation:mechRage 1s ease-in-out infinite}
+@keyframes mechRage{50%{box-shadow:inset 0 0 0 2px var(--mc),0 0 30px var(--rd)}}
+body.hud5 #toast{border-radius:0}
 
 /* ---- คอนโซลล่าง: ACTION + 3 ช่องคำ ---- */
 body.hud5 #console{display:grid;grid-template-columns:minmax(230px,.85fr) minmax(0,2.4fr);position:relative;margin:12px 16px 0;
@@ -889,6 +929,17 @@ body.hud5 #bottom .hint{grid-column:3;justify-self:end;font-size:11px}
 @media (max-width:700px){
   body.hud5 #hud{padding:50px 12px 16px;gap:10px}
   body.hud5 #arena{--hudH:118px}
+  body.hud5:has(#twinsHud:not([hidden])) #arena{--hudH:212px}
+  body.hud5 #ultBox{padding:16px 22px 14px}
+  body.hud5 #ultBox .hd{gap:8px;flex-wrap:wrap}
+  body.hud5 #ultBox .tg{font-size:15px;padding:1px 12px}
+  body.hud5 #ultBox .lbl{display:none}
+  body.hud5 #ultBox .w{font-size:26px}
+  body.hud5 #mechBar{white-space:normal;font-size:11px;gap:6px;line-height:1.3}
+  body.hud5 #mechBar .tg{font-size:11px;padding:4px 12px 4px 8px;white-space:nowrap}
+  body.hud5 #mechBar .ct{white-space:nowrap;font-size:11px;padding:0 5px}
+  body.hud5 #mechBar kbd{min-width:16px;padding:0 3px;margin:0 2px;font-size:11px}
+  body.hud5 #mechBar .tg::before{display:none}
   body.hud5 .hpbox .name{font-size:13px;flex-wrap:wrap;row-gap:2px}
   body.hud5 .hpbox .name b{max-width:100%}
   body.hud5 .hpbox .num{position:static;font-size:11px;line-height:1.2}
@@ -980,7 +1031,7 @@ body.hud5 #bottom .hint{grid-column:3;justify-self:end;font-size:11px}
     </div>
 
     <div id="ultBox" hidden>
-      <div class="lbl">✦ ท่าไม้ตาย ✦</div>
+      <div class="hd"><b class="tg">ULTIMATE</b><span class="lbl">✦ ท่าไม้ตาย ✦</span><em id="ultSec"></em></div>
       <div class="w" id="ultWord"></div>
       <div class="tbar"><i id="ultTimeBar"></i></div>
     </div>
@@ -3925,13 +3976,18 @@ function renderHUD() {
   arena.classList.toggle('hasMech', hasMech);
   if (hasMech) {
     mb.hidden = false;
-    mb.className = FOE.bossMech;
+    mb.className = FOE.bossMech + (S.enraged ? ' rage' : '');
+    // HUD v5: [ป้ายชื่อกลไก][ไอคอน][คำอธิบาย][ตัวนับ] — textContent ยังมีข้อความไทยเดิม (เทสต์เช็ก 'กระจก')
+    const mset = (tag, ic, tx, ct) => {
+      const h = `<b class="tg">${tag}</b><span class="ic">${ic}</span><span class="tx">${tx}</span>${ct ? `<em class="ct">${ct}</em>` : ''}`;
+      if (mb._h !== h) { mb.innerHTML = h; mb._h = h; }
+    };
     if (FOE.bossMech === 'swap' && S.keySwap) {
       const rem = Math.max(0, Math.ceil(S.keySwap.nextAt - gclock));
-      mb.textContent = `🔄 สลับแป้น: ${S.keySwap.pairs.map(([a, b]) => `${a} ⇄ ${b}`).join(' · ')}  (${rem} วิ)`;
-    } else if (FOE.bossMech === 'mirror') mb.textContent = S.enraged ? '🪞 โหมดกระจกเต็มรูปแบบ — อ่านขวาไปซ้ายทุกช่อง!' : '🪞 จอมกระจก — อ่านคำกลับด้านจากขวาไปซ้าย แล้วพิมพ์คำจริง';
-    else if (FOE.bossMech === 'stealth') mb.textContent = '👁️ ภูตล่องหน — คำจะค่อยๆ จางหาย จำแล้วพิมพ์สัมผัส!';
-    else if (FOE.bossMech === 'twins') mb.textContent = '👯 บอสแฝด — ดูเป้าหมาย 🔴 อัคคี / 🔵 วารี ที่มุมขวาของแต่ละช่อง';
+      mset('KEY SWAP', '🔄', `สลับแป้น: ${S.keySwap.pairs.map(([a, b]) => `<kbd>${a}</kbd>⇄<kbd>${b}</kbd>`).join(' · ')}`, `${rem} วิ`);
+    } else if (FOE.bossMech === 'mirror') mset('MIRROR', '🪞', S.enraged ? 'โหมดกระจกเต็มรูปแบบ — อ่านขวาไปซ้ายทุกช่อง!' : 'จอมกระจก — อ่านคำกลับด้านจากขวาไปซ้าย แล้วพิมพ์คำจริง');
+    else if (FOE.bossMech === 'stealth') mset('STEALTH', '👁️', 'ภูตล่องหน — คำจะค่อยๆ จางหาย จำแล้วพิมพ์สัมผัส!');
+    else if (FOE.bossMech === 'twins') mset('TWINS', '👯', 'บอสแฝด — ดูเป้าหมาย 🔴 อัคคี / 🔵 วารี ที่มุมขวาของแต่ละช่อง');
   } else mb.hidden = true;
 
   if (S.def) {
@@ -3943,7 +3999,12 @@ function renderHUD() {
     $('#defBox').classList.toggle('early', gold && early);
     $('#defBox .lbl').textContent = gold && early ? 'เริ่มพิมพ์ก่อนช่วงทอง = กันได้ แต่ไม่สวนกลับ' : gold ? '⚡ เริ่มพิมพ์ตอนนี้ให้จบทัน = สวนกลับ (คำต่อไป ×2)' : R.pvp ? `คู่แข่งปล่อยท่าหนัก ${S.pvDmg}! พิมพ์เพื่อกัน` : 'ศัตรูกำลังชาร์จ! พิมพ์เพื่อป้องกัน';
   }
-  if (S.ultMode) $('#ultTimeBar').style.width = (S.ultTime / S.ultMax * 100) + '%';
+  if (S.ultMode) {
+    const f = S.ultTime / S.ultMax;
+    $('#ultTimeBar').style.width = (f * 100) + '%';
+    $('#ultSec').textContent = Math.max(0, S.ultTime).toFixed(1) + 's';
+    $('#ultBox').classList.toggle('low', f < 0.3);
+  }
   arena.classList.toggle('frozen', S.freeze > 0);
   if (R.pvp && S.running) $('#eTag').textContent = (S.pvOpp.combo >= 2 ? 'COMBO ' + S.pvOpp.combo : 'PvP') + (S.pvOpp.ult >= 100 ? ' · ⚡ท่าไม้ตายพร้อม' : '');
 }
