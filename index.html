@@ -3082,7 +3082,7 @@ function saveRunSnapshot(stageOverride) {
       shields: phase === 'fight' && S ? S.shields : R.shields,
       revive: R.revive, revived: !!R.revived, cleared: R.cleared, time: R.time,
       maxCombo: R.maxCombo, ups: R.ups, bought: R.bought, taken: R.taken,
-      mod: R.mod, stats: R.stats, storyBonus: R.storyBonus || null, midCutsceneDone: !!R.midCutsceneDone,
+      mod: R.mod, stats: R.stats, storyBonus: R.storyBonus || null,
       endless: !!R.endless, wave: R.wave || 0, shopped: R.shopped || 0, bossOrder: R.bossOrder || null,
       map: R.map ? R.map.map(row => row.map(n => ({ layer: n.layer, col: n.col, t: n.t, foe: n.foe || null, y: n.y, next: n.next }))) : null,
       atIdx: R.map && R.at ? [R.at.layer, R.at.col] : null,
@@ -3138,7 +3138,7 @@ function continueRun() {
     revive: sr.revive, revived: !!sr.revived, cleared: sr.cleared, time: sr.time,
     maxCombo: sr.maxCombo, ups: sr.ups || [], bought: sr.bought || [], taken: sr.taken || {},
     mod: Object.assign(R.mod, sr.mod || {}), stats: Object.assign(R.stats, sr.stats || {}),
-    storyBonus: sr.storyBonus || null, midCutsceneDone: !!sr.midCutsceneDone
+    storyBonus: sr.storyBonus || null
   });
   if (snap.kind === 'endless') {
     R.endless = true; R.wave = sr.wave || 1; R.shopped = sr.shopped || 0; R.bossOrder = sr.bossOrder || null;

@@ -1,1 +1,5 @@
 tests/*.png
+
+# AI source art (green screen / sheets): kept locally, not shipped to Pages
+art/enemies/*-green.jpg
+art/airin-sheets/
