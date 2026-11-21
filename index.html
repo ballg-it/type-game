@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Type Game — ต้นแบบไฟต์</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;800&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;800&family=Silkscreen:wght@400;700&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg0:#0b0718; --panel:#1b1236ee; --line:#3b2a77; --violet:#8b5cf6; --violet2:#c084fc;
@@ -340,7 +340,7 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
 #story .reply .upc .w{font-size:22px;display:block;padding:2px 8px;margin:0}
 #story .hint{font-size:12px;color:var(--muted);text-align:right;margin-top:4px}
 #story .hint kbd{font-size:11px}
-body.cine #words,body.cine #buf,body.cine #bottom,body.cine #legend,body.cine #combo{visibility:hidden}
+body.cine #console,body.cine #words,body.cine #buf,body.cine #bottom,body.cine #legend,body.cine #combo{visibility:hidden}
 body.cine #story{cursor:default}
 #arena.cine::before{content:'';position:absolute;left:0;right:0;top:0;height:9%;background:#000;z-index:11}
 /* ฉากเนื้อเรื่อง: พื้นที่ช่องคำที่ซ่อนอยู่ใต้ฉากให้ดำเหมือนแถบบน = letterbox สองข้างเท่ากัน ไม่ใช่ช่องว่างสีม่วง */
@@ -718,146 +718,174 @@ body.cine #game{background:#000}
 }
 @media (max-height:560px) and (max-width:700px){ #hud{padding-top:44px} }
 
-/* ================= HUD v3 — แบบเกมต่อสู้ (ดีไซน์ที่ใช้จริง: ทับบน v2 ผ่าน class hud3 ที่ <body>) =================
-   ทับเฉพาะหน้าตา ใช้ HTML ชุดเดียวกับ v2 · กรอบทอง, แถบเลือดเอียง, รูปหน้าหกเหลี่ยม, การ์ดสกิลนูนแบบปุ่มเกม */
-body.hud3{--gd:#e8b84a;--gd2:#8a6420}
-body.hud3 .pix{box-shadow:inset 0 2px 0 #ffffff26,inset 0 -3px 0 #00000066,0 0 0 2px #0d0720,0 0 0 4px var(--pf),0 6px 0 4px #05030c,var(--glow,0 0 0 0 transparent)}
+/* ================= HUD v5 — นีออนไซเบอร์พังก์ (ดีไซน์ที่ใช้จริง: class hud5 ที่ <body>, ทับบนบล็อก v2) =================
+   HUD ลอยทับฉาก · กรอบมุมตัด (clip-path) เส้นนีออนฟ้า/ชมพู/แดง · คอนโซลล่าง: ACTION (คำที่กำลังพิมพ์) + 3 ช่องคำ · ฟอนต์ Pixelify Sans */
+#console{display:contents}
+#floorPips,#liveStats{display:none}
+body.hud5{--cy:#38e8ff;--mg:#ff3fd8;--rd:#ff2d55;--pn:#0c0826e0;--ln:#6b5cff;--pxf:'Pixelify Sans',Kanit,sans-serif}
+body.hud5 .pix{box-shadow:none}
 
-/* แถบบน */
-body.hud3 #hud{align-items:center;padding:14px 200px 14px 20px;background:linear-gradient(#1f1146,#0b0718 90%);border-bottom:2px solid var(--gd2);box-shadow:0 3px 0 #00000088}
-body.hud3 .port{--box:70;background:linear-gradient(135deg,#fef3c7,var(--gd) 40%,var(--gd2));box-shadow:none;
-  clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)}
-body.hud3 .port i{inset:4px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background-color:#123322}
-body.hud3 .port.e i{background-color:#3a0f1f}
-body.hud3 .hpbox{gap:7px}
-body.hud3 .hpbox .name{font-size:17px}
-body.hud3 .hpbox .name b{font-weight:800;font-style:italic;letter-spacing:.5px;text-shadow:0 2px 0 #000,0 0 12px #a855f788;max-width:55%}
-body.hud3 .hpbox .name span{border-radius:999px;background:#00000066;border-color:#e8b84a55;color:#fde68a}
-body.hud3 .hpbox .num{font-size:15px;color:#fde68a}
-body.hud3 .hpbox>.bar{--pf:var(--gd);height:24px;border-radius:3px;transform:skewX(-18deg);background:linear-gradient(#1b0b14,#2a1220)}
-body.hud3 .hpbox.e>.bar{transform:skewX(18deg)}
-body.hud3 .hpbox>.bar::after{background:linear-gradient(#ffffff3a 0 38%,transparent 38%),repeating-linear-gradient(90deg,transparent 0 calc(25% - 2px),#0d0720aa calc(25% - 2px) 25%)}
-body.hud3 #phpBar{background:linear-gradient(90deg,#15803d,#22c55e 60%,#a3e635)}
-body.hud3 #ehpBar{background:linear-gradient(270deg,#991b1b,#ef4444 60%,#fb923c)}
-body.hud3 .hpbox.low #phpBar{background:linear-gradient(90deg,#9f1239,#f43f5e 60%,#fb923c)}
-body.hud3 .hpbox>.bar .lag{background:#fde047;transition:width .5s ease .35s}
-body.hud3 .stam .bar{height:8px;border-radius:2px;transform:skewX(-18deg);box-shadow:0 0 0 2px #0d0720,0 0 0 3px #e8b84a66}
-body.hud3 .stam .lbl{color:#fde68a}
-body.hud3 .wave{--pf:var(--gd);border-radius:4px;transform:skewX(-10deg);padding:6px 22px;font-size:16px;font-weight:800;font-style:italic;color:#fde68a;background:linear-gradient(#3b1d70,#1d0f40)}
-body.hud3 #combo{font-family:Kanit,sans-serif;font-weight:800;font-style:italic;font-size:30px;letter-spacing:0;
-  background:linear-gradient(#fffbe0,#fbbf24 55%,#ea580c);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:1px #7c2d12;text-shadow:none;filter:drop-shadow(0 3px 0 #000)}
-body.hud3 #combo small{color:#d8ccff;-webkit-text-stroke:0;font-style:normal}
-body.hud3 #mute,body.hud3 #bgmBtn,body.hud3 #tourBtn,body.hud3 #pauseBtn{border-radius:8px;background:linear-gradient(#3b2a77,#1d1240);
-  box-shadow:inset 0 2px 0 #ffffff26,0 0 0 2px var(--gd2),0 3px 0 2px #05030c}
-body.hud3 #mute:hover,body.hud3 #bgmBtn:hover,body.hud3 #tourBtn:hover,body.hud3 #pauseBtn:hover{box-shadow:inset 0 2px 0 #ffffff26,0 0 0 2px var(--gd),0 3px 0 2px #05030c}
+/* ---- แถบบนลอยทับฉาก ---- */
+body.hud5 #hud{position:absolute;top:0;left:0;right:0;z-index:15;pointer-events:none;align-items:start;gap:16px;padding:12px 196px 26px 16px;
+  background:linear-gradient(#05030cd9,#05030c80 60%,#05030c00);border:0;box-shadow:none}
+body.hud5 #arena{--hudH:112px}
+body.hud5 .port{--box:80;background:var(--cy);clip-path:polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%);filter:none}
+body.hud5 .port.e{background:var(--rd);clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))}
+body.hud5 .port i{inset:2px;background-color:#120a2e;clip-path:inherit}
+body.hud5 .hpbox{position:relative;gap:6px;padding-top:4px}
+body.hud5 .hpbox .name{font-family:var(--pxf);font-size:17px;letter-spacing:1.5px;color:#e8f6ff;text-shadow:0 0 8px #38e8ffaa,0 2px 0 #000}
+body.hud5 .hpbox.e .name{text-shadow:0 0 8px #ff2d55aa,0 2px 0 #000}
+body.hud5 .hpbox .name b{font-weight:500}
+body.hud5 .hpbox .name span{font-family:Kanit,sans-serif;border:1px solid #38e8ff66;background:#0c0826cc;color:#c9f6ff;letter-spacing:0;text-shadow:none}
+body.hud5 .hpbox.e .name span{border-color:#ff2d5566;color:#ffd0d9}
+body.hud5 .hpbox .num{position:absolute;z-index:3;left:12px;top:36px;line-height:22px;margin:0;font-family:var(--pxf);font-weight:500;font-size:15px;letter-spacing:1px;color:#fff;text-shadow:0 1px 0 #000,0 0 6px #000}
+body.hud5 .hpbox .num::before{content:"HP  ";color:#eafff1}
+body.hud5 .hpbox.e .num{left:auto;right:14px}
+body.hud5 .hpbox>.bar{height:22px;background:#0a0620cc;box-shadow:inset 0 0 0 1px #ffffff30;clip-path:polygon(0 0,100% 0,calc(100% - 16px) 100%,0 100%)}
+body.hud5 .hpbox.e>.bar{clip-path:polygon(0 0,100% 0,100% 100%,16px 100%)}
+body.hud5 .hpbox>.bar::after{background:linear-gradient(#ffffff40 0 3px,transparent 3px)}
+body.hud5 #phpBar{background:linear-gradient(90deg,#1fd65f,#5dff8f)}
+body.hud5 #ehpBar{background:linear-gradient(270deg,#ff2d55,#ff5d7a)}
+body.hud5 .hpbox.low #phpBar{background:linear-gradient(90deg,#ff2d55,#ff8a3d)}
+body.hud5 .hpbox>.bar .lag{background:#fff}
+body.hud5 .hpbox::after{content:"";height:2px;margin-top:-2px;background:linear-gradient(90deg,var(--cy),#38e8ff00 85%)}
+body.hud5 .hpbox.e::after{background:linear-gradient(270deg,var(--rd),#ff2d5500 85%)}
+body.hud5 .hpbox .stam{gap:8px}
+body.hud5 .stam .lbl{font-family:var(--pxf);font-size:0;color:var(--cy)}
+body.hud5 .stam .lbl::after{content:"SP";font-size:13px;letter-spacing:1px;text-shadow:0 0 6px #38e8ff}
+body.hud5 .stam .bar{flex:0 1 70%;height:12px;background:#0a0620cc;box-shadow:inset 0 0 0 1px #38e8ff55;clip-path:polygon(0 0,100% 0,calc(100% - 10px) 100%,0 100%)}
+body.hud5 #stBar{background:linear-gradient(90deg,#1aa8d8,#38e8ff)}
+body.hud5 .center{min-width:220px;position:relative;padding-top:2px}
+body.hud5 .center::before,body.hud5 .center::after{content:"";position:absolute;top:18px;width:34px;height:2px;background:var(--cy);box-shadow:0 0 6px var(--cy)}
+body.hud5 .center::before{left:0}
+body.hud5 .center::after{right:0}
+body.hud5 .wave{position:relative;padding:6px 26px;font-family:var(--pxf);font-size:17px;font-weight:500;letter-spacing:1.5px;color:#fff;text-shadow:0 0 8px #38e8ffaa;
+  background:linear-gradient(#1a1250f0,#0c0826f0);clip-path:polygon(14px 0,calc(100% - 14px) 0,100% 50%,calc(100% - 14px) 100%,14px 100%,0 50%);
+  box-shadow:inset 0 0 0 2px var(--cy)}
+body.hud5 #floorPips{display:flex;justify-content:center;gap:8px;margin-top:8px}
+body.hud5 #floorPips i{width:9px;height:9px;transform:rotate(45deg);border:2px solid #38e8ff88}
+body.hud5 #floorPips i.done{background:#38e8ff66;border-color:#38e8ff66}
+body.hud5 #floorPips i.on{background:var(--cy);border-color:var(--cy);box-shadow:0 0 8px var(--cy)}
+body.hud5 #combo{margin-top:8px;font-family:var(--pxf);font-weight:700;font-size:26px;letter-spacing:1px;color:#ff6be6;text-shadow:0 0 10px #ff3fd8,0 2px 0 #000}
+body.hud5 #combo small{font-family:Kanit,sans-serif;font-weight:400;font-size:12px;color:#f5d0fe;text-shadow:0 1px 0 #000;letter-spacing:0}
+body.hud5 #mute,body.hud5 #bgmBtn,body.hud5 #tourBtn,body.hud5 #pauseBtn{border-radius:0;background:#0c0826d9;color:#c9f6ff;box-shadow:inset 0 0 0 1px #38e8ff88;
+  clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px)}
+body.hud5 #mute:hover,body.hud5 #bgmBtn:hover,body.hud5 #tourBtn:hover,body.hud5 #pauseBtn:hover{box-shadow:inset 0 0 0 2px var(--cy);background:#1a1250}
+/* ของในฉากหลบลงใต้ HUD ที่ลอยทับ */
+body.hud5 #legend{top:var(--hudH)}
+body.hud5 #mechBar{top:var(--hudH)}
+body.hud5 #coach{top:var(--hudH)}
+body.hud5 #defBox{top:calc(var(--hudH) + 14px)}
+body.hud5 #arena.hasMech #defBox{top:calc(var(--hudH) + 52px)}
+body.hud5 #legend{border:0;border-radius:0;background:#0c0826cc;box-shadow:inset 0 0 0 1px #38e8ff55;color:#d9f7ff}
 
-/* การ์ดสกิล */
-body.hud3 #words{gap:22px;padding:18px 22px 8px;background:linear-gradient(#0b0718,#150b30);border-top:2px solid var(--gd2)}
-body.hud3 #buf{background:#150b30;margin:0}
-body.hud3 #bottom{background:#150b30;padding-bottom:16px}
-body.hud3 .slot{--pf:color-mix(in srgb,var(--ec) 70%,#000);border-radius:14px;grid-template-columns:76px minmax(0,1fr) auto;padding:10px 16px 12px 0;
-  background:linear-gradient(#2c1b5e,#180e38 55%,#120a2b)}
-body.hud3 .slot:has(.elem:empty){grid-template-columns:0 minmax(0,1fr) auto;padding-left:16px}
-body.hud3 .slot .elem{margin:0;border:0;gap:7px}
-body.hud3 .slot .elem i{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:23px;filter:none;
-  background:radial-gradient(circle at 35% 30%,#ffffffaa,color-mix(in srgb,var(--ec) 80%,#000) 45%,color-mix(in srgb,var(--ec) 35%,#000));
-  box-shadow:0 0 0 2px #0d0720,0 0 0 4px var(--gd),0 3px 0 4px #05030c,0 0 20px var(--ec)}
-body.hud3 .slot .elem small{font-size:11px;font-weight:800}
-body.hud3 .slot .tier{font-weight:600;color:#d8ccff}
-body.hud3 #s0 .tier::after{content:" ★";color:var(--gd)}
-body.hud3 #s1 .tier::after{content:" ★★";color:var(--gd)}
-body.hud3 #s2 .tier::after{content:" ★★★";color:var(--gd)}
-body.hud3 .slot .w{font-size:32px;text-shadow:0 3px 0 #000}
-body.hud3 .slot .dmg{justify-self:start;padding:0 10px;border-radius:999px;background:#00000066;border:1px solid #e8b84a44;margin-top:2px}
-body.hud3 .slot.lock{--pf:#f5d0fe;--glow:0 0 30px #c084fcbb;transform:translateY(-6px);background:linear-gradient(#41288a,#21134a 60%)}
-body.hud3 .slot.super{--glow:0 0 22px #fbbf2466}
-body.hud3 .slot.trap{--pf:#ef4444;background:repeating-linear-gradient(-45deg,#3b0d22 0 12px,#250816 12px 24px)}
-body.hud3 .slot.off{opacity:.35}
+/* ---- PARRY! แบนเนอร์แถบอันตราย ---- */
+body.hud5 #defBox{width:min(620px,92%);min-width:0;max-width:none;padding:16px 40px 14px 104px;border:0;border-radius:0;backdrop-filter:none;box-shadow:none;text-align:left;
+  background:repeating-linear-gradient(-55deg,var(--rd) 0 12px,transparent 12px 24px) top/100% 7px no-repeat,
+    repeating-linear-gradient(-55deg,var(--rd) 0 12px,transparent 12px 24px) bottom/100% 7px no-repeat,
+    linear-gradient(90deg,#3a071800,#3a0718ee 14%,#3a0718ee 86%,#3a071800)}
+body.hud5 #defBox::before{content:"";position:absolute;left:34px;top:50%;width:50px;height:58px;transform:translateY(-50%);
+  background:linear-gradient(#ffb3c4,#ff2d55 60%,#a10f30);clip-path:polygon(50% 0,100% 16%,100% 55%,50% 100%,0 55%,0 16%);filter:drop-shadow(0 0 10px #ff2d55)}
+body.hud5 #defBox .lbl{font-size:13px;font-weight:600;color:#ffd0d9;text-shadow:0 1px 0 #000}
+body.hud5 #defBox .lbl::before{content:"PARRY!  ";font-family:var(--pxf);font-weight:700;font-style:italic;font-size:22px;color:#ff5d7a;text-shadow:0 0 10px #ff2d55}
+body.hud5 #defBox .w{font-size:40px;font-weight:800;color:#fff;text-shadow:0 0 12px #ff2d55,0 3px 0 #000}
+body.hud5 #defBox .cbar{border:0;border-radius:0;height:8px;background:#0008;box-shadow:inset 0 0 0 1px #ff2d5588}
+body.hud5 #defBox.counter{transform:translateX(-50%);
+  background:repeating-linear-gradient(-55deg,#ffd84a 0 12px,transparent 12px 24px) top/100% 7px no-repeat,
+    repeating-linear-gradient(-55deg,#ffd84a 0 12px,transparent 12px 24px) bottom/100% 7px no-repeat,
+    linear-gradient(90deg,#3a2a0700,#3a2a07ee 14%,#3a2a07ee 86%,#3a2a0700)}
+body.hud5 #defBox.counter::before{background:linear-gradient(#fff4b3,#ffd84a 60%,#a16207);filter:drop-shadow(0 0 10px #ffd84a)}
+body.hud5 #defBox.counter .lbl::before{content:"COUNTER!  ";color:#ffd84a;text-shadow:0 0 10px #f59e0b}
+body.hud5 #ultBox{border:0;border-radius:0;background:#14082ef2;box-shadow:inset 0 0 0 2px var(--mg),0 0 40px #ff3fd877;
+  clip-path:polygon(20px 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%,0 20px)}
+body.hud5 #ultBox .lbl{font-family:var(--pxf);color:#ff9cf0;text-shadow:0 0 8px var(--mg)}
+body.hud5 #mechBar,body.hud5 #toast{border-radius:0}
 
-/* เกจท่าไม้ตาย */
-body.hud3 .ult{--pf:var(--gd);height:48px;width:min(620px,100%);border-radius:12px;padding:0 12px 0 18px;gap:14px;background:linear-gradient(#2c1b5e,#150b30)}
-body.hud3 .ult .lbl{font-weight:800;font-style:italic;font-size:17px;color:#fde68a;text-shadow:0 2px 0 #000}
-body.hud3 .ult .bar{height:16px;border-radius:3px;transform:skewX(-18deg);box-shadow:0 0 0 2px #0d0720,0 0 0 3px #e8b84a88}
-body.hud3 .ult .bar::after{background:linear-gradient(#ffffff40 0 40%,transparent 40%),repeating-linear-gradient(90deg,transparent 0 calc(20% - 2px),#0d0720 calc(20% - 2px) 20%)}
-body.hud3 #ultBar{background:linear-gradient(90deg,#7c3aed,#c026d3,#f472b6)}
-body.hud3 .ult kbd,body.hud3 #bottom kbd{font-size:12px;padding:3px 10px;border-radius:6px;background:linear-gradient(#f5f3ff,#c4b5fd);color:#1e1048;box-shadow:0 3px 0 #6d28d9,0 5px 0 #05030c}
-body.hud3 .ult.ready{--pf:#fde68a;--glow:0 0 32px #f0abfcbb;background:linear-gradient(#4c1d95,#2a1050);animation:ultPulse .7s ease-in-out infinite alternate}
-body.hud3 .ult.ready kbd{background:linear-gradient(#fef9c3,#fbbf24);box-shadow:0 3px 0 #b45309,0 5px 0 #05030c;animation:keyTap .5s steps(2) infinite}
-@keyframes ultPulse{to{transform:scale(1.02)}}
-@keyframes keyTap{50%{transform:translateY(3px);box-shadow:0 0 0 #b45309,0 2px 0 #05030c}}
+/* ---- คอนโซลล่าง: ACTION + 3 ช่องคำ ---- */
+body.hud5 #console{display:grid;grid-template-columns:minmax(230px,.85fr) minmax(0,2.4fr);position:relative;margin:12px 16px 0;
+  background:var(--ln);clip-path:polygon(26px 0,calc(100% - 26px) 0,100% 26px,100% 100%,0 100%,0 26px)}
+body.hud5 #console::before{content:"";position:absolute;inset:2px 2px 0;background:linear-gradient(#141040f2,#0a0620f8);clip-path:polygon(25px 0,calc(100% - 25px) 0,100% 25px,100% 100%,0 100%,0 25px)}
+body.hud5 #console>*{position:relative;z-index:1}
+body.hud5 #buf{grid-column:1;grid-row:1;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;min-height:0;padding:10px 18px 10px 30px;
+  font-size:0;color:transparent;border-right:2px solid #6b5cff88}
+body.hud5 #buf::before{content:"ACTION";font-family:var(--pxf);font-size:14px;letter-spacing:2px;color:var(--cy);text-shadow:0 0 6px var(--cy)}
+body.hud5 #buf b{margin:0;padding:0;border:0;background:none;font-size:40px;line-height:1.2;font-weight:600;color:#bdf6ff;text-shadow:0 0 12px #38e8ff,0 2px 0 #000;max-width:100%;overflow:hidden;white-space:nowrap}
+body.hud5 #buf b::after,body.hud5 #buf:empty::after{content:"_";animation:blink 1s steps(2) infinite;color:var(--cy)}
+body.hud5 #buf:empty::after{content:"พิมพ์คำไหนก็ได้ _";font-size:22px;color:#7f8fb8;text-shadow:none;animation:none}
+body.hud5 #words{grid-column:2;grid-row:1;gap:0;padding:12px 20px 12px 0;background:none;border:0}
+body.hud5 .slot,body.hud5 .slot:has(.elem:empty){--ic:none;display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"elem tier" "w w" "dmg dmg";column-gap:8px;align-items:center;
+  padding:6px 14px 8px;text-align:center;border-radius:0;background:none;box-shadow:none;border-left:2px solid #6b5cff55;transform:none}
+body.hud5 .slot::before{display:none}
+body.hud5 .slot.el-fire{--ic:var(--ic-fire)}
+body.hud5 .slot.el-water{--ic:var(--ic-water)}
+body.hud5 .slot.el-wind{--ic:var(--ic-wind)}
+body.hud5 .slot.trap{--ic:var(--ic-skull);background:repeating-linear-gradient(-55deg,#ff2d5522 0 10px,transparent 10px 20px)}
+body.hud5 .slot .elem{grid-area:elem;display:flex;align-items:center;gap:6px;margin:0;border:0;background:none}
+body.hud5 .slot .elem i{width:26px;height:26px;font-size:0;filter:none;border-radius:0;box-shadow:none;background:var(--ic) center/24px 24px no-repeat;image-rendering:pixelated}
+body.hud5 .slot .elem small{font-size:12px;font-weight:600;color:var(--ec)}
+body.hud5 .slot .tier{grid-area:tier;justify-self:end;font-family:var(--pxf);font-size:12px;letter-spacing:1px;color:#8f9bd0}
+body.hud5 #s0 .tier::after{content:" ▸"} body.hud5 #s1 .tier::after{content:" ▸▸"} body.hud5 #s2 .tier::after{content:" ▸▸▸"}
+body.hud5 .slot .tag{grid-area:tier;justify-self:center}
+body.hud5 .slot .w{grid-area:w;font-size:32px;line-height:46px;min-height:46px;color:#f1ecff;text-shadow:0 2px 0 #000}
+body.hud5 .w .next{background:none;color:#fff;box-shadow:inset 0 -3px 0 var(--cy)}
+body.hud5 .w .done{color:#5dff8f}
+body.hud5 .slot .dmg{grid-area:dmg;font-family:var(--pxf);font-size:13px;letter-spacing:.5px;color:#ffd84a}
+body.hud5 .slot .dmg.resist{color:#8f9bd0}
+body.hud5 .slot.super:not(.lock) .w{text-shadow:0 0 10px #ffd84a88,0 2px 0 #000}
+body.hud5 .slot.lock{background:linear-gradient(#38e8ff26,#38e8ff00 80%);box-shadow:inset 0 3px 0 var(--cy)}
+body.hud5 .slot.lock .w{text-shadow:0 0 12px #38e8ff,0 2px 0 #000}
+body.hud5 .slot.off{opacity:.3;filter:none}
+body.hud5 #words.cbuff .slot:not(.trap){box-shadow:inset 0 3px 0 #ffd84a}
 
-/* แผงล่าง v3.1: อัญมณีซ้าย + คำกลางการ์ด, เกจกว้างเท่าแถวการ์ด, คำแนะนำอยู่ใต้เกจ */
-body.hud3 .slot{grid-template-columns:84px minmax(0,1fr);grid-template-areas:"elem tier" "elem w" "elem dmg";text-align:center;row-gap:2px;padding:10px 16px 12px 0}
-body.hud3 .slot:has(.elem:empty){grid-template-columns:0 minmax(0,1fr);padding-left:16px}
-body.hud3 .slot .elem{align-self:stretch;margin:-10px 0 -12px;border-right:2px solid #0d072099;background:linear-gradient(90deg,color-mix(in srgb,var(--ec) 18%,transparent),transparent);border-radius:14px 0 0 14px}
-body.hud3 .slot .elem i{width:52px;height:52px;font-size:26px;
-  background:radial-gradient(circle at 35% 30%,#fff 0 7%,color-mix(in srgb,var(--ec) 55%,#fff) 20%,var(--ec) 50%,color-mix(in srgb,var(--ec) 45%,#000) 100%);
-  box-shadow:0 0 0 2px #0d0720,0 0 0 4px var(--gd),0 3px 0 4px #05030c,0 0 24px var(--ec)}
-body.hud3 .slot .elem small{font-size:12px;color:#fff;text-shadow:0 1px 0 #000}
-body.hud3 .slot .tier{justify-self:center;font-size:12px;padding:1px 12px;border-radius:999px;background:#00000059;border:1px solid #e8b84a33}
-body.hud3 .slot .tag{position:absolute;top:8px;right:10px}
-body.hud3 .slot .w{font-size:34px;line-height:50px;min-height:50px}
-body.hud3 .slot .dmg{justify-self:center;font-size:13px;padding:1px 12px}
-body.hud3 #bottom{flex-direction:column;gap:6px;padding:10px 22px 12px}
-body.hud3 .ult{width:100%;height:50px}
-body.hud3 .ult .bar{height:18px;background:linear-gradient(#1a0f3a,#2e1d60)}
-body.hud3 .ult .bar::after{background:linear-gradient(#ffffff40 0 40%,transparent 40%),repeating-linear-gradient(90deg,transparent 0 calc(20% - 2px),#e8b84a55 calc(20% - 2px) 20%)}
-body.hud3 #bottom .hint{font-size:11px;opacity:.75}
+/* ---- แถบล่างสุด: เกจท่าไม้ตาย + ความแม่น/WPM ---- */
+body.hud5 #bottom{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:18px;padding:0 16px 12px;background:none}
+body.hud5 .ult{grid-column:1;width:auto;height:40px;margin-top:-2px;padding:0 12px 0 22px;gap:10px;border-radius:0;background:#0c0826f0;box-shadow:inset 0 0 0 2px #ff3fd888;
+  clip-path:polygon(0 0,100% 0,calc(100% - 18px) 100%,18px 100%,0 calc(100% - 18px))}
+body.hud5 .ult .lbl{font-family:var(--pxf);font-size:15px;color:#ff9cf0;text-shadow:0 0 8px var(--mg)}
+body.hud5 .ult .bar{height:12px;background:#05030c;box-shadow:inset 0 0 0 1px #ff3fd866;clip-path:polygon(0 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+body.hud5 .ult .bar::after{background:repeating-linear-gradient(90deg,transparent 0 calc(20% - 2px),#05030c calc(20% - 2px) 20%)}
+body.hud5 #ultBar{background:linear-gradient(90deg,#b026ff,var(--mg))}
+body.hud5 .ult small{font-family:var(--pxf);font-size:13px;color:#ffd0f7}
+body.hud5 .ult kbd,body.hud5 #bottom kbd{font-family:var(--pxf);border-radius:0;background:#0c0826;color:var(--cy);box-shadow:inset 0 0 0 1px var(--cy)}
+body.hud5 .ult.ready{box-shadow:inset 0 0 0 2px var(--mg);background:#2a0a4af0;animation:blink .7s steps(2) infinite}
+body.hud5 #liveStats{display:block;grid-column:2;font-family:var(--pxf);font-size:17px;letter-spacing:1.5px;color:var(--cy);text-shadow:0 0 6px #38e8ff88;white-space:nowrap}
+body.hud5 #liveStats b{color:#fff;font-weight:700}
+body.hud5 #liveStats i{font-style:normal;color:#6b5cff;margin:0 12px}
+body.hud5 #bottom .hint{grid-column:3;justify-self:end;font-size:11px}
 
-/* แผงล่าง v3.2 — การ์ดสกิลแนวตั้ง (แบบ A): อัญมณีธาตุลอยบนขอบบน, ชื่อธาตุซ้ายบน, ระดับ+ดาวขวาบน, คำใหญ่กลาง, ดาเมจเป็นแถบท้ายการ์ด */
-body.hud3 #words{padding-top:34px;gap:22px}
-body.hud3 .slot,body.hud3 .slot:has(.elem:empty){display:block;text-align:center;padding:30px 12px 0;border-radius:16px;
-  background:linear-gradient(180deg,color-mix(in srgb,var(--ec) 28%,#22134a),#160c33 62%)}
-body.hud3 .slot:has(.elem:empty){padding-top:26px}
-body.hud3 .slot.lock{background:linear-gradient(180deg,color-mix(in srgb,var(--ec) 38%,#341d75),#21134a 62%)}
-body.hud3 .slot.trap{background:repeating-linear-gradient(-45deg,#3b0d22 0 12px,#250816 12px 24px)}
-body.hud3 .slot .elem{display:contents}
-body.hud3 .slot .elem i{position:absolute;left:50%;top:-24px;transform:translateX(-50%);width:48px;height:48px;z-index:2}
-body.hud3 .slot .elem small{position:absolute;top:8px;left:12px;font-size:12px;font-weight:800;color:var(--ec);text-shadow:0 1px 0 #000}
-body.hud3 .slot .tier{position:absolute;top:7px;right:12px;max-width:calc(50% - 38px);overflow:hidden;text-overflow:ellipsis;padding:0;background:none;border:0;font-size:12px}
-body.hud3 .slot .tag{top:30px}
-body.hud3 .slot .w{display:block;font-size:36px;line-height:50px;min-height:50px}
-body.hud3 .slot .dmg{display:block;margin:6px -12px 0;padding:5px 8px;border:0;border-top:1px solid #e8b84a33;border-radius:0 0 14px 14px;background:#00000066;font-size:13px}
-
+@media (max-width:900px){ body.hud5 #liveStats{font-size:13px} body.hud5 #liveStats i{margin:0 6px} }
 @media (max-width:700px){
-  body.hud3 .slot,body.hud3 .slot:has(.elem:empty){grid-template-areas:"elem tier" "tag tag" "w w" "dmg dmg";row-gap:0}
-  body.hud3 .slot .elem{margin:0;border:0;background:none;align-self:center}
-  body.hud3 .slot .tier{padding:0;background:none;border:0;font-size:10px;justify-self:end}
-  body.hud3 .slot .tag{position:static}
-  body.hud3 .slot .w{line-height:34px;min-height:34px}
-  body.hud3 .slot .dmg{padding:0 6px}
-  body.hud3 #bottom{padding:8px 14px 10px}
-  body.hud3 .ult{height:40px}
-  body.hud3 #hud{padding:50px 14px 10px}
-  body.hud3 .hpbox .name{font-size:13px;flex-wrap:wrap;row-gap:2px}
-  body.hud3 .hpbox .name b{max-width:100%}
-  body.hud3 .hpbox .num{font-size:10px}
-  body.hud3 .hpbox>.bar{height:16px}
-  body.hud3 #combo{font-size:19px}
-  body.hud3 .wave{font-size:12px;padding:3px 10px}
-  body.hud3 #words{gap:12px;padding:14px 14px 6px}
-  body.hud3 .slot,body.hud3 .slot:has(.elem:empty){grid-template-columns:auto 1fr;padding:8px 8px 10px;background:linear-gradient(#2c1b5e,#130a2b)}
-  body.hud3 .slot .elem i{width:24px;height:24px;font-size:13px;box-shadow:0 0 0 2px var(--gd),0 0 10px var(--ec)}
-  body.hud3 .slot .tier::after{display:none}
-  body.hud3 .slot .w{font-size:22px}
-  body.hud3 .slot .dmg{justify-self:center;font-size:11px;padding:0 6px}
-  body.hud3 .ult{height:40px}
-  body.hud3 .ult .lbl{font-size:14px}
-}
-@media (max-height:560px){ body.hud3 .port{--box:50} body.hud3 #hud{padding-top:8px;padding-bottom:6px} }
-@media (max-width:700px){
-  body.hud3 #words{padding-top:26px;gap:12px}
-  body.hud3 .slot,body.hud3 .slot:has(.elem:empty){padding:20px 6px 0}
-  body.hud3 .slot .elem i{width:30px;height:30px;font-size:15px;top:-16px}
-  body.hud3 .slot .elem small{display:none}
-  body.hud3 .slot .tier{position:static;display:block;max-width:none;font-size:10px}
-  body.hud3 .slot .tag{position:static;display:inline-block}
-  body.hud3 .slot .w{font-size:22px;line-height:32px;min-height:32px}
-  body.hud3 .slot .dmg{margin:4px -6px 0;padding:3px 4px;font-size:11px}
+  body.hud5 #hud{padding:50px 12px 16px;gap:10px}
+  body.hud5 #arena{--hudH:118px}
+  body.hud5 .hpbox .name{font-size:13px;flex-wrap:wrap;row-gap:2px}
+  body.hud5 .hpbox .name b{max-width:100%}
+  body.hud5 .hpbox .num{position:static;font-size:11px;line-height:1.2}
+  body.hud5 .hpbox .num::before{content:""}
+  body.hud5 .hpbox>.bar{height:14px}
+  body.hud5 .center{min-width:0}
+  body.hud5 .center::before,body.hud5 .center::after{display:none}
+  body.hud5 .wave{font-size:12px;padding:4px 14px}
+  body.hud5 #combo{font-size:17px}
+  body.hud5 #console{grid-template-columns:1fr;margin:8px 10px 0}
+  body.hud5 #buf{grid-row:1;flex-direction:row;align-items:center;gap:10px;padding:8px 14px 0 22px;border:0}
+  body.hud5 #buf b{font-size:24px}
+  body.hud5 #buf:empty::after{font-size:15px}
+  body.hud5 #words{grid-column:1;grid-row:2;padding:4px 6px 8px}
+  body.hud5 .slot,body.hud5 .slot:has(.elem:empty){grid-template-areas:"elem tier" "tag tag" "w w" "dmg dmg";padding:4px 6px 6px}
+  body.hud5 .slot:first-child{border-left:0}
+  body.hud5 .slot .elem small{display:none}
+  body.hud5 .slot .tier{font-size:10px}
+  body.hud5 .slot .tier::after{display:none}
+  body.hud5 .slot .tag{grid-area:tag}
+  body.hud5 .slot .w{font-size:21px;line-height:32px;min-height:32px}
+  body.hud5 .slot .dmg{font-size:10px}
+  body.hud5 #bottom{grid-template-columns:1fr;gap:4px;padding-bottom:8px}
+  body.hud5 #liveStats{grid-column:1;justify-self:center;font-size:12px;order:2}
+  body.hud5 .ult{height:36px}
 }
 </style>
 </head>
-<body class="hud3">
+<body class="hud5">
 <div id="game">
   <button id="mute" title="เปิด/ปิดเสียงทั้งหมด">🔊</button>
   <button id="bgmBtn" title="เปิด/ปิดเพลงประกอบ (BGM)">🎵</button>
@@ -885,6 +913,7 @@ body.hud3 .slot .dmg{display:block;margin:6px -12px 0;padding:5px 8px;border:0;b
     </div>
     <div class="center">
       <div class="wave pix" id="wave">ไฟต์ 1 / 4</div>
+      <div id="floorPips"></div>
       <div id="combo"></div>
     </div>
     <div class="hpbox e">
@@ -930,15 +959,18 @@ body.hud3 .slot .dmg{display:block;margin:6px -12px 0;padding:5px 8px;border:0;b
     <div id="toast"></div>
   </div>
 
+  <div id="console">
   <div id="words">
     <div class="slot pix" id="s0"><span class="elem"></span><span class="tag"></span><div class="tier">⚡ เร็ว</div><div class="w"></div><div class="dmg"></div></div>
     <div class="slot pix" id="s1"><span class="elem"></span><span class="tag"></span><div class="tier">⚔ กลาง</div><div class="w"></div><div class="dmg"></div></div>
     <div class="slot pix" id="s2"><span class="elem"></span><span class="tag"></span><div class="tier">🔥 แรง</div><div class="w"></div><div class="dmg"></div></div>
   </div>
   <div id="buf"></div>
+  </div>
 
   <div id="bottom">
     <div class="ult pix" id="ultBtn" title="กด Tab หรือคลิกเพื่อใช้ท่าไม้ตาย"><span class="lbl">✦ ท่าไม้ตาย</span><div class="bar pix"><i id="ultBar"></i></div><small id="ultPct">0%</small><kbd>TAB</kbd></div>
+    <div id="liveStats"></div>
     <div class="hint"><kbd>Esc</kbd> หยุดเกม · พิมพ์คำไหนก็ได้ใน 3 ช่อง</div>
   </div>
 
@@ -1132,6 +1164,25 @@ body.hud3 .slot .dmg{display:block;margin:6px -12px 0;padding:5px 8px;border:0;b
 <script src="vendor/pixelfx.js"></script>
 <script>
 'use strict';
+// ไอคอนธาตุพิกเซล 12×12 สำหรับช่องคำ (HUD v5) (ตัวอักษร = สีในพาเลต, '.' = โปร่งใส) → ตัวแปร CSS --ic-*
+(() => {
+  const ICONS = {
+    fire: [{ o: '#5c1a0a', r: '#e8432e', y: '#ffc23a', w: '#fff3c4' }, ['.....o......', '....oro.....', '....orro....', '...orrro.o..', '..orryrooro.', '..orryyrrro.',
+      '.orryyyyrro.', '.orryywyyro.', '.oryywwyyro.', '.oryywwyyro.', '..oryyyyro..', '...oooooo...']],
+    water: [{ o: '#0b3554', b: '#3ab4f2', d: '#1574b8', w: '#e0f4ff' }, ['.....oo.....', '....obbo....', '....obbo....', '...obbbbo...', '..obwbbbbo..', '..obwbbbbo..',
+      '.obwbbbbbbo.', '.obwbbbbbdo.', '.obbbbbbbdo.', '..obbbbbdo..', '...oddddo...', '....oooo....']],
+    wind: [{ o: '#0f3d22', g: '#45d16e', l: '#c8f7d6' }, ['............', '.ooooooo....', 'ogllllggo...', '.ooooooggo..', '........ogo.', '..ooooooogo.',
+      '.ogllllgggo.', '..oooooooo..', '....ooooo...', '...ollgggo..', '....ooooo...', '............']],
+    skull: [{ o: '#1f0a0a', w: '#f5f5f4', g: '#a8a29e', r: '#ef4444' }, ['...oooooo...', '..owwwwwwo..', '.owwwwwwwwo.', '.owwwwwwwwo.', '.owrowworwo.', '.owoowwoowo.',
+      '.owwwoowwwo.', '..owwwwwwo..', '...owgwgwo..', '...owgwgwo..', '....ooooo...', '............']]
+  };
+  for (const k in ICONS) {
+    const [pal, rows] = ICONS[k]; let r = '';
+    rows.forEach((row, y) => [...row].forEach((c, x) => { if (pal[c]) r += `<rect x='${x}' y='${y}' width='1' height='1' fill='${pal[c]}'/>`; }));
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' shape-rendering='crispEdges'>${r}</svg>`;
+    document.documentElement.style.setProperty('--ic-' + k, `url("data:image/svg+xml,${encodeURIComponent(svg)}")`);
+  }
+})();
 /* ================= Data ================= */
 const WORDS = {
   th: {
@@ -3708,6 +3759,16 @@ function renderHUD() {
   $('#ehpBar').style.width = $('#ehpLag').style.width = ew + '%';
   $('#hud .hpbox.p').classList.toggle('low', S.running && pw <= 30);
   setPortrait();
+  // v5: เพชรบอกความคืบหน้าชั้น + ความแม่น/WPM สด (ซ่อนไว้ใน v3/v4 ด้วย CSS)
+  const pipKey = R && R.at && !R.endless && !R.pvp && !R.practice ? R.at.layer : -1;
+  const fp = $('#floorPips');
+  if (fp.dataset.k !== String(pipKey)) {
+    fp.dataset.k = pipKey;
+    fp.innerHTML = pipKey < 0 ? '' : Array.from({ length: MAP_LAYERS }, (_, i) => `<i class="${i < pipKey ? 'done' : i === pipKey ? 'on' : ''}"></i>`).join('');
+  }
+  const st = S.stats, mins = Math.max(1 / 60, (performance.now() - (st.start || performance.now())) / 60000);
+  const lsTxt = `ACCURACY <b>${st.correct + st.errors ? Math.round(st.correct / (st.correct + st.errors) * 100) : 100}%</b><i>|</i>WPM <b>${S.running ? Math.round(st.correct / 5 / mins) : 0}</b>`;
+  const ls = $('#liveStats'); if (ls.innerHTML !== lsTxt) ls.innerHTML = lsTxt;
   $('#phpNum').textContent = Math.ceil(S.php) + ' / ' + S.pmax;
   $('#ehpNum').textContent = Math.ceil(S.ehp) + ' / ' + S.emax;
   $('#stBar').style.width = S.stamina + '%';
