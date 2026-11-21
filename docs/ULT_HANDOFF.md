@@ -94,4 +94,11 @@ python3 tools/ult_frames.py gif /tmp/ult-preview.gif
 
 # 4) ตรวจ syntax JS ใน index.html
 python3 -c "import re,subprocess,tempfile; s=re.findall(r'<script>(.*?)</script>',open('index.html').read(),re.S)[0]; f=tempfile.NamedTemporaryFile('w',suffix='.js',delete=False); f.write(s); f.close(); subprocess.check_call(['node','--check',f.name])"
+
+# 5) ตรวจเทสต์คัตซีน (ใน tests/features-cdp.js ส่วน Ultimate) — เลขเฟรมฝังอยู่ ต้องขยับตามเฟรมที่แทรก
+#    NF === 32 (จำนวนเฟรม) · waitFrame(26, …) + f10 >= 26 (Impact Frame 1 = ult-26) · waitFrame(30, …) + f13 >= 30 (Heroic Landing = ult-30)
+#    เช่น แทรก 1 เฟรมหลัง 29 → NF 33, impact ยัง 26, landing กลายเป็น 31
+node tests/features-cdp.js   # ต้องผ่าน 29/29
 ```
+
+> **อัปเดต 2026-11-21 (Claude) — เจนรอยต่อแล้ว 32 → 37 เฟรม, `ULT_END_MS` 5760:** เลขเฟรมในตารางข้อ 2 เป็นของเดิม ปัจจุบัน: เดิม 01–07 = 01–07 · **ใหม่ 08** ย่อตัวฟาดดาบซูมออกจากตา · **ใหม่ 09** ร่างเงา 2 ร่างแรกแยก · เดิม 08–17 = 10–19 · **ใหม่ 20** ถีบพื้นแตกกระโดดหมุน · เดิม 18–29 = 21–32 (Impact = 29–30, ช็อกเวฟ = 31) · **ใหม่ 33** เสาแสงสลาย ทิ้งตัวลง · เดิม 30 = 34 (ลงพื้น) · **35 (แทนเดิม 31)** ลุกเหวี่ยงดาบโค้ง แมวหุ่นยนต์พุ่งเข้า · **ใหม่ 36** ดาบตกลงบ่า · เดิม 32 = 37 · เทสต์ `features-cdp.js`: NF 37, impact 29, landing 34 — ผ่าน 29/29 · ข้อ 3 (4 จุดรอยต่อ) เสร็จแล้ว
