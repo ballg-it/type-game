@@ -237,7 +237,7 @@ let failed = 0;
   const loadInfo = await ev(`({ count: ULT_IMGS.length, loaded: ULT_IMGS.filter(im => im.complete && im.naturalWidth > 0).length })`);
   const NF = await ev(`ULT_FRAMES.length`);
   ok('Ultimate triggers Frame 1 with all ' + NF + ' frames loaded (' + loadInfo.loaded + '/' + loadInfo.count + ')',
-     f1 >= 1 && NF === 63 && loadInfo.count === NF && loadInfo.loaded === NF && await ev(`!$('#ultCine').hidden && !!ULT_CINE`));
+     f1 >= 1 && NF === 65 && loadInfo.count === NF && loadInfo.loaded === NF && await ev(`!$('#ultCine').hidden && !!ULT_CINE`));
 
   await waitFrame(10, 1500);
   const focusSeen = await ev(`$('#ucStage').classList.contains('focus2')`);

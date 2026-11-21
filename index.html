@@ -3619,7 +3619,7 @@ function mistake() {
 
 /* ---------- คัตซีนท่าไม้ตาย (Ultimate Cutscene 32 เฟรม) ---------- */
 const ULT_NAMES = ['คมดาบอักษรผ่าฟากฟ้า', 'เพลงดาบแสงนีออน', 'พายุคีย์บอร์ดทลายฟ้า'];
-const ULT_FRAMES = Array.from({ length: 63 }, (_, i) => `art/ult-${String(i + 1).padStart(2, '0')}.jpg`);
+const ULT_FRAMES = Array.from({ length: 65 }, (_, i) => `art/ult-${String(i + 1).padStart(2, '0')}.jpg`);
 const ULT_IMGS = ULT_FRAMES.map((src, i) => {
   const im = document.createElement('img');
   im.className = 'uc-img'; im.src = src; im.alt = ''; im.dataset.f = String(i + 1);
@@ -3688,10 +3688,12 @@ const ULT_SEQ = [
   { at: 5750, f: 58, cam: 'land',       shake: 1, sfx: 'leap'       },   // ลงพื้นคุกเข่าข้างเดียวท่ามกลางควันนีออน
   { at: 5950, f: 59, cam: 'zoom'                                    },   // AI in-between: ลุกจากท่าคุกเข่า เหวี่ยงดาบโค้งขึ้น แมวหุ่นยนต์พุ่งเข้าจากขวา
   { at: 6050, f: 60, cam: 'zoom' },   // AI in-between (63f): เริ่มลุก แมวหุ่นยนต์บินเข้า
-  { at: 6150, f: 61, cam: 'settle'                          },   // AI in-between: ลุกยืน ดาบตกลงบ่า แมวหุ่นยนต์บินเข้ามา
-  { at: 6310, f: 62, cam: 'settle'                                  } // ท่าจบพาดดาบบนบ่า + น้องแมวหุ่นยนต์
+  { at: 6170, f: 61, cam: 'zoom' },   // AI in-between (65f): ครึ่งลุก เหวี่ยงดาบขึ้นบ่า กล้องเข้าใกล้
+  { at: 6290, f: 62, cam: 'settle'                          },   // AI in-between: ลุกยืน ดาบตกลงบ่า แมวหุ่นยนต์บินเข้ามา
+  { at: 6440, f: 63, cam: 'settle' },   // AI in-between (65f): พาดดาบบนบ่า ยิ้ม แมวหุ่นยนต์ลอยเข้าใกล้
+  { at: 6590, f: 64, cam: 'settle'                                  } // ท่าจบพาดดาบบนบ่า + น้องแมวหุ่นยนต์
 ];
-const ULT_END_MS = 6880;
+const ULT_END_MS = 7160;
 let ULT_CINE = null;
 function playUltSfx(k) {
   if (k === 'charge') tone(220, 0.22, 'sawtooth', 0.08, 620);
