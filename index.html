@@ -127,7 +127,6 @@ h3{margin:14px 0 8px;font-size:16px;color:var(--violet2)}
   .key{width:26px;height:34px;font-size:13px}
   .title{font-size:40px}
 }
-}
 /* จอเตี้ย (มือถือตอนคีย์บอร์ดเด้งขึ้น / แนวนอน): ย่อฉากให้ช่องคำยังเห็นครบ */
 @media (max-height:560px){ #arena{min-height:150px} }
 /* run */
@@ -966,6 +965,186 @@ body.hud5 #bottom .hint{grid-column:3;justify-self:end;font-size:11px}
   body.hud5 #liveStats{grid-column:1;justify-self:center;font-size:12px;order:2}
   body.hud5 .ult{height:36px}
 }
+
+/* ================= UI v5 — กรอบพิกเซลนีออนสำหรับทุกหน้าจอ (เข้าชุด HUD v5 + แผนที่ + ร้าน) ================= */
+body.hud5 .overlay{background:radial-gradient(ellipse at 50% 35%,#140933cc 0%,#060314eb 100%);backdrop-filter:blur(5px)}
+
+/* ---- กรอบหลัก .card (ยกเว้นแผนที่ซึ่งมีกรอบเฉพาะใน #chScr.map-mode) ---- */
+body.hud5 .card{position:relative;border-radius:0;padding:20px 24px 22px;
+  background:linear-gradient(180deg,#170f38f6 0%,#0c0720fa 100%);
+  border:3px solid #7c62d8;
+  box-shadow:0 0 0 3px #070414,0 0 0 5px #38e8ff66,0 0 42px #6b5cff44,8px 8px 0 5px #000a}
+body.hud5 .card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;pointer-events:none;
+  background:linear-gradient(90deg,var(--cy),#a855f7 50%,var(--mg))}
+body.hud5 #chScr.map-mode .card::before{display:none}
+
+/* หัวข้อ & ป้ายเส้นทาง */
+body.hud5 .card .title{font-family:var(--pxf);font-style:normal;font-weight:700;letter-spacing:.6px;line-height:1.12;
+  background:none;-webkit-background-clip:border-box;background-clip:border-box;color:#fff;
+  text-shadow:0 0 14px #38e8ff88,0 3px 0 #090418}
+body.hud5 .card .sub{color:#bfb5e6;font-size:14px;margin:6px 0 14px}
+body.hud5 .card h3{font-family:var(--pxf);font-size:15px;letter-spacing:1px;color:var(--cy);text-shadow:0 0 8px #38e8ff66;
+  display:flex;align-items:center;gap:8px;margin:16px 0 8px}
+body.hud5 .card h3::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,#38e8ff55,transparent)}
+body.hud5 .path{gap:5px;margin:4px 0 14px}
+body.hud5 .node{border-radius:0;padding:2px 10px;border:2px solid #3f3078;background:#0a061acc;font-size:12.5px;font-weight:600;color:#9e92c8;box-shadow:2px 2px 0 #0007}
+body.hud5 .node.done{border-color:#22c55e;color:#86efac;background:#0b2419cc}
+body.hud5 .node.cur{border-color:#fbbf24;color:#fef08a;background:#2b1c08cc;box-shadow:0 0 12px #fbbf2466,2px 2px 0 #0007}
+body.hud5 .path i{color:#5e4aa8;font-size:12px}
+
+/* ---- การ์ดตัวเลือก .upc (อัปเกรด / จุดพัก / เหตุการณ์ / เลือกบอส / ศาลเจ้า / PvP) ---- */
+body.hud5 .overlay:not(#shopScr):not(.map-mode) .upc{position:relative;display:flex;flex-direction:column;align-items:center;
+  border-radius:0;padding:14px 12px 12px;
+  background:linear-gradient(180deg,#231750 0%,#140c30 100%);
+  border:2px solid #4e3b96;
+  box-shadow:inset 0 2px 0 #3f3080,inset 0 -3px 0 #0c071e,4px 4px 0 #0008;
+  transition:transform .12s,border-color .12s,box-shadow .12s,opacity .12s,background .12s}
+body.hud5 .overlay:not(#shopScr):not(.map-mode) .upc:hover{transform:translateY(-3px);border-color:var(--cy);
+  background:linear-gradient(180deg,#2b1d60 0%,#180f3a 100%);
+  box-shadow:inset 0 2px 0 #5b45b0,inset 0 -3px 0 #0c071e,4px 7px 0 #0009,0 0 18px #38e8ff55}
+body.hud5 .overlay:not(#shopScr):not(.map-mode) .upc.lock{transform:translateY(-3px);border-color:#fbbf24;
+  background:linear-gradient(180deg,#332166 0%,#1d1244 100%);
+  box-shadow:inset 0 2px 0 #7c5cd6,inset 0 -3px 0 #0c071e,4px 7px 0 #0009,0 0 22px #fbbf2466}
+body.hud5 .overlay:not(#shopScr):not(.map-mode) .upc.off{opacity:.3;transform:none}
+body.hud5 .overlay:not(#shopScr):not(.map-mode) .upc .ic{width:54px;height:54px;display:grid;place-items:center;margin-bottom:8px;
+  font-size:30px;line-height:1;background:radial-gradient(circle at 50% 45%,#342370,#0e0824 78%);
+  border:2px solid #5e4aa8;box-shadow:inset 0 0 10px #0009,2px 2px 0 #0007}
+body.hud5 .overlay:not(#shopScr):not(.map-mode) .upc .ic.ic-art{width:68px;height:68px;padding:0;overflow:hidden;border-color:var(--mg)}
+body.hud5 .overlay:not(#shopScr):not(.map-mode) .upc .ic.ic-art img{width:100%;height:100%;object-fit:cover;display:block}
+body.hud5 .overlay:not(#shopScr):not(.map-mode) .upc .nm{font-size:17.5px;font-weight:700;color:#fff;text-shadow:0 1px 0 #000a;line-height:1.25}
+body.hud5 .overlay:not(#shopScr):not(.map-mode) .upc .st{font-size:11px;font-weight:700;color:#fde68a;min-height:16px;margin-top:2px;letter-spacing:.3px}
+body.hud5 .overlay:not(#shopScr):not(.map-mode) .upc .ds{flex:1;font-size:12.5px;line-height:1.4;color:#cbc1eb;min-height:36px;margin:4px 0 10px}
+body.hud5 .overlay:not(#shopScr):not(.map-mode) .upc .w{width:100%;border-radius:0;padding:4px 10px;
+  font-size:24px;font-weight:700;line-height:1.25;background:#080416e8;border:2px solid #3b2d6e;color:#f3e8ff;
+  box-shadow:inset 0 2px 6px #0008;transition:border-color .12s,box-shadow .12s}
+body.hud5 .overlay:not(#shopScr):not(.map-mode) .upc:hover .w{border-color:#38e8ff88}
+body.hud5 .overlay:not(#shopScr):not(.map-mode) .upc.lock .w{border-color:#fbbf24;box-shadow:inset 0 2px 6px #0008,0 0 12px #fbbf2455}
+
+/* ---- ปุ่มหลัก .go (มุมตัดไซเบอร์) ---- */
+body.hud5 .go{border-radius:0;font-family:var(--pxf);letter-spacing:.8px;
+  background:linear-gradient(90deg,#7c3aed,#d946ef);
+  border:2px solid #f0abfc;box-shadow:0 0 20px #d946ef66,4px 4px 0 #0008;
+  clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px);
+  transition:transform .1s,filter .12s,box-shadow .12s}
+body.hud5 .go:hover{transform:translateY(-2px);filter:brightness(1.12);box-shadow:0 0 26px #f0abfc88,4px 6px 0 #0008}
+body.hud5 .row2 .go.alt{background:linear-gradient(180deg,#1f1548,#130c30);border:2px solid #38e8ff88;color:#d9f7ff;box-shadow:4px 4px 0 #0008}
+body.hud5 .row2 .go.alt:hover{border-color:var(--cy);box-shadow:0 0 18px #38e8ff55,4px 6px 0 #0008}
+
+/* ---- หน้าเลือกอัปเกรด (#pickScr) ---- */
+body.hud5 #pickScr .card{border-color:#c9a24a;box-shadow:0 0 0 3px #070414,0 0 0 5px #fbbf2488,0 0 44px #fbbf2433,8px 8px 0 5px #000a}
+body.hud5 #pickScr .card::before{background:linear-gradient(90deg,#fbbf24,#fde047 50%,var(--cy))}
+body.hud5 #pickScr .title{color:#fef08a;text-shadow:0 0 16px #fbbf2488,0 3px 0 #090418}
+body.hud5 #pickScr #pickSub{display:inline-block;padding:4px 12px;background:#0a061acc;border:2px solid #4c3a92;color:#e9d5ff;font-size:13.5px;box-shadow:2px 2px 0 #0007}
+body.hud5 #pickScr #pickOwned{margin-top:12px;padding-top:10px;border-top:1px solid #ffffff16;font-size:12.5px;color:#b8acd8}
+body.hud5 #pickScr #pickOwned:empty{display:none}
+
+/* ---- หน้าศาลเจ้า (#metaScr — Cyber Torii Shrine) ---- */
+body.hud5 #metaScr{background:#08041a url(art/bg-boss.jpg) center/cover no-repeat;backdrop-filter:none}
+body.hud5 #metaScr::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at 50% 35%,#1a092ec4 0%,#070314f0 100%);pointer-events:none}
+body.hud5 #metaScr .card{max-width:920px;padding:14px 20px 14px;text-align:center;border-color:#d946ef;box-shadow:0 0 0 3px #070414,0 0 0 5px #38e8ff88,0 0 48px #38e8ff33,8px 8px 0 5px #000a}
+body.hud5 #metaScr .card::before{background:linear-gradient(90deg,var(--rd),#fbbf24 45%,var(--cy))}
+body.hud5 #metaScr .title{font-size:32px!important}
+body.hud5 #metaScr .sub{margin:3px 0 8px}
+body.hud5 #metaScr #metaShards{display:inline-flex;align-items:center;justify-content:center;margin:0 auto 10px;padding:2px 14px;
+  border-color:var(--cy);color:#a5f3fc;background:#070d20e6;box-shadow:0 0 18px #38e8ff44,3px 3px 0 #0008;font-family:var(--pxf);font-size:19px}
+body.hud5 #metaScr .metas{gap:8px;text-align:center}
+body.hud5 #metaScr .metas .upc{padding:8px 8px 7px}
+body.hud5 #metaScr .metas .upc .ic{width:38px;height:38px;font-size:20px;margin-bottom:4px}
+body.hud5 #metaScr .metas .upc .nm{font-size:15px}
+body.hud5 #metaScr .metas .upc .ds{min-height:24px;font-size:11.5px;margin:2px 0 4px}
+body.hud5 #metaScr .metas .upc .w{font-size:19px;padding:2px 8px}
+body.hud5 #metaScr .lv{gap:4px;margin:3px 0}
+body.hud5 #metaScr .lv i{width:16px;height:6px;border-radius:0;background:#0b071e;border:1px solid #4c3a92}
+body.hud5 #metaScr .lv i.on{background:var(--cy);border-color:#a5f3fc;box-shadow:0 0 8px var(--cy)}
+body.hud5 #metaScr .upc .pr{font-family:var(--pxf);font-size:13.5px;margin:1px 0 5px;color:#67e8f9}
+body.hud5 #metaScr .upc.max{border-color:#22c55e88}
+body.hud5 #metaScr .upc.max .pr{color:#4ade80}
+body.hud5 #metaScr #metaAct{margin-top:10px;gap:10px}
+body.hud5 #metaScr #metaAct .upc{flex-direction:row;align-items:center;justify-content:center;gap:10px;padding:7px 14px}
+body.hud5 #metaScr #metaAct .upc .w{width:auto;min-width:92px;font-size:18px;padding:2px 10px}
+body.hud5 #metaScr #metaAct .upc .ds{flex:0 1 auto;min-height:0;margin:0;text-align:left}
+body.hud5 #metaScr #metaAct .upc[data-a=exit]{background:linear-gradient(180deg,#2d1d66,#1b1144);border-color:var(--cy)}
+body.hud5 #metaScr #metaAct .upc.reset{background:linear-gradient(180deg,#2a1026,#18091a);border-color:#9f1239}
+body.hud5 #metaScr #metaAct .upc.reset.armed{border-color:#ff2d55;box-shadow:0 0 0 2px #ff2d5566,0 0 22px #ff2d5577,4px 4px 0 #0008}
+
+/* ---- หน้าสรุปผล (#resultScr) ---- */
+body.hud5 #resultScr.win .card{border-color:#c9a24a;box-shadow:0 0 0 3px #070414,0 0 0 5px #fbbf2488,0 0 48px #fbbf2433,8px 8px 0 5px #000a}
+body.hud5 #resultScr.win .card::before{background:linear-gradient(90deg,#fbbf24,#4ade80 50%,var(--cy))}
+body.hud5 #resultScr.win #resTitle{color:#fef08a;text-shadow:0 0 18px #fbbf24aa,0 3px 0 #090418}
+body.hud5 #resultScr.lose .card{border-color:#be123c;box-shadow:0 0 0 3px #070414,0 0 0 5px #ff2d5588,0 0 48px #ff2d5533,8px 8px 0 5px #000a}
+body.hud5 #resultScr.lose .card::before{background:linear-gradient(90deg,var(--rd),#a855f7)}
+body.hud5 #resultScr.lose #resTitle{color:#fda4af;text-shadow:0 0 18px #ff2d55aa,0 3px 0 #090418}
+body.hud5 .stats{gap:8px;margin:12px 0}
+body.hud5 .stat{border-radius:0;padding:10px 8px;background:linear-gradient(180deg,#1f1448,#120b2c);border:2px solid #423180;
+  border-top:2px solid #38e8ff88;box-shadow:3px 3px 0 #0008}
+body.hud5 .stat b{font-family:var(--pxf);font-size:26px;line-height:1.15;color:#fde047;text-shadow:0 2px 0 #000a}
+body.hud5 .stat span{font-size:12px;color:#b8acd8}
+body.hud5 .gain{padding:8px 14px;background:#071022dd;border:2px solid #38e8ff66;box-shadow:3px 3px 0 #0008;font-size:14.5px;margin:6px 0 12px}
+body.hud5 .key{border-radius:3px;background:linear-gradient(180deg,#2a1e58,#1a123c);border:1px solid #5e4aa8;box-shadow:0 3px 0 #090516,inset 0 1px 0 #ffffff22}
+body.hud5 #resultScr .row2{border-radius:0;background:linear-gradient(#0c072000,#0c0720f8 28%);margin:6px -24px -22px;padding:18px 24px 22px}
+
+/* ---- หน้าหยุดชั่วคราว (#pauseScr) ---- */
+body.hud5 .pause-card{max-width:460px;border-color:var(--cy)}
+body.hud5 .pbtn{border-radius:0;background:linear-gradient(180deg,#21164d,#140c30);border:2px solid #4c3a92;
+  box-shadow:inset 0 2px 0 #3f3080,3px 3px 0 #0008;
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px)}
+body.hud5 .pbtn .w{border-radius:0;background:#080416e8;border:1px solid #4c3a92;padding:2px 10px;color:var(--cy)}
+body.hud5 .pbtn .w .rest{color:#a5f3fc}
+body.hud5 .pbtn.sel,body.hud5 .pbtn:hover{border-color:var(--cy);background:linear-gradient(90deg,#1d3566ee,#5b21b6dd);box-shadow:0 0 18px #38e8ff55}
+body.hud5 .pbtn.lock{border-color:var(--mg);background:linear-gradient(90deg,#7c3aedee,#c026d3dd);box-shadow:0 0 22px #ff3fd877}
+
+/* ---- หน้าดวล PvP (#pvpScr) ---- */
+body.hud5 #pvpScr .card{border-color:#7c62d8}
+body.hud5 #pvpScr .card::before{background:linear-gradient(90deg,var(--cy) 0 48%,var(--rd) 52% 100%)}
+body.hud5 .pvcode div{border-radius:0;background:linear-gradient(180deg,#21164d,#130b2e);border:2px solid var(--cy);box-shadow:3px 3px 0 #0008}
+body.hud5 .pvcode div.empty{border-color:#5e4aa8;border-style:dashed;background:#0c0720cc}
+body.hud5 .pvlink button{border-radius:0;background:#1d1244;border:2px solid #38e8ff88;color:#d9f7ff;padding:5px 16px;box-shadow:3px 3px 0 #0008;transition:border-color .12s,background .12s}
+body.hud5 .pvlink button:hover{border-color:var(--cy);background:#2a1b5e}
+
+/* ---- หน้าวิธีเล่น (#helpBox) ---- */
+body.hud5 .hcard{border-color:var(--cy)}
+body.hud5 .hi{border-radius:0;background:linear-gradient(180deg,#1e1446,#130c30);border:1px solid #4c3a92;border-left:3px solid var(--cy);box-shadow:3px 3px 0 #0007}
+body.hud5 .hi>b:first-child{color:#a5f3fc;font-size:15px}
+
+/* ---- กล่องบทสนทนาเนื้อเรื่อง (#story — RPG/VN + พอร์เทรตพิกเซล) ---- */
+body.hud5 #story{--sc:var(--cy);display:flex;align-items:stretch;gap:14px;width:min(820px,calc(100% - 24px));
+  border-radius:0;padding:12px 16px 10px;
+  background:linear-gradient(180deg,#140c30f5 0%,#09051af8 100%);
+  border:2px solid var(--sc);
+  box-shadow:0 0 0 2px #05020f,0 0 28px color-mix(in srgb,var(--sc) 45%,transparent),6px 6px 0 #0009}
+body.hud5 #story[hidden]{display:none}
+body.hud5 #story::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--sc),transparent 85%);pointer-events:none}
+body.hud5 #story .st-port{flex:none;width:84px;height:84px;align-self:center;position:relative;overflow:hidden;display:grid;place-items:center;
+  background:radial-gradient(circle at 50% 45%,#281a5c,#0a051a 78%);
+  border:2px solid var(--sc);box-shadow:0 0 14px color-mix(in srgb,var(--sc) 50%,transparent),3px 3px 0 #0008;
+  clip-path:polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%);font-size:38px}
+body.hud5 #story .st-port[hidden]{display:none}
+body.hud5 #story .st-port img{width:100%;height:100%;object-fit:cover;display:block}
+body.hud5 #story .st-body{flex:1;min-width:0;display:flex;flex-direction:column}
+body.hud5 #story .who{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;margin-bottom:6px;padding:1px 12px 2px;
+  font-family:var(--pxf);font-size:15px;letter-spacing:.6px;background:#070414e6;border:1px solid var(--sc);
+  box-shadow:0 0 10px color-mix(in srgb,var(--sc) 35%,transparent)}
+body.hud5 #story .txt{font-size:19px;line-height:1.5;min-height:54px;color:#f3eeff;text-shadow:0 1px 0 #000}
+body.hud5 #story .reply .w{border-radius:0;background:#070314ee;border:2px solid var(--sc);padding:3px 16px;box-shadow:0 0 14px color-mix(in srgb,var(--sc) 35%,transparent)}
+body.hud5 #story .reply .upc{border-radius:0;background:linear-gradient(180deg,#22164c,#130b2e);border:2px solid #4c3a92;box-shadow:3px 3px 0 #0008}
+body.hud5 #story .reply .upc:hover,body.hud5 #story .reply .upc.lock{border-color:#fbbf24;box-shadow:0 0 16px #fbbf2466,3px 3px 0 #0008}
+body.hud5 #story .reply .upc .w{border-radius:0;background:#070314ee;border:1px solid #4c3a92;font-size:21px;padding:2px 8px}
+
+/* ---- กล่องโค้ชฝึกซ้อม & ทัวร์แนะนำ ---- */
+body.hud5 #coach,body.hud5 #tourTip{border-radius:0;background:linear-gradient(180deg,#160d34f5,#0b061ef8);
+  border:2px solid #fbbf24;box-shadow:0 0 0 2px #070414,0 0 24px #fbbf2444,5px 5px 0 #0008}
+body.hud5 #coach.ok{border-color:#4ade80;box-shadow:0 0 0 2px #070414,0 0 24px #4ade8055,5px 5px 0 #0008}
+body.hud5 #tourTip .tb button{border-radius:0;border:1px solid #5e4aa8}
+body.hud5 #tourTip .tb .nx{border-color:#f0abfc}
+
+@media (max-width:700px){
+  body.hud5 .card{padding:14px 14px 16px}
+  body.hud5 #resultScr .row2{margin:6px -14px -16px;padding:14px}
+  body.hud5 #story{gap:10px;padding:10px 12px 8px}
+  body.hud5 #story .st-port{width:56px;height:56px;font-size:26px}
+  body.hud5 #story .txt{font-size:16px;min-height:42px}
+  body.hud5 #metaScr #metaAct{flex-direction:column}
+}
 </style>
 </head>
 <body class="hud5">
@@ -1037,7 +1216,7 @@ body.hud5 #bottom .hint{grid-column:3;justify-self:end;font-size:11px}
     </div>
 
     <div id="banner"><div class="bn"></div><div class="bt"></div></div>
-    <div id="story" hidden><div class="who"></div><div class="txt"></div><div class="reply"></div><div class="hint"></div></div>
+    <div id="story" hidden><div class="st-port" id="storyPort" hidden></div><div class="st-body"><div class="who"></div><div class="txt"></div><div class="reply"></div><div class="hint"></div></div></div>
     <div id="fx"></div>
     <div id="toast"></div>
   </div>
@@ -1750,7 +1929,20 @@ function nextLine() {
   if (!L) return endStory();
   ST.shown = 0; ST.full = !L.t;
   const [name, col] = SPEAKER[L.who] || [FOE.icon + ' ' + FOE.name, '#f0abfc'];
-  const who = $('#story .who'); who.textContent = name; who.style.color = col;
+  const stEl = $('#story'), who = $('#story .who'), port = $('#storyPort');
+  who.textContent = name; who.style.color = col;
+  stEl.style.setProperty('--sc', col);
+  const pId = L.who === 'me' ? 'airin' : (L.who !== 'robo' && L.who !== 'nar' ? (L.who || FOE.sprite) : '');
+  if (pId) {
+    port.hidden = false;
+    port.innerHTML = `<img src="art/portraits/${pId}.png" alt="">`;
+  } else if (L.who === 'robo') {
+    port.hidden = false;
+    port.textContent = '🤖';
+  } else {
+    port.hidden = true;
+    port.innerHTML = '';
+  }
   if (L.e) { play(FIG.E, L.e); if (L.e === 'charge') setTimeout(() => phase === 'story' && FIG.E.st === L.e && play(FIG.E, 'idle'), 900); }
   if (L.fx) { ST.fx = L.fx; ST.fxT = 0; SFX.win(); }
   if (L.p) play(FIG.P, L.p);
@@ -4179,7 +4371,7 @@ function showChoice({ title, sub, opts, map, lobbyMenu }) {
   }
   $('#chCards').style.display = ''; $('#chCards').style.gridTemplateColumns = '';
   $('#chCards').innerHTML = CH.opts.map((o, i) => map ? mapCardHTML(o, i)
-    : `<button class="upc${o.off ? ' sold' : ''}" data-i="${i}"><div class="ic">${o.icon}</div><div class="nm">${esc(o.name)}</div><div class="ds">${esc(o.desc)}</div><div class="w"></div></button>`).join('');
+    : `<button class="upc${o.off ? ' sold' : ''}" data-i="${i}">${o.art ? `<div class="ic ic-art"><img src="${o.art}" alt=""></div>` : `<div class="ic">${o.icon}</div>`}<div class="nm">${esc(o.name)}</div><div class="ds">${esc(o.desc)}</div><div class="w"></div></button>`).join('');
   $('#chCards').querySelectorAll('.upc').forEach(b => {
     const idx = +b.dataset.i;
     b.onclick = () => chDo(CH.opts[idx]);
@@ -4520,6 +4712,8 @@ function showResult(win) {
   clearSavedRun();
   updatePauseBtn();
   if (R.endless) return showEndlessResult();
+  $('#resultScr').classList.toggle('win', !!win);
+  $('#resultScr').classList.toggle('lose', !win);
   const st = R.stats, min = Math.max(1 / 60, R.time / 60000);
   const wpm = Math.round(st.correct / 5 / min);
   const acc = st.correct + st.errors ? (st.correct / (st.correct + st.errors) * 100) : 100;
@@ -5159,6 +5353,8 @@ function showEndlessResult() {
   const wpm = Math.round(st.correct / 5 / min);
   const acc = st.correct + st.errors ? (st.correct / (st.correct + st.errors) * 100) : 100;
   const secs = Math.round(R.time / 1000), prev = META.endless || 0, rec = R.cleared > prev;
+  $('#resultScr').classList.toggle('win', rec);
+  $('#resultScr').classList.toggle('lose', !rec);
   $('#resTitle').textContent = rec ? '♾ สถิติใหม่!' : '♾ จบ Endless';
   $('#resSub').textContent = `พ่ายให้${FOE.name} ที่ด่าน ${R.wave}` + (rec ? (prev ? ` · ทำลายสถิติเดิม ${prev} ด่าน` : '') : ` · สถิติ ${prev} ด่าน`) +
     ` · ความยาก${DIFF[cfg.diff].label} · ${{ th: 'ไทยล้วน', en: 'อังกฤษล้วน', bi: 'สองภาษา' }[cfg.mode]}`;
@@ -5389,7 +5585,7 @@ function showBossSelect() {
   const opts = BOSS_IDS.map(id => {
     const b = ENEMIES.find(e => e.id === id);
     const el = b.bossMech === 'twins' ? '🔴 แพ้ 💧 · 🔵 แพ้ 🌪️' : `${ELEMENTS[b.elem].icon} แพ้ ${ELEMENTS[ELEMENTS[b.elem].weak].icon}`;
-    return { icon: b.icon, name: b.name, desc: `${el} · ${trait(b)}`, word: BOSS_PICK_W[id], fn: () => startBossChallenge(id), end: 1 };
+    return { icon: b.icon, art: `art/portraits/${id}.png`, name: b.name, desc: `${el} · ${trait(b)}`, word: BOSS_PICK_W[id], fn: () => startBossChallenge(id), end: 1 };
   });
   opts.push({ icon: '🏠', name: 'กลับ Lobby', desc: 'กลับหน้าแรก', word: { th: 'ออก', en: 'back' }, fn: toMenu, end: 1 });
   showChoice({ title: '👑 ท้าดวลบอส', sub: 'เลือกบอสที่อยากสู้ได้เลย (ชนะรับ +15 💎) — พิมพ์คำใต้การ์ดเพื่อเลือก', lobbyMenu: true, opts });
