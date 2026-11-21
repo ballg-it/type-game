@@ -2119,7 +2119,6 @@ const AIRIN_ANIM = {
   ko:     { keys: [[0, 'hurt-2b']] },
 };
 const AIRIN_ART = {}; let airinArtOn = false, airinUltAt = -9;
-const AIRIN_POP = { filter: 'saturate(1.35) contrast(1.12) brightness(1.06)', glow: '#a855f7', blur: 9 };
 // idle-1 fractions inside the frames (printed by tools/key_frames.py); h = Airin's height on the 640×360 stage
 const AIRIN_FIT = { cx: .526, foot: .982, head: .120, h: 118 };
 for (const n of AIRIN_FRAMES) {
@@ -2152,15 +2151,12 @@ function drawAirinArt(A, x2) {
   const u = gclock - airinUltAt;
   if (u < .9) { dx = 34 * (ease(u, .06, .26) - ease(u, .5, .85)); dy = -26 * Math.sin(Math.PI * Math.min(1, Math.max(0, (u - .08) / .22))); }
   const lx = Math.round(x2 + dx - w * AIRIN_FIT.cx), ly = Math.round(foot + dy - h * AIRIN_FIT.foot);
-  // frames are pre-scaled to AIRIN_FIT.h, so at full height they are drawn 1:1 and stay crisp
-  sctx.imageSmoothingEnabled = Math.abs(ch - AIRIN_FIT.h) > .5;
-  // hero pop: punchier colours + purple neon rim so she reads as strongly as the painted enemies
+  // keep nearest-neighbor crispness (sharpness/pop are baked into art/poses/airin-*.png); glow only on ult
+  sctx.imageSmoothingEnabled = false;
   sctx.save();
-  sctx.filter = AIRIN_POP.filter;
-  sctx.shadowColor = AIRIN_POP.glow; sctx.shadowBlur = AIRIN_POP.blur + 2 * Math.sin(gclock * 3);
+  if (A.st === 'ult' || u < .9) { sctx.shadowColor = '#a855f7'; sctx.shadowBlur = 8 + 3 * Math.sin(gclock * 10); }
   sctx.drawImage(im, lx, ly, Math.round(w), Math.round(h));
   sctx.restore();
-  sctx.imageSmoothingEnabled = false;
   // ประกายวิ่งตามใบดาบไอรินตอนยืน (idle) ทุก 2.8 วิ
   if (A.st === 'idle' && u >= .9) {
     const cyc = gclock % 2.8;
