@@ -368,6 +368,7 @@ body.cine #game{background:#000}
 .uc-frames{position:absolute;inset:0;will-change:transform}
 .uc-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;z-index:1;pointer-events:none;filter:saturate(1.14) contrast(1.06);transition:opacity .06s linear}
 .uc-img.prev{opacity:1;z-index:0;transition:none}
+.uc-img:not(.on){transition:none}  /* เฟรมที่หลุดจาก prev ต้องหายทันที — ไม่งั้นมันค่อยๆ จาง (z-index 1) ทับเฟรม prev = ภาพผีเฟรมเก่าแวบขึ้นมา */
 .uc-img.on{opacity:1;z-index:2}
 .uc-stage.cut .uc-img{transition:none}
 .uc-frames.cam-zoom{animation:ucZoom .26s ease-out forwards}
@@ -430,16 +431,16 @@ body.cine #game{background:#000}
 .uc-scan{position:absolute;inset:0;z-index:2;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.13) 3px 4px),radial-gradient(ellipse at center,transparent 50%,rgba(5,2,18,.6) 100%)}
 .uc-beam{position:absolute;left:-20%;top:48%;width:140%;height:14px;z-index:4;pointer-events:none;opacity:0;transform:rotate(-16deg) scaleX(0);
   background:linear-gradient(90deg,transparent,#22d3ee 20%,#fff 50%,#e879f9 80%,transparent);box-shadow:0 0 34px 10px #22d3ee,0 0 60px 18px #c026d3}
-.uc-beam.go{animation:ucBeam .32s ease-out forwards}
+.uc-beam.uc-go{animation:ucBeam .32s ease-out forwards}
 @keyframes ucBeam{0%{opacity:1;transform:rotate(-16deg) scaleX(.15) scaleY(2.8)}35%{opacity:1;transform:rotate(-16deg) scaleX(1.1) scaleY(1.6)}100%{opacity:0;transform:rotate(-16deg) scaleX(1.2) scaleY(.1)}}
 .uc-vbeam{position:absolute;left:50%;top:0;width:16vw;height:110%;z-index:4;pointer-events:none;opacity:0;transform:translate(-50%,-100%) scaleX(.35);
   background:linear-gradient(90deg,transparent,#e879f9 14%,#22d3ee 32%,#fff 50%,#22d3ee 68%,#e879f9 86%,transparent);
   box-shadow:0 0 48px 18px #22d3ee,0 0 90px 28px #c026d3}
-.uc-vbeam.go{animation:ucVbeam .38s cubic-bezier(.08,.92,.2,1) forwards}
+.uc-vbeam.uc-go{animation:ucVbeam .38s cubic-bezier(.08,.92,.2,1) forwards}
 @keyframes ucVbeam{0%{opacity:1;transform:translate(-50%,-90%) scaleX(.4)}24%{opacity:1;transform:translate(-50%,0) scaleX(1.45)}60%{opacity:.95;transform:translate(-50%,0) scaleX(1.1)}100%{opacity:0;transform:translate(-50%,0) scaleX(.08)}}
 .uc-ring{position:absolute;left:50%;top:74%;width:120vw;height:36vh;z-index:4;pointer-events:none;opacity:0;border-radius:50%;
   border:8px solid #67e8f9;box-shadow:0 0 36px 10px #22d3ee,inset 0 0 28px 6px #e879f9;transform:translate(-50%,-50%) scale(.15)}
-.uc-ring.go{animation:ucRing .42s cubic-bezier(.1,.85,.25,1) forwards}
+.uc-ring.uc-go{animation:ucRing .42s cubic-bezier(.1,.85,.25,1) forwards}
 @keyframes ucRing{0%{opacity:1;transform:translate(-50%,-50%) scale(.12)}55%{opacity:.92;transform:translate(-50%,-50%) scale(1.02)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.45)}}
 .uc-flash{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0;background:radial-gradient(circle,#fff,#a5f3fc 55%,#c084fc)}
 .uc-flash.f1{animation:ucFlash1 .22s ease-out}
@@ -3728,13 +3729,13 @@ function applyUltStep(step) {
     const fl = $('#ucFlash'); fl.className = 'uc-flash'; void fl.offsetWidth; fl.classList.add('f' + step.flash);
   }
   if (step.beam) {
-    const bm = $('#ucBeam'); bm.className = 'uc-beam'; void bm.offsetWidth; bm.classList.add('go');
+    const bm = $('#ucBeam'); bm.className = 'uc-beam'; void bm.offsetWidth; bm.classList.add('uc-go');
   }
   if (step.vbeam) {
-    const vb = $('#ucVbeam'); vb.className = 'uc-vbeam'; void vb.offsetWidth; vb.classList.add('go');
+    const vb = $('#ucVbeam'); vb.className = 'uc-vbeam'; void vb.offsetWidth; vb.classList.add('uc-go');
   }
   if (step.ring) {
-    const rg = $('#ucRing'); rg.className = 'uc-ring'; void rg.offsetWidth; rg.classList.add('go');
+    const rg = $('#ucRing'); rg.className = 'uc-ring'; void rg.offsetWidth; rg.classList.add('uc-go');
   }
   st.classList.remove('focus', 'focus2');
   if (step.focus) st.classList.add(step.focus === 2 ? 'focus2' : 'focus');
