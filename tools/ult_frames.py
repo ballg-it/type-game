@@ -19,7 +19,8 @@ W, H = 1376, 768
 
 
 def frames():
-    return sorted(ART.glob('ult-[0-9][0-9].jpg'))
+    fs = [f for f in ART.glob('ult-*.jpg') if f.stem[4:].isdigit()]
+    return sorted(fs, key=lambda f: int(f.stem[4:]))
 
 
 def to_frame(src, dst):
@@ -54,7 +55,7 @@ def insert(args):
             to_frame(src, dst); mapping.append(f'  new {src.name} -> {k:02d}')
         else:
             shutil.copy2(src, dst)
-            o = int(src.stem[-2:])
+            o = int(src.stem[4:])
             if o != k: mapping.append(f'  {o:02d} -> {k:02d}')
     for f in old: f.unlink()
     for f in tmp.iterdir(): shutil.move(str(f), ART / f.name)

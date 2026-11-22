@@ -3620,7 +3620,7 @@ function mistake() {
 
 /* ---------- คัตซีนท่าไม้ตาย (Ultimate Cutscene 32 เฟรม) ---------- */
 const ULT_NAMES = ['คมดาบอักษรผ่าฟากฟ้า', 'เพลงดาบแสงนีออน', 'พายุคีย์บอร์ดทลายฟ้า'];
-const ULT_FRAMES = Array.from({ length: 65 }, (_, i) => `art/ult-${String(i + 1).padStart(2, '0')}.jpg`);
+const ULT_FRAMES = Array.from({ length: 112 }, (_, i) => `art/ult-${String(i + 1).padStart(2, '0')}.jpg`);
 const ULT_IMGS = ULT_FRAMES.map((src, i) => {
   const im = document.createElement('img');
   im.className = 'uc-img'; im.src = src; im.alt = ''; im.dataset.f = String(i + 1);
@@ -3631,70 +3631,117 @@ const ULT_SEQ = [
   { at: 0,    f: 0,   cam: 'zoom',       sfx: 'charge' },
   { at: 80, f: 1, cam: 'zoom' },   // AI in-between (63f): ออร่าสายฟ้าบานออก
   { at: 160,  f: 2,   cam: 'zoom2'                     },   // in-between: ออร่าพุ่งตอนเริ่มลุก
-  { at: 235, f: 3, cam: 'zoom2' },   // AI in-between (63f): เริ่มลุกชักดาบ
-  { at: 310,  f: 4,   cam: 'zoom2',      sfx: 'draw'   },
-  { at: 405, f: 5, cam: 'zoom2' },   // AI in-between (63f): กล้องดันเข้าหน้า
-  { at: 500,  f: 6,   cam: 'push',       focus: 1      },   // ซูมดันเข้า: เส้นสปีดพุ่งเข้าหาตา
-  { at: 590, f: 7, cam: 'push', focus: 1 },   // AI in-between (63f): ซูมใกล้ ตาเริ่มเรือง
-  { at: 680,  f: 8,   cam: 'cutin',      flash: 1, focus: 1, sfx: 'glint' },
-  { at: 940,  f: 9,   cam: 'macro',      focus: 2, sfx: 'heart' },   // มาโครซูมตา: เห็นศัตรูสะท้อนในรูม่านตา (ค้างจังหวะ)
-  { at: 1400, f: 10,   cam: 'glint',      flash: 1, title: 1, sfx: 'flare' },
-  { at: 1470, f: 11, cam: 'glint' },   // AI in-between (63f): หมุนตัวออกจากโคลสอัพ
-  { at: 1540, f: 12,  cam: 'push',       focus: 1, shake: 1    },   // AI in-between: ย่อตัวหมุนลงฟาดดาบ สายฟ้าแตกรอบตัว (ซูมออกจากตา)
-  { at: 1605, f: 13, cam: 'push', focus: 1 },   // AI in-between (63f): พุ่งต่ำ ร่างเงาแรกลอก
-  { at: 1670, f: 14,  cam: 'dash2',      focus: 1          },   // AI in-between: ร่างเงา Sandevistan 2 ร่างแรกเริ่มแยก
-  { at: 1735, f: 15, cam: 'dash2', focus: 1 },   // AI in-between (63f): ร่างเงาสีรุ้งยืดเป็นแถว
-  { at: 1800, f: 16,   cam: 'sande',      focus: 1, sfx: 'sande'      },   // Sandevistan Ignition: แยกร่างสีรุ้งพุ่งความเร็วแสง
-  { at: 1920, f: 17,  cam: 'dash2',      focus: 2                    },   // AI in-between: เร่งสปีด RGB แยกสี Sandevistan
-  { at: 2010, f: 18, cam: 'dash2',      focus: 1, shake: 1    },   // AI in-between: ถีบพื้นพุ่งขึ้นฟ้า ร่างเงาสีรุ้งลอกออกเป็นเส้นแสง
-  { at: 2100, f: 19, cam: 'dash2',      focus: 1          },   // AI in-between: กลางอากาศ เริ่มแตกเป็น 3 ร่างตามเส้นแสง
-  { at: 2165, f: 20, cam: 'dash2', focus: 1 },   // AI in-between (63f): เส้นแสงแผ่ 3 ทาง
-  { at: 2230, f: 21,  cam: 'dash2',      focus: 1                    },   // in-between: แตก 3 เส้นแสงพุ่งกระจายทั่วถนน
-  { at: 2350, f: 22, cam: 'surround',   flash: 1, sfx: 'dash'       },   // แยกร่าง 5 ร่างล้อมเป้ามุมสูง
-  { at: 2440, f: 23, cam: 'surround' },   // AI in-between (63f): วงร่างโคลนหุบเข้ากลาง
-  { at: 2530, f: 24, cam: 'push',       flash: 1, focus: 2          },   // AI in-between: 5 ดาบพุ่งบรรจบกลางวงระเบิดแสง
-  { at: 2610, f: 25, cam: 'push', focus: 2 },   // AI in-between (63f): ระเบิดแสงกลายเป็นคลื่นดาบ
-  { at: 2690, f: 26, cam: 'dash',       beam: 1, sfx: 'blitz'       },   // in-between: พุ่งฟาดคลื่นดาบกวาดต่อเนื่อง
-  { at: 2770, f: 27, cam: 'dash' },   // AI in-between (63f): บิดตัวเข้าฟันไขว้
-  { at: 2850, f: 28, cam: 'blitz',      beam: 1, shake: 1, sfx: 'blitz' }, // ฟันไขว้มุมเอียงกลางอากาศ
-  { at: 2930, f: 29, cam: 'blitz' },   // AI in-between (63f): แสง X สว่างสุด
-  { at: 3010, f: 30, cam: 'slash',      flash: 1, shake: 1          },   // AI in-between: แสงฟันไขว้ X-Flare แยกสี RGB
-  { at: 3090, f: 31, cam: 'slash' },   // AI in-between (63f): วิปแพนเข้าหน้า เริ่มยิ้ม
-  { at: 3170, f: 32, cam: 'grin',       focus: 2, flash: 1, sfx: 'slash' }, // โคลสอัพหน้ายิ้มสะใจตวัดดาบ
-  { at: 3320, f: 33, cam: 'push',       focus: 2                    },   // AI in-between: สปีดวิปซูมใกล้ตาเรืองแสง
-  { at: 3400, f: 34, cam: 'push', focus: 2 },   // AI in-between (63f): สปริงตัวขึ้น เกลียวแสงเริ่มพัน
-  { at: 3480, f: 35, cam: 'ascend',     shake: 1, focus: 1  },   // AI in-between: ถีบพื้นแตกหมุนตัวกระโดด วงสายฟ้าเริ่มก่อตัว
-  { at: 3560, f: 36, cam: 'ascend', focus: 1 },   // AI in-between (63f): ลอยสูงในเกลียวแสง
-  { at: 3640, f: 37, cam: 'ascend',     sfx: 'ascend'               },   // พุ่งเกลียวขึ้นฟ้าเหนือตึกนีออน
-  { at: 3735, f: 38, cam: 'ascend' },   // AI in-between (63f): พุ่งผ่านยอดตึกหาพระจันทร์
-  { at: 3830, f: 39, cam: 'ascend',     focus: 1                    },   // in-between: ทะยานผ่านยอดตึกตรงสู่พระจันทร์
-  { at: 3920, f: 40, cam: 'ascend', focus: 1 },   // AI in-between (63f): กล้องเงยหาพระจันทร์
-  { at: 4010, f: 41, cam: 'overcharge', focus: 1, sfx: 'overcharge' },   // ลอยกลางพระจันทร์ชาร์จสายฟ้าเข้าดาบ
-  { at: 4160, f: 42, cam: 'overcharge', flash: 1, focus: 2          },   // AI in-between: แฟลร์พลาสมาปะทุที่ด้ามดาบ
-  { at: 4245, f: 43, cam: 'overcharge', focus: 2 },   // AI in-between (63f): พลาสมายืดเป็นดาบเลเซอร์
-  { at: 4330, f: 44, cam: 'burst',      flash: 1, sfx: 'claymore'   },   // in-between: พลาสมาพุ่งระเบิดขยายออกจากใบดาบ
-  { at: 4425, f: 45, cam: 'burst' },   // AI in-between (63f): กล้องถอยออกจากพระจันทร์
-  { at: 4520, f: 46, cam: 'claymore',   focus: 1                    },   // ขยายเป็นดาบเลเซอร์ยักษ์สูงเท่าตึก
-  { at: 4710, f: 47, cam: 'overcharge', flash: 1, focus: 2          },   // AI in-between: ดาบยักษ์ชาร์จพลาสมาเต็มพิกัดก่อนฟาด
-  { at: 4795, f: 48, cam: 'overcharge', focus: 2 },   // AI in-between (63f): เริ่มเหวี่ยงดาบยักษ์ลง
-  { at: 4880, f: 49, cam: 'slash',      shake: 1, sfx: 'dash'       },   // in-between: เหวี่ยงดาบยักษ์โค้งฟาดดิ่งลงสู่ประตูโทริอิ!
-  { at: 5010, f: 50, cam: 'slam',       cut: 1, vbeam: 1, shake: 2, flash: 2, sfx: 'slam' }, // Impact Frame 1 ขาว-ดำ-นีออน ฟาดผ่าเมือง
-  { at: 5090, f: 51, cam: 'slam',       cut: 1, shake: 2            },   // Impact Frame 2 สลับสีเนกาทีฟ 80ms สไตล์อนิเมะ!
-  { at: 5170, f: 52, cam: 'shockwave',  ring: 1, shake: 2, dmg: 1, sfx: 'boom' }, // เสาแสงระเบิด + คลื่นช็อกเวฟนีออน
-  { at: 5280, f: 53, cam: 'shockwave' },   // AI in-between (63f): เสาแสงจาง ควันกระจาย
-  { at: 5390, f: 54, cam: 'burst',      shake: 1                    },   // AI in-between: คลื่นช็อกเวฟขยายสูงสุด
-  { at: 5480, f: 55, cam: 'burst' },   // AI in-between (63f): ทิ้งตัวลงคุกเข่า
-  { at: 5570, f: 56, cam: 'zoom',       focus: 1          },   // AI in-between: เสาแสงสลายเป็นควัน ไอริณทิ้งตัวลงมา
-  { at: 5660, f: 57, cam: 'zoom', focus: 1 },   // AI in-between (63f): สายฟ้าจาง เงยหน้า
-  { at: 5750, f: 58, cam: 'land',       shake: 1, sfx: 'leap'       },   // ลงพื้นคุกเข่าข้างเดียวท่ามกลางควันนีออน
-  { at: 5950, f: 59, cam: 'zoom'                                    },   // AI in-between: ลุกจากท่าคุกเข่า เหวี่ยงดาบโค้งขึ้น แมวหุ่นยนต์พุ่งเข้าจากขวา
-  { at: 6050, f: 60, cam: 'zoom' },   // AI in-between (63f): เริ่มลุก แมวหุ่นยนต์บินเข้า
-  { at: 6170, f: 61, cam: 'zoom' },   // AI in-between (65f): ครึ่งลุก เหวี่ยงดาบขึ้นบ่า กล้องเข้าใกล้
-  { at: 6290, f: 62, cam: 'settle'                          },   // AI in-between: ลุกยืน ดาบตกลงบ่า แมวหุ่นยนต์บินเข้ามา
-  { at: 6440, f: 63, cam: 'settle' },   // AI in-between (65f): พาดดาบบนบ่า ยิ้ม แมวหุ่นยนต์ลอยเข้าใกล้
-  { at: 6590, f: 64, cam: 'settle'                                  } // ท่าจบพาดดาบบนบ่า + น้องแมวหุ่นยนต์
+  { at: 207, f: 3, cam: 'zoom2' },   // AI in-between (112f)
+  { at: 255, f: 4, cam: 'zoom2' },   // AI in-between (63f): เริ่มลุกชักดาบ
+  { at: 330,  f: 5,   cam: 'zoom2',      sfx: 'draw'   },
+  { at: 392, f: 6, cam: 'zoom2' },   // AI in-between (90f)
+  { at: 455, f: 7, cam: 'zoom2' },   // AI in-between (63f): กล้องดันเข้าหน้า
+  { at: 517, f: 8, cam: 'zoom2' },   // AI in-between (90f)
+  { at: 558, f: 9, cam: 'zoom2' },   // AI in-between (112f)
+  { at: 600,  f: 10,   cam: 'push',       focus: 1      },   // ซูมดันเข้า: เส้นสปีดพุ่งเข้าหาตา
+  { at: 655, f: 11, cam: 'push', focus: 1 },   // AI in-between (112f)
+  { at: 710, f: 12, cam: 'push', focus: 1 },   // AI in-between (63f): ซูมใกล้ ตาเริ่มเรือง
+  { at: 800,  f: 13,   cam: 'cutin',      flash: 1, focus: 1, sfx: 'glint' },
+  { at: 1060,  f: 14,   cam: 'macro',      focus: 2, sfx: 'heart' },   // มาโครซูมตา: เห็นศัตรูสะท้อนในรูม่านตา (ค้างจังหวะ)
+  { at: 1520, f: 15,   cam: 'glint',      flash: 1, title: 1, sfx: 'flare' },
+  { at: 1570, f: 16, cam: 'glint' },   // AI in-between (90f)
+  { at: 1620, f: 17, cam: 'glint' },   // AI in-between (63f): หมุนตัวออกจากโคลสอัพ
+  { at: 1655, f: 18, cam: 'glint' },   // AI in-between (112f)
+  { at: 1690, f: 19, cam: 'glint' },   // AI in-between (90f)
+  { at: 1740, f: 20,  cam: 'push',       focus: 1, shake: 1    },   // AI in-between: ย่อตัวหมุนลงฟาดดาบ สายฟ้าแตกรอบตัว (ซูมออกจากตา)
+  { at: 1787, f: 21, cam: 'push', focus: 1 },   // AI in-between (90f)
+  { at: 1821, f: 22, cam: 'push', focus: 1 },   // AI in-between (112f)
+  { at: 1855, f: 23, cam: 'push', focus: 1 },   // AI in-between (63f): พุ่งต่ำ ร่างเงาแรกลอก
+  { at: 1902, f: 24, cam: 'push', focus: 1 },   // AI in-between (90f)
+  { at: 1950, f: 25,  cam: 'dash2',      focus: 1          },   // AI in-between: ร่างเงา Sandevistan 2 ร่างแรกเริ่มแยก
+  { at: 2015, f: 26, cam: 'dash2', focus: 1 },   // AI in-between (63f): ร่างเงาสีรุ้งยืดเป็นแถว
+  { at: 2057, f: 27, cam: 'dash2', focus: 1 },   // AI in-between (112f)
+  { at: 2100, f: 28,   cam: 'sande',      focus: 1, sfx: 'sande'      },   // Sandevistan Ignition: แยกร่างสีรุ้งพุ่งความเร็วแสง
+  { at: 2175, f: 29, cam: 'sande', focus: 1 },   // AI in-between (90f)
+  { at: 2250, f: 30,  cam: 'dash2',      focus: 2                    },   // AI in-between: เร่งสปีด RGB แยกสี Sandevistan
+  { at: 2340, f: 31, cam: 'dash2',      focus: 1, shake: 1    },   // AI in-between: ถีบพื้นพุ่งขึ้นฟ้า ร่างเงาสีรุ้งลอกออกเป็นเส้นแสง
+  { at: 2395, f: 32, cam: 'dash2', focus: 1 },   // AI in-between (112f)
+  { at: 2450, f: 33, cam: 'dash2',      focus: 1          },   // AI in-between: กลางอากาศ เริ่มแตกเป็น 3 ร่างตามเส้นแสง
+  { at: 2497, f: 34, cam: 'dash2', focus: 1 },   // AI in-between (90f)
+  { at: 2545, f: 35, cam: 'dash2', focus: 1 },   // AI in-between (63f): เส้นแสงแผ่ 3 ทาง
+  { at: 2587, f: 36, cam: 'dash2', focus: 1 },   // AI in-between (112f)
+  { at: 2630, f: 37,  cam: 'dash2',      focus: 1                    },   // in-between: แตก 3 เส้นแสงพุ่งกระจายทั่วถนน
+  { at: 2750, f: 38, cam: 'surround',   flash: 1, sfx: 'dash'       },   // แยกร่าง 5 ร่างล้อมเป้ามุมสูง
+  { at: 2810, f: 39, cam: 'surround' },   // AI in-between (90f)
+  { at: 2870, f: 40, cam: 'surround' },   // AI in-between (63f): วงร่างโคลนหุบเข้ากลาง
+  { at: 2925, f: 41, cam: 'surround' },   // AI in-between (112f)
+  { at: 2980, f: 42, cam: 'push',       flash: 1, focus: 2          },   // AI in-between: 5 ดาบพุ่งบรรจบกลางวงระเบิดแสง
+  { at: 3060, f: 43, cam: 'push', focus: 2 },   // AI in-between (63f): ระเบิดแสงกลายเป็นคลื่นดาบ
+  { at: 3115, f: 44, cam: 'push', focus: 2 },   // AI in-between (90f)
+  { at: 3170, f: 45, cam: 'dash',       beam: 1, sfx: 'blitz'       },   // in-between: พุ่งฟาดคลื่นดาบกวาดต่อเนื่อง
+  { at: 3207, f: 46, cam: 'dash' },   // AI in-between (112f)
+  { at: 3245, f: 47, cam: 'dash' },   // AI in-between (90f)
+  { at: 3300, f: 48, cam: 'dash' },   // AI in-between (63f): บิดตัวเข้าฟันไขว้
+  { at: 3380, f: 49, cam: 'blitz',      beam: 1, shake: 1, sfx: 'blitz' }, // ฟันไขว้มุมเอียงกลางอากาศ
+  { at: 3430, f: 50, cam: 'blitz' },   // AI in-between (112f)
+  { at: 3480, f: 51, cam: 'blitz' },   // AI in-between (63f): แสง X สว่างสุด
+  { at: 3535, f: 52, cam: 'blitz' },   // AI in-between (90f)
+  { at: 3590, f: 53, cam: 'slash',      flash: 1, shake: 1          },   // AI in-between: แสงฟันไขว้ X-Flare แยกสี RGB
+  { at: 3670, f: 54, cam: 'slash' },   // AI in-between (63f): วิปแพนเข้าหน้า เริ่มยิ้ม
+  { at: 3707, f: 55, cam: 'slash' },   // AI in-between (112f)
+  { at: 3745, f: 56, cam: 'slash' },   // AI in-between (90f)
+  { at: 3800, f: 57, cam: 'grin',       focus: 2, flash: 1, sfx: 'slash' }, // โคลสอัพหน้ายิ้มสะใจตวัดดาบ
+  { at: 3950, f: 58, cam: 'push',       focus: 2                    },   // AI in-between: สปีดวิปซูมใกล้ตาเรืองแสง
+  { at: 4030, f: 59, cam: 'push', focus: 2 },   // AI in-between (63f): สปริงตัวขึ้น เกลียวแสงเริ่มพัน
+  { at: 4110, f: 60, cam: 'ascend',     shake: 1, focus: 1  },   // AI in-between: ถีบพื้นแตกหมุนตัวกระโดด วงสายฟ้าเริ่มก่อตัว
+  { at: 4160, f: 61, cam: 'ascend', focus: 1 },   // AI in-between (112f)
+  { at: 4210, f: 62, cam: 'ascend', focus: 1 },   // AI in-between (63f): ลอยสูงในเกลียวแสง
+  { at: 4265, f: 63, cam: 'ascend', focus: 1 },   // AI in-between (90f)
+  { at: 4320, f: 64, cam: 'ascend',     sfx: 'ascend'               },   // พุ่งเกลียวขึ้นฟ้าเหนือตึกนีออน
+  { at: 4377, f: 65, cam: 'ascend' },   // AI in-between (112f)
+  { at: 4435, f: 66, cam: 'ascend' },   // AI in-between (63f): พุ่งผ่านยอดตึกหาพระจันทร์
+  { at: 4530, f: 67, cam: 'ascend',     focus: 1                    },   // in-between: ทะยานผ่านยอดตึกตรงสู่พระจันทร์
+  { at: 4590, f: 68, cam: 'ascend', focus: 1 },   // AI in-between (90f)
+  { at: 4650, f: 69, cam: 'ascend', focus: 1 },   // AI in-between (63f): กล้องเงยหาพระจันทร์
+  { at: 4740, f: 70, cam: 'overcharge', focus: 1, sfx: 'overcharge' },   // ลอยกลางพระจันทร์ชาร์จสายฟ้าเข้าดาบ
+  { at: 4830, f: 71, cam: 'overcharge', focus: 1 },   // AI in-between (90f)
+  { at: 4920, f: 72, cam: 'overcharge', flash: 1, focus: 2          },   // AI in-between: แฟลร์พลาสมาปะทุที่ด้ามดาบ
+  { at: 4972, f: 73, cam: 'overcharge', focus: 2 },   // AI in-between (112f)
+  { at: 5025, f: 74, cam: 'overcharge', focus: 2 },   // AI in-between (63f): พลาสมายืดเป็นดาบเลเซอร์
+  { at: 5110, f: 75, cam: 'burst',      flash: 1, sfx: 'claymore'   },   // in-between: พลาสมาพุ่งระเบิดขยายออกจากใบดาบ
+  { at: 5172, f: 76, cam: 'burst' },   // AI in-between (90f)
+  { at: 5235, f: 77, cam: 'burst' },   // AI in-between (63f): กล้องถอยออกจากพระจันทร์
+  { at: 5292, f: 78, cam: 'burst' },   // AI in-between (112f)
+  { at: 5350, f: 79, cam: 'claymore',   focus: 1                    },   // ขยายเป็นดาบเลเซอร์ยักษ์สูงเท่าตึก
+  { at: 5460, f: 80, cam: 'claymore', focus: 1 },   // AI in-between (90f)
+  { at: 5570, f: 81, cam: 'overcharge', flash: 1, focus: 2          },   // AI in-between: ดาบยักษ์ชาร์จพลาสมาเต็มพิกัดก่อนฟาด
+  { at: 5608, f: 82, cam: 'overcharge', focus: 2 },   // AI in-between (112f)
+  { at: 5647, f: 83, cam: 'overcharge', focus: 2 },   // AI in-between (90f)
+  { at: 5705, f: 84, cam: 'overcharge', focus: 2 },   // AI in-between (63f): เริ่มเหวี่ยงดาบยักษ์ลง
+  { at: 5762, f: 85, cam: 'overcharge', focus: 2 },   // AI in-between (90f)
+  { at: 5801, f: 86, cam: 'overcharge', focus: 2 },   // AI in-between (112f)
+  { at: 5840, f: 87, cam: 'slash',      shake: 1, sfx: 'dash'       },   // in-between: เหวี่ยงดาบยักษ์โค้งฟาดดิ่งลงสู่ประตูโทริอิ!
+  { at: 5970, f: 88, cam: 'slam',       cut: 1, vbeam: 1, shake: 2, flash: 2, sfx: 'slam' }, // Impact Frame 1 ขาว-ดำ-นีออน ฟาดผ่าเมือง
+  { at: 6050, f: 89, cam: 'slam',       cut: 1, shake: 2            },   // Impact Frame 2 สลับสีเนกาทีฟ 80ms สไตล์อนิเมะ!
+  { at: 6130, f: 90, cam: 'shockwave',  ring: 1, shake: 2, dmg: 1, sfx: 'boom' }, // เสาแสงระเบิด + คลื่นช็อกเวฟนีออน
+  { at: 6200, f: 91, cam: 'shockwave' },   // AI in-between (90f)
+  { at: 6270, f: 92, cam: 'shockwave' },   // AI in-between (63f): เสาแสงจาง ควันกระจาย
+  { at: 6380, f: 93, cam: 'burst',      shake: 1                    },   // AI in-between: คลื่นช็อกเวฟขยายสูงสุด
+  { at: 6420, f: 94, cam: 'burst' },   // AI in-between (112f)
+  { at: 6460, f: 95, cam: 'burst' },   // AI in-between (90f)
+  { at: 6520, f: 96, cam: 'burst' },   // AI in-between (63f): ทิ้งตัวลงคุกเข่า
+  { at: 6610, f: 97, cam: 'zoom',       focus: 1          },   // AI in-between: เสาแสงสลายเป็นควัน ไอริณทิ้งตัวลงมา
+  { at: 6665, f: 98, cam: 'zoom', focus: 1 },   // AI in-between (112f)
+  { at: 6720, f: 99, cam: 'zoom', focus: 1 },   // AI in-between (63f): สายฟ้าจาง เงยหน้า
+  { at: 6780, f: 100, cam: 'zoom', focus: 1 },   // AI in-between (90f)
+  { at: 6840, f: 101, cam: 'land',       shake: 1, sfx: 'leap'       },   // ลงพื้นคุกเข่าข้างเดียวท่ามกลางควันนีออน
+  { at: 7040, f: 102, cam: 'zoom'                                    },   // AI in-between: ลุกจากท่าคุกเข่า เหวี่ยงดาบโค้งขึ้น แมวหุ่นยนต์พุ่งเข้าจากขวา
+  { at: 7105, f: 103, cam: 'zoom' },   // AI in-between (90f)
+  { at: 7170, f: 104, cam: 'zoom' },   // AI in-between (63f): เริ่มลุก แมวหุ่นยนต์บินเข้า
+  { at: 7240, f: 105, cam: 'zoom' },   // AI in-between (112f)
+  { at: 7310, f: 106, cam: 'zoom' },   // AI in-between (65f): ครึ่งลุก เหวี่ยงดาบขึ้นบ่า กล้องเข้าใกล้
+  { at: 7385, f: 107, cam: 'zoom' },   // AI in-between (90f)
+  { at: 7460, f: 108, cam: 'settle'                          },   // AI in-between: ลุกยืน ดาบตกลงบ่า แมวหุ่นยนต์บินเข้ามา
+  { at: 7545, f: 109, cam: 'settle' },   // AI in-between (112f)
+  { at: 7630, f: 110, cam: 'settle' },   // AI in-between (65f): พาดดาบบนบ่า ยิ้ม แมวหุ่นยนต์ลอยเข้าใกล้
+  { at: 7780, f: 111, cam: 'settle'                                  } // ท่าจบพาดดาบบนบ่า + น้องแมวหุ่นยนต์
 ];
-const ULT_END_MS = 7160;
+const ULT_END_MS = 8350;
 let ULT_CINE = null;
 function playUltSfx(k) {
   if (k === 'charge') tone(220, 0.22, 'sawtooth', 0.08, 620);
