@@ -3620,13 +3620,20 @@ function mistake() {
 
 /* ---------- คัตซีนท่าไม้ตาย (Ultimate Cutscene 32 เฟรม) ---------- */
 const ULT_NAMES = ['คมดาบอักษรผ่าฟากฟ้า', 'เพลงดาบแสงนีออน', 'พายุคีย์บอร์ดทลายฟ้า'];
-const ULT_FRAMES = Array.from({ length: 112 }, (_, i) => `art/ult-${String(i + 1).padStart(2, '0')}.jpg`);
+const ULT_FRAMES = Array.from({ length: 112 }, (_, i) => `art/ult-${String(i + 1).padStart(2, '0')}.webp`);
+// ภาพคัตซีน (~12MB) ยังไม่โหลดตอนเปิดหน้า — loadUltFrames() ใส่ src ตอนเริ่มไฟต์แรก
 const ULT_IMGS = ULT_FRAMES.map((src, i) => {
   const im = document.createElement('img');
-  im.className = 'uc-img'; im.src = src; im.alt = ''; im.dataset.f = String(i + 1);
+  im.className = 'uc-img'; im.alt = ''; im.decoding = 'async'; im.dataset.f = String(i + 1);
   $('#ucFrames').appendChild(im);
   return im;
 });
+let ultFramesLoading = false;
+function loadUltFrames() {
+  if (ultFramesLoading) return;
+  ultFramesLoading = true;
+  ULT_IMGS.forEach((im, i) => { im.src = ULT_FRAMES[i]; });
+}
 const ULT_SEQ = [
   { at: 0,    f: 0,   cam: 'zoom',       sfx: 'charge' },
   { at: 80, f: 1, cam: 'zoom' },   // AI in-between (63f): ออร่าสายฟ้าบานออก
@@ -3760,6 +3767,14 @@ function playUltSfx(k) {
   else if (k === 'slash') SFX.ultHit();
   else if (k === 'boom') { noise(0.38, 0.48, 820); tone(95, 0.46, 'sine', 0.46, 28); }
 }
+// ช็อตกล้อง: สเต็ปที่ cam เดียวกันต่อกันนับเป็นช็อตเดียว (cont = ต่อจากสเต็ปก่อน, dur = ความยาวทั้งช็อต)
+const ULT_SHOTS = ULT_SEQ.map((st, i) => {
+  const cont = i > 0 && ULT_SEQ[i - 1].cam === st.cam;
+  let j = i + 1;
+  while (j < ULT_SEQ.length && ULT_SEQ[j].cam === st.cam) j++;
+  const end = j < ULT_SEQ.length ? ULT_SEQ[j].at : ULT_END_MS;
+  return { cont, steps: j - i, dur: Math.max(120, end - st.at) };
+});
 function applyUltStep(step) {
   const st = $('#ucStage');
   st.classList.toggle('cut', !!step.cut);
@@ -3768,10 +3783,16 @@ function applyUltStep(step) {
     im.classList.toggle('prev', idx === prevIdx && idx !== step.f);
     im.classList.toggle('on', idx === step.f);
   });
-  const fr = $('#ucFrames');
-  fr.className = 'uc-frames';
-  void fr.offsetWidth;
-  if (step.cam) fr.classList.add('cam-' + step.cam);
+  // กล้อง: เริ่มท่ากล้องใหม่เฉพาะตอนเปลี่ยนช็อต (cam ต่างจากสเต็ปก่อน) แล้วยืดให้ยาวเท่าทั้งช็อต
+  // เดิมรีสตาร์ททุกเฟรม → ภาพดีดกลับจุดเริ่มทุก ~50-90ms ยิ่งเฟรมเยอะยิ่งกระตุก
+  const shot = ULT_SHOTS[ULT_SEQ.indexOf(step)];
+  if (!shot || !shot.cont) {
+    const fr = $('#ucFrames');
+    fr.className = 'uc-frames';
+    fr.style.animationDuration = shot && shot.steps > 1 ? shot.dur + 'ms' : '';
+    void fr.offsetWidth;
+    if (step.cam) fr.classList.add('cam-' + step.cam);
+  }
   if (step.flash) {
     const fl = $('#ucFlash'); fl.className = 'uc-flash'; void fl.offsetWidth; fl.classList.add('f' + step.flash);
   }
@@ -3795,6 +3816,7 @@ function applyUltStep(step) {
   if (ULT_CINE) { ULT_CINE.prev = step.f; ULT_CINE.frame = step.f + 1; }
 }
 function playUltCutscene(dmg, onImpact) {
+  loadUltFrames();
   cancelUltCine();
   const el = $('#ultCine');
   $('#ucName').textContent = pick(ULT_NAMES);
@@ -4665,7 +4687,7 @@ function startFight() {
   $('#wave').textContent = (R.bossMode ? '' : FOE.boss ? 'บอส · ' : FOE.elite ? 'ศัตรูเก่ง · ' : '') + where;
   [0, 1, 2].forEach(i => { const el = $('#s' + i); if (el) el.style.removeProperty('--fade'); newSlotWord(i); });
   if (FOE.bossMech === 'swap') rollKeySwap(true);
-  phase = 'fight';
+  phase = 'fight'; loadUltFrames();
   S.running = true; S.stats.start = performance.now();
   P.className = 'fighter'; E.className = 'fighter'; S.enraged = false;
   $('#pickScr').hidden = true; $('#ultBox').hidden = true; $('#pauseScr').hidden = true;
@@ -5478,7 +5500,7 @@ function pvCountdown() {
     if (!PV.conn) { PV.forfeit = true; S.running = true; return endFight(true); }
     banner('ดวล!', 'คำแรง 🔥 = ท่าหนัก · ศัตรูปล่อยท่าหนัก ให้พิมพ์คำกัน');
     tone(880, 0.25, 'square', 0.12);
-    S.running = true; phase = 'fight'; S.stats.start = performance.now(); kb.value = ''; kb.focus();
+    S.running = true; phase = 'fight'; loadUltFrames(); S.stats.start = performance.now(); kb.value = ''; kb.focus();
   }, 2700);
 }
 function startPvpFight() {

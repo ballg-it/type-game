@@ -1,12 +1,12 @@
-"""Ultimate-cutscene frame helper (art/ult-XX.jpg, 1376x768 JPEG).
+"""Ultimate-cutscene frame helper (art/ult-XX.webp, 1376x768 WebP q75).
 
   python tools/ult_frames.py gif [out.gif]
       GIF preview using the timing in ULT_SEQ / ULT_END_MS read from index.html.
 
   python tools/ult_frames.py insert AFTER img [img ...] [AFTER img ...]
       Insert new images (any size/format) after existing frame number AFTER (1-based,
-      numbers refer to the CURRENT frames). Converts each to 1376x768 JPEG (cover-crop),
-      renumbers art/ult-*.jpg, and prints the old->new frame map so ULT_SEQ can be updated.
+      numbers refer to the CURRENT frames). Converts each to 1376x768 WebP (cover-crop),
+      renumbers art/ult-*.webp, and prints the old->new frame map so ULT_SEQ can be updated.
       e.g.  insert 1 aura.png  5 zoomout.png  6 sprint.png
 """
 import re, sys, shutil
@@ -19,7 +19,7 @@ W, H = 1376, 768
 
 
 def frames():
-    fs = [f for f in ART.glob('ult-*.jpg') if f.stem[4:].isdigit()]
+    fs = [f for f in ART.glob('ult-*.webp') if f.stem[4:].isdigit()]
     return sorted(fs, key=lambda f: int(f.stem[4:]))
 
 
@@ -28,7 +28,7 @@ def to_frame(src, dst):
     s = max(W / im.width, H / im.height)
     im = im.resize((round(im.width * s), round(im.height * s)), Image.LANCZOS)
     l, t = (im.width - W) // 2, (im.height - H) // 2
-    im.crop((l, t, l + W, t + H)).save(dst, 'JPEG', quality=90)
+    im.crop((l, t, l + W, t + H)).save(dst, 'WEBP', quality=75, method=6)
 
 
 def insert(args):
@@ -50,7 +50,7 @@ def insert(args):
         order += [(p, True) for p in plan.get(i, [])]
     mapping = []
     for k, (src, new) in enumerate(order, 1):
-        dst = tmp / f'ult-{k:02d}.jpg'
+        dst = tmp / f'ult-{k:02d}.webp'
         if new:
             to_frame(src, dst); mapping.append(f'  new {src.name} -> {k:02d}')
         else:
