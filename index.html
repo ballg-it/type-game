@@ -1175,10 +1175,18 @@ body.hud5 .pbtn.lock{border-color:var(--mg);background:linear-gradient(90deg,#7c
 /* ---- หน้าดวล PvP (#pvpScr) ---- */
 body.hud5 #pvpScr .card{border-color:#7c62d8}
 body.hud5 #pvpScr .card::before{background:linear-gradient(90deg,var(--cy) 0 48%,var(--rd) 52% 100%)}
+#pvTitle{font-size:40px}
+#pvChips{grid-template-columns:repeat(4,minmax(0,1fr))}
+#pvChips .upc{padding:6px;min-width:0}
+#pvChips .upc .nm{font-size:15px}
 body.hud5 .pvcode div{border-radius:0;background:linear-gradient(180deg,#21164d,#130b2e);border:2px solid var(--cy);box-shadow:3px 3px 0 #0008}
+body.hud5 .pvcode div.can-del{cursor:pointer}
+body.hud5 .pvcode div.can-del:hover{border-color:#f87171}
 body.hud5 .pvcode div.empty{border-color:#5e4aa8;border-style:dashed;background:#0c0720cc}
-body.hud5 .pvlink button{border-radius:0;background:#1d1244;border:2px solid #38e8ff88;color:#d9f7ff;padding:5px 16px;box-shadow:3px 3px 0 #0008;transition:border-color .12s,background .12s}
-body.hud5 .pvlink button:hover{border-color:var(--cy);background:#2a1b5e}
+body.hud5 .pvlink button,.pv-del{border-radius:0;background:#1d1244;border:2px solid #38e8ff88;color:#d9f7ff;padding:5px 16px;box-shadow:3px 3px 0 #0008;cursor:pointer;font-size:14px;font-family:inherit;transition:border-color .12s,background .12s}
+body.hud5 .pvlink button:hover,.pv-del:hover:not(:disabled){border-color:var(--cy);background:#2a1b5e}
+.pv-del{border-color:#f8717188;color:#fecaca;padding:4px 14px}
+.pv-del:disabled{opacity:.35;cursor:default}
 
 /* ---- หน้าวิธีเล่น (#helpBox) ---- */
 body.hud5 .hcard{border-color:var(--cy)}
@@ -1223,6 +1231,18 @@ body.hud5 #tourTip .tb .nx{border-color:#f0abfc}
   body.hud5 #story .st-port{width:56px;height:56px;font-size:26px}
   body.hud5 #story .txt{font-size:16px;min-height:42px}
   body.hud5 #metaScr #metaAct{flex-direction:column}
+  #pvTitle{font-size:30px}
+  .pvcode{gap:6px;flex-wrap:nowrap}
+  .pvcode div{flex:1;min-width:0;padding:8px 6px;font-size:15px}
+  .pvcode div small{font-size:11px;overflow:hidden;text-overflow:ellipsis}
+  #pvChips{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  #pvChips .upc{padding:5px 4px}
+  #pvChips .upc .nm{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body.hud5 #pvpScr #pvChips .upc .w{font-size:14px;padding:2px 3px;margin-top:3px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #pvpScr #pvCards .upc{padding:10px 8px}
+  #pvpScr #pvCards .upc .ic{font-size:24px}
+  #pvpScr #pvCards .upc .ds{min-height:0;margin:2px 0 6px}
+  #pvpScr #pvCards .upc .w{font-size:22px}
 }
 </style>
 </head>
@@ -1471,7 +1491,7 @@ body.hud5 #tourTip .tb .nx{border-color:#f0abfc}
   <!-- PvP: ดวลออนไลน์ -->
   <div class="overlay" id="pvpScr" hidden>
     <div class="card">
-      <div class="title" style="font-size:40px" id="pvTitle">⚔ ดวลออนไลน์</div>
+      <div class="title" id="pvTitle">⚔ ดวลออนไลน์</div>
       <div class="sub" id="pvSub"></div>
       <div id="pvBody"></div>
       <div class="pvstat" id="pvStat"></div>
@@ -2205,7 +2225,8 @@ function syncKbBtn() {
 function focusKB(force = false) {
   if (IS_TOUCH && !force) {
     const typingStory = phase === 'story' && typeof ST !== 'undefined' && ST && ST.lines[ST.i] && ST.lines[ST.i].say;
-    if (phase !== 'fight' && !typingStory) return;
+    const pvpCd = phase === 'busy' && typeof R !== 'undefined' && R && R.pvp && typeof S !== 'undefined' && S && S.pvLive;
+    if (phase !== 'fight' && !typingStory && !pvpCd) return;
   }
   try { kb.focus({ preventScroll: true }); } catch { kb.focus(); }
   syncKbBtn();
@@ -4032,7 +4053,7 @@ if (kbBtn) {
 }
 $('#console').addEventListener('click', e => {
   if (e.target.closest('#kbBtn')) return;
-  if (phase === 'fight' && S && S.running && !PAUSED) focusKB(true);
+  if ((phase === 'fight' && S && S.running && !PAUSED) || (phase === 'busy' && R && R.pvp && S && S.pvLive)) focusKB(true);
 });
 // มือถือ: iOS ไม่ย่อหน้าเว็บตอนคีย์บอร์ดเด้ง และอาจเลื่อนจอหนี → ล็อกความสูงตาม visualViewport + รีเซ็ต scroll
 if (window.visualViewport) {
@@ -4060,6 +4081,7 @@ window.addEventListener('blur', () => { if (phase === 'fight' && S && S.running 
 if (IS_TOUCH) {
   const th = $('.ts-hint'); if (th) th.textContent = 'แตะเมนูเพื่อเลือก · หรือพิมพ์คำสีม่วง';
   const us = $('.uc-skip'); if (us) us.textContent = 'แตะเพื่อข้าม';
+  const ph = $('#pvHint'); if (ph) ph.textContent = 'แตะการ์ดเพื่อเลือก · หรือพิมพ์คำในกรอบ';
 }
 
 /* ================= Pause + Save/Continue + Restart + Lobby ================= */
@@ -5252,10 +5274,11 @@ function showPvp(step = 'home') {
   updatePauseBtn();
   ['#startScr', '#resultScr', '#metaScr', '#pickScr', '#chScr', '#shopScr'].forEach(q => $(q).hidden = true);
   $('#pvpScr').hidden = false;
+  blurKB(); focusKB();
   pvStep(step);
 }
 function pvStep(step, stat = '') {
-  PV.step = step; PV.stat = stat; PV.buf = ''; kb.value = '';
+  PV.step = step; PV.stat = stat; PV.buf = ''; setKb('');
   const back = { icon: '🏠', name: 'กลับ Lobby', desc: 'ตัดการเชื่อมต่อ', w: pvWord(PV_W.back), fn: pvLeave };
   if (step === 'home') PV.opts = [
     { icon: '🏠', name: 'สร้างห้อง', desc: 'ได้รหัส 3 คำไปบอกเพื่อน', w: pvWord(PV_W.host), fn: pvHost },
@@ -5272,26 +5295,40 @@ function pvRender(rebuild) {
   let body = '';
   if (st === 'home') body = `<ul class="rules"><li><b>ตีเบา/กลาง:</b> โดนทันที (ไม่ทำคอมโบอีกฝั่งหลุด)</li>` +
     `<li><b>คำแรง 🔥 = ท่าหนัก ×${PVP.heavy}:</b> ส่งไปให้คู่แข่งพิมพ์กันภายใน ${PVP.charge} วิ — เริ่มพิมพ์ในช่วงทองท้ายแถบแล้วจบทัน = สวนกลับ · โดนเต็มๆ คอมโบหลุด</li>` +
-    `<li><b>ท่าไม้ตาย</b> <kbd>Tab</kbd> กันไม่ได้ · พิมพ์ผิดคอมโบหลุดเหมือนเดิม · ไม่มีปุ่มหยุดเกม</li></ul>`;
+    `<li>${IS_TOUCH ? '<b>ท่าไม้ตาย</b> แตะแถบท่าไม้ตายเมื่อเกจเต็ม (กันไม่ได้)' : '<b>ท่าไม้ตาย</b> <kbd>Tab</kbd> กันไม่ได้'} · พิมพ์ผิดคอมโบหลุดเหมือนเดิม · ไม่มีปุ่มหยุดเกม</li></ul>`;
   if (st === 'wait') body = `<div class="sub" style="text-align:center;margin:0">รหัสห้อง — บอกเพื่อนให้พิมพ์ (ไทยหรืออังกฤษก็ได้)</div><div class="pvcode">` +
     PV.code.map(i => `<div>${PV_CODE[i][0]} ${PV_CODE[i][1]}<small>${PV_CODE[i][2]}</small></div>`).join('') + `</div>` +
-    `<div class="pvlink"><button id="pvCopy">📋 คัดลอกลิงก์เชิญ</button></div>`;
+    `<div class="pvlink">${IS_TOUCH && navigator.share ? '<button type="button" id="pvShare">📤 แชร์ลิงก์เชิญ</button>' : ''}<button type="button" id="pvCopy">📋 คัดลอกลิงก์เชิญ</button></div>`;
   if (st === 'join' || (st === 'connecting' && PV.role === 'join')) {
-    body = `<div class="pvcode">` + [0, 1, 2].map(k => PV.code[k] != null ? `<div>${PV_CODE[PV.code[k]][0]} ${PV_CODE[PV.code[k]][1]}<small>${PV_CODE[PV.code[k]][2]}</small></div>` : `<div class="empty">คำที่ ${k + 1}</div>`).join('') + `</div>`;
-    if (st === 'join') body += `<div class="metas" id="pvChips" style="grid-template-columns:repeat(4,1fr)">` + PV_CODE.map((c, i) => `<button class="upc" data-c="${i}" style="padding:6px"><div class="nm" style="font-size:15px">${c[0]} ${c[1]}</div><div class="w" data-k="0"></div><div class="w" data-k="1"></div></button>`).join('') + `</div>` +
-      `<div class="sub" style="text-align:center;margin:8px 0 0"><kbd>Backspace</kbd> ลบคำล่าสุด</div>`;
+    const canDel = st === 'join' && PV.code.length > 0;
+    body = `<div class="pvcode">` + [0, 1, 2].map(k => PV.code[k] != null ? `<div class="${canDel && k === PV.code.length - 1 ? 'can-del' : ''}" data-slot="${k}">${PV_CODE[PV.code[k]][0]} ${PV_CODE[PV.code[k]][1]}<small>${PV_CODE[PV.code[k]][2]}</small></div>` : `<div class="empty">คำที่ ${k + 1}</div>`).join('') + `</div>`;
+    if (st === 'join') body += `<div class="metas" id="pvChips">` + PV_CODE.map((c, i) => `<button type="button" class="upc" data-c="${i}"><div class="nm">${c[0]} ${c[1]}</div><div class="w" data-k="0"></div><div class="w" data-k="1"></div></button>`).join('') + `</div>` +
+      `<div class="sub" style="text-align:center;margin:8px 0 0">${IS_TOUCH ? `<button type="button" id="pvDel" class="pv-del"${PV.code.length ? '' : ' disabled'}>⌫ ลบคำล่าสุด</button>` : '<kbd>Backspace</kbd> ลบคำล่าสุด'}</div>`;
   }
   if (st === 'over') body = PV.last.html;
   if (rebuild) {
     $('#pvBody').innerHTML = body;
     const cards = PV.opts.filter(o => !o.chip);
-    $('#pvCards').innerHTML = cards.map((o, i) => `<button class="upc${o.off ? ' sold' : ''}" data-i="${i}"><div class="ic">${o.icon}</div><div class="nm">${esc(o.name)}</div><div class="ds">${esc(o.desc)}</div><div class="w"></div></button>`).join('');
+    $('#pvCards').innerHTML = cards.map((o, i) => `<button type="button" class="upc${o.off ? ' sold' : ''}" data-i="${i}"><div class="ic">${o.icon}</div><div class="nm">${esc(o.name)}</div><div class="ds">${esc(o.desc)}</div><div class="w"></div></button>`).join('');
     $('#pvCards').querySelectorAll('.upc').forEach(b => b.onclick = () => pvDo(cards[+b.dataset.i]));
     $('#pvBody').querySelectorAll('[data-c]').forEach(b => b.onclick = () => pvCodeAdd(+b.dataset.c));
+    $('#pvBody').querySelectorAll('.pvcode .can-del').forEach(d => d.onclick = () => pvBack());
+    const del = $('#pvDel'); if (del) del.onclick = () => pvBack();
+    const inviteUrl = () => location.href.split('#')[0] + '#duel=' + PV.code.join('-');
+    const sh = $('#pvShare'); if (sh) sh.onclick = () => {
+      navigator.share({ title: 'Type Game PvP', text: 'มาดวลพิมพ์เร็วกัน! รหัสห้อง: ' + pvCodeTxt(PV.code), url: inviteUrl() }).catch(() => {});
+    };
     const cp = $('#pvCopy'); if (cp) cp.onclick = () => {
-      const url = location.href.split('#')[0] + '#duel=' + PV.code.join('-');
-      (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(() => toast('คัดลอกลิงก์แล้ว — ส่งให้เพื่อนได้เลย'), () => toast(url));
-      kb.focus();
+      const url = inviteUrl();
+      const copyFallback = () => {
+        const ta = document.createElement('textarea'); ta.value = url; ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta); ta.select();
+        let ok = false; try { ok = document.execCommand('copy'); } catch {}
+        ta.remove();
+        toast(ok ? 'คัดลอกลิงก์แล้ว — ส่งให้เพื่อนได้เลย' : 'คัดลอกไม่สำเร็จ: ' + url);
+      };
+      (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(() => toast('คัดลอกลิงก์แล้ว — ส่งให้เพื่อนได้เลย'), copyFallback);
+      focusKB();
     };
   }
   $('#pvStat').textContent = PV.stat;
@@ -5309,18 +5346,23 @@ function pvRender(rebuild) {
   });
 }
 function pvInput() {
-  const v = kb.value.replace(/[`~_\s]/g, '');
-  const ok = PV.opts.filter(o => !o.off && match(v, o.w).ok);
+  let v = kb.value.replace(/[`~_\s]/g, '');
+  let ok = PV.opts.filter(o => !o.off && match(v, o.w).ok);
+  if (!ok.length && composing && PV.buf === '' && [...v].length > 1) {
+    const last = [...v].at(-1);
+    const okLast = PV.opts.filter(o => !o.off && match(last, o.w).ok);
+    if (okLast.length) { v = last; ok = okLast; setKb(v); }
+  }
   if (v === '' || ok.length) {
     if ([...v].length > [...PV.buf].length) SFX.tick();
-    PV.buf = v; kb.value = v;
+    PV.buf = v; setKb(v);
     const done = ok.find(o => match(v, o.w).full);
     if (done) pvDo(done); else pvRender();
     return;
   }
-  kb.value = PV.buf; SFX.err(); anim($('#pvCards'), 'err', 230);
+  setKb(PV.buf); SFX.err(); anim($('#pvCards'), 'err', 230);
 }
-function pvDo(o) { if (phase !== 'pvp' || o.off) return; PV.buf = ''; kb.value = ''; SFX.block(); o.fn(); kb.focus(); }
+function pvDo(o) { if (phase !== 'pvp' || o.off) return; PV.buf = ''; setKb(''); SFX.block(); o.fn(); focusKB(); }
 // Backspace (ช่องว่าง) = ลบคำรหัสล่าสุด → กลับหน้าแรกดวล → กลับ Lobby · Esc = ถอยทีละหน้า (ข้ามการลบคำ)
 function pvBack(esc) {
   if (PV.step === 'join' && PV.code.length && !esc) { PV.code.pop(); pvRender(true); return; }
@@ -5329,13 +5371,14 @@ function pvBack(esc) {
 }
 function pvCodeAdd(i) {
   if (PV.step !== 'join') return;
-  PV.code.push(i); PV.buf = ''; kb.value = '';
+  PV.code.push(i); PV.buf = ''; setKb('');
   if (PV.code.length < 3) return pvRender(true);
   pvJoin(PV.code.slice());
 }
 
 /* ---------- การเชื่อมต่อ ---------- */
 function pvReset() {
+  clearTimeout(PV.joinTimer); PV.joinTimer = null;
   try { PV.conn && PV.conn.close(); } catch (e) {}
   try { PV.peer && PV.peer.destroy(); } catch (e) {}
   PV.conn = PV.peer = null; PV.opp = {}; PV.me = {};
@@ -5369,6 +5412,9 @@ function pvHost(tries = 0) {
 function pvJoin(code) {
   pvReset(); PV.role = 'join'; PV.code = code;
   pvStep('connecting', 'กำลังเข้าห้อง ' + pvCodeTxt(code) + ' …');
+  PV.joinTimer = setTimeout(() => {
+    if (phase === 'pvp' && PV.step === 'connecting') pvFail('เชื่อมต่อช้าเกินไป — เช็กเน็ตหรือลองสร้างห้องใหม่ (เน็ตมือถือบางเครือข่ายอาจบล็อก P2P)');
+  }, 15000);
   pvLoad().then(() => {
     if (PV.step !== 'connecting') return;
     const peer = PV.peer = new Peer();
@@ -5379,6 +5425,7 @@ function pvJoin(code) {
 function pvBind(c) {
   PV.conn = c;
   c.on('open', () => {
+    clearTimeout(PV.joinTimer); PV.joinTimer = null;
     PV.lastRx = Date.now();
     pvSend({ t: 'hi', mode: cfg.mode, v: 1 });
     if (PV.role === 'host') pvGo(); else pvStep('connecting', 'เข้าห้องแล้ว! รอเริ่ม…');
@@ -5402,6 +5449,13 @@ setInterval(() => {
   pvSend({ t: 'hb' });
   if (PV.lastRx && Date.now() - PV.lastRx > PVP.timeout) { const c = PV.conn; pvDrop(); try { c.close(); } catch (e) {} }
 }, 1000);
+// มือถือ: สลับไปแอปแชตเพื่อส่งลิงก์เชิญแล้วกลับมา → ต่อสัญญาณ PeerJS ให้อัตโนมัติ + ปิดแท็บแจ้งคู่แข่งทันที
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && phase === 'pvp' && PV.step === 'wait' && PV.peer && PV.peer.disconnected && !PV.peer.destroyed) {
+    try { PV.peer.reconnect(); toast('กำลังเชื่อมห้องกลับอัตโนมัติ…'); } catch {}
+  }
+});
+window.addEventListener('pagehide', () => { if (PV.conn) { pvSend({ t: 'bye' }); pvReset(); } });
 function pvLeave() {
   pvSend({ t: 'bye' }); pvReset(); PV.step = 'home';
   $('#pvpScr').hidden = true;
@@ -5420,7 +5474,7 @@ function pvMsg(m) {
   switch (m.t) {
     case 'hi':
       PV.opp.mode = MODE_TXT[m.mode] ? m.mode : 'th';
-      if (R.pvp) { FOE.name = 'คู่แข่ง (' + MODE_TXT[PV.opp.mode] + ')'; $('#eName').textContent = FOE.name; }
+      if (R.pvp) { FOE.name = 'คู่แข่ง · ' + MODE_TXT[PV.opp.mode]; $('#eName').textContent = FOE.name; }
       break;
     case 'go': if (PV.role === 'join') pvCountdown(); break;
     case 'again': PV.opp.again = true; if (PV.step === 'over') { PV.stat = PV.me.again ? 'เริ่มแล้ว!' : 'คู่แข่งอยากดวลอีกตา — พิมพ์ ' + PV.opts[0].w.text; pvRender(); } if (PV.role === 'host' && PV.me.again) pvGo(); break;
@@ -5494,26 +5548,26 @@ function pvCountdown() {
   $('#pvpScr').hidden = true;
   startPvpFight();
   S.running = false; phase = 'busy';
-  [3, 2, 1].forEach((k, i) => setTimeout(() => { if (R.pvp && S.pvLive) { banner(String(k), 'เตรียมนิ้วให้พร้อม…'); tone(520, 0.12, 'square', 0.1); } }, i * 900));
+  [3, 2, 1].forEach((k, i) => setTimeout(() => { if (R.pvp && S.pvLive) { banner(String(k), IS_TOUCH ? 'แตะจอหรือปุ่ม ⌨ เพื่อเปิดแป้นพิมพ์รอ…' : 'เตรียมนิ้วให้พร้อม…'); tone(520, 0.12, 'square', 0.1); } }, i * 900));
   setTimeout(() => {
     if (!R.pvp || !S.pvLive) return;
     if (!PV.conn) { PV.forfeit = true; S.running = true; return endFight(true); }
     banner('ดวล!', 'คำแรง 🔥 = ท่าหนัก · ศัตรูปล่อยท่าหนัก ให้พิมพ์คำกัน');
     tone(880, 0.25, 'square', 0.12);
-    S.running = true; phase = 'fight'; loadUltFrames(); S.stats.start = performance.now(); kb.value = ''; kb.focus();
+    S.running = true; phase = 'fight'; loadUltFrames(); S.stats.start = performance.now(); setKb(''); focusKB(true);
   }, 2700);
 }
 function startPvpFight() {
   R = newRun();
   Object.assign(R, { pvp: true, revive: 0, shields: 0, php: PVP.hp, pmax: PVP.hp, at: { layer: 0 }, trail: [] });
   Object.assign(R.mod, { comboCap: PVP.comboCap, ultGain: PVP.ultGain, heavy: PVP.heavy });
-  FOE = { id: 'pvp', name: 'คู่แข่ง' + (PV.opp.mode ? ' (' + MODE_TXT[PV.opp.mode] + ')' : ''), icon: '⚔', sprite: 'oni', hp: PVP.hp, dmg: 1, idle: 1, charge: 1, words: WORDS,
+  FOE = { id: 'pvp', name: 'คู่แข่ง' + (PV.opp.mode ? ' · ' + MODE_TXT[PV.opp.mode] : ''), icon: '⚔', sprite: 'oni', hp: PVP.hp, dmg: 1, idle: 1, charge: 1, words: WORDS,
     trait: { th: 'ผู้เล่นจริง — ระวังท่าหนัก!', en: 'ผู้เล่นจริง — ระวังท่าหนัก!' } };
   PV.meKO = PV.oppKO = PV.forfeit = false; PV.lastSt = 0;
   startFight();
   Object.assign(S, { ehp: PVP.hp, emax: PVP.hp, ult: 0, pvQ: [], pvOpp: { ult: 0, combo: 0 }, pvHold: 0, pvDealt: 0, pvTaken: 0, pvLive: true });
   S.enemy.t = Infinity;
-  $('#wave').textContent = '⚔ ดวล PvP · ' + MODE_TXT[cfg.mode];
+  $('#wave').textContent = '⚔ PvP · ' + MODE_TXT[cfg.mode];
   $('#bottom .hint').innerHTML = '<kbd>Tab</kbd> ท่าไม้ตาย · 🔥 คำแรง = ท่าหนักให้คู่แข่งกัน · ไม่มีหยุดเกม';
   $('#eTag').textContent = 'PvP';
   renderWords();
